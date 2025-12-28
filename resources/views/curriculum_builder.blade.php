@@ -97,7 +97,7 @@
             {{-- Modal for adding/editing a curriculum --}}
             <div id="addCurriculumModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
                 <div class="flex items-center justify-center min-h-screen p-4">
-                    <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-panel">
+                    <div class="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-panel">
                         <button id="closeModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
                             <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -115,10 +115,57 @@
                             <input type="hidden" id="curriculumId" name="curriculumId">
                             
                             <div>
-                                <label for="curriculum" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Name</label>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label for="curriculum" class="block text-sm font-medium text-slate-700">Curriculum Name</label>
+                                    <button type="button" id="browseCurriculumsButton" class="group flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors" title="Browse existing curriculums">
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                                        </svg>
+                                        <span>Browse</span>
+                                    </button>
+                                </div>
                                 <div class="relative">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
                                     <input type="text" id="curriculum" name="curriculum" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"  required>
+                                </div>
+                                
+                                {{-- Duplicate Detection Alert --}}
+                                <div id="duplicateAlert" class="hidden mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                    <div class="flex items-start gap-2 mb-2">
+                                        <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                        </svg>
+                                        <div class="flex-grow">
+                                            <p class="text-sm font-medium text-amber-800">A curriculum with this name already exists</p>
+                                            <div id="duplicateList" class="mt-2 space-y-1 text-xs text-amber-700">
+                                                {{-- Matching curriculums will be listed here --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 mt-3">
+                                        <button type="button" id="reviseButton" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                            </svg>
+                                            Revise
+                                        </button>
+                                        <button type="button" id="createAnotherButton" class="flex-1 px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Create Another
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {{-- Browse Curriculums Dropdown --}}
+                                <div id="browseCurriculumsDropdown" class="hidden absolute z-10 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 max-h-80 overflow-y-auto">
+                                    <div class="p-2 border-b border-slate-200 sticky top-0 bg-white">
+                                        <input type="text" id="browseSearchInput" placeholder="Search curriculums..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div id="browseCurriculumsList" class="p-2">
+                                        {{-- Curriculum list will be populated here --}}
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -207,6 +254,16 @@
                         <option value="" disabled selected>Select Memorandum</option>
                     </select>
                     <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
+                </div>
+                
+                {{-- Duplicate Memorandum Warning --}}
+                <div id="duplicateMemorandumAlert" class="hidden mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-xs font-medium text-red-800">This memorandum is already used for this curriculum name. You may be creating a duplicate!</p>
+                    </div>
                 </div>
             </div>
                             
@@ -315,7 +372,21 @@
             const successModalMessage = document.getElementById('success-modal-message');
             const closeSuccessModalButton = document.getElementById('closeSuccessModalButton');
 
+            // Duplicate Detection elements
+            const curriculumInput = document.getElementById('curriculum');
+            const duplicateAlert = document.getElementById('duplicateAlert');
+            const duplicateList = document.getElementById('duplicateList');
+            const reviseButton = document.getElementById('reviseButton');
+            const createAnotherButton = document.getElementById('createAnotherButton');
+            const browseCurriculumsButton = document.getElementById('browseCurriculumsButton');
+            const browseCurriculumsDropdown = document.getElementById('browseCurriculumsDropdown');
+            const browseCurriculumsList = document.getElementById('browseCurriculumsList');
+            const browseSearchInput = document.getElementById('browseSearchInput');
+            const duplicateMemorandumAlert = document.getElementById('duplicateMemorandumAlert');
+
             let currentAction = null; // To store the function to execute on confirmation.
+            let matchingCurriculums = []; // Store matching curriculums for duplicate detection
+            let createAnotherMode = false; // Flag to allow creating another curriculum
             
             // Memorandum data organized by year - fetched from compliance validator structure
             const memorandumData = {
@@ -464,6 +535,277 @@
                 }
                 hideConfirmationModal();
             });
+            
+            // --- Duplicate Detection and Browse Functionality ---
+            
+            // Function to check for duplicate curriculum names
+            const checkDuplicateCurriculum = () => {
+                const curriculumName = curriculumInput.value.trim();
+                
+                // Don't check if field is empty or in edit mode (already has an ID)
+                if (!curriculumName || curriculumIdField.value) {
+                    duplicateAlert.classList.add('hidden');
+                    matchingCurriculums = [];
+                    return;
+                }
+                
+                // Don't check if in "create another" mode
+                if (createAnotherMode) {
+                    return;
+                }
+                
+                // Search for matching curriculums (case-insensitive)
+                if (window.curriculumsData) {
+                    matchingCurriculums = window.curriculumsData.filter(curr => 
+                        curr.curriculum_name.toLowerCase() === curriculumName.toLowerCase()
+                    );
+                    
+                    if (matchingCurriculums.length > 0) {
+                        // Show duplicate alert
+                        showDuplicateAlert(matchingCurriculums);
+                    } else {
+                        // Hide duplicate alert
+                        duplicateAlert.classList.add('hidden');
+                    }
+                }
+            };
+            
+            // Function to show duplicate alert with curriculum list
+            const showDuplicateAlert = (curriculums) => {
+                duplicateList.innerHTML = '';
+                
+                curriculums.forEach(curr => {
+                    const currItem = document.createElement('div');
+                    currItem.className = 'p-2 bg-white rounded border border-amber-300';
+                    
+                    const memorandumInfo = curr.memorandum 
+                        ? (curr.memorandum_year ? `${curr.memorandum_year} • ` : '') + 
+                          (curr.memorandum_category ? `${curr.memorandum_category} • ` : '') +
+                          curr.memorandum.substring(0, 40) + '...'
+                        : 'No memorandum';
+                    
+                    const statusBadge = curr.approval_status === 'approved' 
+                        ? '<span class="px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-xs">Approved</span>'
+                        : curr.approval_status === 'rejected'
+                        ? '<span class="px-1.5 py-0.5 bg-red-100 text-red-800 rounded text-xs">Rejected</span>'
+                        : '<span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-xs">Processing</span>';
+                    
+                    currItem.innerHTML = `
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex-grow min-w-0">
+                                <div class="font-medium text-amber-900">${curr.program_code} • ${curr.academic_year}</div>
+                                <div class="text-xs text-amber-700 truncate">${memorandumInfo}</div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                    `;
+                    
+                    duplicateList.appendChild(currItem);
+                });
+                
+                duplicateAlert.classList.remove('hidden');
+            };
+            
+            // Handle revise button click
+            const handleReviseClick = () => {
+                if (matchingCurriculums.length === 1) {
+                    // Only one matching curriculum, load it for editing
+                    const curriculum = matchingCurriculums[0];
+                    loadCurriculumForEditing(curriculum);
+                } else if (matchingCurriculums.length > 1) {
+                    // Multiple matches, show selection UI
+                    showCurriculumSelector(matchingCurriculums, (selectedCurriculum) => {
+                        loadCurriculumForEditing(selectedCurriculum);
+                    });
+                }
+            };
+            
+            // Function to load a curriculum for editing
+            const loadCurriculumForEditing = (curriculum) => {
+                // Hide duplicate alert
+                duplicateAlert.classList.add('hidden');
+                
+                // Use the existing showAddEditModal function
+                showAddEditModal(true, curriculum);
+            };
+            
+            // Function to show curriculum selector when multiple matches exist
+            const showCurriculumSelector = (curriculums, onSelect) => {
+                // Hide the duplicate alert temporarily
+                duplicateAlert.classList.add('hidden');
+                
+                // Create a temporary selection modal
+                const selectorHTML = `
+                    <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm font-medium text-blue-800 mb-2">Select which curriculum to revise:</p>
+                        <div class="space-y-2" id="curriculumSelectorList">
+                            ${curriculums.map((curr, index) => {
+                                const memorandumInfo = curr.memorandum 
+                                    ? (curr.memorandum_year ? `${curr.memorandum_year} • ` : '') + 
+                                      curr.memorandum.substring(0, 35) + '...'
+                                    : 'No memorandum';
+                                
+                                return `
+                                    <button type="button" class="w-full p-2 bg-white hover:bg-blue-100 border border-blue-300 rounded text-left transition-colors curriculum-selector-item" data-index="${index}">
+                                        <div class="font-medium text-blue-900 text-sm">${curr.program_code} • ${curr.academic_year}</div>
+                                        <div class="text-xs text-blue-700">${memorandumInfo}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                        <button type="button" id="cancelSelector" class="mt-2 w-full px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                `;
+                
+                // Insert after duplicate alert
+                duplicateAlert.insertAdjacentHTML('afterend', selectorHTML);
+                
+                // Add event listeners to selector items
+                document.querySelectorAll('.curriculum-selector-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const index = parseInt(item.dataset.index);
+                        const selected = curriculums[index];
+                        
+                        // Remove selector
+                        item.closest('.bg-blue-50').remove();
+                        
+                        // Call the callback
+                        onSelect(selected);
+                    });
+                });
+                
+                // Cancel button
+                document.getElementById('cancelSelector').addEventListener('click', () => {
+                    document.querySelector('.bg-blue-50').remove();
+                    duplicateAlert.classList.remove('hidden');
+                });
+            };
+            
+            // Handle create another button click
+            const handleCreateAnotherClick = () => {
+                // Set flag to allow creating another curriculum
+                createAnotherMode = true;
+                
+                // Hide duplicate alert
+                duplicateAlert.classList.add('hidden');
+                
+                // Clear curriculum ID to ensure new creation
+                curriculumIdField.value = '';
+                
+                // Focus on the next field (program code)
+                document.getElementById('programCode').focus();
+            };
+            
+            // Browse button functionality
+            const handleBrowseClick = () => {
+                if (browseCurriculumsDropdown.classList.contains('hidden')) {
+                    populateBrowseDropdown();
+                    browseCurriculumsDropdown.classList.remove('hidden');
+                    browseSearchInput.focus();
+                } else {
+                    browseCurriculumsDropdown.classList.add('hidden');
+                }
+            };
+            
+            // Populate browse dropdown with all curriculums
+            const populateBrowseDropdown = (searchTerm = '') => {
+                browseCurriculumsList.innerHTML = '';
+                
+                if (!window.curriculumsData || window.curriculumsData.length === 0) {
+                    browseCurriculumsList.innerHTML = '<p class="text-sm text-slate-500 p-2">No curriculums found</p>';
+                    return;
+                }
+                
+                // Get unique curriculum names
+                const uniqueNames = [...new Set(window.curriculumsData.map(c => c.curriculum_name))];
+                
+                // Filter by search term
+                const filteredNames = searchTerm 
+                    ? uniqueNames.filter(name => name.toLowerCase().includes(searchTerm.toLowerCase()))
+                    : uniqueNames;
+                
+                if (filteredNames.length === 0) {
+                    browseCurriculumsList.innerHTML = '<p class="text-sm text-slate-500 p-2">No matching curriculums</p>';
+                    return;
+                }
+                
+                filteredNames.forEach(name => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'w-full text-left px-3 py-2 text-sm hover:bg-blue-50 rounded transition-colors';
+                    button.textContent = name;
+                    
+                    button.addEventListener('click', () => {
+                        curriculumInput.value = name;
+                        browseCurriculumsDropdown.classList.add('hidden');
+                        
+                        // Reset create another mode
+                        createAnotherMode = false;
+                        
+                        // Trigger duplicate check
+                        checkDuplicateCurriculum();
+                    });
+                    
+                    browseCurriculumsList.appendChild(button);
+                });
+            };
+            
+            // Event listeners for duplicate detection and browse
+            curriculumInput.addEventListener('blur', checkDuplicateCurriculum);
+            reviseButton.addEventListener('click', handleReviseClick);
+            createAnotherButton.addEventListener('click', handleCreateAnotherClick);
+            browseCurriculumsButton.addEventListener('click', handleBrowseClick);
+            
+            // Browse search functionality
+            browseSearchInput.addEventListener('input', (e) => {
+                populateBrowseDropdown(e.target.value);
+            });
+            
+            // Close browse dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!browseCurriculumsDropdown.contains(e.target) && 
+                    !browseCurriculumsButton.contains(e.target)) {
+                    browseCurriculumsDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Function to check for duplicate memorandum
+            const checkDuplicateMemorandum = () => {
+                // Only check if in "create another" mode
+                if (!createAnotherMode) {
+                    duplicateMemorandumAlert.classList.add('hidden');
+                    return;
+                }
+                
+                const curriculumName = curriculumInput.value.trim();
+                const selectedMemorandum = memorandumSelect.value;
+                
+                // Don't check if no curriculum name or no memorandum selected
+                if (!curriculumName || !selectedMemorandum) {
+                    duplicateMemorandumAlert.classList.add('hidden');
+                    return;
+                }
+                
+                // Check if any matching curriculum has the same memorandum
+                if (window.curriculumsData && matchingCurriculums.length > 0) {
+                    const hasDuplicateMemorandum = matchingCurriculums.some(curr => 
+                        curr.memorandum === selectedMemorandum
+                    );
+                    
+                    if (hasDuplicateMemorandum) {
+                        duplicateMemorandumAlert.classList.remove('hidden');
+                    } else {
+                        duplicateMemorandumAlert.classList.add('hidden');
+                    }
+                } else {
+                    duplicateMemorandumAlert.classList.add('hidden');
+                }
+            };
+            
+            // Add event listener to memorandum select
+            memorandumSelect.addEventListener('change', checkDuplicateMemorandum);
             
             // --- Dynamic Form Logic ---
             
@@ -863,6 +1205,13 @@
             const showAddEditModal = (isEdit = false, curriculum = null) => {
                 curriculumForm.reset();
                 
+                // Reset duplicate detection state
+                createAnotherMode = false;
+                matchingCurriculums = [];
+                duplicateAlert.classList.add('hidden');
+                browseCurriculumsDropdown.classList.add('hidden');
+                duplicateMemorandumAlert.classList.add('hidden');
+                
                 // Reset form state (remove read-only and disabled styles)
                 const fieldsToReset = ['curriculum', 'programCode', 'academicYear', 'yearLevel', 'compliance', 'memorandum', 'memorandumYear', 'memorandumCategory'];
                 fieldsToReset.forEach(id => {
@@ -975,7 +1324,16 @@
             const hideAddEditModal = () => {
                 addCurriculumModal.classList.add('opacity-0');
                 modalPanel.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => addCurriculumModal.classList.add('hidden'), 300);
+                setTimeout(() => {
+                    addCurriculumModal.classList.add('hidden');
+                    
+                    // Reset duplicate detection state
+                    createAnotherMode = false;
+                    matchingCurriculums = [];
+                    duplicateAlert.classList.add('hidden');
+                    browseCurriculumsDropdown.classList.add('hidden');
+                    duplicateMemorandumAlert.classList.add('hidden');
+                }, 300);
             };
             
             const handleFormSubmit = (e) => {

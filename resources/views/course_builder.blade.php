@@ -665,6 +665,62 @@
     </div>
 </div>
 
+{{-- Similar Description Warning Modal --}}
+<div id="similarDescriptionModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6">
+            <div class="w-12 h-12 rounded-full bg-amber-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 text-center mb-2">Similar Course Descriptions Detected</h3>
+            <p class="text-sm text-gray-600 text-center mb-4">The following existing courses have similar descriptions to what you entered:</p>
+            
+            <div id="similarCoursesList" class="max-h-96 overflow-y-auto space-y-3 mb-6">
+                <!-- Similar courses will be inserted here -->
+            </div>
+            
+            <p class="text-xs text-gray-500 text-center mb-4">
+                <svg class="w-4 h-4 inline mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                This check uses AI to detect semantic similarity. You can still proceed if you believe this is a different course.
+            </p>
+            
+            <div class="flex justify-center gap-4">
+                <button id="cancelSimilarDescription" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                    Cancel & Edit Description
+                </button>
+                <button id="proceedWithSimilarDescription" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                    Save Anyway
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- AI Analysis Loading Modal --}}
+<div id="aiAnalysisLoadingModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 text-center">
+            <div class="mb-4">
+                <svg class="animate-spin h-16 w-16 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Analyzing Course Description</h3>
+            <p class="text-sm text-gray-600">AI is checking for similar courses...</p>
+            <div class="mt-4 flex justify-center space-x-1">
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function toggleAccordion(button) {
     const content = button.nextElementSibling;
@@ -1115,9 +1171,40 @@ Learning Management System`;
         document.getElementById('saveCourseConfirmModal').classList.add('hidden');
     });
     
-    document.getElementById('confirmSaveCourse').addEventListener('click', () => {
+    document.getElementById('confirmSaveCourse').addEventListener('click', async () => {
         document.getElementById('saveCourseConfirmModal').classList.add('hidden');
-        handleCourseSave();
+        
+        // Check for description similarity before saving
+        const description = document.getElementById('course_description').value;
+        
+        if (description && description.trim() !== '') {
+            // Show loading modal
+            document.getElementById('aiAnalysisLoadingModal').classList.remove('hidden');
+            
+            try {
+                const similarityCheck = await checkDescriptionSimilarity(description);
+                
+                // Hide loading modal
+                document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
+                
+                if (similarityCheck.has_similar) {
+                    // Show warning modal with similar courses
+                    showSimilarDescriptionModal(similarityCheck.similar_courses);
+                } else {
+                    // No similar descriptions, proceed with save
+                    handleCourseSave();
+                }
+            } catch (error) {
+                // Hide loading modal on error
+                document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
+                console.error('Similarity check failed:', error);
+                // Proceed with save on error
+                handleCourseSave();
+            }
+        } else {
+            // No description provided, proceed with save
+            handleCourseSave();
+        }
     });
     
     // Course Success Modal (Create)
@@ -1139,6 +1226,76 @@ Learning Management System`;
         document.getElementById('courseUpdateSuccessModal').classList.add('hidden');
         window.location.href = `/subject_mapping`;
     });
+    
+    // Similar Description Warning Modal
+    document.getElementById('cancelSimilarDescription').addEventListener('click', () => {
+        document.getElementById('similarDescriptionModal').classList.add('hidden');
+    });
+    
+    document.getElementById('proceedWithSimilarDescription').addEventListener('click', () => {
+        document.getElementById('similarDescriptionModal').classList.add('hidden');
+        handleCourseSave();
+    });
+    
+    // --- HELPER FUNCTIONS FOR SIMILARITY CHECK ---
+    
+    /**
+     * Check if a course description is semantically similar to existing courses
+     */
+    const checkDescriptionSimilarity = async (description) => {
+        try {
+            const subjectId = document.getElementById('subject_id').value;
+            
+            const response = await fetch('/api/check-description-similarity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: description,
+                    current_subject_id: subjectId || null
+                })
+            });
+            
+            const result = await response.json();
+            return result;
+            
+        } catch (error) {
+            console.error('Similarity check error:', error);
+            // Return no similarity on error to allow saving
+            return { has_similar: false, similar_courses: [] };
+        }
+    };
+    
+    /**
+     * Display the similar description warning modal
+     */
+    const showSimilarDescriptionModal = (similarCourses) => {
+        const listContainer = document.getElementById('similarCoursesList');
+        listContainer.innerHTML = '';
+        
+        similarCourses.forEach(course => {
+            const courseCard = document.createElement('div');
+            courseCard.className = 'bg-amber-50 border border-amber-200 rounded-lg p-4';
+            courseCard.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-800">${course.subject_name}</h4>
+                        <p class="text-sm text-gray-600 mb-2">Code: <span class="font-mono">${course.subject_code}</span></p>
+                        <p class="text-xs text-amber-700 italic">${course.similarity_reason}</p>
+                    </div>
+                </div>
+            `;
+            listContainer.appendChild(courseCard);
+        });
+        
+        document.getElementById('similarDescriptionModal').classList.remove('hidden');
+    };
 
     // --- MAPPING GRID ROW LOGIC (Event Listeners) ---
     document.getElementById('add-program-mapping-row').addEventListener('click', () => document.getElementById('program-mapping-table-body').appendChild(createMappingTableRow(true)));

@@ -18,7 +18,7 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'course_title' => 'required|string|max:255',
+            'course_title' => 'required|string|max:255|unique:subjects,subject_name',
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code',
             'subject_unit' => 'required|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',
@@ -109,7 +109,7 @@ class SubjectController extends Controller
         $subject = Subject::findOrFail($id);
 
         $validated = $request->validate([
-            'course_title' => 'required|string|max:255',
+            'course_title' => 'required|string|max:255|unique:subjects,subject_name,' . $subject->id,
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code,' . $subject->id,
             'subject_unit' => 'required|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',

@@ -315,4 +315,115 @@ PROMPT;
         
         return $text;
     }
+    
+    /**
+     * Compare a course description with existing descriptions to find semantic similarities
+     * 
+     * @param string $currentDescription The description to check
+     * @param array $existingCourses Array of courses with id, subject_name, subject_code, course_description
+     * @return array Array of similar courses with similarity info
+     */
+    public function compareDescriptionSimilarity(string $currentDescription, array $existingCourses): array
+    {
+        try {
+            $apiKey = config('services.gemini.api_key');
+            $model = config('services.gemini.model', 'gemini-1.5-flash');
+            
+            if (empty($apiKey)) {
+                Log::warning('Gemini API key not configured for similarity check');
+                return [];
+            }
+            
+            if (empty($currentDescription) || empty($existingCourses)) {
+                return [];
+            }
+            
+            $client = Gemini::client($apiKey);
+            
+            // Build the prompt
+            $prompt = $this->buildSimilarityPrompt($currentDescription, $existingCourses);
+            
+            $result = $client->generativeModel($model)->generateContent($prompt);
+            
+            $responseText = $result->text();
+            
+            // Extract JSON from response
+            $jsonText = $this->extractJson($responseText);
+            
+            $data = json_decode($jsonText, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('Gemini similarity check JSON decode error: ' . json_last_error_msg());
+                return [];
+            }
+            
+            Log::info('Gemini similarity check successful', ['similar_count' => count($data['similar_courses'] ?? [])]);
+            
+            return $data['similar_courses'] ?? [];
+            
+        } catch (\Exception $e) {
+            Log::error('Gemini similarity check failed: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Build prompt for description similarity comparison
+     */
+    private function buildSimilarityPrompt(string $currentDescription, array $existingCourses): string
+    {
+        $coursesText = '';
+        foreach ($existingCourses as $index => $course) {
+            $coursesText .= sprintf(
+                "\nCourse %d:\n  ID: %s\n  Title: %s\n  Code: %s\n  Description: %s\n",
+                $index + 1,
+                $course['id'],
+                $course['subject_name'],
+                $course['subject_code'],
+                $course['course_description'] ?? 'N/A'
+            );
+        }
+        
+        return <<<PROMPT
+You are an expert in analyzing course descriptions for semantic similarity.
+
+I will provide you with:
+1. A NEW course description to check
+2. A list of EXISTING course descriptions from the database
+
+Your task is to identify which existing courses have descriptions that are semantically similar to the new description.
+
+**Similarity Criteria:**
+- Consider two descriptions similar if they cover the same subject matter or learning outcomes
+- Minor wording differences (e.g., "introduction to" vs "basics of") should be considered similar
+- Punctuation changes only (adding/removing periods, commas) should be considered similar
+- Different phrasing but same meaning (paraphrasing) should be considered similar
+- Completely different subject matter should NOT be similar
+
+**NEW Course Description:**
+{$currentDescription}
+
+**EXISTING Courses:**
+{$coursesText}
+
+Return ONLY valid JSON (no markdown, no explanations) with this exact structure:
+
+{
+  "similar_courses": [
+    {
+      "id": "course_id",
+      "subject_name": "Course Title",
+      "subject_code": "Course Code", 
+      "similarity_reason": "Brief explanation of why these are similar (1 sentence)"
+    }
+  ]
+}
+
+- If NO courses are similar, return: {"similar_courses": []}
+- Only include courses that are truly semantically similar
+- similarity_reason should be clear and specific
+
+Return ONLY the JSON object, nothing else.
+PROMPT;
+    }
 }

@@ -7,7 +7,8 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\EquivalencyToolController;
-use App\Http\Controllers\Api\GlobalSearchController; 
+use App\Http\Controllers\Api\GlobalSearchController;
+use App\Http\Controllers\Api\DescriptionSimilarityController; 
 
 // --- Curriculum Routes ---
 Route::get('/curriculums', [CurriculumController::class, 'index']);
@@ -58,6 +59,9 @@ Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class,
 // --- Global Search Routes ---
 Route::post('/global-search', [GlobalSearchController::class, 'search']);
 Route::get('/quick-search/{type}', [GlobalSearchController::class, 'quickSearch']);
+
+// --- Description Similarity Check ---
+Route::post('/check-description-similarity', [DescriptionSimilarityController::class, 'check']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
