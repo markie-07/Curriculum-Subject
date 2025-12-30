@@ -210,32 +210,41 @@ document.addEventListener('DOMContentLoaded', () => {
         modalMemorandum.textContent = fullMemo;
         modalMemorandum.title = fullMemo;
 
-        // Status Badge Logic
+        // Expiration Date Logic (replaces Status Badge)
         let statusHtml = '';
-        const approvalStatus = curriculum.approval_status || 'processing';
-        if (approvalStatus === 'approved') {
-            statusHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200"><svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>Approved</span>`;
-        } else if (approvalStatus === 'rejected') {
-            statusHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200"><svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>Rejected</span>`;
-        } else {
-            statusHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200"><svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" /></svg>Processing</span>`;
+        if (curriculum.expiration_date) {
+            statusHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200">
+                <svg class="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Expires: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>`;
         }
         modalStatusBadge.innerHTML = statusHtml;
 
         // Version Badge Logic
         if (modalVersionBadge) {
-            if (approvalStatus === 'approved') {
-                const versionStatus = curriculum.version_status || 'new';
-                let versionHtml = '';
-                if (versionStatus === 'old') {
-                    versionHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200"><svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" /></svg>Old</span>`;
-                } else {
-                    versionHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>New</span>`;
-                }
-                modalVersionBadge.innerHTML = versionHtml;
+            const versionStatus = curriculum.version_status || 'new';
+            // Check if expired
+            const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+            
+            let versionHtml = '';
+            if (versionStatus === 'old') {
+                versionHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border-amber-200 border">
+                    <svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
+                    </svg>
+                    Old
+                </span>`;
             } else {
-                modalVersionBadge.innerHTML = ''; // Hide version badge for non-approved curriculums
+                versionHtml = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    <svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                    </svg>
+                    New
+                </span>`;
             }
+            modalVersionBadge.innerHTML = versionHtml;
         }
 
         modalCurriculumContent.innerHTML = '<p class="text-gray-500 text-center">Loading subjects...</p>';
@@ -438,6 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>`
                     : '';
 
+                // Check if expired (compare dates ignoring time)
+                const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+
                 // Version status badge
                 const versionBadge = curriculum.version_status === 'old'
                     ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
@@ -497,6 +509,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h3 class="font-bold ${titleColorClass} transition-colors duration-300 truncate mb-1">${curriculum.curriculum_name}</h3>
                                 <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
                                     <span>${curriculum.program_code} • ${curriculum.academic_year}</span>
+                                    ${curriculum.expiration_date ? `
+                                        <span class="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Expires: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                    ` : ''}
                                 </div>
                                 ${curriculum.memorandum ? `
                                 <p class="text-xs text-slate-400 truncate" title="${curriculum.memorandum}">
@@ -512,12 +532,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <span class="font-medium">${curriculum.subjects_count} subject${curriculum.subjects_count !== 1 ? 's' : ''}</span>
                                 </p>
                             </div>
-                            <div class="flex flex-col items-end sm:items-end gap-1 w-full sm:w-auto">
-                                <div class="flex items-center gap-1 flex-wrap justify-end">
+                            <div class="flex flex-col items-end sm:items-end gap-1 w-full sm:w-auto flex-shrink-0">
+                                <div class="flex items-center gap-1 flex-nowrap justify-end">
                                     ${complianceBadge}
                                     ${totalUnitsDisplay}
                                     ${versionBadge}
-                                    ${approvalBadge}
                                 </div>
                             </div>
                         </div>

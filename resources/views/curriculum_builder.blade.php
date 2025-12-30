@@ -183,6 +183,14 @@
                                 </div>
                             </div>
                             <div>
+                                <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date (Optional)</label>
+                                <div class="relative">
+                                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
+                                    <input type="date" id="expirationDate" name="expirationDate" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">When this date is reached, the curriculum will automatically become "old" and you'll need to create a new one.</p>
+                            </div>
+                            <div>
                                 <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
                                  <div class="relative">
                                      <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5-1.5V3" /></svg>
@@ -554,10 +562,12 @@
                     return;
                 }
                 
-                // Search for matching curriculums (case-insensitive)
+                // Search for matching curriculums (case-insensitive) - Filter OUT Approved AND Old as per user request
                 if (window.curriculumsData) {
                     matchingCurriculums = window.curriculumsData.filter(curr => 
-                        curr.curriculum_name.toLowerCase() === curriculumName.toLowerCase()
+                        curr.curriculum_name.toLowerCase() === curriculumName.toLowerCase() &&
+                        curr.approval_status !== 'approved' &&
+                        curr.version_status !== 'old'
                     );
                     
                     if (matchingCurriculums.length > 0) {
@@ -1039,6 +1049,9 @@
                 // Version status badge - Only show if approved
                 let versionBadge = '';
                 if (approvalStatus === 'approved') {
+                    // Check if expired (compare dates ignoring time)
+                    const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+                    
                     versionBadge = curriculum.version_status === 'old'
                         ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -1135,6 +1148,14 @@
                                 <h3 class="font-bold ${titleColorClass} transition-colors duration-300 truncate mb-1">${curriculum.curriculum_name}</h3>
                                 <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
                                     <span>${curriculum.program_code} • ${curriculum.academic_year}</span>
+                                    ${curriculum.expiration_date ? `
+                                        <span class="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Expires: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                    ` : ''}
                                 </div>
                                 ${curriculum.memorandum ? `
                                 <p class="text-xs text-slate-400 truncate" title="${curriculum.memorandum}">
@@ -1234,6 +1255,9 @@
                     document.getElementById('curriculum').value = curriculumName;
                     document.getElementById('programCode').value = curriculum.program_code;
                     document.getElementById('academicYear').value = curriculum.academic_year;
+                    if (curriculum.expiration_date) {
+                        document.getElementById('expirationDate').value = curriculum.expiration_date;
+                    }
                     document.getElementById('yearLevel').value = curriculum.year_level;
                     
                     // Set compliance and memorandum if available
@@ -1357,6 +1381,7 @@
                         curriculum: formData.get('curriculum'),
                         programCode: formData.get('programCode'),
                         academicYear: formData.get('academicYear'),
+                        expirationDate: formData.get('expirationDate'),
                         yearLevel: formData.get('yearLevel'),
                         compliance: formData.get('compliance'),
                         memorandumYear: formData.get('memorandumYear'),

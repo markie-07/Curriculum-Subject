@@ -2159,6 +2159,9 @@
             // Toggle notifications dropdown
             notificationsButton.addEventListener('click', (e) => {
                 e.stopPropagation();
+                
+
+
                 if (notificationsDropdown.style.display === 'block') {
                     closeNotifications();
                 } else {
@@ -2299,6 +2302,80 @@
                 }
             });
 
+            // Notification Sound Logic
+            let lastNotificationCount = 0;
+            
+            function playNotificationSound() {
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContext) return;
+                    
+                    const ctx = new AudioContext();
+                    
+                    if (ctx.state === 'suspended') {
+                        ctx.resume();
+                    }
+                    
+                    const now = ctx.currentTime;
+                    // Duration: very short (pop) ~0.2s
+                    const duration = 0.2;
+                    const stopTime = now + duration;
+                    
+                    // Master Gain
+                    const masterGain = ctx.createGain();
+                    masterGain.connect(ctx.destination);
+                    masterGain.gain.setValueAtTime(0.8, now); // High volume but prevent clipping
+
+                    // Oscillator 1: Base (2000 Hz)
+                    const osc1 = ctx.createOscillator();
+                    const gain1 = ctx.createGain();
+                    osc1.connect(gain1);
+                    gain1.connect(masterGain);
+                    
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(2000, now);
+                    
+                    // Envelope 1: Pop
+                    gain1.gain.setValueAtTime(0, now);
+                    gain1.gain.linearRampToValueAtTime(1.0, now + 0.005); // Instant attack
+                    gain1.gain.exponentialRampToValueAtTime(0.01, now + duration); // Fast decay
+                    
+                    osc1.start(now);
+                    osc1.stop(stopTime);
+
+                    // Oscillator 2: Harmonic (4000 Hz)
+                    const osc2 = ctx.createOscillator();
+                    const gain2 = ctx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(masterGain);
+                    
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(4000, now);
+                    
+                    // Envelope 2: Sharper pop
+                    gain2.gain.setValueAtTime(0, now);
+                    gain2.gain.linearRampToValueAtTime(0.5, now + 0.005);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.15); // Faster decay for harmonic
+                    
+                    osc2.start(now);
+                    osc2.stop(stopTime);
+                    
+                    // Cleanup
+                    osc1.onended = () => {
+                         setTimeout(() => {
+                            if(ctx.state !== 'closed') ctx.close();
+                         }, 50);
+                    };
+                    
+                    console.log('Notification sound played (Messenger Pop)');
+                } catch (e) {
+                    console.error('Audio play failed', e);
+                }
+            }
+            
+            // Expose for testing
+            window.playNotificationSound = playNotificationSound;
+
             // Load notification count on page load
             fetch('/notifications/unread-count', {
                 method: 'GET',
@@ -2318,16 +2395,14 @@
                 .then(data => {
                     if (data && typeof data.count !== 'undefined') {
                         updateNotificationBadge(data.count);
+                        lastNotificationCount = data.count; // Just initialize count
                     }
                 })
                 .catch(error => {
                     console.error('Error loading notification count:', error);
-                    // Silently fail - don't show error to user
                 });
 
-            // Poll for new notifications every 30 seconds - TEMPORARILY DISABLED
-            // Uncomment the following code once the JSON display issue is resolved
-            /*
+            // Poll for new notifications every 3 seconds (Faster for testing)
             setInterval(() => {
                 fetch('/notifications/unread-count', {
                     method: 'GET',
@@ -2346,15 +2421,21 @@
                     })
                     .then(data => {
                         if (data && typeof data.count !== 'undefined') {
+                            // Check if we have new notifications
+                            if (data.count > lastNotificationCount) {
+                                playNotificationSound();
+                            }
+                            
                             updateNotificationBadge(data.count);
+                            lastNotificationCount = data.count;
                         }
                     })
                     .catch(error => {
                         console.error('Error polling notifications:', error);
-                        // Silently fail - don't show error to user
                     });
-            }, 30000);
-            */
+            }, 3000);
+
+
 
             // Dark Mode Functionality
             const darkModeToggle = document.getElementById('darkModeToggle');

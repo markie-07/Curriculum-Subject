@@ -26,6 +26,7 @@ class Curriculum extends Model
         'curriculum',
         'program_code',
         'academic_year',
+        'expiration_date',
         'year_level',
         'compliance',
         'memorandum_year',
@@ -45,6 +46,7 @@ class Curriculum extends Model
     protected $casts = [
         'semester_units' => 'array',
         'total_units' => 'decimal:2',
+        'expiration_date' => 'date',
     ];
 
     /**

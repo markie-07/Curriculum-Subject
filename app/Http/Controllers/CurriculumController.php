@@ -19,6 +19,9 @@ class CurriculumController extends Controller
      */
     public function index()
     {
+        // Automatically check for expired curriculums to keep status up-to-date
+        \Illuminate\Support\Facades\Artisan::call('curriculums:expire');
+
         $curriculums = Curriculum::withCount('subjects')
             ->orderBy('year_level')
             ->orderBy('curriculum')
@@ -30,6 +33,7 @@ class CurriculumController extends Controller
                     'curriculum_name' => $curriculum->curriculum,
                     'program_code' => $curriculum->program_code,
                     'academic_year' => $curriculum->academic_year,
+                    'expiration_date' => $curriculum->expiration_date,
                     'year_level' => $curriculum->year_level,
                     'compliance' => $curriculum->compliance,
                     'memorandum_year' => $curriculum->memorandum_year,
@@ -55,6 +59,7 @@ class CurriculumController extends Controller
             'curriculum' => 'required|string|max:255',
             'programCode' => 'required|string|max:255',
             'academicYear' => 'required|string|max:255',
+            'expirationDate' => 'nullable|date|after_or_equal:today',
             'yearLevel' => 'required|in:Senior High,College',
             'compliance' => 'nullable|string|in:CHED,DepEd',
             'memorandumYear' => 'nullable|string|max:4',
@@ -65,22 +70,28 @@ class CurriculumController extends Controller
             'totalUnits' => 'nullable|numeric|min:0',
         ]);
 
-        // Check for existing curricula with the same name and year level
+        // Check for existing curricula with the same name, academic year, and year level
+        // This ensures each curriculum with a unique name+year combination is independent
+        /* 
+        DISABLED: User requested that only expiration date should trigger 'old' status.
         $existingCurricula = Curriculum::where('curriculum', $validated['curriculum'])
+            ->where('academic_year', $validated['academicYear'])
             ->where('year_level', $validated['yearLevel'])
             ->get();
 
-        // Mark all existing curricula with the same name as old version
+        // Mark existing curricula with the same name AND academic year as old version
         if ($existingCurricula->isNotEmpty()) {
             foreach ($existingCurricula as $existing) {
                 $existing->update(['version_status' => 'old']);
             }
         }
+        */
 
         $curriculum = Curriculum::create([
             'curriculum' => $validated['curriculum'],
             'program_code' => $validated['programCode'],
             'academic_year' => $validated['academicYear'],
+            'expiration_date' => $validated['expirationDate'] ?? null,
             'year_level' => $validated['yearLevel'],
             'compliance' => $validated['compliance'] ?? null,
             'memorandum_year' => $validated['memorandumYear'] ?? null,
@@ -129,6 +140,7 @@ class CurriculumController extends Controller
             'curriculum' => 'required|string|max:255',
             'programCode' => 'required|string|max:255',
             'academicYear' => 'required|string|max:255',
+            'expirationDate' => 'nullable|date|after_or_equal:today',
             'yearLevel' => 'required|in:Senior High,College',
             'compliance' => 'nullable|string|in:CHED,DepEd',
             'memorandumYear' => 'nullable|string|max:4',
@@ -143,6 +155,7 @@ class CurriculumController extends Controller
             'curriculum' => $validated['curriculum'],
             'program_code' => $validated['programCode'],
             'academic_year' => $validated['academicYear'],
+            'expiration_date' => $validated['expirationDate'] ?? null,
             'year_level' => $validated['yearLevel'],
             'compliance' => $validated['compliance'] ?? null,
             'memorandum_year' => $validated['memorandumYear'] ?? null,
@@ -592,6 +605,7 @@ public function saveSubjects(Request $request)
             // If rejecting a 'new' curriculum, restore the previous approved 'old' version
             if ($curriculum->version_status === 'new') {
                 $oldApprovedCurriculum = Curriculum::where('curriculum', $curriculum->curriculum)
+                    ->where('academic_year', $curriculum->academic_year)
                     ->where('year_level', $curriculum->year_level)
                     ->where('version_status', 'old')
                     ->where('approval_status', 'approved')
@@ -651,6 +665,7 @@ public function saveSubjects(Request $request)
             // If restoring a 'new' curriculum back to processing, mark old approved versions as 'old' again
             if ($curriculum->version_status === 'new') {
                 Curriculum::where('curriculum', $curriculum->curriculum)
+                    ->where('academic_year', $curriculum->academic_year)
                     ->where('year_level', $curriculum->year_level)
                     ->where('id', '!=', $curriculum->id)
                     ->where('approval_status', 'approved')
