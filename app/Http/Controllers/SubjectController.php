@@ -40,6 +40,9 @@ class SubjectController extends Controller
             'approved_by' => 'nullable|string',
             'curriculum_ids' => 'nullable|array',
             'curriculum_ids.*' => 'integer|exists:curriculums,id',
+            'memorandum' => 'nullable|string',
+            'memorandum_year' => 'nullable|string',
+            'memorandum_category' => 'nullable|string',
         ]);
 
         $subject = Subject::create([
@@ -63,6 +66,9 @@ class SubjectController extends Controller
             'prepared_by' => $validated['prepared_by'] ?? null,
             'reviewed_by' => $validated['reviewed_by'] ?? null,
             'approved_by' => $validated['approved_by'] ?? null,
+            'memorandum' => $validated['memorandum'] ?? null,
+            'memorandum_year' => $validated['memorandum_year'] ?? null,
+            'memorandum_category' => $validated['memorandum_category'] ?? null,
         ]);
 
         // Attach subject to selected curriculums if provided
@@ -131,6 +137,9 @@ class SubjectController extends Controller
             'approved_by' => 'nullable|string',
             'curriculum_ids' => 'nullable|array',
             'curriculum_ids.*' => 'integer|exists:curriculums,id',
+            'memorandum' => 'nullable|string',
+            'memorandum_year' => 'nullable|string',
+            'memorandum_category' => 'nullable|string',
         ]);
 
         $updateData = [
@@ -154,6 +163,9 @@ class SubjectController extends Controller
             'prepared_by' => $validated['prepared_by'] ?? null,
             'reviewed_by' => $validated['reviewed_by'] ?? null,
             'approved_by' => $validated['approved_by'] ?? null,
+            'memorandum' => $validated['memorandum'] ?? null,
+            'memorandum_year' => $validated['memorandum_year'] ?? null,
+            'memorandum_category' => $validated['memorandum_category'] ?? null,
         ];
 
         // Use database transaction to ensure data consistency

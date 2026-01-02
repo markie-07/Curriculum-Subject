@@ -136,11 +136,11 @@
                     </select>
                 </div>
 
-                <button id="openAddSubjectsModal" class="w-full mb-3 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all flex items-center justify-center gap-2 font-medium hidden">
+                <button id="openMemorandumModal" class="w-full mb-3 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all flex items-center justify-center gap-2 font-medium hidden">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
-                    Add Subjects
+                    Memorandum
                 </button>
 
                 <div id="availableSubjects" class="flex-1 overflow-y-auto pr-2 -mr-2 space-y-3 pt-2.5">
@@ -606,8 +606,8 @@
                 {{-- Modal Header --}}
                 <div class="flex justify-between items-center p-6 border-b border-gray-200">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Add Subjects to Curriculum</h2>
-                        <p class="text-sm text-gray-500 mt-1">Select subjects to add to the available subjects list</p>
+                        <h2 class="text-2xl font-bold text-gray-800" id="addSubjectsModalTitle">Select Memorandum</h2>
+                        <p class="text-sm text-gray-500 mt-1" id="addSubjectsModalSubtitle">Choose a memorandum to view associated subjects</p>
                     </div>
                     <button id="closeAddSubjectsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -623,21 +623,37 @@
                 </div>
                 
                 {{-- Subject List with Two Columns --}}
-                <div class="flex-1 overflow-y-auto p-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        {{-- Minor Subjects Column --}}
-                        <div>
-                            <h3 class="text-lg font-semibold text-purple-700 mb-3 pb-2 border-b border-purple-200">Minor Subjects</h3>
-                            <div id="modalMinorSubjectList" class="space-y-2">
-                                <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
-                            </div>
+                {{-- Content Container --}}
+                <div class="flex-1 overflow-y-auto p-6 relative">
+                    {{-- Memorandums View --}}
+                    <div id="memorandumListView" class="grid grid-cols-1 gap-4">
+                        <!-- Loaded dynamically -->
+                        <p class="text-center text-gray-500 py-8">Loading memorandums...</p>
+                    </div>
+
+                    {{-- Subjects View (Hidden initially) --}}
+                    <div id="subjectListView" class="hidden">
+                         <div class="mb-4">
+                            <button id="backToMemorandumsBtn" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                Back to Memorandums
+                            </button>
                         </div>
-                        
-                        {{-- Major Subjects Column --}}
-                        <div>
-                            <h3 class="text-lg font-semibold text-blue-700 mb-3 pb-2 border-b border-blue-200">Major Subjects</h3>
-                            <div id="modalMajorSubjectList" class="space-y-2">
-                                <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
+                        <div class="grid grid-cols-2 gap-6">
+                            {{-- Minor Subjects Column --}}
+                            <div>
+                                <h3 class="text-lg font-semibold text-purple-700 mb-3 pb-2 border-b border-purple-200">Minor Subjects</h3>
+                                <div id="modalMinorSubjectList" class="space-y-2">
+                                    <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
+                                </div>
+                            </div>
+                            
+                            {{-- Major Subjects Column --}}
+                            <div>
+                                <h3 class="text-lg font-semibold text-blue-700 mb-3 pb-2 border-b border-blue-200">Major Subjects</h3>
+                                <div id="modalMajorSubjectList" class="space-y-2">
+                                    <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -711,7 +727,8 @@
         // Add Subjects Modal Elements
         const addSubjectsModal = document.getElementById('addSubjectsModal');
         const addSubjectsModalPanel = document.getElementById('add-subjects-modal-panel');
-        const openAddSubjectsModalBtn = document.getElementById('openAddSubjectsModal');
+        const openMemorandumModalBtn = document.getElementById('openMemorandumModal');
+        const openAddSubjectsModalBtn = openMemorandumModalBtn; // Alias for compatibility with existing code if needed, but better to update usages.
         const closeAddSubjectsModalBtn = document.getElementById('closeAddSubjectsModal');
         const cancelAddSubjectsBtn = document.getElementById('cancelAddSubjects');
         const confirmAddSubjectsBtn = document.getElementById('confirmAddSubjects');
@@ -1579,6 +1596,7 @@ const updateAllTotals = () => {
             const editButton = document.getElementById('editCurriculumButton');
             const subjectTags = document.querySelectorAll('.subject-tag');
             const addSubjectButtons = document.querySelectorAll('.add-subject-btn-placeholder');
+            const openMemorandumModalBtn = document.getElementById('openMemorandumModal');
 
 
             if (isEditing) {
@@ -1588,6 +1606,7 @@ const updateAllTotals = () => {
                 });
                 deleteButtons.forEach(button => button.classList.remove('hidden'));
                 addSubjectButtons.forEach(button => button.classList.remove('hidden'));
+                if (openMemorandumModalBtn) openMemorandumModalBtn.classList.remove('hidden');
                 saveButton.removeAttribute('disabled');
                 editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Cancel`;
                 
@@ -1600,6 +1619,7 @@ const updateAllTotals = () => {
                 });
                 deleteButtons.forEach(button => button.classList.add('hidden'));
                 addSubjectButtons.forEach(button => button.classList.add('hidden'));
+                if (openMemorandumModalBtn) openMemorandumModalBtn.classList.add('hidden');
 
                 saveButton.setAttribute('disabled', 'disabled');
                 editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg> Revise`;
@@ -2982,15 +3002,17 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
 
         let allCurriculums = [];
         let filteredCurriculums = [];
+        let currentAvailableSubjects = [];
+        let currentMappedSubjects = [];
+        let allSystemSubjects = [];
 
         function fetchCurriculums() {
             fetch('/api/curriculums')
                 .then(response => response.json())
                 .then(curriculums => {
-                    // Filter out old versions and approved curriculums - only show new versions that are not approved
+                    // Only filter out old versions, show both approved and non-approved
                     const newCurriculums = curriculums.filter(curriculum => 
-                        curriculum.version_status !== 'old' && 
-                        curriculum.approval_status !== 'approved'
+                        curriculum.version_status !== 'old'
                     );
                     
                     allCurriculums = newCurriculums;
@@ -3095,6 +3117,11 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 .then(data => {
                     if (!data || !Array.isArray(data)) throw new Error('Invalid subjects data from server.');
                     
+                    // Store locally
+                    currentAvailableSubjects = data;
+                    currentMappedSubjects = []; // None mapped yet
+                    allSystemSubjects = data;
+
                     // Show all subjects as available (none are mapped yet)
                     renderAvailableSubjects(data, []);
                 })
@@ -3133,8 +3160,12 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 .then(([curriculumData, availableSubjects]) => {
                     if (!curriculumData || !curriculumData.curriculum) throw new Error('Invalid curriculum data structure from server.');
                     
-                    renderAvailableSubjects(availableSubjects || [], curriculumData.curriculum.subjects || []);
-                    populateMappedSubjects(curriculumData.curriculum.subjects || []);
+                    // Store current state
+                    currentAvailableSubjects = availableSubjects || [];
+                    currentMappedSubjects = curriculumData.curriculum.subjects || [];
+
+                    renderAvailableSubjects(currentAvailableSubjects, currentMappedSubjects);
+                    populateMappedSubjects(currentMappedSubjects);
                     
                     const hasMappedSubjects = curriculumData.curriculum.subjects.length > 0;
                     
@@ -3270,12 +3301,19 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             // Update initial display
             updateSelectedCount();
 
+            // Reset View to Memorandums
+            document.getElementById('memorandumListView').classList.remove('hidden');
+            document.getElementById('subjectListView').classList.add('hidden');
+            document.getElementById('addSubjectsModalTitle').textContent = 'Select Memorandum';
+            document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
+            document.getElementById('modalSubjectSearch').classList.add('hidden'); // Hide search initially
+
             // Fetch all subjects from the system
             fetch('/api/subjects')
                 .then(response => response.json())
                 .then(subjects => {
                     allSystemSubjects = subjects;
-                    renderModalSubjectList(subjects);
+                    renderMemorandums(subjects);
                     
                     // Show modal with animation
                     addSubjectsModal.classList.remove('hidden');
@@ -3295,6 +3333,104 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     });
                 });
         };
+
+        // Function to render Memorandums
+        const renderMemorandums = (subjects) => {
+            const memoContainer = document.getElementById('memorandumListView');
+            memoContainer.innerHTML = '';
+
+            const memorandums = {};
+            
+            // Group subjects by memorandum
+            subjects.forEach(subject => {
+                const memoName = subject.memorandum || 'No Memorandum';
+                if (!memorandums[memoName]) {
+                    memorandums[memoName] = {
+                        name: memoName,
+                        year: subject.memorandum_year || 'N/A',
+                        category: subject.memorandum_category || 'N/A',
+                        count: 0,
+                        subjects: []
+                    };
+                }
+                memorandums[memoName].count++;
+                memorandums[memoName].subjects.push(subject);
+            });
+
+            // If no memorandums (e.g. all null), handle gracefully
+            if (Object.keys(memorandums).length === 0) {
+                 memoContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No memorandums found.</p>';
+                 return;
+            }
+
+            // Create cards for each memorandum
+            Object.values(memorandums).sort((a, b) => a.name.localeCompare(b.name)).forEach(memo => {
+                const card = document.createElement('div');
+                card.className = 'p-4 border border-gray-200 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors group flex justify-between items-center';
+                
+                const isNoMemo = memo.name === 'No Memorandum';
+                const iconColor = isNoMemo ? 'text-gray-400' : 'text-blue-500';
+                const bgColor = isNoMemo ? 'bg-gray-100' : 'bg-blue-100';
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 ${bgColor} rounded-lg flex items-center justify-center">
+                           <svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 group-hover:text-blue-700">${memo.name}</h3>
+                            <p class="text-sm text-gray-500">${memo.subjects.length} Subjects ${!isNoMemo ? `• ${memo.year}` : ''}</p>
+                        </div>
+                    </div>
+                    <div class="text-gray-400 group-hover:text-blue-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    selectMemorandum(memo);
+                });
+                
+                memoContainer.appendChild(card);
+            });
+        };
+
+        const selectMemorandum = (memoData) => {
+            // Filter the available subjects sidebar
+            const filteredSubjects = allSystemSubjects.filter(s => {
+                 const sMemo = s.memorandum || 'No Memorandum';
+                 return sMemo === memoData.name;
+            });
+
+            // Update the sidebar view
+            renderAvailableSubjects(filteredSubjects, currentMappedSubjects);
+            
+            // Close the modal
+            hideAddSubjectsModal();
+            
+            // Show confirmation toast
+            Swal.fire({
+                title: 'Filtered!',
+                text: `Showing subjects from: ${memoData.name}`,
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        };
+
+        const backToMemorandums = () => {
+             document.getElementById('subjectListView').classList.add('hidden');
+             document.getElementById('memorandumListView').classList.remove('hidden');
+             
+             document.getElementById('addSubjectsModalTitle').textContent = 'Select Memorandum';
+             document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
+             document.getElementById('modalSubjectSearch').classList.add('hidden');
+        };
+
+        document.getElementById('backToMemorandumsBtn').addEventListener('click', backToMemorandums);
         
         // Function to hide Add Subjects Modal
         const hideAddSubjectsModal = () => {

@@ -63,49 +63,90 @@
                                 <option value="Minor">Minor</option>
                             </select>
                         </div>
+                        
+                        {{-- Memorandum Container (Hidden by default) --}}
+                        <div id="memorandumContainer" class="hidden md:col-span-2 lg:col-span-3">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                                {{-- Year Selection for CHED --}}
+                                <div id="yearContainer" class="hidden">
+                                    <label for="memorandumYear" class="block text-sm font-medium text-gray-700">Memorandum Year</label>
+                                    <div class="relative">
+                                        <select id="memorandumYear" name="memorandumYear" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                            <option value="" disabled selected>Select Year</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {{-- Category Selection for DepEd --}}
+                                <div id="categoryContainer" class="hidden">
+                                    <label for="memorandumCategory" class="block text-sm font-medium text-gray-700">Document Category</label>
+                                    <div class="relative">
+                                        <select id="memorandumCategory" name="memorandumCategory" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                            <option value="" disabled selected>Select Category</option>
+                                            <option value="Shape Paper">Shape Paper</option>
+                                            <option value="Curriculum Guides (Core)">Curriculum Guides (Core)</option>
+                                            <option value="Curriculum Guides (Academic)">Curriculum Guides (Academic)</option>
+                                            <option value="Curriculum Guides (TechPro)">Curriculum Guides (TechPro)</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="memorandum" class="block text-sm font-medium text-gray-700">Official Memorandum</label>
+                                    <div class="relative">
+                                        <select id="memorandum" name="memorandum" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                            <option value="" disabled selected>Select Memorandum</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         {{-- DepEd Specific Fields --}}
                         <div id="deped-course-info-fields" class="contents hidden">
-                            <div class="md:col-span-2 lg:col-span-3 mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
-                                <div class="flex items-center space-x-4">
-                                    <button type="button" onclick="document.getElementById('syllabus_file').click()" class="px-4 py-2 bg-red-50 text-red-600 rounded-md border border-red-200 hover:bg-red-100 transition-colors flex items-center">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                        Choose File
-                                    </button>
-                                    <span id="file_name_display" class="text-sm text-gray-500">No file chosen</span>
-                                    <input type="file" id="syllabus_file" class="hidden" accept=".pdf" onchange="handleSyllabusUpload(this)">
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">
-                                    <svg class="w-4 h-4 inline mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    <strong>Note:</strong> Auto-extraction works best with standard DepEd formats. Please review and manually adjust the extracted data as needed. Use the "+ Add Content Row" button to organize content into proper rows.
-                                </p>
-                            </div>
                             <div>
                                 <label for="time_allotment" class="block text-sm font-medium text-gray-700">Time Allotment</label>
-                                <input type="text" name="time_allotment" id="time_allotment" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. 80 hours / semester">
+                                <input type="text" name="time_allotment" id="time_allotment" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. 80 hours">
                             </div>
                             <div>
                                 <label for="schedule" class="block text-sm font-medium text-gray-700">Schedule</label>
-                                <input type="text" name="schedule" id="schedule" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. M-W-F 9:00-10:00">
+                                <input type="text" name="schedule" id="schedule" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. M-W-F 9-10">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="document.getElementById('syllabus_file').click()" class="px-4 py-3 bg-red-50 text-red-600 rounded-md border border-red-200 hover:bg-red-100 transition-colors flex items-center w-full justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                        Import
+                                    </button>
+                                    <input type="file" id="syllabus_file" class="hidden" accept=".pdf" onchange="handleSyllabusUpload(this)">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 truncate" title="Auto-extraction works best with standard DepEd formats.">
+                                    <svg class="w-4 h-4 inline mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Note: Standard DepEd formats best.
+                                </p>
                             </div>
                         </div>
                         {{-- CHED Specific Fields --}}
                         <div id="ched-course-info-fields" class="contents">
-                            <div class="md:col-span-2 lg:col-span-3 mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
-                                <div class="flex items-center space-x-4">
-                                    <button type="button" onclick="document.getElementById('ched_syllabus_file').click()" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-md border border-blue-200 hover:bg-blue-100 transition-colors flex items-center">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                        Choose File
-                                    </button>
-                                    <span id="ched_file_name_display" class="text-sm text-gray-500">No file chosen</span>
-                                    <input type="file" id="ched_syllabus_file" class="hidden" accept=".pdf" onchange="handleSyllabusUpload(this)">
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">
-                                    <svg class="w-4 h-4 inline mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    <strong>Note:</strong> Auto-extraction works best with standard CHED formats. Please review and manually adjust the extracted data as needed.
-                                </p>
-                            </div>
                             <div>
                                 <label for="credit_units" class="block text-sm font-medium text-gray-700">Credit Units</label>
                                 <input type="number" name="credit_units" id="credit_units" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -114,18 +155,23 @@
                                 <label for="contact_hours" class="block text-sm font-medium text-gray-700">Contact Hours</label>
                                 <input type="number" name="contact_hours" id="contact_hours" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="document.getElementById('ched_syllabus_file').click()" class="px-4 py-3 bg-blue-50 text-blue-600 rounded-md border border-blue-200 hover:bg-blue-100 transition-colors flex items-center w-full justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                        Import
+                                    </button>
+                                    <input type="file" id="ched_syllabus_file" class="hidden" accept=".pdf" onchange="handleSyllabusUpload(this)">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 truncate" title="Auto-extraction works best with standard CHED formats.">
+                                    <svg class="w-4 h-4 inline mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Note: Standard CHED formats best.
+                                </p>
+                            </div>
                         </div>
 
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Applicable Curriculums</label>
-                            <button type="button" id="openCurriculumModal" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                                <span class="text-gray-500" id="curriculumButtonText">Select curriculums for this subject...</span>
-                                <svg class="w-5 h-5 text-gray-400 float-right mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                        </div>
                         <div class="lg:col-span-3">
                             <label for="course_description" class="block text-sm font-medium text-gray-700">Course Description</label>
                             <textarea id="course_description" name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
@@ -722,6 +768,138 @@
 </div>
 
 <script>
+    // Memorandum Data
+    const memorandumData = {
+        'CHED': {
+            '2025': [
+                'CMO No. 1, series of 2025 – Guidelines for Micro-Credential Development, Approval, and Recognition in Higher Education',
+                'CMO No. 2, series of 2025 – Updated List of Private Higher Education Institutions Granted Autonomous and Deregulated Status by Evaluation',
+                'CMO No. 3, series of 2025 – Updated Guidelines for Securing Authority to Travel Abroad for State Universities and Colleges (SUCs)',
+                'CMO No. 4, series of 2025 – Revised Policies, Standards and Guidelines for Associate in Radiologictechnology Education (ART) Program',
+                'CMO No. 5, series of 2025 – Guidelines for the Accreditation of Hospitals and Primary Health Care Facilities for the Clinical Practice of Radiologic/X-RAY Technology Interns',
+                'CMO No. 6, series of 2025 – Application Process for Authority to Offer Transnational Higher Education Pursuant to Republic Act No. 11448 or The Transnational Higher Education Act',
+                'CMO No. 7, series of 2025 – Policies, Standards and Guidelines for the Implementation of the National Merchant Marine Aptitude Test (NaMMAT)',
+                'CMO No. 9, series of 2025 – Updated Guidelines for the Scholarships for Staff and Instructors\' Knowledge Advancement Program (SIKAP) for Full-Time and Part-Time Study',
+                'CMO No. 10, series of 2025 – Policies and Standards on Centers of Excellence (COE)',
+                'CMO No. 11, series of 2025 – Implementing Rules and Regulations of Republic Act No. 12124, "An Act Institutionalizing the Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP) and Providing Funds Therefor"',
+                'CMO No. 12, series of 2025 – Policies and Guidelines on Open Distance and e-Learning (ODeL)',
+                'CMO No. 13, series of 2025 – Revised Policies and Guidelines for the CHED Merit Scholarship Program (CMSP)',
+                'CMO No. 14, series of 2025 – Revised Implementing Guidelines for the CHED Scholarship Program for Future Statisticians (ESTATISKOLAR)',
+                'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions'
+            ],
+            '2024': ['View all 2024 CHED Memorandum Orders on the official website'],
+            '2023': ['View all 2023 CHED Memorandum Orders on the official website'],
+            '2022': ['View all 2022 CHED Memorandum Orders on the official website'],
+            '2021': ['View all 2021 CHED Memorandum Orders on the official website'],
+            '2020': ['View all 2020 CHED Memorandum Orders on the official website'],
+            '2019': ['View all 2019 CHED Memorandum Orders on the official website'],
+            '2018': ['View all 2018 CHED Memorandum Orders on the official website'],
+            '2017': ['View all 2017 CHED Memorandum Orders on the official website'],
+            '2016': ['View all 2016 CHED Memorandum Orders on the official website']
+        },
+        'DepEd': {
+            'Shape Paper': ['The Strengthened Senior High School Program Shaping Paper'],
+            'Curriculum Guides (Core)': [
+                'Effective Communication - Core Subject Guide',
+                'General Mathematics - Core Subject Guide',
+                'General Science - Core Subject Guide',
+                'Life and Career Skills - Core Subject Guide',
+                'Mabisang Komunikasyon - Core Subject Guide',
+                'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
+            ],
+            'Curriculum Guides (Academic)': [
+                'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
+                'Arts 2 (Creative Industries II – Performing Arts)',
+                'Social Science 1 (Introduction to Social Sciences)',
+                'Humanities 1 (Creative Writing)',
+                'Humanities 2 (Introduction to World Religions and Belief Systems)',
+                'Engineering 1 (Calculus)',
+                'Engineering 2 (Fundamentals of Programming)',
+                'Engineering 3 (Basic Electricity and Electronics)',
+                'Business 1 (Business Enterprise Simulation)',
+                'Economics 1 (Introduction to Economics)',
+                'Management 1 (Fundamentals of Accountancy, Business, and Management)',
+                'Health Science 1 (Introduction to Health Science)',
+                'Health Science 2 (Basic Human Anatomy and Physiology)'
+            ],
+            'Curriculum Guides (TechPro)': [
+                'Digital Tools and Productivity Applications',
+                'Multimedia Development and Design',
+                'Computer Systems and Network Administration',
+                'Web Development',
+                'Computer Programming'
+            ]
+        }
+    };
+
+    function handleComplianceChange(compliance) {
+        const memorandumContainer = document.getElementById('memorandumContainer');
+        const yearContainer = document.getElementById('yearContainer');
+        const categoryContainer = document.getElementById('categoryContainer');
+        const memorandumSelect = document.getElementById('memorandum');
+        
+        memorandumContainer.classList.remove('hidden');
+        memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
+        memorandumSelect.disabled = true;
+
+        if (compliance === 'CHED') {
+            yearContainer.classList.remove('hidden');
+            categoryContainer.classList.add('hidden');
+            document.getElementById('memorandumCategory').selectedIndex = 0;
+        } else if (compliance === 'DepEd') {
+            yearContainer.classList.add('hidden');
+            categoryContainer.classList.remove('hidden');
+            document.getElementById('memorandumYear').selectedIndex = 0;
+        } else {
+            memorandumContainer.classList.add('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const memorandumYearSelect = document.getElementById('memorandumYear');
+        const memorandumCategorySelect = document.getElementById('memorandumCategory');
+        const memorandumSelect = document.getElementById('memorandum');
+
+        if(memorandumYearSelect) {
+            memorandumYearSelect.addEventListener('change', function() {
+                updateMemorandumDropdown('CHED', this.value);
+            });
+        }
+
+        if(memorandumCategorySelect) {
+            memorandumCategorySelect.addEventListener('change', function() {
+                updateMemorandumDropdown('DepEd', this.value);
+            });
+        }
+
+        function updateMemorandumDropdown(compliance, filter) {
+            memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
+            const data = memorandumData[compliance][filter];
+            if (data && data.length > 0) {
+                memorandumSelect.disabled = false;
+                data.forEach(memo => {
+                    const option = document.createElement('option');
+                    option.value = memo;
+                    option.textContent = memo;
+                    memorandumSelect.appendChild(option);
+                });
+            } else {
+                memorandumSelect.disabled = true;
+                const option = document.createElement('option');
+                option.textContent = 'No memorandums found';
+                memorandumSelect.appendChild(option);
+            }
+        }
+    });
+    
+    // Initialize default view if needed based on initial syllabus type
+    document.addEventListener('DOMContentLoaded', () => {
+         const initialType = document.getElementById('syllabus_type').value || 'CHED';
+         if (typeof handleComplianceChange === 'function') {
+             handleComplianceChange(initialType);
+         }
+    });
+
 function toggleAccordion(button) {
     const content = button.nextElementSibling;
     const icon = button.querySelector('svg');
@@ -740,6 +918,11 @@ function switchSyllabus(type) {
     const depedContainer = document.getElementById('deped-container');
     const btnChed = document.getElementById('btn-ched');
     const btnDeped = document.getElementById('btn-deped');
+    
+    // Update Memorandum Fields based on type
+    if (typeof handleComplianceChange === 'function') {
+        handleComplianceChange(type);
+    }
     const syllabusTypeInput = document.getElementById('syllabus_type');
     
     // Course Info Fields
