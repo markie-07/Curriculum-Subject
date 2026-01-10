@@ -90,8 +90,8 @@
                                 </div>
                                 <div class="flex-grow">
                                     <h3 class="font-semibold text-gray-800">{{ $item->source_subject_name }}</h3>
-                                    <p class="text-sm text-gray-500">
-                                        Equivalent to: <span class="font-medium text-gray-600">{{ $item->equivalentSubject->subject_code }} - {{ $item->equivalentSubject->subject_name }}</span>
+                                    <p class="text-gray-500 mt-1">
+                                        Equivalent to: <span class="font-semibold text-gray-800">{{ $item->equivalentSubject->subject_code }} - {{ $item->equivalentSubject->subject_name }}</span>
                                     </p>
                                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -197,6 +197,8 @@
 </div>
 
 
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const createBtn = document.getElementById('create-equivalency-btn');
@@ -231,6 +233,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let itemToEdit = null;
     let currentAction = null;
+
+
+
 
     // Modal Helper Functions
     const showSuccessModal = (title, message) => {
@@ -283,15 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => editModal.classList.add('hidden'), 300);
     };
 
-    // Modal Event Listeners
-    cancelConfirmationButton.addEventListener('click', hideConfirmationModal);
-    confirmActionButton.addEventListener('click', () => {
-        if (currentAction) currentAction();
-        hideConfirmationModal();
-    });
-    closeSuccessModalButton.addEventListener('click', hideSuccessModal);
-    closeEditModalButton.addEventListener('click', hideEditModal);
-    cancelEditModalButton.addEventListener('click', hideEditModal);
+
 
     // --- CARD CREATION ---
     const createEquivalencyCard = (equivalency) => {
@@ -312,8 +309,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="flex-grow">
                     <h3 class="font-semibold text-gray-800">${equivalency.source_subject_name}</h3>
-                    <p class="text-sm text-gray-500">
-                        Equivalent to: <span class="font-medium text-gray-600">${equivalency.equivalent_subject.subject_code} - ${equivalency.equivalent_subject.subject_name}</span>
+                    <p class="text-gray-500 mt-1">
+                        Equivalent to: <span class="font-semibold text-gray-800">${equivalency.equivalent_subject.subject_code} - ${equivalency.equivalent_subject.subject_name}</span>
                     </p>
                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

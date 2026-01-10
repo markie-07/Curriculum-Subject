@@ -320,6 +320,22 @@
             </td>
         </tr>
         <tr>
+            <td width="50%" style="vertical-align: top; padding: 8px; border: none;">
+                <!-- Memorandum Year -->
+                <div style="padding: 10px; margin-bottom: 10px;">
+                    <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Memorandum Year:</div>
+                    <div>{{ $subject->memorandum_year ?? 'N/A' }}</div>
+                </div>
+            </td>
+            <td width="50%" style="vertical-align: top; padding: 8px; border: none;">
+                <!-- Official Memorandum -->
+                <div style="padding: 10px; margin-bottom: 10px;">
+                    <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Official Memorandum:</div>
+                    <div>{{ $subject->memorandum ?? 'N/A' }}</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
             <td colspan="2" style="padding: 8px; border: none;">
                 <!-- Course Description -->
                 <div style="padding: 10px;">

@@ -10,10 +10,18 @@
         box-sizing: border-box !important;
     }
     
+    
     /* Auto-capitalize mapping grid inputs (CTPSS, ECC, EPP, GLC only - not PILO/CILO) */
     .mapping-grid-container table td.text-center input[type="text"] {
         text-transform: uppercase !important;
     }
+    
+    /* Prevent cursor change and clicks on readonly textareas (Week 0) */
+    textarea[readonly] {
+        cursor: not-allowed !important;
+        user-select: none !important;
+    }
+
 </style>
 <div class="px-6 py-8 bg-gray-50">
     <div class="bg-white p-10 md:p-12 rounded-2xl shadow-lg border border-gray-200">
@@ -439,51 +447,51 @@
                                 <div class="grid grid-cols-1 gap-6">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label for="week_{{ $i }}_content" class="block text-sm font-medium text-gray-700">Content</label>
-                                            <textarea id="week_{{ $i }}_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                            <label for="week_{{ $i }}_content" class="block text-sm font-medium text-gray-700">Content{{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                            <textarea id="week_{{ $i }}_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
-                                            <label for="week_{{ $i }}_silo" class="block text-sm font-medium text-gray-700">Student Intended Learning Outcomes</label>
-                                            <textarea id="week_{{ $i }}_silo" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                            <label for="week_{{ $i }}_silo" class="block text-sm font-medium text-gray-700">Student Intended Learning Outcomes{{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                            <textarea id="week_{{ $i }}_silo" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Assessment Tasks (ATs)</label>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 border rounded-md bg-white">
+                                        <label class="block text-sm font-medium text-gray-700">Assessment Tasks (ATs){{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 border rounded-md {{ $i == 0 ? 'bg-gray-50' : 'bg-white' }}">
                                             <div>
                                                 <label for="week_{{ $i }}_at_onsite" class="block text-xs font-semibold text-gray-600 mb-1">ONSITE</label>
-                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                             <div>
                                                 <label for="week_{{ $i }}_at_offsite" class="block text-xs font-semibold text-gray-600 mb-1">OFFSITE</label>
-                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Suggested Teaching/Learning Activities (TLAs)</label>
-                                        <div class="mt-2 p-4 border rounded-md bg-white">
+                                        <label class="block text-sm font-medium text-gray-700">Suggested Teaching/Learning Activities (TLAs){{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                        <div class="mt-2 p-4 border rounded-md {{ $i == 0 ? 'bg-gray-50' : 'bg-white' }}">
                                             <p class="text-xs font-semibold text-gray-600 mb-2">Blended Learning Delivery Modality (BLDM)</p>
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_onsite" class="block text-xs font-semibold text-gray-600 mb-1">Face to Face (On-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_offsite" class="block text-xs font-semibold text-gray-600 mb-1">Online (Off-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label for="week_{{ $i }}_ltsm" class="block text-sm font-medium text-gray-700">Learning and Teaching Support Materials (LTSM)</label>
-                                            <textarea id="week_{{ $i }}_ltsm" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                            <label for="week_{{ $i }}_ltsm" class="block text-sm font-medium text-gray-700">Learning and Teaching Support Materials (LTSM){{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                            <textarea id="week_{{ $i }}_ltsm" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
-                                            <label for="week_{{ $i }}_output" class="block text-sm font-medium text-gray-700">Output Materials</label>
-                                            <textarea id="week_{{ $i }}_output" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                            <label for="week_{{ $i }}_output" class="block text-sm font-medium text-gray-700">Output Materials{{ $i == 0 ? ' (Read-only)' : '' }}</label>
+                                            <textarea id="week_{{ $i }}_output" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1984,7 +1992,17 @@ window.addEventListener('load', function() {
         textarea.addEventListener('input', function() {
             autoResize(this);
         });
+        
+        // Add change event listener for select-based updates
+        textarea.addEventListener('change', function() {
+            autoResize(this);
+        });
     });
+    
+    // Periodically check and resize all textareas to catch any missed updates
+    setInterval(function() {
+        resizeAllTextareas();
+    }, 500);
     
     // Watch for value changes (for programmatic updates like PDF extraction)
     const observer = new MutationObserver(function(mutations) {
@@ -2004,6 +2022,11 @@ window.addEventListener('load', function() {
             characterData: true
         });
     }
+    
+    // Also trigger resize when the window is resized
+    window.addEventListener('resize', function() {
+        resizeAllTextareas();
+    });
 });
 
 

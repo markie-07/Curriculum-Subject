@@ -7,6 +7,13 @@
     <div class="flex items-center space-x-6">
         <span id="datetime-span" class="text-sm"></span>
         
+        {{-- View All Equivalencies Button (Icon Only - Available on all pages) --}}
+        <button id="viewAllEquivalenciesBtn" class="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 group relative" title="View All Equivalencies">
+            <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+            </svg>
+        </button>
+        
         <!-- Notifications -->
         <div class="relative">
             <button id="notifications-button" class="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 group relative">

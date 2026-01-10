@@ -2601,6 +2601,9 @@
         });
     </script>
 
+    {{-- Include Equivalency Modal --}}
+    @include('partials.equivalency_modal')
+
     {{-- Include Notifications Component --}}
     @include('partials.notifications')
 </body>

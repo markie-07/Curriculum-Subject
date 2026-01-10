@@ -254,6 +254,14 @@
                         <p class="text-sm font-medium text-gray-500">Pre-requisite to</p>
                         <p id="detailsPrereqTo" class="text-base font-semibold text-gray-800">N/A</p>
                     </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Memorandum Year</p>
+                        <p id="detailsMemorandumYear" class="text-base font-semibold text-gray-800">N/A</p>
+                    </div>
+                    <div class="md:col-span-3">
+                        <p class="text-sm font-medium text-gray-500">Official Memorandum</p>
+                        <div id="detailsMemorandum" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">N/A</div>
+                    </div>
                     <div class="md:col-span-4">
                         <p class="text-sm font-medium text-gray-500">Course Description</p>
                         <div id="detailsCourseDescription" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
@@ -885,6 +893,8 @@
             setText(detailsPreparedBy, data.prepared_by);
             setText(detailsReviewedBy, data.reviewed_by);
             setText(detailsApprovedBy, data.approved_by);
+            setText(document.getElementById('detailsMemorandumYear'), data.memorandum_year);
+            setText(document.getElementById('detailsMemorandum'), data.memorandum);
             
             // Format and set the creation date
             const createdAtDate = new Date(data.created_at);
@@ -1397,7 +1407,9 @@
                     <span class="subject-code font-mono ${textColorClass} bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">${subject.subject_code}</span>
                     <span class="separator-dot ${dotColorClass}">•</span>
                     <span class="subject-units font-medium ${unitsColorClass}">${subject.subject_unit} Units</span>
+                    ${subject.memorandum_year ? `<span class="separator-dot ${dotColorClass}">•</span><span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">${subject.memorandum_year}</span>` : ''}
                 </div>
+                ${subject.memorandum ? `<div class="text-xs text-gray-500 italic truncate mt-1" title="${subject.memorandum}">${subject.memorandum}</div>` : ''}
             </div>
             <div class="flex flex-col items-end gap-2 pl-2">
                 <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${typeBadgeClass}">${subject.subject_type}</span>
