@@ -467,6 +467,9 @@ public function saveSubjects(Request $request)
                     'subject_unit' => $subject->subject_unit,
                     'contact_hours' => $subject->contact_hours,
                     'course_description' => $subject->course_description,
+                    'memorandum' => $subject->memorandum,
+                    'memorandum_year' => $subject->memorandum_year,
+                    'memorandum_category' => $subject->memorandum_category,
                     'created_at' => $subject->created_at,
                 ];
             });

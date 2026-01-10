@@ -678,6 +678,67 @@
         </div>
     </div>
 
+    {{-- Memorandum Details Modal --}}
+    <div id="memorandumDetailsModal" class="fixed inset-0 z-[110] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col max-h-[90vh]" id="memorandum-details-panel">
+                
+                {{-- Modal Header --}}
+                <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                    <div>
+                        <h2 id="memorandumDetailsTitle" class="text-2xl font-bold text-gray-800">Memorandum Details</h2>
+                        <p id="memorandumDetailsSubtitle" class="text-sm text-gray-500 mt-1">View memorandum information and associated subjects</p>
+                    </div>
+                    <button id="closeMemorandumDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                {{-- Memorandum Information Card --}}
+                <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 id="memoDetailName" class="text-xl font-bold text-gray-800 mb-2"></h3>
+                            <div class="flex flex-wrap gap-3">
+                                <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span class="text-sm font-semibold text-gray-700">Year:</span>
+                                    <span id="memoDetailYear" class="text-sm text-gray-600"></span>
+                                </div>
+                                <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                    <span class="text-sm font-semibold text-gray-700">Category:</span>
+                                    <span id="memoDetailCategory" class="text-sm text-gray-600"></span>
+                                </div>
+                                <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                    <span class="text-sm font-semibold text-gray-700">Subjects:</span>
+                                    <span id="memoDetailCount" class="text-sm text-gray-600"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- Subjects List --}}
+                <div class="flex-1 overflow-y-auto p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Associated Subjects</h3>
+                    <div id="memoDetailSubjectsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Subjects will be populated here -->
+                    </div>
+                </div>
+                
+                {{-- Modal Footer --}}
+                <div class="flex justify-end items-center p-6 border-t border-gray-200 bg-gray-50">
+                    <button id="closeMemorandumDetailsModalBtn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -3004,16 +3065,25 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         let filteredCurriculums = [];
         let currentAvailableSubjects = [];
         let currentMappedSubjects = [];
-        let allSystemSubjects = [];
 
         function fetchCurriculums() {
+            console.log('📡 Fetching curriculums from /api/curriculums...');
             fetch('/api/curriculums')
-                .then(response => response.json())
+                .then(response => {
+                    console.log('✅ API Response received:', response.status);
+                    return response.json();
+                })
                 .then(curriculums => {
+                    console.log('📊 Total curriculums from API:', curriculums.length);
+                    console.log('📄 Raw curriculums:', curriculums);
+                    
                     // Only filter out old versions, show both approved and non-approved
                     const newCurriculums = curriculums.filter(curriculum => 
                         curriculum.version_status !== 'old'
                     );
+                    
+                    console.log('✨ Filtered curriculums (excluding old):', newCurriculums.length);
+                    console.log('📋 Visible curriculums:', newCurriculums);
                     
                     allCurriculums = newCurriculums;
                     filteredCurriculums = [...newCurriculums];
@@ -3043,16 +3113,22 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         }
 
         function populateCurriculumOptions() {
+            console.log('🔧 Populating curriculum options...');
             const optionsContainer = document.getElementById('curriculumOptions');
+            console.log('📦 Options container element:', optionsContainer);
             optionsContainer.innerHTML = '';
             
             if (filteredCurriculums.length === 0) {
+                console.warn('⚠️ No curriculums to display!');
                 optionsContainer.innerHTML = '<div class="px-3 py-2 text-gray-500 text-sm">No curriculums found</div>';
                 return;
             }
             
+            console.log('✅ Creating', filteredCurriculums.length, 'dropdown options');
+            
             filteredCurriculums.forEach(curriculum => {
                 const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name} (${curriculum.academic_year})`;
+                console.log('  ➕ Adding option:', optionText);
                 const option = document.createElement('div');
                 option.className = 'px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0';
                 option.textContent = optionText;
@@ -3308,10 +3384,14 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
             document.getElementById('modalSubjectSearch').classList.add('hidden'); // Hide search initially
 
-            // Fetch all subjects from the system
+            console.log('📋 Fetching all system subjects...');
+            
+            // Fetch ALL subjects from the system to show in memorandum modal
             fetch('/api/subjects')
                 .then(response => response.json())
                 .then(subjects => {
+                    console.log('📋 All System Subjects:', subjects);
+                    
                     allSystemSubjects = subjects;
                     renderMemorandums(subjects);
                     
@@ -3339,10 +3419,13 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             const memoContainer = document.getElementById('memorandumListView');
             memoContainer.innerHTML = '';
 
+            console.log('🔍 Rendering memorandums for subjects:', subjects);
+
             const memorandums = {};
             
             // Group subjects by memorandum
             subjects.forEach(subject => {
+                console.log('Processing subject:', subject.subject_name, 'Memorandum:', subject.memorandum, 'Year:', subject.memorandum_year, 'Category:', subject.memorandum_category);
                 const memoName = subject.memorandum || 'No Memorandum';
                 if (!memorandums[memoName]) {
                     memorandums[memoName] = {
@@ -3356,6 +3439,9 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 memorandums[memoName].count++;
                 memorandums[memoName].subjects.push(subject);
             });
+
+            console.log('📊 Grouped memorandums:', memorandums);
+            console.log('📊 Number of unique memorandums:', Object.keys(memorandums).length);
 
             // If no memorandums (e.g. all null), handle gracefully
             if (Object.keys(memorandums).length === 0) {
@@ -3387,9 +3473,40 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     </div>
                 `;
                 
-                card.addEventListener('click', () => {
-                    selectMemorandum(memo);
+                // Add click handler with right-click support
+                card.addEventListener('click', (e) => {
+                    if (e.ctrlKey || e.metaKey || e.button === 2) {
+                        // Ctrl+Click or Cmd+Click or Right-click: Show details modal
+                        e.preventDefault();
+                        showMemorandumDetailsModal(memo);
+                    } else {
+                        // Normal click: Filter subjects
+                        selectMemorandum(memo);
+                    }
                 });
+                
+                // Add context menu handler
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showMemorandumDetailsModal(memo);
+                });
+                
+                // Add info icon for viewing details
+                const infoIcon = document.createElement('button');
+                infoIcon.className = 'ml-2 p-1 rounded-full hover:bg-blue-100 transition-colors';
+                infoIcon.innerHTML = `
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                `;
+                infoIcon.title = 'View memorandum details';
+                infoIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showMemorandumDetailsModal(memo);
+                });
+                
+                const rightSection = card.querySelector('.text-gray-400');
+                rightSection.insertBefore(infoIcon, rightSection.firstChild);
                 
                 memoContainer.appendChild(card);
             });
@@ -3727,6 +3844,94 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     confirmButtonColor: '#EF4444'
                 });
             });
+        });
+
+        // --- MEMORANDUM DETAILS MODAL FUNCTIONALITY ---
+        
+        const memorandumDetailsModal = document.getElementById('memorandumDetailsModal');
+        const memorandumDetailsPanel = document.getElementById('memorandum-details-panel');
+        const closeMemorandumDetailsModal = document.getElementById('closeMemorandumDetailsModal');
+        const closeMemorandumDetailsModalBtn = document.getElementById('closeMemorandumDetailsModalBtn');
+        
+        const showMemorandumDetailsModal = (memoData) => {
+            // Populate memorandum information
+            document.getElementById('memoDetailName').textContent = memoData.name;
+            document.getElementById('memoDetailYear').textContent = memoData.year || 'N/A';
+            document.getElementById('memoDetailCategory').textContent = memoData.category || 'N/A';
+            document.getElementById('memoDetailCount').textContent = memoData.subjects.length;
+            
+            // Populate subjects list
+            const subjectsList = document.getElementById('memoDetailSubjectsList');
+            subjectsList.innerHTML = '';
+            
+            if (memoData.subjects.length === 0) {
+                subjectsList.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-2">No subjects associated with this memorandum.</p>';
+            } else {
+                memoData.subjects.forEach(subject => {
+                    const subjectCard = document.createElement('div');
+                    subjectCard.className = 'p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white';
+                    
+                    // Determine subject type color
+                    let typeColorClass = 'bg-gray-100 text-gray-700';
+                    let borderColorClass = 'border-l-gray-400';
+                    if (subject.subject_type === 'Major') {
+                        typeColorClass = 'bg-blue-100 text-blue-700';
+                        borderColorClass = 'border-l-blue-500';
+                    } else if (subject.subject_type === 'Minor') {
+                        typeColorClass = 'bg-purple-100 text-purple-700';
+                        borderColorClass = 'border-l-purple-500';
+                    } else if (subject.subject_type === 'Elective') {
+                        typeColorClass = 'bg-red-100 text-red-700';
+                        borderColorClass = 'border-l-red-500';
+                    } else if (subject.subject_type.toLowerCase().includes('ge') || subject.subject_type.toLowerCase().includes('general')) {
+                        typeColorClass = 'bg-orange-100 text-orange-700';
+                        borderColorClass = 'border-l-orange-500';
+                    }
+                    
+                    subjectCard.classList.add('border-l-4', borderColorClass);
+                    
+                    subjectCard.innerHTML = `
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-grow min-w-0">
+                                <h4 class="font-semibold text-gray-800 text-sm mb-1 truncate">${subject.subject_name}</h4>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-xs font-mono text-gray-600 bg-gray-50 px-2 py-0.5 rounded border border-gray-200">${subject.subject_code}</span>
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <span class="text-xs font-medium text-gray-600">${subject.subject_unit} units</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold px-2 py-1 rounded-full ${typeColorClass} flex-shrink-0">${subject.subject_type}</span>
+                        </div>
+                    `;
+                    
+                    subjectsList.appendChild(subjectCard);
+                });
+            }
+            
+            // Show modal with animation
+            memorandumDetailsModal.classList.remove('hidden');
+            setTimeout(() => {
+                memorandumDetailsModal.classList.remove('opacity-0');
+                memorandumDetailsPanel.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        };
+        
+        const hideMemorandumDetailsModal = () => {
+            memorandumDetailsModal.classList.add('opacity-0');
+            memorandumDetailsPanel.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                memorandumDetailsModal.classList.add('hidden');
+            }, 300);
+        };
+        
+        closeMemorandumDetailsModal.addEventListener('click', hideMemorandumDetailsModal);
+        closeMemorandumDetailsModalBtn.addEventListener('click', hideMemorandumDetailsModal);
+        
+        // Close modal when clicking outside
+        memorandumDetailsModal.addEventListener('click', (e) => {
+            if (e.target === memorandumDetailsModal) {
+                hideMemorandumDetailsModal();
+            }
         });
 
         // Searchable dropdown event listeners

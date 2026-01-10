@@ -73,16 +73,6 @@
                                     <div class="relative">
                                         <select id="memorandumYear" name="memorandumYear" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
                                             <option value="" disabled selected>Select Year</option>
-                                            <option value="2025">2025</option>
-                                            <option value="2024">2024</option>
-                                            <option value="2023">2023</option>
-                                            <option value="2022">2022</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2017">2017</option>
-                                            <option value="2016">2016</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -768,67 +758,100 @@
 </div>
 
 <script>
-    // Memorandum Data
-    const memorandumData = {
-        'CHED': {
-            '2025': [
-                'CMO No. 1, series of 2025 – Guidelines for Micro-Credential Development, Approval, and Recognition in Higher Education',
-                'CMO No. 2, series of 2025 – Updated List of Private Higher Education Institutions Granted Autonomous and Deregulated Status by Evaluation',
-                'CMO No. 3, series of 2025 – Updated Guidelines for Securing Authority to Travel Abroad for State Universities and Colleges (SUCs)',
-                'CMO No. 4, series of 2025 – Revised Policies, Standards and Guidelines for Associate in Radiologictechnology Education (ART) Program',
-                'CMO No. 5, series of 2025 – Guidelines for the Accreditation of Hospitals and Primary Health Care Facilities for the Clinical Practice of Radiologic/X-RAY Technology Interns',
-                'CMO No. 6, series of 2025 – Application Process for Authority to Offer Transnational Higher Education Pursuant to Republic Act No. 11448 or The Transnational Higher Education Act',
-                'CMO No. 7, series of 2025 – Policies, Standards and Guidelines for the Implementation of the National Merchant Marine Aptitude Test (NaMMAT)',
-                'CMO No. 9, series of 2025 – Updated Guidelines for the Scholarships for Staff and Instructors\' Knowledge Advancement Program (SIKAP) for Full-Time and Part-Time Study',
-                'CMO No. 10, series of 2025 – Policies and Standards on Centers of Excellence (COE)',
-                'CMO No. 11, series of 2025 – Implementing Rules and Regulations of Republic Act No. 12124, "An Act Institutionalizing the Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP) and Providing Funds Therefor"',
-                'CMO No. 12, series of 2025 – Policies and Guidelines on Open Distance and e-Learning (ODeL)',
-                'CMO No. 13, series of 2025 – Revised Policies and Guidelines for the CHED Merit Scholarship Program (CMSP)',
-                'CMO No. 14, series of 2025 – Revised Implementing Guidelines for the CHED Scholarship Program for Future Statisticians (ESTATISKOLAR)',
-                'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions'
-            ],
-            '2024': ['View all 2024 CHED Memorandum Orders on the official website'],
-            '2023': ['View all 2023 CHED Memorandum Orders on the official website'],
-            '2022': ['View all 2022 CHED Memorandum Orders on the official website'],
-            '2021': ['View all 2021 CHED Memorandum Orders on the official website'],
-            '2020': ['View all 2020 CHED Memorandum Orders on the official website'],
-            '2019': ['View all 2019 CHED Memorandum Orders on the official website'],
-            '2018': ['View all 2018 CHED Memorandum Orders on the official website'],
-            '2017': ['View all 2017 CHED Memorandum Orders on the official website'],
-            '2016': ['View all 2016 CHED Memorandum Orders on the official website']
-        },
-        'DepEd': {
-            'Shape Paper': ['The Strengthened Senior High School Program Shaping Paper'],
-            'Curriculum Guides (Core)': [
-                'Effective Communication - Core Subject Guide',
-                'General Mathematics - Core Subject Guide',
-                'General Science - Core Subject Guide',
-                'Life and Career Skills - Core Subject Guide',
-                'Mabisang Komunikasyon - Core Subject Guide',
-                'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
-            ],
-            'Curriculum Guides (Academic)': [
-                'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
-                'Arts 2 (Creative Industries II – Performing Arts)',
-                'Social Science 1 (Introduction to Social Sciences)',
-                'Humanities 1 (Creative Writing)',
-                'Humanities 2 (Introduction to World Religions and Belief Systems)',
-                'Engineering 1 (Calculus)',
-                'Engineering 2 (Fundamentals of Programming)',
-                'Engineering 3 (Basic Electricity and Electronics)',
-                'Business 1 (Business Enterprise Simulation)',
-                'Economics 1 (Introduction to Economics)',
-                'Management 1 (Fundamentals of Accountancy, Business, and Management)',
-                'Health Science 1 (Introduction to Health Science)',
-                'Health Science 2 (Basic Human Anatomy and Physiology)'
-            ],
-            'Curriculum Guides (TechPro)': [
-                'Digital Tools and Productivity Applications',
-                'Multimedia Development and Design',
-                'Computer Systems and Network Administration',
-                'Web Development',
-                'Computer Programming'
-            ]
+    // DepEd memorandum categories (kept static as they are not year-based)
+    const depedCategories = {
+        'Shape Paper': [
+            'The Strengthened Senior High School Program Shaping Paper'
+        ],
+        'Curriculum Guides (Core)': [
+            'Effective Communication - Core Subject Guide',
+            'General Mathematics - Core Subject Guide',
+            'General Science - Core Subject Guide',
+            'Life and Career Skills - Core Subject Guide',
+            'Mabisang Komunikasyon - Core Subject Guide',
+            'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
+        ],
+        'Curriculum Guides (Academic)': [
+            'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
+            'Arts 2 (Creative Industries II – Performing Arts)',
+            'Social Science 1 (Introduction to Social Sciences)',
+            'Humanities 1 (Creative Writing)',
+            'Humanities 2 (Introduction to World Religions and Belief Systems)',
+            'Engineering 1 (Calculus)',
+            'Engineering 2 (Fundamentals of Programming)',
+            'Engineering 3 (Basic Electricity and Electronics)',
+            'Business 1 (Business Enterprise Simulation)',
+            'Economics 1 (Introduction to Economics)',
+            'Management 1 (Fundamentals of Accountancy, Business, and Management)',
+            'Health Science 1 (Introduction to Health Science)',
+            'Health Science 2 (Basic Human Anatomy and Physiology)'
+        ],
+        'Curriculum Guides (TechPro)': [
+            'Digital Tools and Productivity Applications',
+            'Multimedia Development and Design',
+            'Computer Systems and Network Administration',
+            'Web Development',
+            'Computer Programming'
+        ]
+    };
+
+    // Function to populate CHED years (matching compliance_validator range)
+    const populateCHEDYears = () => {
+        const memorandumYearSelect = document.getElementById('memorandumYear');
+        if (!memorandumYearSelect) return;
+        const currentValue = memorandumYearSelect.value;
+        memorandumYearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
+        for (let year = 2025; year >= 1994; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            memorandumYearSelect.appendChild(option);
+        }
+        if (currentValue) memorandumYearSelect.value = currentValue;
+    };
+
+    // Function to fetch memorandums based on compliance, year, or category
+    const fetchMemorandumData = async (compliance, yearOrCategory = null) => {
+        try {
+            if (compliance === 'CHED' && yearOrCategory) {
+                const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${yearOrCategory}`);
+                if (!response.ok) throw new Error('API request failed');
+                const data = await response.json();
+                return data.map(link => link.title);
+            } else if (compliance === 'DepEd' && yearOrCategory) {
+                return depedCategories[yearOrCategory] || [];
+            }
+            return [];
+        } catch (error) {
+            console.error('Error fetching memorandum data:', error);
+            return [];
+        }
+    };
+
+    const updateMemorandumDropdown = async (compliance, filter) => {
+        const memorandumSelect = document.getElementById('memorandum');
+        if (!memorandumSelect) return;
+        
+        memorandumSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
+        memorandumSelect.disabled = true;
+
+        const data = await fetchMemorandumData(compliance, filter);
+        
+        memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
+        if (data && data.length > 0) {
+            memorandumSelect.disabled = false;
+            data.forEach(memo => {
+                const option = document.createElement('option');
+                option.value = memo;
+                option.textContent = memo;
+                memorandumSelect.appendChild(option);
+            });
+        } else {
+            memorandumSelect.disabled = true;
+            const option = document.createElement('option');
+            option.textContent = 'No memorandums found';
+            option.value = '';
+            memorandumSelect.appendChild(option);
         }
     };
 
@@ -838,14 +861,19 @@
         const categoryContainer = document.getElementById('categoryContainer');
         const memorandumSelect = document.getElementById('memorandum');
         
+        if (!memorandumContainer) return;
+
         memorandumContainer.classList.remove('hidden');
-        memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
-        memorandumSelect.disabled = true;
+        if (memorandumSelect) {
+            memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
+            memorandumSelect.disabled = true;
+        }
 
         if (compliance === 'CHED') {
             yearContainer.classList.remove('hidden');
             categoryContainer.classList.add('hidden');
             document.getElementById('memorandumCategory').selectedIndex = 0;
+            populateCHEDYears();
         } else if (compliance === 'DepEd') {
             yearContainer.classList.add('hidden');
             categoryContainer.classList.remove('hidden');
@@ -858,7 +886,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         const memorandumYearSelect = document.getElementById('memorandumYear');
         const memorandumCategorySelect = document.getElementById('memorandumCategory');
-        const memorandumSelect = document.getElementById('memorandum');
 
         if(memorandumYearSelect) {
             memorandumYearSelect.addEventListener('change', function() {
@@ -871,25 +898,8 @@
                 updateMemorandumDropdown('DepEd', this.value);
             });
         }
-
-        function updateMemorandumDropdown(compliance, filter) {
-            memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
-            const data = memorandumData[compliance][filter];
-            if (data && data.length > 0) {
-                memorandumSelect.disabled = false;
-                data.forEach(memo => {
-                    const option = document.createElement('option');
-                    option.value = memo;
-                    option.textContent = memo;
-                    memorandumSelect.appendChild(option);
-                });
-            } else {
-                memorandumSelect.disabled = true;
-                const option = document.createElement('option');
-                option.textContent = 'No memorandums found';
-                memorandumSelect.appendChild(option);
-            }
-        }
+        
+        populateCHEDYears();
     });
     
     // Initialize default view if needed based on initial syllabus type
@@ -1243,6 +1253,22 @@ Learning Management System`;
         document.getElementById('prepared_by').value = subject.prepared_by;
         document.getElementById('reviewed_by').value = subject.reviewed_by;
         document.getElementById('approved_by').value = subject.approved_by;
+        
+        // Populate Memorandum Fields
+        const syllabusType = subject.syllabus_type || 'CHED';
+        switchSyllabus(syllabusType); // This also calls handleComplianceChange
+        
+        if (subject.memorandum_year) {
+            document.getElementById('memorandumYear').value = subject.memorandum_year;
+            updateMemorandumDropdown('CHED', subject.memorandum_year).then(() => {
+                if (subject.memorandum) document.getElementById('memorandum').value = subject.memorandum;
+            });
+        } else if (subject.memorandum_category) {
+            document.getElementById('memorandumCategory').value = subject.memorandum_category;
+            updateMemorandumDropdown('DepEd', subject.memorandum_category).then(() => {
+                if (subject.memorandum) document.getElementById('memorandum').value = subject.memorandum;
+            });
+        }
 
         // Load curriculum relationships if available
         if (subject.curriculums && subject.curriculums.length > 0) {
@@ -1272,16 +1298,18 @@ Learning Management System`;
     };
 
     // --- FORM SUBMISSION LOGIC ---
-    courseForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!courseForm.checkValidity()) {
-            courseForm.reportValidity();
-            return;
-        }
-        
-        // Show confirmation modal first
-        document.getElementById('saveCourseConfirmModal').classList.remove('hidden');
-    });
+    if (courseForm) {
+        courseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!courseForm.checkValidity()) {
+                courseForm.reportValidity();
+                return;
+            }
+            
+            // Show confirmation modal first
+            document.getElementById('saveCourseConfirmModal').classList.remove('hidden');
+        });
+    }
 
     // Handle the actual save logic when user confirms
     const handleCourseSave = async () => {
@@ -1305,6 +1333,9 @@ Learning Management System`;
             prepared_by: document.getElementById('prepared_by').value,
             reviewed_by: document.getElementById('reviewed_by').value,
             approved_by: document.getElementById('approved_by').value,
+            memorandum: document.getElementById('memorandum').value || null,
+            memorandum_year: document.getElementById('memorandumYear').value || null,
+            memorandum_category: document.getElementById('memorandumCategory').value || null,
             lessons: collectWeeklyPlan(),
             program_mapping_grid: collectMappingGridData('program-mapping-table-body'),
             course_mapping_grid: collectMappingGridData('course-mapping-table-body'),
@@ -1350,11 +1381,16 @@ Learning Management System`;
 
     // --- MODAL EVENT HANDLERS ---
     // Save Course Confirmation Modal
-    document.getElementById('cancelSaveCourse').addEventListener('click', () => {
-        document.getElementById('saveCourseConfirmModal').classList.add('hidden');
-    });
+    const cancelSaveCourseBtn = document.getElementById('cancelSaveCourse');
+    if (cancelSaveCourseBtn) {
+        cancelSaveCourseBtn.addEventListener('click', () => {
+            document.getElementById('saveCourseConfirmModal').classList.add('hidden');
+        });
+    }
     
-    document.getElementById('confirmSaveCourse').addEventListener('click', async () => {
+    const confirmSaveCourseBtn = document.getElementById('confirmSaveCourse');
+    if (confirmSaveCourseBtn) {
+        confirmSaveCourseBtn.addEventListener('click', async () => {
         document.getElementById('saveCourseConfirmModal').classList.add('hidden');
         
         // Check for description similarity before saving
@@ -1388,37 +1424,53 @@ Learning Management System`;
             // No description provided, proceed with save
             handleCourseSave();
         }
-    });
+        });
+    }
     
     // Course Success Modal (Create)
-    document.getElementById('skipGradeSetup').addEventListener('click', () => {
-        document.getElementById('courseSuccessModal').classList.add('hidden');
-        window.location.href = `/subject_mapping`;
-    });
+    const skipGradeSetupBtn = document.getElementById('skipGradeSetup');
+    if (skipGradeSetupBtn) {
+        skipGradeSetupBtn.addEventListener('click', () => {
+            document.getElementById('courseSuccessModal').classList.add('hidden');
+            window.location.href = `/subject_mapping`;
+        });
+    }
     
-    document.getElementById('proceedToGradeSetup').addEventListener('click', () => {
-        document.getElementById('courseSuccessModal').classList.add('hidden');
-        if (window.newSubjectData) {
-            const newSubjectName = encodeURIComponent(`${window.newSubjectData.name} (${window.newSubjectData.code})`);
-            window.location.href = `/grade-setup?new_subject_id=${window.newSubjectData.id}&new_subject_name=${newSubjectName}`;
-        }
-    });
+    const proceedToGradeSetupBtn = document.getElementById('proceedToGradeSetup');
+    if (proceedToGradeSetupBtn) {
+        proceedToGradeSetupBtn.addEventListener('click', () => {
+            document.getElementById('courseSuccessModal').classList.add('hidden');
+            if (window.newSubjectData) {
+                const newSubjectName = encodeURIComponent(`${window.newSubjectData.name} (${window.newSubjectData.code})`);
+                window.location.href = `/grade-setup?new_subject_id=${window.newSubjectData.id}&new_subject_name=${newSubjectName}`;
+            }
+        });
+    }
     
     // Course Update Success Modal
-    document.getElementById('closeCourseUpdateModal').addEventListener('click', () => {
-        document.getElementById('courseUpdateSuccessModal').classList.add('hidden');
-        window.location.href = `/subject_mapping`;
-    });
+    const closeCourseUpdateModalBtn = document.getElementById('closeCourseUpdateModal');
+    if (closeCourseUpdateModalBtn) {
+        closeCourseUpdateModalBtn.addEventListener('click', () => {
+            document.getElementById('courseUpdateSuccessModal').classList.add('hidden');
+            window.location.href = `/subject_mapping`;
+        });
+    }
     
     // Similar Description Warning Modal
-    document.getElementById('cancelSimilarDescription').addEventListener('click', () => {
-        document.getElementById('similarDescriptionModal').classList.add('hidden');
-    });
+    const cancelSimilarDescriptionBtn = document.getElementById('cancelSimilarDescription');
+    if (cancelSimilarDescriptionBtn) {
+        cancelSimilarDescriptionBtn.addEventListener('click', () => {
+            document.getElementById('similarDescriptionModal').classList.add('hidden');
+        });
+    }
     
-    document.getElementById('proceedWithSimilarDescription').addEventListener('click', () => {
-        document.getElementById('similarDescriptionModal').classList.add('hidden');
-        handleCourseSave();
-    });
+    const proceedWithSimilarDescriptionBtn = document.getElementById('proceedWithSimilarDescription');
+    if (proceedWithSimilarDescriptionBtn) {
+        proceedWithSimilarDescriptionBtn.addEventListener('click', () => {
+            document.getElementById('similarDescriptionModal').classList.add('hidden');
+            handleCourseSave();
+        });
+    }
     
     // --- HELPER FUNCTIONS FOR SIMILARITY CHECK ---
     
@@ -1481,8 +1533,15 @@ Learning Management System`;
     };
 
     // --- MAPPING GRID ROW LOGIC (Event Listeners) ---
-    document.getElementById('add-program-mapping-row').addEventListener('click', () => document.getElementById('program-mapping-table-body').appendChild(createMappingTableRow(true)));
-    document.getElementById('add-course-mapping-row').addEventListener('click', () => document.getElementById('program-mapping-table-body').appendChild(createMappingTableRow(false)));
+    const addProgramMappingRowBtn = document.getElementById('add-program-mapping-row');
+    if (addProgramMappingRowBtn) {
+        addProgramMappingRowBtn.addEventListener('click', () => document.getElementById('program-mapping-table-body').appendChild(createMappingTableRow(true)));
+    }
+    
+    const addCourseMappingRowBtn = document.getElementById('add-course-mapping-row');
+    if (addCourseMappingRowBtn) {
+        addCourseMappingRowBtn.addEventListener('click', () => document.getElementById('course-mapping-table-body').appendChild(createMappingTableRow(false)));
+    }
     
     // Event delegation for delete buttons in both tables
     document.addEventListener('click', (e) => {
@@ -1605,24 +1664,33 @@ Learning Management System`;
     };
 
     // Modal event listeners
-    document.getElementById('openCurriculumModal').addEventListener('click', () => {
-        document.getElementById('curriculumSelectionModal').classList.remove('hidden');
-        loadCurriculums();
-    });
+    const openCurriculumModalBtn = document.getElementById('openCurriculumModal');
+    if (openCurriculumModalBtn) {
+        openCurriculumModalBtn.addEventListener('click', () => {
+            document.getElementById('curriculumSelectionModal').classList.remove('hidden');
+            loadCurriculums();
+        });
+    }
 
     // Close button removed
     // document.getElementById('closeCurriculumModal').addEventListener('click', () => {
     //     document.getElementById('curriculumSelectionModal').classList.add('hidden');
     // });
 
-    document.getElementById('cancelCurriculumSelection').addEventListener('click', () => {
-        document.getElementById('curriculumSelectionModal').classList.add('hidden');
-    });
+    const cancelCurriculumSelectionBtn = document.getElementById('cancelCurriculumSelection');
+    if (cancelCurriculumSelectionBtn) {
+        cancelCurriculumSelectionBtn.addEventListener('click', () => {
+            document.getElementById('curriculumSelectionModal').classList.add('hidden');
+        });
+    }
 
-    document.getElementById('confirmCurriculumSelection').addEventListener('click', () => {
-        document.getElementById('curriculumSelectionModal').classList.add('hidden');
-        updateCurriculumButtonText();
-    });
+    const confirmCurriculumSelectionBtn = document.getElementById('confirmCurriculumSelection');
+    if (confirmCurriculumSelectionBtn) {
+        confirmCurriculumSelectionBtn.addEventListener('click', () => {
+            document.getElementById('curriculumSelectionModal').classList.add('hidden');
+            updateCurriculumButtonText();
+        });
+    }
 
     document.getElementById('curriculumSearchInput')?.addEventListener('input', () => {
         renderCurriculumChecklist();
@@ -1656,20 +1724,32 @@ function handleSyllabusUpload(input) {
         const file = input.files[0];
         // Update display name based on which input triggered this
         if (input.id === 'ched_syllabus_file') {
-            document.getElementById('ched_file_name_display').textContent = file.name;
+            const displayElement = document.getElementById('ched_file_name_display');
+            if (displayElement) {
+                displayElement.textContent = file.name;
+            }
         } else {
-            document.getElementById('file_name_display').textContent = file.name;
+            const displayElement = document.getElementById('file_name_display');
+            if (displayElement) {
+                displayElement.textContent = file.name;
+            }
         }
 
         const formData = new FormData();
         formData.append('syllabus_file', file);
         formData.append('_token', document.querySelector('input[name="_token"]').value);
 
-        // Show loading state
-        const btn = input.previousElementSibling.previousElementSibling; // The button
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
-        btn.disabled = true;
+        // Show loading state on the Import button
+        // The button is the previousElementSibling of the file input
+        const btn = input.previousElementSibling;
+        let originalText = '';
+        if (btn) {
+            originalText = btn.innerHTML;
+            // Determine spinner color based on button type
+            const spinnerColor = input.id === 'ched_syllabus_file' ? 'text-blue-600' : 'text-red-600';
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 ${spinnerColor} mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...`;
+            btn.disabled = true;
+        }
 
         // Determine API endpoint based on input ID or syllabus type
         const isChed = input.id === 'ched_syllabus_file';
@@ -1821,16 +1901,21 @@ function handleSyllabusUpload(input) {
             alert('An error occurred while uploading the file. Please check the console for details.');
         })
         .finally(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         });
     }
 }
 
 // Extraction Success Modal Close Handler
-document.getElementById('closeExtractionModal').addEventListener('click', () => {
-    document.getElementById('extractionSuccessModal').classList.add('hidden');
-});
+const closeExtractionModalBtn = document.getElementById('closeExtractionModal');
+if (closeExtractionModalBtn) {
+    closeExtractionModalBtn.addEventListener('click', () => {
+        document.getElementById('extractionSuccessModal').classList.add('hidden');
+    });
+}
 
 function addDepEdRow(quarter) {
     const container = document.getElementById(`q_${quarter}_rows_container`);

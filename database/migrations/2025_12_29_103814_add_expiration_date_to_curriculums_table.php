@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('curriculums', function (Blueprint $table) {
-            $table->date('expiration_date')->nullable()->after('total_units');
+            if (!Schema::hasColumn('curriculums', 'expiration_date')) {
+                $table->date('expiration_date')->nullable()->after('total_units');
+            }
         });
     }
 

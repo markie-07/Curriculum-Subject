@@ -185,8 +185,67 @@
                             <div>
                                 <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date (Optional)</label>
                                 <div class="relative">
-                                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
-                                    <input type="date" id="expirationDate" name="expirationDate" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                    <div class="relative group">
+                                        <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-colors group-focus-within:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
+                                        <input type="text" id="expirationDateDisplay" readonly placeholder="Select a date" class="cursor-pointer w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-slate-400">
+                                        <input type="hidden" id="expirationDate" name="expirationDate">
+                                        <button type="button" id="clearExpirationDate" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors z-10" title="Clear date">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Custom Calendar Picker -->
+                                    <div id="customCalendar" class="hidden absolute top-full left-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-80 z-50">
+                                        <!-- Calendar Header -->
+                                        <div class="flex items-center justify-between mb-4">
+                                            <button type="button" id="prevMonth" class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                                <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" id="monthYearToggle" class="flex items-center gap-1 px-3 py-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                                <span class="font-semibold text-slate-800" id="currentMonthYear"></span>
+                                                <svg class="w-4 h-4 text-slate-500 transition-transform" id="toggleArrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" id="nextMonth" class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                                <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Month View -->
+                                        <div id="monthView">
+                                            <!-- Days of Week -->
+                                            <div class="grid grid-cols-7 gap-1 mb-2">
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Su</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Mo</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Tu</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">We</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Th</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Fr</div>
+                                                <div class="text-center text-xs font-medium text-slate-500 py-2">Sa</div>
+                                            </div>
+                                            
+                                            <!-- Calendar Days Grid -->
+                                            <div id="calendarDays" class="grid grid-cols-7 gap-1 mb-3"></div>
+                                        </div>
+                                        
+                                        <!-- Year Picker View -->
+                                        <div id="yearView" class="hidden">
+                                            <div class="grid grid-cols-4 gap-2 mb-3" id="yearGrid"></div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+                                            <button type="button" id="clearDateBtn" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">Clear</button>
+                                            <button type="button" id="todayBtn" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">Today</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <p class="text-xs text-slate-500 mt-1">When this date is reached, the curriculum will automatically become "old" and you'll need to create a new one.</p>
                             </div>
@@ -332,6 +391,113 @@
         </div>
     </main>
 
+    <style>
+        /* Custom Calendar Picker Styling */
+        #expirationDateDisplay {
+            color: #475569;
+            font-size: 0.875rem;
+        }
+        
+        #expirationDateDisplay:not(:placeholder-shown) {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            font-weight: 500;
+            color: #1e40af;
+        }
+        
+        /* Calendar day buttons */
+        .calendar-day {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            color: #1e293b;
+        }
+        
+        .calendar-day:hover:not(.other-month):not(.selected) {
+            background-color: #f1f5f9;
+        }
+        
+        .calendar-day.other-month {
+            color: #cbd5e1;
+            cursor: default;
+        }
+        
+        .calendar-day.today {
+            border: 2px solid #3b82f6;
+            font-weight: 600;
+        }
+        
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .calendar-day.selected:hover {
+            background-color: #2563eb;
+        }
+        
+        /* Calendar animation */
+        @keyframes calendarSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        #customCalendar:not(.hidden) {
+            animation: calendarSlideIn 0.2s ease;
+        }
+        
+        /* Year picker buttons */
+        .year-button {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            color: #1e293b;
+            text-align: center;
+        }
+        
+        .year-button:hover:not(.current-year) {
+            background-color: #f1f5f9;
+        }
+        
+        .year-button.current-year {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+        }
+        
+        .year-button.selected-year {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .year-button.selected-year:hover {
+            background-color: #2563eb;
+        }
+        
+        /* Toggle arrow rotation */
+        #toggleArrow.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Main elements
@@ -392,101 +558,324 @@
             const browseSearchInput = document.getElementById('browseSearchInput');
             const duplicateMemorandumAlert = document.getElementById('duplicateMemorandumAlert');
 
+            // Custom Calendar Picker elements
+            const expirationDateDisplay = document.getElementById('expirationDateDisplay');
+            const expirationDateInput = document.getElementById('expirationDate');
+            const clearExpirationDateButton = document.getElementById('clearExpirationDate');
+            const customCalendar = document.getElementById('customCalendar');
+            const calendarDays = document.getElementById('calendarDays');
+            const currentMonthYear = document.getElementById('currentMonthYear');
+            const prevMonthBtn = document.getElementById('prevMonth');
+            const nextMonthBtn = document.getElementById('nextMonth');
+            const todayBtn = document.getElementById('todayBtn');
+            const clearDateBtn = document.getElementById('clearDateBtn');
+            const monthYearToggle = document.getElementById('monthYearToggle');
+            const toggleArrow = document.getElementById('toggleArrow');
+            const monthView = document.getElementById('monthView');
+            const yearView = document.getElementById('yearView');
+            const yearGrid = document.getElementById('yearGrid');
+
             let currentAction = null; // To store the function to execute on confirmation.
             let matchingCurriculums = []; // Store matching curriculums for duplicate detection
             let createAnotherMode = false; // Flag to allow creating another curriculum
             
-            // Memorandum data organized by year - fetched from compliance validator structure
-            const memorandumData = {
-                'CHED': {
-                    '2025': [
-                        'CMO No. 1, series of 2025 – Guidelines for Micro-Credential Development, Approval, and Recognition in Higher Education',
-                        'CMO No. 2, series of 2025 – Updated List of Private Higher Education Institutions Granted Autonomous and Deregulated Status by Evaluation',
-                        'CMO No. 3, series of 2025 – Updated Guidelines for Securing Authority to Travel Abroad for State Universities and Colleges (SUCs)',
-                        'CMO No. 4, series of 2025 – Revised Policies, Standards and Guidelines for Associate in Radiologictechnology Education (ART) Program',
-                        'CMO No. 5, series of 2025 – Guidelines for the Accreditation of Hospitals and Primary Health Care Facilities for the Clinical Practice of Radiologic/X-RAY Technology Interns',
-                        'CMO No. 6, series of 2025 – Application Process for Authority to Offer Transnational Higher Education Pursuant to Republic Act No. 11448 or The Transnational Higher Education Act',
-                        'CMO No. 7, series of 2025 – Policies, Standards and Guidelines for the Implementation of the National Merchant Marine Aptitude Test (NaMMAT)',
-                        'CMO No. 9, series of 2025 – Updated Guidelines for the Scholarships for Staff and Instructors\' Knowledge Advancement Program (SIKAP) for Full-Time and Part-Time Study',
-                        'CMO No. 10, series of 2025 – Policies and Standards on Centers of Excellence (COE)',
-                        'CMO No. 11, series of 2025 – Implementing Rules and Regulations of Republic Act No. 12124, "An Act Institutionalizing the Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP) and Providing Funds Therefor"',
-                        'CMO No. 12, series of 2025 – Policies and Guidelines on Open Distance and e-Learning (ODeL)',
-                        'CMO No. 13, series of 2025 – Revised Policies and Guidelines for the CHED Merit Scholarship Program (CMSP)',
-                        'CMO No. 14, series of 2025 – Revised Implementing Guidelines for the CHED Scholarship Program for Future Statisticians (ESTATISKOLAR)',
-                        'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions'
-                    ],
-                    '2024': [
-                        'View all 2024 CHED Memorandum Orders on the official website'
-                    ],
-                    '2023': [
-                        'View all 2023 CHED Memorandum Orders on the official website'
-                    ],
-                    '2022': [
-                        'View all 2022 CHED Memorandum Orders on the official website'
-                    ],
-                    '2021': [
-                        'View all 2021 CHED Memorandum Orders on the official website'
-                    ],
-                    '2020': [
-                        'View all 2020 CHED Memorandum Orders on the official website'
-                    ],
-                    '2019': [
-                        'View all 2019 CHED Memorandum Orders on the official website'
-                    ],
-                    '2018': [
-                        'View all 2018 CHED Memorandum Orders on the official website'
-                    ],
-                    '2017': [
-                        'View all 2017 CHED Memorandum Orders on the official website'
-                    ],
-                    '2016': [
-                        'View all 2016 CHED Memorandum Orders on the official website'
-                    ]
-                },
-                'DepEd': {
-                    'Shape Paper': [
-                        'The Strengthened Senior High School Program Shaping Paper'
-                    ],
-                    'Curriculum Guides (Core)': [
-                        'Effective Communication - Core Subject Guide',
-                        'General Mathematics - Core Subject Guide',
-                        'General Science - Core Subject Guide',
-                        'Life and Career Skills - Core Subject Guide',
-                        'Mabisang Komunikasyon - Core Subject Guide',
-                        'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
-                    ],
-                    'Curriculum Guides (Academic)': [
-                        'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
-                        'Arts 2 (Creative Industries II – Performing Arts)',
-                        'Social Science 1 (Introduction to Social Sciences)',
-                        'Humanities 1 (Creative Writing)',
-                        'Humanities 2 (Introduction to World Religions and Belief Systems)',
-                        'Engineering 1 (Calculus)',
-                        'Engineering 2 (Fundamentals of Programming)',
-                        'Engineering 3 (Basic Electricity and Electronics)',
-                        'Business 1 (Business Enterprise Simulation)',
-                        'Economics 1 (Introduction to Economics)',
-                        'Management 1 (Fundamentals of Accountancy, Business, and Management)',
-                        'Health Science 1 (Introduction to Health Science)',
-                        'Health Science 2 (Basic Human Anatomy and Physiology)'
-                    ],
-                    'Curriculum Guides (TechPro)': [
-                        'Digital Tools and Productivity Applications',
-                        'Multimedia Development and Design',
-                        'Computer Systems and Network Administration',
-                        'Web Development',
-                        'Computer Programming'
-                    ]
+            // --- Custom Calendar Picker Functionality ---
+            let currentDate = new Date();
+            let selectedDate = null;
+            let isYearView = false;
+            let yearRangeStart = new Date().getFullYear() - 8; // Start 8 years before current
+            
+            // Format date for display
+            const formatDateDisplay = (date) => {
+                const options = { month: 'short', day: 'numeric', year: 'numeric' };
+                return date.toLocaleDateString('en-US', options);
+            };
+            
+            // Format date for input value (YYYY-MM-DD)
+            const formatDateValue = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            // Toggle between month and year view
+            const toggleView = () => {
+                isYearView = !isYearView;
+                
+                if (isYearView) {
+                    monthView.classList.add('hidden');
+                    yearView.classList.remove('hidden');
+                    toggleArrow.classList.add('rotated');
+                    generateYearPicker();
+                } else {
+                    yearView.classList.add('hidden');
+                    monthView.classList.remove('hidden');
+                    toggleArrow.classList.remove('rotated');
+                    generateCalendar();
                 }
             };
+            
+            // Generate year picker grid
+            const generateYearPicker = () => {
+                yearGrid.innerHTML = '';
+                const currentYear = new Date().getFullYear();
+                const selectedYear = selectedDate ? selectedDate.getFullYear() : null;
+                
+                // Show 16 years (4x4 grid)
+                for (let i = 0; i < 16; i++) {
+                    const year = yearRangeStart + i;
+                    const yearBtn = document.createElement('button');
+                    yearBtn.type = 'button';
+                    yearBtn.className = 'year-button';
+                    yearBtn.textContent = year;
+                    
+                    if (year === currentYear) {
+                        yearBtn.classList.add('current-year');
+                    }
+                    
+                    if (year === selectedYear) {
+                        yearBtn.classList.add('selected-year');
+                    }
+                    
+                    yearBtn.addEventListener('click', () => {
+                        currentDate.setFullYear(year);
+                        isYearView = false;
+                        monthView.classList.remove('hidden');
+                        yearView.classList.add('hidden');
+                        toggleArrow.classList.remove('rotated');
+                        generateCalendar();
+                    });
+                    
+                    yearGrid.appendChild(yearBtn);
+                }
+                
+                // Update header to show year range
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                const month = currentDate.getMonth();
+                currentMonthYear.textContent = `${monthNames[month]} ${currentDate.getFullYear()}`;
+            };
+            
+            // Generate calendar for current month
+            const generateCalendar = () => {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                
+                // Update header
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+                
+                // Clear calendar
+                calendarDays.innerHTML = '';
+                
+                // Get first day of month and number of days
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const daysInPrevMonth = new Date(year, month, 0).getDate();
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                // Add previous month's days
+                for (let i = firstDay - 1; i >= 0; i--) {
+                    const day = daysInPrevMonth - i;
+                    const dayBtn = document.createElement('button');
+                    dayBtn.type = 'button';
+                    dayBtn.className = 'calendar-day other-month';
+                    dayBtn.textContent = day;
+                    calendarDays.appendChild(dayBtn);
+                }
+                
+                // Add current month's days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayBtn = document.createElement('button');
+                    dayBtn.type = 'button';
+                    dayBtn.className = 'calendar-day';
+                    dayBtn.textContent = day;
+                    
+                    const currentDayDate = new Date(year, month, day);
+                    currentDayDate.setHours(0, 0, 0, 0);
+                    
+                    // Check if today
+                    if (currentDayDate.getTime() === today.getTime()) {
+                        dayBtn.classList.add('today');
+                    }
+                    
+                    // Check if selected
+                    if (selectedDate) {
+                        const selected = new Date(selectedDate);
+                        selected.setHours(0, 0, 0, 0);
+                        if (currentDayDate.getTime() === selected.getTime()) {
+                            dayBtn.classList.add('selected');
+                        }
+                    }
+                    
+                    // Add click handler
+                    dayBtn.addEventListener('click', () => {
+                        selectDate(new Date(year, month, day));
+                    });
+                    
+                    calendarDays.appendChild(dayBtn);
+                }
+                
+                // Add next month's days to fill grid
+                const totalCells = calendarDays.children.length;
+                const remainingCells = 42 - totalCells; // 6 rows * 7 days
+                for (let day = 1; day <= remainingCells; day++) {
+                    const dayBtn = document.createElement('button');
+                    dayBtn.type = 'button';
+                    dayBtn.className = 'calendar-day other-month';
+                    dayBtn.textContent = day;
+                    calendarDays.appendChild(dayBtn);
+                }
+            };
+            
+            // Select a date
+            const selectDate = (date) => {
+                selectedDate = date;
+                expirationDateDisplay.value = formatDateDisplay(date);
+                expirationDateInput.value = formatDateValue(date);
+                clearExpirationDateButton.classList.remove('hidden');
+                customCalendar.classList.add('hidden');
+                generateCalendar(); // Refresh to show selection
+            };
+            
+            // Show/hide calendar
+            expirationDateDisplay.addEventListener('click', () => {
+                customCalendar.classList.toggle('hidden');
+                if (!customCalendar.classList.contains('hidden')) {
+                    generateCalendar();
+                }
+            });
+            
+            // Toggle between month and year view
+            monthYearToggle.addEventListener('click', toggleView);
+            
+            // Month/Year navigation
+            prevMonthBtn.addEventListener('click', () => {
+                if (isYearView) {
+                    yearRangeStart -= 16;
+                    generateYearPicker();
+                } else {
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                    generateCalendar();
+                }
+            });
+            
+            nextMonthBtn.addEventListener('click', () => {
+                if (isYearView) {
+                    yearRangeStart += 16;
+                    generateYearPicker();
+                } else {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    generateCalendar();
+                }
+            });
+            
+            // Today button
+            todayBtn.addEventListener('click', () => {
+                selectDate(new Date());
+            });
+            
+            // Clear button in calendar
+            clearDateBtn.addEventListener('click', () => {
+                selectedDate = null;
+                expirationDateDisplay.value = '';
+                expirationDateInput.value = '';
+                clearExpirationDateButton.classList.add('hidden');
+                customCalendar.classList.add('hidden');
+            });
+            
+            // Clear button next to input
+            clearExpirationDateButton.addEventListener('click', () => {
+                selectedDate = null;
+                expirationDateDisplay.value = '';
+                expirationDateInput.value = '';
+                clearExpirationDateButton.classList.add('hidden');
+            });
+            
+            // Close calendar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!customCalendar.contains(e.target) && 
+                    !expirationDateDisplay.contains(e.target)) {
+                    customCalendar.classList.add('hidden');
+                }
+            });
+            
+            // Initialize if there's a pre-existing value
+            if (expirationDateInput.value) {
+                selectedDate = new Date(expirationDateInput.value);
+                expirationDateDisplay.value = formatDateDisplay(selectedDate);
+                clearExpirationDateButton.classList.remove('hidden');
+            }
+            
+
+            // Memorandum data organized by year - fetched from compliance validator structure
+            // DepEd memorandum categories (kept static as they are not year-based)
+            const depedCategories = {
+                'Shape Paper': [
+                    'The Strengthened Senior High School Program Shaping Paper'
+                ],
+                'Curriculum Guides (Core)': [
+                    'Effective Communication - Core Subject Guide',
+                    'General Mathematics - Core Subject Guide',
+                    'General Science - Core Subject Guide',
+                    'Life and Career Skills - Core Subject Guide',
+                    'Mabisang Komunikasyon - Core Subject Guide',
+                    'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
+                ],
+                'Curriculum Guides (Academic)': [
+                    'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
+                    'Arts 2 (Creative Industries II – Performing Arts)',
+                    'Social Science 1 (Introduction to Social Sciences)',
+                    'Humanities 1 (Creative Writing)',
+                    'Humanities 2 (Introduction to World Religions and Belief Systems)',
+                    'Engineering 1 (Calculus)',
+                    'Engineering 2 (Fundamentals of Programming)',
+                    'Engineering 3 (Basic Electricity and Electronics)',
+                    'Business 1 (Business Enterprise Simulation)',
+                    'Economics 1 (Introduction to Economics)',
+                    'Management 1 (Fundamentals of Accountancy, Business, and Management)',
+                    'Health Science 1 (Introduction to Health Science)',
+                    'Health Science 2 (Basic Human Anatomy and Physiology)'
+                ],
+                'Curriculum Guides (TechPro)': [
+                    'Digital Tools and Productivity Applications',
+                    'Multimedia Development and Design',
+                    'Computer Systems and Network Administration',
+                    'Web Development',
+                    'Computer Programming'
+                ]
+            };
+            
+            // Function to populate CHED years (matching compliance_validator range)
+            const populateCHEDYears = () => {
+                const currentValue = memorandumYearSelect.value;
+                memorandumYearSelect.innerHTML = '<option value="" disabled selected>Select Year</option>';
+                for (let year = 2025; year >= 1994; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    memorandumYearSelect.appendChild(option);
+                }
+                if (currentValue) memorandumYearSelect.value = currentValue;
+            };
+
+            // Call it once to initialize
+            populateCHEDYears();
             
             // Function to fetch memorandums based on compliance, year, or category
             const fetchMemorandumData = async (compliance, yearOrCategory = null) => {
                 try {
                     if (compliance === 'CHED' && yearOrCategory) {
-                        return memorandumData[compliance][yearOrCategory] || [];
+                        const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${yearOrCategory}`);
+                        if (!response.ok) throw new Error('API request failed');
+                        const data = await response.json();
+                        return data.map(link => link.title);
                     } else if (compliance === 'DepEd' && yearOrCategory) {
-                        return memorandumData[compliance][yearOrCategory] || [];
+                        return depedCategories[yearOrCategory] || [];
                     }
                     return [];
                 } catch (error) {
@@ -1124,12 +1513,12 @@
                 } else if (approvalStatus === 'rejected') {
                     actionButtons = `
                         <div class="flex gap-2 mt-2">
-                            <button onclick="event.stopPropagation(); restoreCurriculum(${curriculum.id})" 
-                                    class="restore-btn px-3 py-1.5 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-xs font-medium rounded-lg transition-all duration-200 flex items-center gap-1">
+                            <button onclick="event.stopPropagation(); handleCardClick(${curriculum.id}, 'rejected')" 
+                                    class="revise-btn px-3 py-1.5 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-xs font-medium rounded-lg transition-all duration-200 flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                 </svg>
-                                Restore
+                                Revise
                             </button>
                         </div>
                     `;
@@ -1439,9 +1828,9 @@
                 console.log('Showing confirmation modal, isUpdating:', isUpdating, 'isRejectedUpdate:', isRejectedUpdate);
                 
                 showConfirmationModal({
-                    title: isRejectedUpdate ? 'Update Curriculum?' : (isUpdating ? 'Update Curriculum?' : 'Create Curriculum?'),
+                    title: isRejectedUpdate ? 'Revise Rejected Curriculum?' : (isUpdating ? 'Update Curriculum?' : 'Create Curriculum?'),
                     message: isRejectedUpdate 
-                        ? 'Are you sure you want to change the units of this curriculum?' 
+                        ? 'Are you sure you want to update this rejected curriculum? It will be returned to processing status for review.' 
                         : `Are you sure you want to ${isUpdating ? 'update' : 'create'} this curriculum?`,
                     icon: `<svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
                     confirmButtonClass: 'bg-blue-600 hover:bg-blue-700',
@@ -1569,38 +1958,7 @@
                 });
             };
 
-            // Restore curriculum function
-            window.restoreCurriculum = async (curriculumId) => {
-                showConfirmationModal({
-                    title: 'Restore Curriculum?',
-                    message: 'Are you sure you want to restore this curriculum to processing status?',
-                    icon: '<svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" /></svg>',
-                    confirmButtonClass: 'bg-blue-600 hover:bg-blue-700',
-                    onConfirm: async () => {
-                        try {
-                            const response = await fetch(`/api/curriculums/${curriculumId}/restore`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                }
-                            });
 
-                            const data = await response.json();
-
-                            if (response.ok) {
-                                showSuccessModal('Curriculum Restored!', data.message);
-                                fetchCurriculums(); // Changed from fetchAndDisplayCurriculums()
-                            } else {
-                                alert('Error: ' + (data.message || 'Failed to restore curriculum'));
-                            }
-                        } catch (error) {
-                            console.error('Error restoring curriculum:', error);
-                            alert('An error occurred while restoring the curriculum.');
-                        }
-                    }
-                });
-            };
 
             window.handleCardClick = (id, status) => {
                 if (status === 'approved') return;
@@ -1632,23 +1990,12 @@
                 console.log('Curriculum name:', curriculum.curriculum_name, 'Curriculum:', curriculum.curriculum);
                 showAddEditModal(true, curriculum);
                 
-                // Change modal title
-                document.getElementById('modal-title').textContent = 'Update Curriculum';
-                document.querySelector('#modal-panel > div.text-center.mb-8 > p').textContent = 'Update the units for this curriculum.';
+                // Change modal title to indicate this is for revising a rejected curriculum
+                document.getElementById('modal-title').textContent = 'Revise Rejected Curriculum';
+                document.querySelector('#modal-panel > div.text-center.mb-8 > p').textContent = 'Update and fix the issues for this rejected curriculum.';
                 
-                // Apply read-only styling to non-editable fields (including yearLevel)
-                const fieldsToDisable = ['curriculum', 'programCode', 'academicYear', 'yearLevel', 'compliance', 'memorandum', 'memorandumYear', 'memorandumCategory'];
-                fieldsToDisable.forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) {
-                        el.setAttribute('readonly', 'true');
-                        if(el.tagName === 'SELECT') {
-                            el.classList.add('pointer-events-none', 'bg-gray-100');
-                        } else {
-                            el.classList.add('bg-gray-100');
-                        }
-                    }
-                });
+                // Allow full editing - no fields are read-only
+                // The curriculum can be fully edited and will return to "processing" status when saved
                 
                 // Set status for submit handler
                 curriculumForm.dataset.approvalStatus = 'rejected';

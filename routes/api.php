@@ -60,6 +60,12 @@ Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class,
 Route::post('/global-search', [GlobalSearchController::class, 'search']);
 Route::get('/quick-search/{type}', [GlobalSearchController::class, 'quickSearch']);
 
+// --- Compliance Links Routes ---
+Route::get('/compliance-links', [App\Http\Controllers\ComplianceLinkController::class, 'index']);
+Route::post('/compliance-links', [App\Http\Controllers\ComplianceLinkController::class, 'store']);
+Route::put('/compliance-links/{id}', [App\Http\Controllers\ComplianceLinkController::class, 'update']);
+Route::delete('/compliance-links/{id}', [App\Http\Controllers\ComplianceLinkController::class, 'destroy']);
+
 // --- Description Similarity Check ---
 Route::post('/check-description-similarity', [DescriptionSimilarityController::class, 'check']);
 

@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subjects', function (Blueprint $table) {
-            $table->string('memorandum')->nullable()->after('subject_type');
-            $table->string('memorandum_year')->nullable()->after('memorandum');
-            $table->string('memorandum_category')->nullable()->after('memorandum_year');
+            if (!Schema::hasColumn('subjects', 'memorandum')) {
+                $table->string('memorandum')->nullable()->after('subject_type');
+            }
+            if (!Schema::hasColumn('subjects', 'memorandum_year')) {
+                $table->string('memorandum_year')->nullable()->after('memorandum');
+            }
+            if (!Schema::hasColumn('subjects', 'memorandum_category')) {
+                $table->string('memorandum_category')->nullable()->after('memorandum_year');
+            }
         });
     }
 

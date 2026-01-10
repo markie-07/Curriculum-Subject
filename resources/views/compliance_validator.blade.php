@@ -40,27 +40,6 @@
 
                         {{-- CHED Links Section --}}
                         <div id="ched-links" class="hidden space-y-3">
-                            @php
-                            $cmosByYear = [
-                                '2025' => [
-                                    ['title' => 'CMO No. 1, series of 2025 – Guidelines for Micro-Credential Development, Approval, and Recognition in Higher Education', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-1-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 2, series of 2025 – Updated List of Private Higher Education Institutions Granted Autonomous and Deregulated Status by Evaluation', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-NO.-02-S.-2025.pdf'],
-                                    ['title' => 'CMO No. 3, series of 2025 – Updated Guidelines for Securing Authority to Travel Abroad for State Universities and Colleges (SUCs)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-3-series-of-2025-Updated-Guidelines-for-Securing-Authority-to-Travel-Abroad-for-State-Universities-and-Colleges-SUCs.pdf'],
-                                    ['title' => 'CMO No. 4, series of 2025 – Revised Policies, Standards and Guidelines for Associate in Radiologictechnology Education (ART) Program', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-4-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 5, series of 2025 – Guidelines for the Accreditation of Hospitals and Primary Health Care Facilities for the Clinical Practice of Radiologic/X-RAY Technology Interns', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-5-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 6, series of 2025 – Application Process for Authority to Offer Transnational Higher Education Pursuant to Republic Act No. 11448 or The Transnational Higher Education Act', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-6-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 7, series of 2025 – Policies, Standards and Guidelines for the Implementation of the National Merchant Marine Aptitude Test (NaMMAT)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-7-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 9, series of 2025 – Updated Guidelines for the Scholarships for Staff and Instructors’ Knowledge Advancement Program (SIKAP) for Full-Time and Part-Time Study', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-9-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 10, series of 2025 – Policies and Standards on Centers of Excellence (COE) | Annex A', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-10-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 11, series of 2025 – Implementing Rules and Regulations of Republic Act No. 12124, “An Act Institutionalizing the Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP) and Providing Funds Therefor”', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-11-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 12, series of 2025 – Policies and Guidelines on Open Distance and e-Learning (ODeL)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-12-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 13, series of 2025 – Revised Policies and Guidelines for the CHED Merit Scholarship Program (CMSP)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-13-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 14, series of 2025 – Revised Implementing Guidelines for the CHED Scholarship Program for Future Statisticians (ESTATISKOLAR)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-14-s.-2025.pdf'],
-                                    ['title' => 'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-15-s.-2025.pdf'],
-                                ],
-                            ];
-                            @endphp
-
                             @for ($year = 2025; $year >= 1994; $year--)
                                 <div class="ched-accordion border border-gray-200 rounded-lg">
                                     <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
@@ -68,13 +47,21 @@
                                         <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                     <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
-                                        @if (isset($cmosByYear[(string)$year]))
-                                            @foreach ($cmosByYear[(string)$year] as $cmo)
-                                                <a href="{{ $cmo['url'] }}" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">{{ $cmo['title'] }}</a>
-                                            @endforeach
-                                        @else
-                                            <a href="https://ched.gov.ph/{{ $year }}-ched-memorandum-orders/" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">View all {{ $year }} issuances on the CHED website</a>
-                                        @endif
+                                        <!-- Add Link Button -->
+                                        <div class="mb-3 flex justify-end">
+                                            <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="{{ $year }}" data-agency="CHED">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                </svg>
+                                                Add Link
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Custom Links Container -->
+                                        <div class="custom-links-container space-y-2" data-year="{{ $year }}" data-agency="CHED"></div>
+                                        
+                                        <!-- Fallback Link -->
+                                        <a href="https://ched.gov.ph/{{ $year }}-ched-memorandum-orders/" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">View all {{ $year }} issuances on the CHED website</a>
                                     </div>
                                 </div>
                             @endfor
@@ -172,168 +159,17 @@
 
  <script>
  document.addEventListener('DOMContentLoaded', () => {
+    // --- Configuration ---
+    const API_BASE_URL = '/api/compliance-links';
+
+    // --- Element Definitions ---
     const agencyButton = document.getElementById('agency-button');
     const agencyMenu = document.getElementById('agency-menu');
     const linksContainer = document.getElementById('links-container');
     const selectedAgencySpan = document.getElementById('selected-agency');
     const linksHeader = document.getElementById('links-header');
-    const searchBar = document.getElementById('search-bar'); // Get the search bar
-
-    // Toggle dropdown menu
-    agencyButton.addEventListener('click', () => {
-        const isHidden = agencyMenu.classList.contains('hidden');
-        agencyMenu.classList.toggle('hidden', !isHidden);
-        agencyButton.setAttribute('aria-expanded', isHidden);
-    });
-
-    // Handle agency selection
-    document.querySelectorAll('.agency-option').forEach(button => {
-        button.addEventListener('click', () => {
-            const agency = button.dataset.agency;
-            const targetId = button.dataset.target;
-
-            // Update button text and links header
-            selectedAgencySpan.textContent = agency;
-            linksHeader.textContent = `Available ${agency} Issuances`;
-
-            // Hide the agency selection dropdown
-            agencyMenu.classList.add('hidden');
-            agencyButton.setAttribute('aria-expanded', 'false');
-
-            // Show the main links container
-            linksContainer.classList.remove('hidden');
-
-            // Hide all specific link sections
-            linksContainer.querySelectorAll('div[id$="-links"]').forEach(div => {
-                div.classList.add('hidden');
-            });
-
-            // Show the target link section
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            }
-
-            // MODIFIED: Reset search bar when changing agency
-            searchBar.value = '';
-            searchBar.dispatchEvent(new Event('input', { bubbles: true }));
-        });
-    });
-
-    // Close dropdown when clicking outside
-    window.addEventListener('click', (e) => {
-        if (!agencyButton.contains(e.target) && !agencyMenu.contains(e.target)) {
-            agencyMenu.classList.add('hidden');
-            agencyButton.setAttribute('aria-expanded', 'false');
-        }
-    });
-
-    // Accordion Logic for both CHED and DepEd links
-    document.querySelectorAll('.accordion-header').forEach(button => {
-        button.addEventListener('click', () => {
-            const content = button.nextElementSibling;
-            const icon = button.querySelector('svg');
-
-            const isHidden = content.classList.contains('hidden');
-            content.classList.toggle('hidden', !isHidden);
-            icon.classList.toggle('rotate-180', isHidden);
-        });
-    });
-
-    // NEW: Search bar functionality
-    searchBar.addEventListener('input', () => {
-        const searchTerm = searchBar.value.toLowerCase();
-
-        // Find the currently visible link section (either CHED or DepEd)
-        const activeLinksSection = linksContainer.querySelector('#ched-links:not(.hidden), #deped-links:not(.hidden)');
-        if (!activeLinksSection) return;
-
-        // Get all accordions within the active section
-        const allAccordions = activeLinksSection.querySelectorAll('.ched-accordion, .deped-accordion');
-
-        allAccordions.forEach(accordion => {
-            let hasVisibleContent = false;
-
-            // Hide or show individual links first
-            const links = accordion.querySelectorAll('a');
-            links.forEach(link => {
-                const linkText = link.textContent.toLowerCase();
-                if (linkText.includes(searchTerm)) {
-                    link.style.display = 'block';
-                    hasVisibleContent = true;
-                } else {
-                    link.style.display = 'none';
-                }
-            });
-
-            // Special handling for DepEd Academic/TechPro sub-groups
-            const subGroups = accordion.querySelectorAll('.accordion-content > div[class*="space-y"]');
-            if (subGroups.length > 0) {
-                subGroups.forEach(group => {
-                    // Check if this subgroup has any visible links left
-                    const visibleLinksInGroup = group.querySelectorAll('a[style*="display: block"]');
-                    if (visibleLinksInGroup.length > 0) {
-                        group.style.display = 'block';
-                        hasVisibleContent = true;
-                    } else {
-                        group.style.display = 'none';
-                    }
-                });
-            }
-
-            // Finally, hide or show the entire accordion based on content
-            if (hasVisibleContent) {
-                accordion.style.display = 'block';
-            } else {
-                accordion.style.display = 'none';
-            }
-        });
-    });
- });
- </script>
-
-{{-- External Link Confirmation Modal --}}
-<div id="externalLinkModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="external-link-modal-panel">
-            <button id="closeExternalLinkModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            
-            <div class="text-center mb-8">
-                <img src="{{ asset('/images/SMSIII LOGO.png') }}" alt="SMS3 Logo" class="mx-auto h-16 w-auto mb-4">
-                <h2 class="text-2xl font-bold text-slate-800">External Document</h2>
-                <p class="text-sm text-slate-500 mt-1">You are about to view an official government document.</p>
-            </div>
-
-            <div class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
-                <div class="flex items-start">
-                    <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div class="text-sm text-blue-700">
-                        <p class="font-semibold">Official Document Notice:</p>
-                        <p>This will open an official government document in a new tab. The document is hosted on the official agency website.</p>
-                        <p class="mt-2"><strong>Document:</strong> <span id="document-title" class="break-words"></span></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex gap-4 pt-4">
-                <button type="button" id="cancelExternalLinkButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
-                <button type="button" id="confirmExternalLinkButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    <span>Open Document</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    const searchBar = document.getElementById('search-bar');
+    
     // Modal elements
     const externalLinkModal = document.getElementById('externalLinkModal');
     const externalLinkModalPanel = document.getElementById('external-link-modal-panel');
@@ -341,14 +177,119 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelExternalLinkButton = document.getElementById('cancelExternalLinkButton');
     const confirmExternalLinkButton = document.getElementById('confirmExternalLinkButton');
     const documentTitle = document.getElementById('document-title');
+    
+    // Add Link Modal elements
+    const addLinkModal = document.getElementById('addLinkModal');
+    const addLinkModalPanel = document.getElementById('add-link-modal-panel');
+    const addLinkModalTitle = document.getElementById('addLinkModalTitle');
+    const closeAddLinkModalButton = document.getElementById('closeAddLinkModalButton');
+    const cancelAddLinkButton = document.getElementById('cancelAddLinkButton');
+    const addLinkForm = document.getElementById('addLinkForm');
+    const linkTitleInput = document.getElementById('linkTitle');
+    const linkUrlInput = document.getElementById('linkUrl');
 
     let currentLink = null;
+    let currentYear = null;
+    let currentAgency = null;
+    let editingLinkId = null;
+    let isLoadingAll = false;
 
-    // Modal helper functions
+    // --- Data Management ---
+    const fetchAllLinksForAgency = async (agency) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}?agency=${agency}`);
+            const data = await response.json();
+            return Array.isArray(data) ? data : [];
+        } catch (error) {
+            console.error(`Error fetching links for ${agency}:`, error);
+            return [];
+        }
+    };
+
+    const distributeLinks = (links, agency) => {
+        // Clear all containers for this agency first
+        document.querySelectorAll(`.custom-links-container[data-agency="${agency}"]`).forEach(c => {
+            c.innerHTML = '';
+            c.dataset.loaded = 'true';
+        });
+
+        if (!links || links.length === 0) return;
+
+        // Group links by year
+        const grouped = links.reduce((acc, link) => {
+            if (!acc[link.year]) acc[link.year] = [];
+            acc[link.year].push(link);
+            return acc;
+        }, {});
+
+        // Render each group
+        Object.keys(grouped).forEach(year => {
+            renderLinkList(year, agency, grouped[year]);
+        });
+    };
+
+    const renderLinkList = (year, agency, links) => {
+        const container = document.querySelector(`.custom-links-container[data-year="${year}"][data-agency="${agency}"]`);
+        if (!container) return;
+
+        container.innerHTML = '';
+        links.forEach(link => {
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'custom-link-item flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 transition-colors duration-200';
+            linkDiv.innerHTML = `
+                <a href="${link.url}" target="_blank" class="flex-grow text-blue-600 hover:underline text-sm md:text-base">${link.title}</a>
+                <div class="flex gap-1">
+                    <button type="button" class="edit-custom-link-btn p-1 text-blue-600 hover:bg-blue-100 rounded transition" data-link-id="${link.id}" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </button>
+                    <button type="button" class="delete-custom-link-btn p-1 text-red-600 hover:bg-red-100 rounded transition" data-link-id="${link.id}" title="Delete">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            // Re-bind events for edit/delete
+            linkDiv.querySelector('.edit-custom-link-btn').onmouseenter = () => {}; // dummy to ensure ready
+            linkDiv.querySelector('.edit-custom-link-btn').onclick = (e) => {
+                e.stopPropagation();
+                showAddLinkModal(year, agency, link);
+            };
+            linkDiv.querySelector('.delete-custom-link-btn').onclick = (e) => {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to delete this custom link?')) {
+                    deleteCustomLink(year, agency, link.id);
+                }
+            };
+
+            container.appendChild(linkDiv);
+        });
+        container.dataset.loaded = 'true';
+    };
+
+    const deleteCustomLink = async (year, agency, linkId) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/${linkId}`, {
+                method: 'DELETE',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+            });
+            if (response.ok) {
+                // Refresh all for this agency to keep sync easy
+                const links = await fetchAllLinksForAgency(agency);
+                distributeLinks(links, agency);
+            }
+        } catch (error) {
+            console.error('Error deleting link:', error);
+        }
+    };
+
+    // --- Modal Logic ---
     const showExternalLinkModal = (link, title) => {
         currentLink = link;
         documentTitle.textContent = title || 'Official Document';
-        
         externalLinkModal.classList.remove('hidden');
         setTimeout(() => {
             externalLinkModal.classList.remove('opacity-0');
@@ -362,33 +303,201 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => externalLinkModal.classList.add('hidden'), 300);
     };
 
-    // Event listeners for all external links
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a[href^="http"]');
-        if (link && link.getAttribute('target') === '_blank') {
-            e.preventDefault();
-            const title = link.textContent.trim();
-            showExternalLinkModal(link.href, title);
+    const showAddLinkModal = (year, agency, existingLink = null) => {
+        currentYear = year;
+        currentAgency = agency;
+        
+        if (existingLink) {
+            editingLinkId = existingLink.id;
+            addLinkModalTitle.textContent = 'Edit Custom Link';
+            linkTitleInput.value = existingLink.title;
+            linkUrlInput.value = existingLink.url;
+        } else {
+            editingLinkId = null;
+            addLinkModalTitle.textContent = 'Add Custom Link';
+            linkTitleInput.value = '';
+            linkUrlInput.value = '';
+        }
+
+        addLinkModal.classList.remove('hidden');
+        setTimeout(() => {
+            addLinkModal.classList.remove('opacity-0');
+            addLinkModalPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+
+    const hideAddLinkModal = () => {
+        addLinkModal.classList.add('opacity-0');
+        addLinkModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            addLinkModal.classList.add('hidden');
+            addLinkForm.reset();
+        }, 300);
+    };
+
+    // --- Event Listeners ---
+    
+    // Agency Selection
+    document.querySelectorAll('.agency-option').forEach(button => {
+        button.addEventListener('click', async () => {
+            const agency = button.dataset.agency;
+            const targetId = button.dataset.target;
+            
+            selectedAgencySpan.textContent = agency;
+            linksHeader.textContent = `Available ${agency} Issuances`;
+            agencyMenu.classList.add('hidden');
+            agencyButton.setAttribute('aria-expanded', 'false');
+            linksContainer.classList.remove('hidden');
+            
+            linksContainer.querySelectorAll('div[id$="-links"]').forEach(div => div.classList.add('hidden'));
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) targetSection.classList.remove('hidden');
+
+            // Load data if needed
+            const containers = targetSection.querySelectorAll('.custom-links-container');
+            if (containers.length > 0 && !containers[0].dataset.loaded) {
+                const links = await fetchAllLinksForAgency(agency);
+                distributeLinks(links, agency);
+            }
+
+            searchBar.value = '';
+            searchBar.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    });
+
+    // Accordion Logic
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('svg');
+            const isOpening = content.classList.contains('hidden');
+            
+            content.classList.toggle('hidden', !isOpening);
+            icon.classList.toggle('rotate-180', isOpening);
+        });
+    });
+
+    // Search Functionality
+    searchBar.addEventListener('input', () => {
+        const searchTerm = searchBar.value.toLowerCase();
+        const activeLinksSection = linksContainer.querySelector('#ched-links:not(.hidden), #deped-links:not(.hidden)');
+        if (!activeLinksSection) return;
+
+        activeLinksSection.querySelectorAll('.ched-accordion, .deped-accordion').forEach(accordion => {
+            let hasVisibleContent = false;
+            const links = accordion.querySelectorAll('.accordion-content a');
+            
+            links.forEach(link => {
+                const linkText = link.textContent.toLowerCase();
+                const itemDiv = link.closest('.custom-link-item');
+                
+                if (linkText.includes(searchTerm)) {
+                    if (itemDiv) itemDiv.style.display = 'flex';
+                    else link.style.display = 'block';
+                    hasVisibleContent = true;
+                } else {
+                    if (itemDiv) itemDiv.style.display = 'none';
+                    else link.style.display = 'none';
+                }
+            });
+
+            // DepEd Subgroups
+            accordion.querySelectorAll('.accordion-content > div[class*="space-y"]').forEach(group => {
+                const visibleLinks = group.querySelectorAll('a:not([style*="display: none"])');
+                group.style.display = visibleLinks.length > 0 ? 'block' : 'none';
+                if (visibleLinks.length > 0) hasVisibleContent = true;
+            });
+
+            accordion.style.display = (searchTerm === "" || hasVisibleContent) ? 'block' : 'none';
+        });
+    });
+
+    // Toggle dropdown menu
+    agencyButton.addEventListener('click', () => {
+        const isHidden = agencyMenu.classList.contains('hidden');
+        agencyMenu.classList.toggle('hidden', !isHidden);
+        agencyButton.setAttribute('aria-expanded', isHidden);
+    });
+
+    // Close dropdown when clicking outside
+    window.addEventListener('click', (e) => {
+        if (!agencyButton.contains(e.target) && !agencyMenu.contains(e.target)) {
+            agencyMenu.classList.add('hidden');
+            agencyButton.setAttribute('aria-expanded', 'false');
         }
     });
 
-    // Modal close event listeners
+    // Modal close events
     closeExternalLinkModalButton.addEventListener('click', hideExternalLinkModal);
     cancelExternalLinkButton.addEventListener('click', hideExternalLinkModal);
-
-    // Confirm external link
-    confirmExternalLinkButton.addEventListener('click', function() {
+    confirmExternalLinkButton.addEventListener('click', () => {
         if (currentLink) {
             window.open(currentLink, '_blank');
             hideExternalLinkModal();
         }
     });
 
-    // Close modal when clicking outside
-    externalLinkModal.addEventListener('click', function(e) {
-        if (e.target === this) hideExternalLinkModal();
+    externalLinkModal.addEventListener('click', (e) => {
+        if (e.target === externalLinkModal) hideExternalLinkModal();
     });
-});
-</script>
+
+    closeAddLinkModalButton.addEventListener('click', hideAddLinkModal);
+    cancelAddLinkButton.addEventListener('click', hideAddLinkModal);
+    addLinkModal.addEventListener('click', (e) => {
+        if (e.target === addLinkModal) hideAddLinkModal();
+    });
+
+    // Add Link clicks
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.add-link-btn');
+        if (btn) {
+            showAddLinkModal(btn.dataset.year, btn.dataset.agency);
+        }
+    });
+
+    // External Link Handler
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="http"]');
+        if (link && link.getAttribute('target') === '_blank' && !link.closest('.custom-link-item')) { 
+            e.preventDefault();
+            showExternalLinkModal(link.href, link.textContent.trim());
+        }
+    });
+
+    // Form Submit
+    addLinkForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = linkTitleInput.value.trim();
+        const url = linkUrlInput.value.trim();
+        if (!title || !url) return;
+
+        const data = { agency: currentAgency, year: currentYear, title, url };
+        try {
+            const api_url = editingLinkId ? `${API_BASE_URL}/${editingLinkId}` : API_BASE_URL;
+            const method = editingLinkId ? 'PUT' : 'POST';
+            
+            const response = await fetch(api_url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const links = await fetchAllLinksForAgency(currentAgency);
+                distributeLinks(links, currentAgency);
+                hideAddLinkModal();
+            }
+        } catch (error) {
+            console.error('Error saving link:', error);
+        }
+    });
+
+    // Initialize: Check for active agency and load
+    const activeAgency = selectedAgencySpan.textContent.trim();
+    if (activeAgency && activeAgency !== 'Select Agency') {
+        fetchAllLinksForAgency(activeAgency).then(links => distributeLinks(links, activeAgency));
+    }
+ });
+ </script>
 
  @endsection

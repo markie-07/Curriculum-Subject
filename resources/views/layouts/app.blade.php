@@ -289,7 +289,8 @@
         }
 
         [data-theme="dark"] .delete-subject-tag:hover {
-            color: #fca5a5 !important;
+            color: #f87171 !important;
+            background-color: transparent !important;
         }
 
         /* Status badge dark mode fixes */
@@ -416,11 +417,11 @@
         }
 
         [data-theme="dark"] .hover\:bg-indigo-50:hover {
-            background-color: rgba(99, 102, 241, 0.1) !important;
+            background-color: transparent !important;
         }
 
         [data-theme="dark"] .hover\:text-indigo-800:hover {
-            color: #c7d2fe !important;
+            color: inherit !important;
         }
 
         /* Progress circle and total weight text */
@@ -481,7 +482,7 @@
         }
 
         [data-theme="dark"] .grade-history-card:hover {
-            background-color: var(--bg-secondary) !important;
+            background-color: var(--bg-tertiary) !important;
         }
 
         [data-theme="dark"] .grade-history-card p {
@@ -543,7 +544,7 @@
         /* Checkbox labels and hover states */
         [data-theme="dark"] label.hover\:bg-gray-50:hover {
             background-color: #1f2937 !important;
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         [data-theme="dark"] label.cursor-pointer {
@@ -561,13 +562,13 @@
         }
 
         [data-theme="dark"] label.cursor-pointer:hover {
-            background-color: #111827 !important;
-            border-color: var(--border-secondary) !important;
+            background-color: #1f2937 !important;
+            border-color: var(--border-primary) !important;
         }
 
         /* Darker hover effect for export tool form elements */
         [data-theme="dark"] .hover\:bg-gray-50:hover {
-            background-color: #111827 !important;
+            background-color: transparent !important;
             border-bottom-color: transparent !important;
             box-shadow: none !important;
         }
@@ -575,7 +576,7 @@
         /* Remove blue bottom effects in employee management */
         [data-theme="dark"] .hover\:bg-gray-50:hover {
             border-bottom: none !important;
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         /* Ensure no blue highlights or shadows on hover */
@@ -586,26 +587,26 @@
 
         /* Specific darker hover for curriculum export tool checkboxes */
         [data-theme="dark"] .transition-colors:hover {
-            background-color: #111827 !important;
-            border-color: #6b7280 !important;
+            background-color: #1f2937 !important;
+            border-color: var(--border-primary) !important;
         }
 
         /* Ensure borders remain visible on hover for all interactive elements */
         [data-theme="dark"] .border:hover {
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         [data-theme="dark"] .border-gray-300:hover {
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         [data-theme="dark"] .rounded-lg:hover {
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         /* Specific fixes for export tool hover borders */
         [data-theme="dark"] .transition-colors:hover {
-            border-color: var(--border-secondary) !important;
+            border-color: var(--border-primary) !important;
         }
 
         [data-theme="dark"] label span {
@@ -669,7 +670,7 @@
         }
 
         [data-theme="dark"] .export-history-card:hover {
-            background-color: var(--bg-tertiary) !important;
+            background-color: var(--bg-secondary) !important;
         }
 
         /* Search input */
@@ -685,7 +686,7 @@
 
         /* Export button hover effects */
         [data-theme="dark"] .bg-blue-600:hover {
-            background-color: #1d4ed8 !important;
+            background-color: #2563eb !important;
         }
 
         /* Gray text variations */
@@ -700,7 +701,7 @@
         }
 
         [data-theme="dark"] .subject-preview-item:hover {
-            background-color: var(--bg-secondary) !important;
+            background-color: var(--bg-tertiary) !important;
         }
 
         /* Ensure all text in export tool is visible */
@@ -717,11 +718,11 @@
 
         /* Employee Management hover fixes - remove blue bottom effects */
         [data-theme="dark"] .hover\:bg-gray-50 {
-            transition: background-color 0.2s ease !important;
+            transition: none !important;
         }
 
         [data-theme="dark"] .hover\:bg-gray-50:hover {
-            background-color: var(--bg-tertiary) !important;
+            background-color: transparent !important;
             border-bottom-color: transparent !important;
             border-bottom: none !important;
             box-shadow: none !important;
@@ -767,7 +768,7 @@
         }
 
         [data-theme="dark"] #statusConfirmModal .hover\:bg-slate-200:hover {
-            background-color: var(--bg-primary) !important;
+            background-color: var(--bg-tertiary) !important;
         }
 
         /* Success Modal Dark Mode Styling */
@@ -2013,15 +2014,40 @@
             </main>
         </div>
     </div>
+    
+    {{-- Restore sidebar state immediately to prevent flash --}}
+    <script>
+        (function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarState = localStorage.getItem('sidebarState');
+            if (sidebarState === 'expanded') {
+                sidebar.classList.remove('collapsed');
+            } else if (sidebarState === 'collapsed') {
+                sidebar.classList.add('collapsed');
+            } else {
+                // Default to expanded
+                sidebar.classList.remove('collapsed');
+            }
+        })();
+    </script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.getElementById('sidebar-toggle');
+            
+            // Sidebar toggle handler
             sidebarToggle.addEventListener('click', () => {
                 if (window.innerWidth < 640) {
                     sidebar.classList.toggle('-translate-x-full');
                 } else {
                     sidebar.classList.toggle('collapsed');
+                    // Save sidebar state to localStorage
+                    if (sidebar.classList.contains('collapsed')) {
+                        localStorage.setItem('sidebarState', 'collapsed');
+                    } else {
+                        localStorage.setItem('sidebarState', 'expanded');
+                    }
                 }
             });
 
@@ -2033,11 +2059,15 @@
                 });
             }
 
-            // Close sidebar when clicking outside on mobile
+            // Close sidebar when clicking outside on mobile (but not on nav links)
             document.addEventListener('click', (e) => {
+                // Check if the clicked element or any of its parents is a navigation link
+                const isNavLink = e.target.closest('.nav-link');
+                
                 if (window.innerWidth < 640 && 
                     !sidebar.contains(e.target) && 
                     !sidebarToggle.contains(e.target) && 
+                    !isNavLink &&
                     !sidebar.classList.contains('-translate-x-full')) {
                     sidebar.classList.add('-translate-x-full');
                 }
