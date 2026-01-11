@@ -14,31 +14,37 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Super Admin
-        User::create([
-            'name' => 'Super Administrator',
-            'username' => 'superadmin',
-            'email' => 'lhandelpamisa0@gmail.com',
-            'password' => Hash::make('superadmin24'),
-            'role' => 'super_admin',
-        ]);
+        if (!User::where('email', 'lhandelpamisa0@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Super Administrator',
+                'username' => 'superadmin',
+                'email' => 'lhandelpamisa0@gmail.com',
+                'password' => Hash::make('superadmin24'),
+                'role' => 'super_admin',
+            ]);
+        }
 
-        User::create([
-            'name' => 'Mark James',
-            'username' => 'markjames',
-            'email' => 'markjamesp11770@gmail.com', // Must match DynamicMailService config
-            'password' => Hash::make('superadmin123'),
-            'role' => 'super_admin',
-            'status' => 'active',
-        ]);
+        if (!User::where('email', 'markjamesp11770@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Mark James',
+                'username' => 'markjames',
+                'email' => 'markjamesp11770@gmail.com', // Must match DynamicMailService config
+                'password' => Hash::make('superadmin123'),
+                'role' => 'super_admin',
+                'status' => 'active',
+            ]);
+        }
 
         // Admin
-        User::create([
-            'name' => 'Administrator',
-            'username' => 'admin',
-            'email' => 'olausersms3@gmail.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-        ]);
+        if (!User::where('email', 'olausersms3@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Administrator',
+                'username' => 'admin',
+                'email' => 'olausersms3@gmail.com',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+            ]);
+        }
 
         // Additional Super Admin Users
 

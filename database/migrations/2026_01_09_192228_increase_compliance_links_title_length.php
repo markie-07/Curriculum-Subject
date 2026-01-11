@@ -25,7 +25,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('compliance_links')) {
             Schema::table('compliance_links', function (Blueprint $table) {
-                $table->string('title')->change();
+                // $table->string('title')->change(); // Disabled to prevent SQLSTATE[22001] truncation error on rollback
             });
         }
     }

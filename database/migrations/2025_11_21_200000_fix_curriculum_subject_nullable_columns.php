@@ -11,10 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('curriculum_subject', function (Blueprint $table) {
-            $table->integer('year')->nullable()->change();
-            $table->integer('semester')->nullable()->change();
-        });
+        if (Schema::hasTable('curriculum_subject')) {
+            Schema::table('curriculum_subject', function (Blueprint $table) {
+                if (Schema::hasColumn('curriculum_subject', 'year')) {
+                    $table->integer('year')->nullable()->change();
+                }
+                if (Schema::hasColumn('curriculum_subject', 'semester')) {
+                    $table->integer('semester')->nullable()->change();
+                }
+            });
+        }
     }
 
     /**

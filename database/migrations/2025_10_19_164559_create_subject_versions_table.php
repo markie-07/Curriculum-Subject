@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subject_versions', function (Blueprint $table) {
+        if (!Schema::hasTable('subject_versions')) {
+            Schema::create('subject_versions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('subject_id');
             $table->integer('version_number');
@@ -44,6 +45,7 @@ return new class extends Migration
             $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
             $table->index(['subject_id', 'version_number']);
         });
+        }
     }
 
     /**

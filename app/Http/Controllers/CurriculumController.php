@@ -20,7 +20,8 @@ class CurriculumController extends Controller
     public function index()
     {
         // Automatically check for expired curriculums to keep status up-to-date
-        \Illuminate\Support\Facades\Artisan::call('curriculums:expire');
+        // Temporarily disabled due to potential performance issues
+        // \Illuminate\Support\Facades\Artisan::call('curriculums:expire');
 
         $curriculums = Curriculum::withCount('subjects')
             ->orderBy('year_level')
