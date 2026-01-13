@@ -208,6 +208,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-equivalency');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
+    // Debug: Check if button is found
+    console.log('Create button found:', createBtn);
+    console.log('Button clickable:', createBtn && !createBtn.disabled);
+    
     // Modal elements
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmationModalPanel = document.getElementById('confirmation-modal-panel');
@@ -357,6 +361,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // CREATE
     createBtn.addEventListener('click', function () {
+        console.log('Create button clicked!'); // Debug log
+        
         const sourceSubject = sourceSubjectInput.value.trim();
         const equivalentSubjectId = equivalentSubjectSelect.value;
 
