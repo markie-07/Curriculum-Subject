@@ -234,8 +234,25 @@ document.addEventListener('DOMContentLoaded', function () {
     let itemToEdit = null;
     let currentAction = null;
 
+    // Event Listeners for Confirmation Modal Buttons
+    cancelConfirmationButton.addEventListener('click', () => {
+        hideConfirmationModal();
+        currentAction = null;
+    });
 
+    confirmActionButton.addEventListener('click', () => {
+        if (currentAction && typeof currentAction === 'function') {
+            currentAction();
+        }
+        hideConfirmationModal();
+    });
 
+    // Event Listeners for Success Modal
+    closeSuccessModalButton.addEventListener('click', hideSuccessModal);
+
+    // Event Listeners for Edit Modal
+    closeEditModalButton.addEventListener('click', hideEditModal);
+    cancelEditModalButton.addEventListener('click', hideEditModal);
 
     // Modal Helper Functions
     const showSuccessModal = (title, message) => {
