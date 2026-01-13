@@ -253,6 +253,18 @@
     const linkTitleInput = document.getElementById('linkTitle');
     const linkUrlInput = document.getElementById('linkUrl');
 
+    // Debug: Check which elements are missing
+    console.log('Modal elements check:', {
+        externalLinkModal: !!externalLinkModal,
+        addLinkModal: !!addLinkModal,
+        closeExternalLinkModalButton: !!closeExternalLinkModalButton,
+        closeAddLinkModalButton: !!closeAddLinkModalButton,
+        cancelExternalLinkButton: !!cancelExternalLinkButton,
+        cancelAddLinkButton: !!cancelAddLinkButton,
+        confirmExternalLinkButton: !!confirmExternalLinkButton,
+        addLinkForm: !!addLinkForm
+    });
+
     let currentLink = null;
     let currentYear = null;
     let currentAgency = null;
@@ -492,25 +504,39 @@
         }
     });
 
-    // Modal close events
-    closeExternalLinkModalButton.addEventListener('click', hideExternalLinkModal);
-    cancelExternalLinkButton.addEventListener('click', hideExternalLinkModal);
-    confirmExternalLinkButton.addEventListener('click', () => {
-        if (currentLink) {
-            window.open(currentLink, '_blank');
-            hideExternalLinkModal();
-        }
-    });
+    // Modal close events (with null checks)
+    if (closeExternalLinkModalButton) {
+        closeExternalLinkModalButton.addEventListener('click', hideExternalLinkModal);
+    }
+    if (cancelExternalLinkButton) {
+        cancelExternalLinkButton.addEventListener('click', hideExternalLinkModal);
+    }
+    if (confirmExternalLinkButton) {
+        confirmExternalLinkButton.addEventListener('click', () => {
+            if (currentLink) {
+                window.open(currentLink, '_blank');
+                hideExternalLinkModal();
+            }
+        });
+    }
 
-    externalLinkModal.addEventListener('click', (e) => {
-        if (e.target === externalLinkModal) hideExternalLinkModal();
-    });
+    if (externalLinkModal) {
+        externalLinkModal.addEventListener('click', (e) => {
+            if (e.target === externalLinkModal) hideExternalLinkModal();
+        });
+    }
 
-    closeAddLinkModalButton.addEventListener('click', hideAddLinkModal);
-    cancelAddLinkButton.addEventListener('click', hideAddLinkModal);
-    addLinkModal.addEventListener('click', (e) => {
-        if (e.target === addLinkModal) hideAddLinkModal();
-    });
+    if (closeAddLinkModalButton) {
+        closeAddLinkModalButton.addEventListener('click', hideAddLinkModal);
+    }
+    if (cancelAddLinkButton) {
+        cancelAddLinkButton.addEventListener('click', hideAddLinkModal);
+    }
+    if (addLinkModal) {
+        addLinkModal.addEventListener('click', (e) => {
+            if (e.target === addLinkModal) hideAddLinkModal();
+        });
+    }
 
     // Add Link clicks
     document.addEventListener('click', (e) => {
