@@ -238,27 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let itemToEdit = null;
     let currentAction = null;
 
-    // Event Listeners for Confirmation Modal Buttons
-    cancelConfirmationButton.addEventListener('click', () => {
-        hideConfirmationModal();
-        currentAction = null;
-    });
-
-    confirmActionButton.addEventListener('click', () => {
-        if (currentAction && typeof currentAction === 'function') {
-            currentAction();
-        }
-        hideConfirmationModal();
-    });
-
-    // Event Listeners for Success Modal
-    closeSuccessModalButton.addEventListener('click', hideSuccessModal);
-
-    // Event Listeners for Edit Modal
-    closeEditModalButton.addEventListener('click', hideEditModal);
-    cancelEditModalButton.addEventListener('click', hideEditModal);
-
-    // Modal Helper Functions
+    // Modal Helper Functions (MUST be defined before event listeners use them)
     const showSuccessModal = (title, message) => {
         successModalTitle.textContent = title;
         successModalMessage.textContent = message;
@@ -308,6 +288,27 @@ document.addEventListener('DOMContentLoaded', function () {
         editModalPanel.classList.add('opacity-0', 'scale-95');
         setTimeout(() => editModal.classList.add('hidden'), 300);
     };
+
+    // Event Listeners for Confirmation Modal Buttons (NOW AFTER helper functions)
+    cancelConfirmationButton.addEventListener('click', () => {
+        hideConfirmationModal();
+        currentAction = null;
+    });
+
+    confirmActionButton.addEventListener('click', () => {
+        if (currentAction && typeof currentAction === 'function') {
+            currentAction();
+        }
+        hideConfirmationModal();
+    });
+
+    // Event Listeners for Success Modal
+    closeSuccessModalButton.addEventListener('click', hideSuccessModal);
+
+    // Event Listeners for Edit Modal
+    closeEditModalButton.addEventListener('click', hideEditModal);
+    cancelEditModalButton.addEventListener('click', hideEditModal);
+
 
 
 
