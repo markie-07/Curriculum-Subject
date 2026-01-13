@@ -57,9 +57,39 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            
+            // Connection Optimization Settings
+            // These settings help reduce connection usage and avoid hitting limits
             'options' => extension_loaded('pdo_mysql') ? array_filter([
+                // SSL Configuration
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                
+                // Persistent Connections - Reuse existing connections
+                // Reduces the number of new connections created
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
+                
+                // Emulate Prepared Statements - Can improve performance
+                PDO::ATTR_EMULATE_PREPARES => true,
+                
+                // Error Mode - Throw exceptions on errors
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                
+                // Default Fetch Mode - Return associative arrays
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                
+                // Connection Timeout - Fail fast if can't connect (in seconds)
+                PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 5),
+                
+                // MySQL Specific: Use buffered queries to reduce memory
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                
+                // MySQL Specific: Initialize command (runs on each connection)
+                // Set session variables for optimization
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
             ]) : [],
+            
+            // Sticky connections - Keep using same connection for read/write
+            'sticky' => env('DB_STICKY', true),
         ],
 
         'mariadb' => [

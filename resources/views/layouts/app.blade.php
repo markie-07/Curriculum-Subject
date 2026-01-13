@@ -2432,7 +2432,7 @@
                     console.error('Error loading notification count:', error);
                 });
 
-            // Poll for new notifications every 3 seconds (Faster for testing)
+            // Poll for new notifications every 60 seconds (reduced from 3s to prevent database connection limit)
             setInterval(() => {
                 fetch('/notifications/unread-count', {
                     method: 'GET',
@@ -2463,7 +2463,7 @@
                     .catch(error => {
                         console.error('Error polling notifications:', error);
                     });
-            }, 3000);
+            }, 60000);
 
 
 

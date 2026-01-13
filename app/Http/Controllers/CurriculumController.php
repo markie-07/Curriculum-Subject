@@ -226,7 +226,21 @@ class CurriculumController extends Controller
     {
         try {
             $curriculum = Curriculum::with('subjects')->findOrFail($id);
-            $allSubjects = Subject::all(); 
+            
+            // Optimize: Only select necessary columns for subject mapping
+            $allSubjects = Subject::select([
+                'id',
+                'subject_name',
+                'subject_code',
+                'subject_type',
+                'subject_unit',
+                'contact_hours',
+                'memorandum',
+                'memorandum_year',
+                'memorandum_category'
+            ])
+            ->orderBy('subject_name')
+            ->get();
 
             return response()->json([
                 'curriculum' => $curriculum,

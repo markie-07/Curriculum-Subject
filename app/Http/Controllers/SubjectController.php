@@ -12,7 +12,25 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        return response()->json(Subject::all());
+        // Optimize: Only select necessary columns instead of loading everything
+        // This significantly reduces database load and memory usage
+        $subjects = Subject::select([
+            'id',
+            'subject_name',
+            'subject_code',
+            'subject_type',
+            'subject_unit',
+            'contact_hours',
+            'course_description',
+            'memorandum',
+            'memorandum_year',
+            'memorandum_category',
+            'created_at'
+        ])
+        ->orderBy('subject_name')
+        ->get();
+        
+        return response()->json($subjects);
     }
 
     public function store(Request $request)

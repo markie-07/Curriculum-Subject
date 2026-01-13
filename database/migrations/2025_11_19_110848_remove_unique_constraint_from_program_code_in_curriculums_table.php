@@ -12,7 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('curriculums', function (Blueprint $table) {
-            $table->dropUnique(['program_code']);
+            // Check if the unique constraint exists before trying to drop it
+            $databaseName = config('database.connections.mysql.database');
+            $uniqueExists = \DB::select("
+                SELECT COUNT(*) as count 
+                FROM information_schema.STATISTICS 
+                WHERE TABLE_SCHEMA = ? 
+                AND TABLE_NAME = 'curriculums' 
+                AND INDEX_NAME = 'curriculums_program_code_unique'
+            ", [$databaseName]);
+            
+            if ($uniqueExists[0]->count > 0) {
+                $table->dropUnique(['program_code']);
+            }
         });
     }
 
