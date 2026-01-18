@@ -1398,27 +1398,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadMinorGradeStructure = async () => {
         try {
-            // Find a minor subject to get the current grade structure
-            const minorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Minor');
+            // OPTIMIZED: Load default structure immediately without API calls
+            // This significantly improves performance by eliminating unnecessary database queries
+            // Existing custom grades will be loaded only when user clicks "Create new grades"
             
-            if (minorSubjects.length > 0) {
-                // Try to get grade data from the first minor subject
-                try {
-                    const firstMinorSubject = minorSubjects[0];
-                    const gradeData = await fetchAPI(`grades/${firstMinorSubject.id}`);
-                    
-                    if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
-                        // Load the existing grade structure
-                        loadGradeDataToDOM(gradeData.components);
-                        console.log('Loaded existing minor grade structure:', gradeData.components);
-                        return;
-                    }
-                } catch (error) {
-                    console.log('No existing grades found for minor subjects, loading default structure');
-                }
-            }
-            
-            // If no existing grades found, load default structure
             const defaultStructure = {
                 'Prelim': { 
                     weight: 30, 
@@ -1521,7 +1504,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const unlockMinorGrades = () => {
+    const unlockMinorGrades = async () => {
+        // Check if the current subject has existing custom grades
+        if (currentSubjectId) {
+            try {
+                const gradeData = await fetchAPI(`grades/${currentSubjectId}`);
+                
+                if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
+                    // Load existing custom grades for editing
+                    loadGradeDataToDOM(gradeData.components);
+                    console.log('Loaded existing custom grades for editing:', gradeData.components);
+                }
+            } catch (error) {
+                console.log('No existing custom grades found, using default structure');
+                // Default structure is already loaded, no need to reload
+            }
+        }
+        
         // Set unlock flag
         minorGradesUnlocked = true;
         
@@ -1656,42 +1655,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update hidden select
         minorSubjectSelect.value = subjectId;
         
-        // Check if this subject already has grades
-        try {
-            const gradeData = await fetchAPI(`grades/${subjectId}`);
-            
-            if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
-                // Subject has existing grades - load them but LOCK them
-                loadGradeDataToDOM(gradeData.components);
-                toggleGradeComponents(true); // Lock components (changed from false)
-                isEditMode = true;
-                addGradeBtn.classList.add('hidden');
-                updateGradeSetupBtn.classList.add('hidden'); // Hide update button initially
-                updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" to unlock
-                minorGradesUnlocked = false; // Reset unlock state
-                document.querySelector('.curriculum-reminder-text').textContent = '✅ Custom grade scheme loaded - Click "Create new grades" to modify';
-            } else {
-                // No existing grades - reload default structure (fresh start)
-                await loadMinorGradeStructure(); // Reload defaults
-                toggleGradeComponents(true); // Lock components
-                isEditMode = false;
-                addGradeBtn.classList.add('hidden');
-                updateGradeSetupBtn.classList.add('hidden');
-                updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
-                minorGradesUnlocked = false;
-                document.querySelector('.curriculum-reminder-text').textContent = '✅ Default grades applied - Click "Create new grades" to modify';
-            }
-        } catch (error) {
-            // No existing grades - reload default structure (fresh start)
-            await loadMinorGradeStructure(); // Reload defaults
-            toggleGradeComponents(true); // Lock components
-            isEditMode = false;
-            addGradeBtn.classList.add('hidden');
-            updateGradeSetupBtn.classList.add('hidden');
-            updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
-            minorGradesUnlocked = false;
-            document.querySelector('.curriculum-reminder-text').textContent = '✅ Default grades applied - Click "Create new grades" to modify';
-        }
+        // OPTIMIZED: Load default structure immediately without checking for existing grades
+        // This provides instant feedback and eliminates unnecessary API calls
+        // Existing custom grades will be loaded when user clicks "Create new grades"
+        await loadMinorGradeStructure(); // Reload defaults instantly
+        toggleGradeComponents(true); // Lock components
+        isEditMode = false;
+        addGradeBtn.classList.add('hidden');
+        updateGradeSetupBtn.classList.add('hidden');
+        updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
+        minorGradesUnlocked = false;
+        document.querySelector('.curriculum-reminder-text').textContent = '✅ Default grades applied - Click "Create new grades" to modify';
         
         calculateAndUpdateTotals();
     };
