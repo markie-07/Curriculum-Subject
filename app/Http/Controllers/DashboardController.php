@@ -131,6 +131,7 @@ class DashboardController extends Controller
                     'total_mapping_history' => $this->getMappingHistoryCount(),
                     'removed_subjects' => $this->getRemovedSubjectsCount(),
                     'total_equivalencies' => $this->getEquivalencyCount(),
+                    'total_compliance_links' => $this->getComplianceLinksCount(),
                     
                     // Export Statistics
                     'curriculum_exports' => $activityStats->curriculum_exports ?? 0,
@@ -218,6 +219,7 @@ class DashboardController extends Controller
             'total_mapping_history' => 0,
             'removed_subjects' => 0,
             'total_equivalencies' => 0,
+            'total_compliance_links' => 0,
             'curriculum_exports' => 0,
             'exports_this_month' => 0,
             'total_exports' => 0,
@@ -314,6 +316,19 @@ class DashboardController extends Controller
             return DB::table('subject_equivalencies')->count();
         } catch (\Exception $e) {
             // If equivalencies table doesn't exist, return 0
+            return 0;
+        }
+    }
+
+    /**
+     * Get compliance links count
+     */
+    private function getComplianceLinksCount()
+    {
+        try {
+            return DB::table('compliance_links')->count();
+        } catch (\Exception $e) {
+            // If compliance_links table doesn't exist, return 0
             return 0;
         }
     }

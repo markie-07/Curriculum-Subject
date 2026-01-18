@@ -116,53 +116,68 @@
     
     /* Base grid layout - single row layout with minimal gaps */
     .stats-grid {
-        display: grid;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
         width: 100%;
-        /* Single row with 8 equal columns */
-        grid-template-columns: repeat(8, 1fr);
-        gap: clamp(0.25rem, 0.5vw, 0.5rem);
-        padding: 10px clamp(0.125rem, 0.5vw, 0.5rem) clamp(0.125rem, 0.5vw, 0.5rem) clamp(0.125rem, 0.5vw, 0.5rem);
-        /* Enable container queries for enhanced responsiveness */
-        container-type: inline-size;
+        /* Expanded height for better visibility */
+        min-height: clamp(180px, 20vh, 280px);
+        height: auto;
+        gap: clamp(0.5rem, 1vw, 1rem);
+        padding: 15px clamp(0.5rem, 1vw, 1rem) clamp(0.5rem, 1vw, 1rem) clamp(0.5rem, 1vw, 1rem);
         /* Responsive margin like other components */
-        margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
-        /* Ensure no wrapping */
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
         overflow-x: auto;
+        overflow-y: hidden;
+        /* Align all cards consistently */
+        align-items: stretch;
+        /* Smooth horizontal scrolling */
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
     }
 
-    /* Mobile responsiveness - stack on very small screens */
+    /* Tablet responsiveness - keep horizontal but smaller cards */
     @media (max-width: 768px) {
         .stats-grid {
-            grid-template-columns: repeat(4, 1fr);
-            gap: clamp(0.125rem, 0.5vw, 0.375rem);
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+            min-height: clamp(160px, 18vh, 240px);
         }
     }
 
+    /* Mobile responsiveness - keep horizontal with smaller cards */
     @media (max-width: 480px) {
         .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: clamp(0.125rem, 0.5vw, 0.375rem);
+            gap: clamp(0.25rem, 0.5vw, 0.5rem);
+            min-height: clamp(140px, 16vh, 220px);
+            padding: 10px clamp(0.25rem, 0.5vw, 0.5rem);
         }
     }
     
     /* Base stat card styles - zoom synchronized with cool hover effects */
     .stat-card {
-        aspect-ratio: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        /* Zoom-synchronized padding like other components */
-        padding: clamp(0.5rem, 2vw, 1.25rem);
-        min-height: clamp(80px, 15vw, 140px);
-        border-radius: clamp(0.5rem, 1vw, 1rem);
+        /* Expanded padding for better spacing */
+        padding: clamp(1rem, 2.5vw, 1.75rem);
+        /* Fixed height for consistent alignment */
+        height: clamp(180px, 20vh, 260px);
+        min-height: clamp(180px, 20vh, 260px);
+        /* Flex properties to fit all cards side-by-side */
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 200px;
+        border-radius: clamp(0.75rem, 1.2vw, 1.25rem);
         position: relative;
         overflow: hidden;
         /* Cool hover preparation */
         transform: translateY(0);
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        /* Ensure vertical alignment with gap */
+        gap: clamp(0.5rem, 1vw, 0.75rem);
     }
     
     /* Cool hover effects for stat cards */
@@ -201,11 +216,11 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        /* Zoom-synchronized sizing like other files */
-        width: clamp(2.5rem, 5vw, 4rem);
-        height: clamp(2.5rem, 5vw, 4rem);
-        border-radius: clamp(0.5rem, 1.2vw, 1rem);
-        margin: 0 auto clamp(0.5rem, 1.5vw, 0.75rem) auto;
+        /* Increased sizing for taller cards */
+        width: clamp(3.5rem, 6vw, 5rem);
+        height: clamp(3.5rem, 6vw, 5rem);
+        border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
+        margin: 0;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
@@ -244,8 +259,8 @@
         justify-content: center;
         line-height: 1;
         text-align: center;
-        /* Zoom-synchronized icon size */
-        font-size: clamp(1.25rem, 3vw, 2rem) !important;
+        /* Increased icon size for taller cards */
+        font-size: clamp(1.75rem, 4vw, 2.75rem) !important;
         transition: all 0.3s ease;
         position: relative;
         z-index: 1;
@@ -265,15 +280,15 @@
     
     /* Text sizing - zoom synchronized with hover effects */
     .stat-number {
-        font-size: clamp(1rem, 3.5vw, 1.75rem);
+        font-size: clamp(1.5rem, 4.5vw, 2.5rem);
         font-weight: 700;
         line-height: 1.1;
-        margin-bottom: clamp(0.25rem, 0.5vw, 0.5rem);
+        margin: 0;
         transition: all 0.3s ease;
     }
     
     .stat-label {
-        font-size: clamp(0.75rem, 2vw, 0.95rem);
+        font-size: clamp(0.875rem, 2.2vw, 1.125rem);
         line-height: 1.3;
         transition: all 0.3s ease;
     }
@@ -860,6 +875,14 @@
             <p class="stat-number text-gray-900 group-hover:text-green-600">{{ $dashboardData['stats']['employees_active'] ?? 0 }}</p>
             <p class="stat-label text-gray-500">Active Staff</p>
         </a>
+
+        <a href="{{ route('compliance.validator') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-rose-200 transition-all group stat-card">
+            <div class="stat-icon-container bg-rose-100">
+                <i class="las la-check-circle stat-icon text-rose-600"></i>
+            </div>
+            <p class="stat-number text-gray-900 group-hover:text-rose-600">{{ $dashboardData['stats']['total_compliance_links'] ?? 0 }}</p>
+            <p class="stat-label text-gray-500">Compliance Links</p>
+        </a>
     </div>
 
     <!-- Charts Section -->
@@ -898,10 +921,6 @@
                     <button onclick="switchChart('system', 'bar')" class="chart-switch-btn active" data-chart="system" data-type="bar" title="Bar Chart View">
                         <i class="las la-chart-bar mr-1"></i>
                         <span class="text-xs">Bar</span>
-                    </button>
-                    <button onclick="switchChart('system', 'radar')" class="chart-switch-btn" data-chart="system" data-type="radar" title="Radar Chart View">
-                        <i class="las la-crosshairs mr-1"></i>
-                        <span class="text-xs">Radar</span>
                     </button>
                 </div>
             </div>
@@ -942,106 +961,8 @@
     </div>
 
     <!-- New Widgets Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 dashboard-section" id="widgets-section">
-        <!-- System Health Monitor -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 widget-card overflow-hidden">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center widget-title">
-                    <div class="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las la-heartbeat text-green-600" style="font-size: 1rem;"></i>
-                    </div>
-                    System Health
-                </h3>
-                <div class="flex items-center">
-                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="ml-2 text-sm text-green-600 font-medium">Online</span>
-                </div>
-            </div>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="las la-database text-blue-500 mr-2"></i>
-                        <span class="text-sm text-gray-600">Database</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                        <span class="text-sm font-medium text-green-600">Connected</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="las la-server text-purple-500 mr-2"></i>
-                        <span class="text-sm text-gray-600">Server</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                        <span class="text-sm font-medium text-green-600" id="server-status">Running</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="las la-memory text-orange-500 mr-2"></i>
-                        <span class="text-sm text-gray-600">Memory</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="text-sm font-medium text-gray-700" id="memory-usage">{{ $dashboardData['stats']['memory_usage_percent'] ?? 0 }}%</span>
-                        <div class="ml-2 w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full bg-orange-500 rounded-full transition-all duration-300" style="width: {{ $dashboardData['stats']['memory_usage_percent'] ?? 0 }}%" id="memory-bar"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="las la-clock text-indigo-500 mr-2"></i>
-                        <span class="text-sm text-gray-600">Response</span>
-                    </div>
-                    <span class="text-sm font-medium text-indigo-600" id="response-time">~{{ $dashboardData['stats']['response_time_ms'] ?? 0 }}ms</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="las la-users text-teal-500 mr-2"></i>
-                        <span class="text-sm text-gray-600">Active Users Online</span>
-                    </div>
-                    <span class="text-sm font-medium text-teal-600" id="active-users">{{ $dashboardData['stats']['active_users_online'] ?? 0 }}</span>
-                </div>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-6 mb-8 dashboard-section" id="widgets-section">
 
-        <!-- Quick Search Widget -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 widget-card overflow-hidden">
-            <div class="flex items-center mb-4">
-                <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="las la-search text-blue-600" style="font-size: 1rem;"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-800 widget-title">Quick Search</h3>
-            </div>
-            <div class="space-y-4">
-                <div class="relative">
-                    <input type="text" id="global-search" placeholder="Search curricula, subjects, employees..." 
-                           class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                    <i class="las la-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="quickSearch('curriculum')" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium hover:bg-blue-200 transition-colors">
-                        <i class="las la-graduation-cap mr-1"></i>Curriculum
-                    </button>
-                    <button onclick="quickSearch('subject')" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium hover:bg-purple-200 transition-colors">
-                        <i class="las la-book mr-1"></i>Subjects
-                    </button>
-                    <button onclick="quickSearch('employee')" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium hover:bg-green-200 transition-colors">
-                        <i class="las la-users mr-1"></i>Staff
-                    </button>
-                </div>
-                <div id="search-results" class="hidden">
-                    <div class="border-t pt-3 mt-3">
-                        <div class="text-xs text-gray-500 mb-2">Search Results:</div>
-                        <div id="search-results-list" class="space-y-2 max-h-32 overflow-y-auto">
-                            <!-- Results will be populated here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Recent Downloads Tracker -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 widget-card overflow-hidden">
@@ -1282,26 +1203,23 @@ const chartConfigs = {
         bar: {
             type: 'bar',
             data: {
-                labels: ['Senior High', 'College', 'Total Subjects', 'Prerequisites'],
+                labels: ['Senior High', 'College', 'Total Subjects'],
                 datasets: [{
                     label: 'Count',
                     data: [
                         dashboardStats.curriculum_senior_high || 0,
                         dashboardStats.curriculum_college || 0,
-                        dashboardStats.total_subjects || 0,
-                        dashboardStats.total_prerequisites || 0
+                        dashboardStats.total_subjects || 0
                     ],
                     backgroundColor: [
                         'rgba(59, 130, 246, 0.8)',
                         'rgba(16, 185, 129, 0.8)',
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(245, 158, 11, 0.8)'
+                        'rgba(139, 92, 246, 0.8)'
                     ],
                     borderColor: [
                         'rgb(59, 130, 246)',
                         'rgb(16, 185, 129)',
-                        'rgb(139, 92, 246)',
-                        'rgb(245, 158, 11)'
+                        'rgb(139, 92, 246)'
                     ],
                     borderWidth: 2,
                     borderRadius: 8,
