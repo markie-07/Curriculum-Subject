@@ -21,6 +21,7 @@ class ExportHistory extends Model
         'exported_by_email',
         'file_name',
         'format',
+        'export_type',
     ];
 
     /**

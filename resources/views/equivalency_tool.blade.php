@@ -37,6 +37,11 @@
                         </div>
                     </div>
                     <div>
+                        <label for="source-description" class="block text-sm font-medium text-gray-700">Source Subject Description</label>
+                        <p class="text-xs text-gray-500 mb-1">Brief description of the source subject.</p>
+                        <textarea id="source-description" rows="3" placeholder="Enter the description of the source subject..." class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition resize-none"></textarea>
+                    </div>
+                    <div>
                         <label for="equivalent-subject" class="block text-sm font-medium text-gray-700">Equivalent BCP Subject</label>
                         <p class="text-xs text-gray-500 mb-1">The subject in your curriculum that it maps to.</p>
                         <div class="relative">
@@ -46,12 +51,19 @@
                              <select id="equivalent-subject" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm transition appearance-none">
                                 <option value="" disabled selected>-- Select a Subject --</option>
                                 @foreach($subjects as $subject)
-                                    <option value="{{ $subject->id }}">{{ $subject->subject_code }} - {{ $subject->subject_name }}</option>
+                                    <option value="{{ $subject->id }}" data-description="{{ $subject->course_description }}">{{ $subject->subject_code }} - {{ $subject->subject_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                             </span>
+                        </div>
+                    </div>
+                    <div id="equivalent-description-container" class="hidden">
+                        <label for="equivalent-description" class="block text-sm font-medium text-gray-700">Equivalent Subject Description</label>
+                        <p class="text-xs text-gray-500 mb-1">Description of the selected BCP subject.</p>
+                        <div class="mt-1 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                            <p id="equivalent-description" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
                         </div>
                     </div>
                 </div>
@@ -83,28 +95,20 @@
 
                 <div id="equivalency-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                     @forelse ($equivalencies as $item)
-                        <div class="equivalency-item p-4 border border-gray-200 rounded-lg flex justify-between items-center hover:bg-gray-50 hover:shadow-md transition-all duration-300" data-id="{{ $item->id }}" data-source-name="{{ $item->source_subject_name }}" data-equivalent-id="{{ $item->equivalent_subject_id }}">
-                            <div class="flex items-center flex-grow">
+                        <div class="equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer" data-id="{{ $item->id }}" data-source-name="{{ $item->source_subject_name }}" data-source-description="{{ $item->source_subject_description }}" data-equivalent-code="{{ $item->equivalentSubject->subject_code }}" data-equivalent-name="{{ $item->equivalentSubject->subject_name }}" data-equivalent-description="{{ $item->equivalentSubject->course_description }}" data-equivalent-id="{{ $item->equivalent_subject_id }}">
+                            <div class="flex items-center">
                                 <div class="bg-green-100 text-green-600 p-2 rounded-md mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                                 </div>
                                 <div class="flex-grow">
-                                    <h3 class="font-semibold text-gray-800">{{ $item->source_subject_name }}</h3>
-                                    <p class="text-gray-500 mt-1">
-                                        Equivalent to: <span class="font-semibold text-gray-800">{{ $item->equivalentSubject->subject_code }} - {{ $item->equivalentSubject->subject_name }}</span>
-                                    </p>
+                                    <h3 class="font-semibold text-gray-800">{{ $item->source_subject_name }} - {{ $item->equivalentSubject->subject_code }} {{ $item->equivalentSubject->subject_name }}</h3>
                                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        Created on: {{ $item->created_at->format('M d, Y \a\t h:i A') }}
+                                        Created on: {{ $item->created_at->format('M d, Y \\a\\t h:i A') }}
                                     </p>
                                 </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button class="edit-equivalency-btn text-gray-400 hover:text-blue-600 p-1 rounded-full transition-colors transform hover:scale-110">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                                </button>
                             </div>
                         </div>
                     @empty
@@ -149,11 +153,11 @@
     </div>
 </div>
 
-{{-- Edit Modal --}}
-<div id="editModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
+{{-- Description Modal --}}
+<div id="descriptionModal" class="fixed inset-0 z-[120] overflow-y-auto bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="edit-modal-panel">
-            <button id="closeEditModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
+        <div class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="description-modal-panel">
+            <button id="closeDescriptionModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -161,37 +165,39 @@
             
             <div class="text-center mb-8">
                 <img src="{{ asset('/images/SMSIII LOGO.png') }}" alt="SMS3 Logo" class="mx-auto h-16 w-auto mb-4">
-                <h2 class="text-2xl font-bold text-slate-800">Edit Equivalency</h2>
-                <p class="text-sm text-slate-500 mt-1">Update the subject equivalency mapping.</p>
+                <h2 class="text-2xl font-bold text-slate-800">Equivalency Description</h2>
+                <p class="text-sm text-slate-500 mt-1">View subject equivalency details.</p>
             </div>
 
-            <form id="editEquivalencyForm" class="space-y-6">
-                @csrf
+            <div class="space-y-6">
                 <div>
-                    <label for="edit-source-subject" class="block text-sm font-medium text-slate-700 mb-2">Source Subject Name</label>
-                    <input type="text" id="edit-source-subject" name="source_subject" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Source Subject Name</label>
+                    <div class="w-full px-4 py-3 bg-gray-50 border border-slate-200 rounded-lg">
+                        <p id="view-source-subject" class="text-gray-800 font-medium"></p>
+                    </div>
                 </div>
 
                 <div>
-                    <label for="edit-equivalent-subject" class="block text-sm font-medium text-slate-700 mb-2">Equivalent BCP Subject</label>
-                    <select id="edit-equivalent-subject" name="equivalent_subject_id" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-                        <option value="">Select a subject...</option>
-                        @foreach($subjects as $subject)
-                            <option value="{{ $subject->id }}">{{ $subject->subject_code }} - {{ $subject->subject_name }}</option>
-                        @endforeach
-                    </select>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Source Subject Description</label>
+                    <div class="w-full px-4 py-3 bg-gray-50 border border-slate-200 rounded-lg min-h-[80px]">
+                        <p id="view-source-description" class="text-gray-700 whitespace-pre-wrap"></p>
+                    </div>
                 </div>
 
-                <div class="flex gap-4 pt-4">
-                    <button type="button" id="cancelEditModalButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
-                    <button type="submit" id="save-edit-button" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                        </svg>
-                        <span>Update Equivalency</span>
-                    </button>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Equivalent BCP Subject</label>
+                    <div class="w-full px-4 py-3 bg-gray-50 border border-slate-200 rounded-lg">
+                        <p id="view-equivalent-subject" class="text-gray-800 font-medium"></p>
+                    </div>
                 </div>
-            </form>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Equivalent Subject Description</label>
+                    <div class="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg min-h-[80px]">
+                        <p id="view-equivalent-description" class="text-gray-700 whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -203,7 +209,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const createBtn = document.getElementById('create-equivalency-btn');
     const sourceSubjectInput = document.getElementById('source-subject');
+    const sourceDescriptionInput = document.getElementById('source-description');
     const equivalentSubjectSelect = document.getElementById('equivalent-subject');
+    const equivalentDescriptionContainer = document.getElementById('equivalent-description-container');
+    const equivalentDescriptionText = document.getElementById('equivalent-description');
     const equivalencyList = document.getElementById('equivalency-list');
     const searchInput = document.getElementById('search-equivalency');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -227,16 +236,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const successModalMessage = document.getElementById('success-modal-message');
     const closeSuccessModalButton = document.getElementById('closeSuccessModalButton');
 
-    const editModal = document.getElementById('editModal');
-    const editModalPanel = document.getElementById('edit-modal-panel');
-    const closeEditModalButton = document.getElementById('closeEditModalButton');
-    const cancelEditModalButton = document.getElementById('cancelEditModalButton');
-    const editEquivalencyForm = document.getElementById('editEquivalencyForm');
-    const editSourceSubjectInput = document.getElementById('edit-source-subject');
-    const editEquivalentSubjectSelect = document.getElementById('edit-equivalent-subject');
+    const descriptionModal = document.getElementById('descriptionModal');
+    const descriptionModalPanel = document.getElementById('description-modal-panel');
+    const closeDescriptionModalButton = document.getElementById('closeDescriptionModalButton');
+    const viewSourceSubject = document.getElementById('view-source-subject');
+    const viewSourceDescription = document.getElementById('view-source-description');
+    const viewEquivalentSubject = document.getElementById('view-equivalent-subject');
+    const viewEquivalentDescription = document.getElementById('view-equivalent-description');
 
-    let itemToEdit = null;
     let currentAction = null;
+
+    // Debug: Check if modal elements are found
+    console.log('Description Modal:', descriptionModal);
+    console.log('Equivalency List:', equivalencyList);
 
     // Modal Helper Functions (MUST be defined before event listeners use them)
     const showSuccessModal = (title, message) => {
@@ -275,19 +287,33 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => confirmationModal.classList.add('hidden'), 300);
     };
 
-    const showEditModal = () => {
-        editModal.classList.remove('hidden');
+    const showDescriptionModal = () => {
+        descriptionModal.classList.remove('hidden');
         setTimeout(() => {
-            editModal.classList.remove('opacity-0');
-            editModalPanel.classList.remove('opacity-0', 'scale-95');
+            descriptionModal.classList.remove('opacity-0');
+            descriptionModalPanel.classList.remove('opacity-0', 'scale-95');
         }, 10);
     };
 
-    const hideEditModal = () => {
-        editModal.classList.add('opacity-0');
-        editModalPanel.classList.add('opacity-0', 'scale-95');
-        setTimeout(() => editModal.classList.add('hidden'), 300);
+    const hideDescriptionModal = () => {
+        descriptionModal.classList.add('opacity-0');
+        descriptionModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => descriptionModal.classList.add('hidden'), 300);
     };
+
+    // Auto-display description when equivalent subject is selected
+    equivalentSubjectSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const description = selectedOption.getAttribute('data-description');
+        
+        if (description && description.trim() !== '' && description !== 'null') {
+            equivalentDescriptionText.textContent = description;
+            equivalentDescriptionContainer.classList.remove('hidden');
+        } else {
+            equivalentDescriptionText.textContent = 'No description available for this subject.';
+            equivalentDescriptionContainer.classList.remove('hidden');
+        }
+    });
 
     // Event Listeners for Confirmation Modal Buttons (NOW AFTER helper functions)
     cancelConfirmationButton.addEventListener('click', () => {
@@ -305,9 +331,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event Listeners for Success Modal
     closeSuccessModalButton.addEventListener('click', hideSuccessModal);
 
-    // Event Listeners for Edit Modal
-    closeEditModalButton.addEventListener('click', hideEditModal);
-    cancelEditModalButton.addEventListener('click', hideEditModal);
+    // Event Listeners for Description Modal
+    closeDescriptionModalButton.addEventListener('click', hideDescriptionModal);
 
 
 
@@ -319,21 +344,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
         const card = document.createElement('div');
-        card.className = 'equivalency-item p-4 border border-gray-200 rounded-lg flex justify-between items-center hover:bg-gray-50 hover:shadow-md transition-all duration-300';
+        card.className = 'equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer';
         card.dataset.id = equivalency.id;
         card.dataset.sourceName = equivalency.source_subject_name;
+        card.dataset.sourceDescription = equivalency.source_subject_description || '';
+        card.dataset.equivalentCode = equivalency.equivalent_subject.subject_code;
+        card.dataset.equivalentName = equivalency.equivalent_subject.subject_name;
+        card.dataset.equivalentDescription = equivalency.equivalent_subject.course_description || '';
         card.dataset.equivalentId = equivalency.equivalent_subject_id;
 
         card.innerHTML = `
-            <div class="flex items-center flex-grow">
+            <div class="flex items-center">
                 <div class="bg-green-100 text-green-600 p-2 rounded-md mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                 </div>
                 <div class="flex-grow">
-                    <h3 class="font-semibold text-gray-800">${equivalency.source_subject_name}</h3>
-                    <p class="text-gray-500 mt-1">
-                        Equivalent to: <span class="font-semibold text-gray-800">${equivalency.equivalent_subject.subject_code} - ${equivalency.equivalent_subject.subject_name}</span>
-                    </p>
+                    <h3 class="font-semibold text-gray-800">${equivalency.source_subject_name} - ${equivalency.equivalent_subject.subject_code} ${equivalency.equivalent_subject.subject_name}</h3>
                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -341,11 +367,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         Created on: ${formattedDate} at ${formattedTime}
                     </p>
                 </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button class="edit-equivalency-btn text-gray-400 hover:text-blue-600 p-1 rounded-full transition-colors transform hover:scale-110">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                </button>
             </div>
         `;
         return card;
@@ -365,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Create button clicked!'); // Debug log
         
         const sourceSubject = sourceSubjectInput.value.trim();
+        const sourceDescription = sourceDescriptionInput.value.trim();
         const equivalentSubjectId = equivalentSubjectSelect.value;
 
         if (sourceSubject === '' || equivalentSubjectId === '') {
@@ -388,7 +410,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const response = await fetch('/api/equivalencies', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
-                        body: JSON.stringify({ source_subject_name: sourceSubject, equivalent_subject_id: equivalentSubjectId })
+                        body: JSON.stringify({ 
+                            source_subject_name: sourceSubject, 
+                            source_subject_description: sourceDescription,
+                            equivalent_subject_id: equivalentSubjectId 
+                        })
                     });
 
                     if (!response.ok) throw new Error((await response.json()).message || 'Failed to create.');
@@ -406,7 +432,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     
                     sourceSubjectInput.value = '';
+                    sourceDescriptionInput.value = '';
                     equivalentSubjectSelect.value = '';
+                    equivalentDescriptionContainer.classList.add('hidden');
                 } catch (error) {
                     console.error('Error:', error);
                     Swal.fire({
@@ -420,61 +448,33 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Event Delegation for EDIT
+    // Event Delegation for clicking equivalency cards
     equivalencyList.addEventListener('click', function (e) {
-        const editButton = e.target.closest('.edit-equivalency-btn');
-
-        if (editButton) {
-            itemToEdit = editButton.closest('.equivalency-item');
-            editSourceSubjectInput.value = itemToEdit.dataset.sourceName;
-            editEquivalentSubjectSelect.value = itemToEdit.dataset.equivalentId;
-            showEditModal();
-        }
-    });
-
-    // UPDATE (Edit Form Submission)
-    editEquivalencyForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        console.log('Click detected on equivalency list');
+        const card = e.target.closest('.equivalency-item');
+        console.log('Card found:', card);
         
-        const equivalencyId = itemToEdit.dataset.id;
-        const updatedData = {
-            source_subject_name: editSourceSubjectInput.value.trim(),
-            equivalent_subject_id: editEquivalentSubjectSelect.value
-        };
-
-        try {
-            const response = await fetch(`/api/equivalencies/${equivalencyId}`, {
-                method: 'PATCH',
-                headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
-                body: JSON.stringify(updatedData)
+        if (card) {
+            console.log('Card data:', {
+                sourceName: card.dataset.sourceName,
+                sourceDescription: card.dataset.sourceDescription,
+                equivalentCode: card.dataset.equivalentCode,
+                equivalentName: card.dataset.equivalentName,
+                equivalentDescription: card.dataset.equivalentDescription
             });
-
-            if (!response.ok) throw new Error((await response.json()).message || 'Failed to update.');
             
-            const result = await response.json();
-            const updatedEquivalency = result.equivalency || result;
-            const updatedCard = createEquivalencyCard(updatedEquivalency);
-            itemToEdit.replaceWith(updatedCard);
+            // Populate modal with data
+            viewSourceSubject.textContent = card.dataset.sourceName;
+            viewSourceDescription.textContent = card.dataset.sourceDescription || 'No description available.';
+            viewEquivalentSubject.textContent = `${card.dataset.equivalentCode} - ${card.dataset.equivalentName}`;
+            viewEquivalentDescription.textContent = card.dataset.equivalentDescription || 'No description available.';
             
-            hideEditModal();
-            
-            // Use SweetAlert for success
-            Swal.fire({
-                title: 'Success!',
-                text: 'Equivalency has been updated successfully!',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Failed to update equivalency: ' + error.message,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+            console.log('About to show modal...');
+            showDescriptionModal();
         }
     });
+
+
 
     
     // --- SEARCH ---

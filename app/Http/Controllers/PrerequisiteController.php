@@ -83,6 +83,20 @@ class PrerequisiteController extends Controller
             }
         }
 
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'prerequisite',
+                'Updated prerequisites for ' . $validated['subject_code'],
+                [
+                    'curriculum_id' => $validated['curriculum_id'],
+                    'subject_code' => $validated['subject_code'],
+                    'prerequisites' => $validated['prerequisite_codes']
+                ]
+            );
+            auth()->user()->updateLastActivity();
+        }
+
         // Flash success message for session-based requests
         session()->flash('success', 'Prerequisites for "' . $validated['subject_code'] . '" have been saved successfully!');
         

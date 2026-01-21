@@ -2263,8 +2263,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Error fetching subject grade version history:', error);
-            // Don't show error modal, just log it
-            console.log('Could not fetch subject grade version history. This might be because no grades are set for this subject.');
+            // Show user-friendly message when subject has no grades
+            Swal.fire({
+                title: 'No Grades Set',
+                text: 'This subject does not have any grade scheme configured yet. Please set up grades for this subject first.',
+                icon: 'info',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4f46e5'
+            });
         }
     };
 

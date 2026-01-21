@@ -17,6 +17,7 @@ class Equivalency extends Model
      */
     protected $fillable = [
         'source_subject_name',
+        'source_subject_description',
         'equivalent_subject_id',
     ];
 

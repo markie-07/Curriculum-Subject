@@ -1,2016 +1,875 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-    /* Zoom-friendly responsive design */
-    * {
-        box-sizing: border-box;
-    }
-    
-    .stars {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 1;
-    }
-    
-    .star {
-        position: absolute;
-        background: #1f2937;
-        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-        animation: twinkle 3s ease-in-out infinite alternate;
-        opacity: 0.6;
-        transition: background-color 0.3s ease;
-    }
-    
-    [data-theme="dark"] .star {
-        background: #60a5fa;
-        opacity: 0.8;
-    }
-    
-    .star:nth-child(odd) {
-        animation-delay: 1s;
-    }
-    
-    .star:nth-child(3n) {
-        animation-delay: 2s;
-    }
-    
-    .star.small {
-        width: 0.25rem; /* 4px */
-        height: 0.25rem;
-        animation-duration: 2s;
-    }
-    
-    .star.medium {
-        width: 0.375rem; /* 6px */
-        height: 0.375rem;
-        animation-duration: 3s;
-    }
-    
-    .star.large {
-        width: 0.5rem; /* 8px */
-        height: 0.5rem;
-        animation-duration: 4s;
-    }
-    
-    @keyframes twinkle {
-        0% {
-            opacity: 0.3;
-            transform: scale(0.8) rotate(0deg);
-        }
-        25% {
-            opacity: 0.6;
-            transform: scale(1.0) rotate(90deg);
-        }
-        50% {
-            opacity: 0.9;
-            transform: scale(1.3) rotate(180deg);
-        }
-        75% {
-            opacity: 0.5;
-            transform: scale(1.1) rotate(270deg);
-        }
-        100% {
-            opacity: 0.2;
-            transform: scale(0.7) rotate(360deg);
-        }
-    }
-    
-    /* Additional floating animation */
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-        }
-        50% {
-            transform: translateY(-0.625rem) rotate(180deg); /* -10px */
-        }
-    }
-    
-    /* Pulse animation for some stars */
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 0.4;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 0.8;
-            transform: scale(1.2);
-        }
-    }
-    
-    .dashboard-content {
-        padding-top: 10px;
-        padding-bottom: 20px;
-        position: relative;
-        z-index: 10;
-        min-height: calc(100vh - 40px);
-        max-width: 100vw;
-        overflow-x: hidden;
-        /* Enable container queries */
-        container-type: inline-size;
-    }
-    
-    /* Base grid layout - single row layout with minimal gaps */
-    .stats-grid {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        width: 100%;
-        /* Expanded height for better visibility */
-        min-height: clamp(180px, 20vh, 280px);
-        height: auto;
-        gap: clamp(0.5rem, 1vw, 1rem);
-        padding: 15px clamp(0.5rem, 1vw, 1rem) clamp(0.5rem, 1vw, 1rem) clamp(0.5rem, 1vw, 1rem);
-        /* Responsive margin like other components */
-        margin-bottom: clamp(1rem, 2vw, 1.5rem);
-        overflow-x: auto;
-        overflow-y: hidden;
-        /* Align all cards consistently */
-        align-items: stretch;
-        /* Smooth horizontal scrolling */
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Tablet responsiveness - keep horizontal but smaller cards */
-    @media (max-width: 768px) {
-        .stats-grid {
-            gap: clamp(0.5rem, 1vw, 0.75rem);
-            min-height: clamp(160px, 18vh, 240px);
-        }
-    }
-
-    /* Mobile responsiveness - keep horizontal with smaller cards */
-    @media (max-width: 480px) {
-        .stats-grid {
-            gap: clamp(0.25rem, 0.5vw, 0.5rem);
-            min-height: clamp(140px, 16vh, 220px);
-            padding: 10px clamp(0.25rem, 0.5vw, 0.5rem);
-        }
-    }
-    
-    /* Base stat card styles - zoom synchronized with cool hover effects */
-    .stat-card {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        /* Expanded padding for better spacing */
-        padding: clamp(1rem, 2.5vw, 1.75rem);
-        /* Fixed height for consistent alignment */
-        height: clamp(180px, 20vh, 260px);
-        min-height: clamp(180px, 20vh, 260px);
-        /* Flex properties to fit all cards side-by-side */
-        flex: 1 1 0;
-        min-width: 0;
-        max-width: 200px;
-        border-radius: clamp(0.75rem, 1.2vw, 1.25rem);
-        position: relative;
-        overflow: hidden;
-        /* Cool hover preparation */
-        transform: translateY(0);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        /* Ensure vertical alignment with gap */
-        gap: clamp(0.5rem, 1vw, 0.75rem);
-    }
-    
-    /* Cool hover effects for stat cards */
-    .stat-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        border-color: currentColor;
-    }
-    
-    /* Animated background gradient on hover */
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: left 0.6s ease;
-        z-index: 1;
-    }
-    
-    .stat-card:hover::before {
-        left: 100%;
-    }
-    
-    /* Ensure content stays above the shine effect */
-    .stat-card > * {
-        position: relative;
-        z-index: 2;
-    }
-    
-    /* Base icon container - zoom synchronized with cool hover effects */
-    .stat-icon-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        /* Increased sizing for taller cards */
-        width: clamp(3.5rem, 6vw, 5rem);
-        height: clamp(3.5rem, 6vw, 5rem);
-        border-radius: clamp(0.75rem, 1.5vw, 1.25rem);
-        margin: 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
-    }
-    
-    /* Cool icon container hover effects */
-    .stat-card:hover .stat-icon-container {
-        transform: translateY(-4px) rotate(5deg) scale(1.1);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Pulsing glow effect on hover */
-    .stat-icon-container::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: all 0.4s ease;
-        z-index: 0;
-    }
-    
-    .stat-card:hover .stat-icon-container::after {
-        width: 120%;
-        height: 120%;
-    }
-    
-    /* Icon sizing - zoom synchronized with hover effects */
-    .stat-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-        text-align: center;
-        /* Increased icon size for taller cards */
-        font-size: clamp(1.75rem, 4vw, 2.75rem) !important;
-        transition: all 0.3s ease;
-        position: relative;
-        z-index: 1;
-    }
-    
-    /* Icon bounce effect on hover */
-    .stat-card:hover .stat-icon {
-        animation: iconBounce 0.6s ease-in-out;
-    }
-    
-    @keyframes iconBounce {
-        0%, 100% { transform: scale(1); }
-        25% { transform: scale(1.2) rotate(-5deg); }
-        50% { transform: scale(1.1) rotate(5deg); }
-        75% { transform: scale(1.15) rotate(-2deg); }
-    }
-    
-    /* Text sizing - zoom synchronized with hover effects */
-    .stat-number {
-        font-size: clamp(1.5rem, 4.5vw, 2.5rem);
-        font-weight: 700;
-        line-height: 1.1;
-        margin: 0;
-        transition: all 0.3s ease;
-    }
-    
-    .stat-label {
-        font-size: clamp(0.875rem, 2.2vw, 1.125rem);
-        line-height: 1.3;
-        transition: all 0.3s ease;
-    }
-    
-    /* Text hover effects */
-    .stat-card:hover .stat-number {
-        transform: translateY(-2px);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stat-card:hover .stat-label {
-        transform: translateY(-1px);
-        opacity: 0.8;
-    }
-    
-    /* Dashboard header zoom synchronization with starry background */
-    .dashboard-header {
-        padding: clamp(0.75rem, 2vw, 1.25rem);
-        border-radius: clamp(0.5rem, 1vw, 0.75rem);
-        margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
-        position: relative;
-        overflow: hidden;
-        background: white;
-        color: #1f2937; /* Dark text for white background */
-        border: 1px solid #e5e7eb; /* Light border for definition */
-    }
-    
-    /* Animated stars in dashboard header */
-    .dashboard-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: 
-            radial-gradient(3px 3px at 20px 30px, #000000, transparent),
-            radial-gradient(3px 3px at 40px 70px, rgba(0, 0, 0, 0.9), transparent),
-            radial-gradient(3px 3px at 90px 40px, #000000, transparent),
-            radial-gradient(2px 2px at 130px 80px, rgba(0, 0, 0, 0.8), transparent),
-            radial-gradient(2px 2px at 160px 30px, #000000, transparent),
-            radial-gradient(3px 3px at 200px 60px, rgba(0, 0, 0, 0.9), transparent),
-            radial-gradient(2px 2px at 240px 20px, #000000, transparent),
-            radial-gradient(1px 1px at 280px 90px, rgba(0, 0, 0, 0.7), transparent),
-            radial-gradient(3px 3px at 320px 50px, #000000, transparent),
-            radial-gradient(2px 2px at 360px 10px, rgba(0, 0, 0, 0.9), transparent);
-        background-repeat: repeat;
-        background-size: 400px 100px;
-        animation: starsMove 20s linear infinite, starsTwinkle 2s ease-in-out infinite alternate;
-        opacity: 0.9;
-        z-index: 1;
-    }
-    
-    /* Twinkling effect for header stars */
-    .dashboard-header::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: 
-            radial-gradient(3px 3px at 50px 20px, #000000, transparent),
-            radial-gradient(4px 4px at 100px 80px, rgba(0, 0, 0, 0.9), transparent),
-            radial-gradient(2px 2px at 150px 40px, #000000, transparent),
-            radial-gradient(3px 3px at 220px 70px, rgba(0, 0, 0, 0.8), transparent),
-            radial-gradient(4px 4px at 300px 25px, #000000, transparent);
-        background-repeat: repeat;
-        background-size: 350px 100px;
-        animation: starsTwinkle 2.5s ease-in-out infinite alternate, starsTwinkle2 1.8s ease-in-out infinite alternate;
-        opacity: 0.7;
-        z-index: 1;
-    }
-    
-    /* Ensure header content stays above stars */
-    .dashboard-header > * {
-        position: relative;
-        z-index: 2;
-    }
-    
-    @keyframes starsMove {
-        0% { transform: translateX(0); }
-        125% { transform: translateX(-400px); }
-    }
-    
-    @keyframes starsTwinkle {
-        0% { opacity: 0.3; }
-        50% { opacity: 0.9; }
-        100% { opacity: 0.4; }
-    }
-    
-    @keyframes starsTwinkle2 {
-        0% { opacity: 0.5; }
-        25% { opacity: 0.2; }
-        50% { opacity: 0.8; }
-        75% { opacity: 0.3; }
-        100% { opacity: 0.6; }
-    }
-    
-    .dashboard-title {
-        font-size: clamp(1.75rem, 5vw, 2.75rem);
-        line-height: 1.2;
-        font-weight: 800;
-        color: #111827 !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        letter-spacing: -0.025em;
-    }
-    
-    .dashboard-subtitle {
-        font-size: clamp(1rem, 2.8vw, 1.375rem);
-        line-height: 1.4;
-        font-weight: 600;
-        color: #374151 !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        margin-top: clamp(0.25rem, 0.5vw, 0.5rem);
-    }
-    
-    /* Enhanced date/time visibility */
-    .dashboard-date-time {
-        font-weight: 700;
-        color: #111827 !important;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        font-size: clamp(1rem, 2.5vw, 1.25rem);
-    }
-    
-    .dashboard-time {
-        font-weight: 600;
-        color: #4b5563 !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        font-size: clamp(0.875rem, 2.2vw, 1.125rem);
-    }
-    
-    /* Activities and Quick Actions zoom synchronization with hover effects */
-    .activities-section {
-        gap: clamp(1rem, 3vw, 1.5rem);
-        padding: clamp(0.25rem, 1vw, 0.75rem);
-        margin-bottom: clamp(0.5rem, 1vw, 1rem);
-    }
-    
-    .activity-card, .quick-action-card, .chart-card, .widget-card {
-        padding: clamp(1rem, 2.5vw, 1.5rem);
-        border-radius: clamp(0.75rem, 1.2vw, 1rem);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    /* Cool hover effects for activity, quick action, chart, and widget cards */
-    .activity-card:hover, .quick-action-card:hover, .chart-card:hover, .widget-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Subtle background animation */
-    .activity-card::before, .quick-action-card::before, .chart-card::before, .widget-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-        z-index: 1;
-    }
-    
-    .activity-card:hover::before, .quick-action-card:hover::before, .chart-card:hover::before, .widget-card:hover::before {
-        transform: translateX(100%);
-    }
-    
-    /* Ensure content stays above background effect */
-    .activity-card > *, .quick-action-card > *, .chart-card > *, .widget-card > * {
-        position: relative;
-        z-index: 2;
-    }
-    
-    .activity-title, .quick-action-title, .chart-title, .widget-title {
-        font-size: clamp(1.125rem, 2.8vw, 1.5rem);
-        margin-bottom: clamp(0.5rem, 1.2vw, 0.75rem);
-        transition: all 0.3s ease;
-    }
-    
-    /* Title hover effects */
-    .activity-card:hover .activity-title, 
-    .quick-action-card:hover .quick-action-title,
-    .chart-card:hover .chart-title,
-    .widget-card:hover .widget-title {
-        transform: translateX(4px);
-        color: #4f46e5;
-    }
-    
-    /* Quick action button hover effects */
-    .quick-action-btn {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .quick-action-btn:hover {
-        transform: translateX(8px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .quick-action-btn .quick-action-icon {
-        transition: all 0.3s ease;
-    }
-    
-    .quick-action-btn:hover .quick-action-icon {
-        transform: scale(1.2) rotate(10deg);
-    }
-    
-    /* Activity item styles */
-    .activity-item {
-        border-radius: clamp(0.5rem, 1vw, 0.75rem);
-    }
-    
-    /* Fix scrollbar styling for activities section */
-    .activities-scroll {
-        scrollbar-width: thin;
-        scrollbar-color: #e2e8f0 transparent;
-    }
-    
-    .activities-scroll::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    .activities-scroll::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 3px;
-    }
-    
-    .activities-scroll::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 3px;
-        transition: background 0.3s ease;
-    }
-    
-    .activities-scroll::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
-    }
-    
-    /* Hide scrollbar completely if preferred */
-    .activities-scroll-hidden {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    
-    .activities-scroll-hidden::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Chart section styles */
-    .chart-switch-btn {
-        padding: 8px 12px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        background: white;
-        color: #6b7280;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        min-width: 60px;
-        white-space: nowrap;
-    }
-
-    .chart-switch-btn:hover {
-        background: #f9fafb;
-        border-color: #d1d5db;
-        color: #374151;
-    }
-
-    .chart-switch-btn.active {
-        background: #3b82f6;
-        border-color: #3b82f6;
-        color: white;
-    }
-
-    .chart-container {
-        transition: all 0.3s ease;
-    }
-
-    .chart-container canvas {
-        max-height: 100% !important;
-    }
-
-    /* Chart loading animation */
-    .chart-loading {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: #6b7280;
-    }
-
-    .chart-loading::after {
-        content: '';
-        width: 20px;
-        height: 20px;
-        border: 2px solid #e5e7eb;
-        border-top: 2px solid #3b82f6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-left: 8px;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Sidebar styles */
-    .dashboard-sidebar {
-        position: fixed;
-        top: 0;
-        right: -320px;
-        width: 320px;
-        height: 100vh;
-        background: white;
-        border-left: 1px solid #e5e7eb;
-        box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1);
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        z-index: 1000;
-        overflow-y: auto;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .dashboard-sidebar.open {
-        right: 0;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .sidebar-toggle {
-        position: fixed;
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
-        background: transparent;
-        border: none;
-        border-radius: 4px;
-        color: #374151;
-        cursor: pointer;
-        box-shadow: none;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        z-index: 1001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        padding: 8px 12px;
-    }
-
-    .sidebar-toggle:hover {
-        background: rgba(55, 65, 81, 0.1);
-        transform: translateY(-50%) scale(1.1);
-    }
-
-    .sidebar-toggle.sidebar-open {
-        right: 340px;
-    }
-    
-    #dashboard-sidebar-toggle.sidebar-open {
-        right: 340px;
-    }
-
-    .sidebar-header {
-        padding: 20px;
-        border-bottom: 1px solid #e5e7eb;
-        background: #f8fafc;
-    }
-
-    .sidebar-content {
-        padding: 20px;
-    }
-
-    .sidebar-section {
-        margin-bottom: 20px;
-        padding: 15px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        background: #f9fafb;
-    }
-
-    .sidebar-section h4 {
-        margin: 0 0 15px 0;
-        font-size: 14px;
-        font-weight: 600;
-        color: #374151;
-    }
-
-    .sidebar-toggle-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .sidebar-toggle-item:last-child {
-        border-bottom: none;
-    }
-
-    .sidebar-toggle-item label {
-        font-size: 13px;
-        color: #6b7280;
-        cursor: pointer;
-        flex: 1;
-    }
-
-    .toggle-switch {
-        position: relative;
-        width: 44px;
-        height: 24px;
-        background: #d1d5db;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .toggle-switch.active {
-        background: #3b82f6;
-    }
-
-    .toggle-switch::after {
-        content: '';
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 20px;
-        height: 20px;
-        background: white;
-        border-radius: 50%;
-        transition: transform 0.3s ease;
-    }
-
-    .toggle-switch.active::after {
-        transform: translateX(20px);
-    }
-
-    /* Hidden sections */
-    .dashboard-section.hidden {
-        display: none !important;
-    }
-</style>
-
-<!-- Animated Stars Background -->
-<div class="stars">
-    <!-- First Layer - Twinkling Stars -->
-    <div class="star small" style="top: 10%; left: 15%;"></div>
-    <div class="star medium" style="top: 20%; left: 80%;"></div>
-    <div class="star large" style="top: 30%; left: 25%;"></div>
-    <div class="star small" style="top: 15%; left: 60%;"></div>
-    <div class="star medium" style="top: 50%; left: 10%;"></div>
-    <div class="star large" style="top: 40%; left: 90%;"></div>
-    <div class="star small" style="top: 70%; left: 30%;"></div>
-    <div class="star medium" style="top: 60%; left: 70%;"></div>
-    <div class="star large" style="top: 80%; left: 50%;"></div>
-    <div class="star small" style="top: 25%; left: 45%;"></div>
-    <div class="star medium" style="top: 85%; left: 20%;"></div>
-    <div class="star small" style="top: 35%; left: 75%;"></div>
-    <div class="star large" style="top: 65%; left: 85%;"></div>
-    <div class="star small" style="top: 45%; left: 5%;"></div>
-    <div class="star medium" style="top: 75%; left: 65%;"></div>
-    
-    <!-- Second Layer - More Stars -->
-    <div class="star small" style="top: 5%; left: 35%; animation-delay: 0.5s;"></div>
-    <div class="star medium" style="top: 12%; left: 95%; animation-delay: 1.5s;"></div>
-    <div class="star small" style="top: 28%; left: 55%; animation-delay: 2.5s;"></div>
-    <div class="star large" style="top: 18%; left: 40%; animation-delay: 0.8s;"></div>
-    <div class="star small" style="top: 42%; left: 15%; animation-delay: 1.8s;"></div>
-    <div class="star medium" style="top: 38%; left: 65%; animation-delay: 2.2s;"></div>
-    <div class="star small" style="top: 55%; left: 35%; animation-delay: 0.3s;"></div>
-    <div class="star large" style="top: 52%; left: 95%; animation-delay: 1.3s;"></div>
-    <div class="star small" style="top: 68%; left: 8%; animation-delay: 2.8s;"></div>
-    <div class="star medium" style="top: 72%; left: 88%; animation-delay: 0.6s;"></div>
-    <div class="star small" style="top: 88%; left: 40%; animation-delay: 1.6s;"></div>
-    <div class="star large" style="top: 92%; left: 75%; animation-delay: 2.6s;"></div>
-    
-    <!-- Third Layer - Corner Stars -->
-    <div class="star small" style="top: 3%; left: 8%; animation-delay: 0.9s;"></div>
-    <div class="star medium" style="top: 7%; left: 92%; animation-delay: 1.9s;"></div>
-    <div class="star small" style="top: 93%; left: 12%; animation-delay: 2.9s;"></div>
-    <div class="star large" style="top: 97%; left: 88%; animation-delay: 0.4s;"></div>
-    
-    <!-- Fourth Layer - Floating Stars -->
-    <div class="star small" style="top: 22%; left: 18%; animation: float 4s ease-in-out infinite; animation-delay: 1.1s;"></div>
-    <div class="star medium" style="top: 33%; left: 82%; animation: pulse 3s ease-in-out infinite; animation-delay: 2.1s;"></div>
-    <div class="star small" style="top: 47%; left: 28%; animation: float 5s ease-in-out infinite; animation-delay: 0.7s;"></div>
-    <div class="star large" style="top: 58%; left: 78%; animation: pulse 2.5s ease-in-out infinite; animation-delay: 1.7s;"></div>
-    <div class="star small" style="top: 77%; left: 48%; animation: float 3.5s ease-in-out infinite; animation-delay: 2.7s;"></div>
-    
-    <!-- Fifth Layer - More Animated Stars -->
-    <div class="star small" style="top: 8%; left: 28%; animation: pulse 2s ease-in-out infinite; animation-delay: 0.2s;"></div>
-    <div class="star medium" style="top: 17%; left: 72%; animation: float 6s ease-in-out infinite; animation-delay: 1.2s;"></div>
-    <div class="star small" style="top: 37%; left: 48%; animation: twinkle 2.5s ease-in-out infinite alternate; animation-delay: 2.2s;"></div>
-    <div class="star large" style="top: 48%; left: 68%; animation: pulse 4s ease-in-out infinite; animation-delay: 0.8s;"></div>
-    <div class="star small" style="top: 63%; left: 18%; animation: float 3s ease-in-out infinite; animation-delay: 1.8s;"></div>
-    <div class="star medium" style="top: 83%; left: 68%; animation: twinkle 3.5s ease-in-out infinite alternate; animation-delay: 2.8s;"></div>
-</div>
-
-<div class="container mx-auto dashboard-content">
-    <!-- Compact Header -->
-    <div class="dashboard-header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="dashboard-title">System Dashboard</h1>
-                <p class="dashboard-subtitle">{{ $dashboardData['welcome_message'] }}</p>
-            </div>
-            <div class="text-right">
-                <div class="dashboard-date-time" id="current-date">{{ now()->format('M d, Y') }}</div>
-                <div class="dashboard-time" id="current-time">{{ now()->format('g:i A') }}</div>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+    {{-- Dashboard Header --}}
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-full -mr-32 -mt-32"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-2">Dashboard Overview</h1>
+                    <p class="text-slate-600">Welcome back! Here's what's happening with your curriculum management system.</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-500">{{ now()->format('l, F j, Y') }}</p>
+                    <p class="text-2xl font-bold text-blue-600" id="current-time">{{ now()->format('h:i A') }}</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Grid - Zoom Synchronized -->
-    <div class="stats-grid dashboard-section" id="stats-section">
-        <!-- Curriculum Stats -->
-        <a href="{{ route('curriculum_builder') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-blue-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-blue-100">
-                <i class="las la-graduation-cap stat-icon text-blue-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-blue-600">{{ $dashboardData['stats']['curriculum_senior_high'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Senior High</p>
-        </a>
-
-        <a href="{{ route('curriculum_builder') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-emerald-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-emerald-100">
-                <i class="las la-university stat-icon text-emerald-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-emerald-600">{{ $dashboardData['stats']['curriculum_college'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">College</p>
-        </a>
-
-        <a href="{{ route('curriculum_builder') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-purple-100">
-                <i class="las la-folder-open stat-icon text-purple-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-purple-600">{{ $dashboardData['stats']['total_curriculums'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Curriculum Total</p>
-        </a>
-
-        <a href="{{ route('subject_mapping') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-indigo-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-indigo-100">
-                <i class="las la-book stat-icon text-indigo-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-indigo-600">{{ $dashboardData['stats']['total_subjects'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Subjects</p>
-        </a>
-
-        <a href="{{ route('pre_requisite') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-amber-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-amber-100">
-                <i class="las la-link stat-icon text-amber-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-amber-600">{{ $dashboardData['stats']['total_prerequisites'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Prerequisites</p>
-        </a>
-
-        <a href="{{ route('equivalency_tool') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-teal-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-teal-100">
-                <i class="las la-exchange-alt stat-icon text-teal-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-teal-600">{{ $dashboardData['stats']['total_equivalencies'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Equivalency</p>
-        </a>
-
-        <a href="{{ route('curriculum_export_tool') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-cyan-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-cyan-100">
-                <i class="las la-download stat-icon text-cyan-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-cyan-600">{{ $dashboardData['stats']['curriculum_exports'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Exports</p>
-        </a>
-
-        <a href="{{ route('employees.index') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-green-100">
-                <i class="las la-users stat-icon text-green-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-green-600">{{ $dashboardData['stats']['employees_active'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Active Staff</p>
-        </a>
-
-        <a href="{{ route('compliance.validator') }}" class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-rose-200 transition-all group stat-card">
-            <div class="stat-icon-container bg-rose-100">
-                <i class="las la-check-circle stat-icon text-rose-600"></i>
-            </div>
-            <p class="stat-number text-gray-900 group-hover:text-rose-600">{{ $dashboardData['stats']['total_compliance_links'] ?? 0 }}</p>
-            <p class="stat-label text-gray-500">Compliance Links</p>
-        </a>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 dashboard-section" id="charts-section">
-        <!-- Curriculum Overview Chart -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 chart-card overflow-hidden">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center chart-title">
-                    <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las la-chart-bar text-blue-600" style="font-size: 1rem;"></i>
-                    </div>
-                    Curriculum Overview
-                </h3>
-                <div class="flex space-x-2">
-                    <button onclick="switchChart('curriculum', 'bar')" class="chart-switch-btn active" data-chart="curriculum" data-type="bar" title="Bar Chart View">
-                        <i class="las la-chart-bar mr-1"></i>
-                        <span class="text-xs">Bar</span>
-                    </button>
+    {{-- Statistics Grid --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {{-- Total Curriculums --}}
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600 mb-1">Total Curriculums</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ $totalCurriculums ?? 0 }}</p>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
                 </div>
             </div>
-            <div class="chart-container" style="position: relative; height: 300px;">
+        </div>
+
+        {{-- Total Subjects --}}
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600 mb-1">Total Subjects</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ $totalSubjects ?? 0 }}</p>
+                </div>
+                <div class="bg-green-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Equivalencies --}}
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600 mb-1">Total Equivalencies</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ $totalEquivalencies ?? 0 }}</p>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Exports --}}
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600 mb-1">Total Exports</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ $totalExports ?? 0 }}</p>
+                </div>
+                <div class="bg-orange-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Charts Section --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {{-- Official Curriculum Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-slate-800">Official Curriculum Distribution</h2>
+                <div class="bg-blue-100 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            {{-- Toggle Switch --}}
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="text-sm font-medium text-slate-600" id="curriculum-new-label">New Curriculum</span>
+                <button id="curriculum-view-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                </button>
+                <span class="text-sm font-medium text-slate-400" id="curriculum-old-label">Old Curriculum</span>
+            </div>
+            
+            <div class="relative h-64">
                 <canvas id="curriculumChart"></canvas>
             </div>
+            
+            {{-- Stats Cards - New Curriculum View --}}
+            <div id="curriculum-new-stats" class="mt-4 grid grid-cols-2 gap-3">
+                <div class="text-center p-3 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-slate-600">High School</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $newHighSchoolCount ?? 0 }}</p>
+                </div>
+                <div class="text-center p-3 bg-indigo-50 rounded-lg">
+                    <p class="text-xs text-slate-600">College</p>
+                    <p class="text-2xl font-bold text-indigo-600">{{ $newCollegeCount ?? 0 }}</p>
+                </div>
+            </div>
+            
+            {{-- Stats Cards - Old Curriculum View --}}
+            <div id="curriculum-old-stats" class="mt-4 grid grid-cols-2 gap-3 hidden">
+                <div class="text-center p-3 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-slate-600">High School</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $oldHighSchoolCount ?? 0 }}</p>
+                </div>
+                <div class="text-center p-3 bg-indigo-50 rounded-lg">
+                    <p class="text-xs text-slate-600">College</p>
+                    <p class="text-2xl font-bold text-indigo-600">{{ $oldCollegeCount ?? 0 }}</p>
+                </div>
+            </div>
         </div>
 
-        <!-- System Statistics Chart -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 chart-card overflow-hidden">
+        {{-- Course Builder Status Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center chart-title">
-                    <div class="w-6 h-6 bg-emerald-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las la-chart-line text-emerald-600" style="font-size: 1rem;"></i>
-                    </div>
-                    System Statistics
-                </h3>
-                <div class="flex space-x-2">
-                    <button onclick="switchChart('system', 'bar')" class="chart-switch-btn active" data-chart="system" data-type="bar" title="Bar Chart View">
-                        <i class="las la-chart-bar mr-1"></i>
-                        <span class="text-xs">Bar</span>
-                    </button>
+                <h2 class="text-xl font-bold text-slate-800">Course Builder Status</h2>
+                <div class="bg-green-100 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                    </svg>
                 </div>
             </div>
-            <div class="chart-container" style="position: relative; height: 300px;">
-                <canvas id="systemChart"></canvas>
+            <div class="relative h-64">
+                <canvas id="courseBuilderChart"></canvas>
             </div>
-        </div>
-    </div>
-
-    <!-- Activity Trends Chart -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 chart-card overflow-hidden mb-8 dashboard-section" id="activity-chart-section">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 flex items-center chart-title">
-                <div class="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="las la-chart-area text-purple-600" style="font-size: 1rem;"></i>
+            <div class="mt-4 grid grid-cols-3 gap-2">
+                <div class="text-center p-3 bg-green-50 rounded-lg">
+                    <p class="text-xs text-slate-600">Approved</p>
+                    <p class="text-xl font-bold text-green-600">{{ $approvedCount ?? 0 }}</p>
                 </div>
-                Activity Trends
-            </h3>
-            <div class="flex items-center space-x-4">
-                <div class="flex space-x-2">
-                    <button onclick="switchChart('activity', 'line')" class="chart-switch-btn active" data-chart="activity" data-type="line" title="Line Chart View">
-                        <i class="las la-chart-line mr-1"></i>
-                        <span class="text-xs">Line</span>
-                    </button>
-                    <button onclick="switchChart('activity', 'area')" class="chart-switch-btn" data-chart="activity" data-type="area" title="Area Chart View">
-                        <i class="las la-chart-area mr-1"></i>
-                        <span class="text-xs">Area</span>
-                    </button>
+                <div class="text-center p-3 bg-red-50 rounded-lg">
+                    <p class="text-xs text-slate-600">Rejected</p>
+                    <p class="text-xl font-bold text-red-600">{{ $rejectedCount ?? 0 }}</p>
                 </div>
-                <div class="text-sm text-gray-500">
-                    <span class="font-medium">{{ $dashboardData['stats']['activities_today'] ?? 0 }}</span> activities today
-                </div>
-            </div>
-        </div>
-        <div class="chart-container" style="position: relative; height: 250px;">
-            <canvas id="activityChart"></canvas>
-        </div>
-    </div>
-
-    <!-- New Widgets Section -->
-    <div class="grid grid-cols-1 gap-6 mb-8 dashboard-section" id="widgets-section">
-
-
-        <!-- Recent Downloads Tracker -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 widget-card overflow-hidden">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center widget-title">
-                    <div class="w-6 h-6 bg-cyan-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las la-download text-cyan-600" style="font-size: 1rem;"></i>
-                    </div>
-                    Recent Downloads
-                </h3>
-                <a href="{{ route('curriculum_export_tool') }}" class="text-sm text-cyan-600 hover:text-cyan-700 font-medium">View All</a>
-            </div>
-            <div class="space-y-3">
-                @if(isset($dashboardData['stats']['curriculum_exports']) && $dashboardData['stats']['curriculum_exports'] > 0)
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                <i class="las la-file-pdf text-blue-600 text-sm"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-900">Curriculum Export</div>
-                                <div class="text-xs text-gray-500">{{ now()->subMinutes(rand(5, 30))->diffForHumans() }}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                            <span class="text-xs text-green-600 font-medium">Complete</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center mr-3">
-                                <i class="las la-file-excel text-emerald-600 text-sm"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-900">Subject List</div>
-                                <div class="text-xs text-gray-500">{{ now()->subHours(rand(1, 6))->diffForHumans() }}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                            <span class="text-xs text-green-600 font-medium">Complete</span>
-                        </div>
-                    </div>
-                @else
-                    <div class="text-center py-6">
-                        <i class="las la-download text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-sm text-gray-500">No recent downloads</p>
-                        <a href="{{ route('curriculum_export_tool') }}" class="text-xs text-blue-600 hover:text-blue-700 mt-1 inline-block">Start Export</a>
-                    </div>
-                @endif
-                <div class="border-t pt-3">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Total Exports:</span>
-                        <span class="font-semibold text-gray-900">{{ $dashboardData['stats']['curriculum_exports'] ?? 0 }}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm mt-1">
-                        <span class="text-gray-600">This Month:</span>
-                        <span class="font-semibold text-gray-900">{{ $dashboardData['stats']['exports_this_month'] ?? 0 }}</span>
-                    </div>
+                <div class="text-center p-3 bg-yellow-50 rounded-lg">
+                    <p class="text-xs text-slate-600">Processing</p>
+                    <p class="text-xl font-bold text-yellow-600">{{ $processingCount ?? 0 }}</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Two Column Layout for Activities and Quick Actions -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 activities-section flex-1 dashboard-section" id="activities-section">
-        <!-- Recent Activities -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 activity-card overflow-hidden">
-            <h3 class="activity-title font-semibold text-gray-800 flex items-center">
-                <div class="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="las la-clock text-violet-600" style="font-size: 1rem;"></i>
+    {{-- Second Row Charts --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {{-- Subject Mapping Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Subject Classification</h2>
+                <div class="bg-purple-100 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
                 </div>
-                Recent Activities
-            </h3>
-            <div class="space-y-3 overflow-y-auto activities-scroll-hidden" style="max-height: 400px;">
-                @if(isset($dashboardData['recent_activities']) && $dashboardData['recent_activities']->count() > 0)
-                    @foreach($dashboardData['recent_activities'] as $activity)
-                    <div class="flex items-center space-x-4 p-4 border border-gray-100 activity-item">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span class="text-white font-semibold text-sm">{{ strtoupper(substr($activity->user->name, 0, 1)) }}</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-base font-medium text-gray-900 truncate">{{ $activity->user->name }}</p>
-                            <p class="text-base text-gray-600 truncate">{{ $activity->formatted_description }}</p>
-                            <div class="flex items-center justify-between mt-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 {{ $activity->activity_color }}">
-                                    {{ $activity->activity_icon }} {{ ucfirst($activity->activity_type) }}
-                                </span>
-                                <span class="text-base text-gray-500">{{ $activity->created_at->diffForHumans() }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                @else
-                    <div class="flex items-center justify-center p-8 text-gray-500">
-                        <div class="text-center">
-                            <i class="las la-clock text-4xl text-gray-300 mb-3"></i>
-                            <p class="text-sm font-medium">No recent activities</p>
-                            <p class="text-xs text-gray-400 mt-1">Employee activities will appear here</p>
-                        </div>
-                    </div>
-                @endif
+            </div>
+            <div class="relative h-64">
+                <canvas id="subjectMappingChart"></canvas>
+            </div>
+            @php
+                 $totalMapped = ($majorSubjects ?? 0) + ($minorSubjects ?? 0);
+                 $majorMapPercent = $totalMapped > 0 ? round(($majorSubjects / $totalMapped) * 100) : 0;
+                 $minorMapPercent = $totalMapped > 0 ? round(($minorSubjects / $totalMapped) * 100) : 0;
+            @endphp
+
+            <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-purple-50 rounded-lg">
+                    <p class="text-sm text-slate-600">Major Subjects</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $majorSubjects ?? 0 }}</p>
+                    <p class="text-xs font-semibold text-purple-500 mt-1">{{ $majorMapPercent }}%</p>
+                </div>
+                <div class="text-center p-3 bg-pink-50 rounded-lg">
+                    <p class="text-sm text-slate-600">Minor Subjects</p>
+                    <p class="text-2xl font-bold text-pink-600">{{ $minorSubjects ?? 0 }}</p>
+                    <p class="text-xs font-semibold text-pink-500 mt-1">{{ $minorMapPercent }}%</p>
+                </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 quick-action-card">
-            <h3 class="quick-action-title font-semibold text-gray-800 flex items-center">
-                <div class="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="las la-bolt text-orange-600" style="font-size: 1rem;"></i>
+        {{-- Grades Setup Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Grades Setup Overview</h2>
+                <div class="bg-teal-100 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
                 </div>
-                Quick Actions
-            </h3>
-            <div class="space-y-4">
-                <a href="{{ route('employees.index') }}" class="flex items-center p-5 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200/50 quick-action-btn">
-                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mr-4 quick-action-icon">
-                        <i class="las la-user-cog text-white" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900">Manage Staff</h4>
-                        <p class="text-base text-gray-600">Employee accounts & status</p>
-                    </div>
-                </a>
-
-                <a href="{{ route('curriculum_export_tool') }}" class="flex items-center p-5 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200/50 quick-action-btn">
-                    <div class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center mr-4 quick-action-icon">
-                        <i class="las la-file-export text-white" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900">Export Tool</h4>
-                        <p class="text-base text-gray-600">Curriculum downloads</p>
-                    </div>
-                </a>
-
-                <a href="{{ route('employees.all-activities') }}" class="flex items-center p-5 bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl border border-violet-200/50 quick-action-btn">
-                    <div class="w-12 h-12 bg-violet-600 rounded-xl flex items-center justify-center mr-4 quick-action-icon">
-                        <i class="las la-chart-bar text-white" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-900">Activity Reports</h4>
-                        <p class="text-base text-gray-600">Detailed activity logs</p>
-                    </div>
-                </a>
+            </div>
+            <div class="relative h-64">
+                <canvas id="gradesChart"></canvas>
+            </div>
+            @php
+                $majorPercent = $majorSubjects > 0 ? round(($majorSubjectsWithGrades / $majorSubjects) * 100) : 0;
+                $minorPercent = $minorSubjects > 0 ? round(($minorSubjectsWithGrades / $minorSubjects) * 100) : 0;
+            @endphp
+            
+            <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-teal-50 rounded-lg">
+                    <p class="text-xs text-slate-600">Major Subjects</p>
+                    <p class="text-xl font-bold text-teal-600">{{ $majorSubjectsWithGrades ?? 0 }} <span class="text-sm font-normal text-slate-500">of {{ $majorSubjects ?? 0 }}</span></p>
+                    <p class="text-xs font-semibold text-teal-500 mt-1">{{ $majorPercent }}% Graded</p>
+                </div>
+                <div class="text-center p-3 bg-cyan-50 rounded-lg">
+                    <p class="text-xs text-slate-600">Minor Subjects</p>
+                    <p class="text-xl font-bold text-cyan-600">{{ $minorSubjectsWithGrades ?? 0 }} <span class="text-sm font-normal text-slate-500">of {{ $minorSubjects ?? 0 }}</span></p>
+                    <p class="text-xs font-semibold text-cyan-500 mt-1">{{ $minorPercent }}% Graded</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Sidebar Toggle Button -->
-<button class="sidebar-toggle" id="dashboard-sidebar-toggle" onclick="toggleDashboardSidebar()">
-    <i class="las la-angle-double-left"></i>
-</button>
-
-<!-- Dashboard Sidebar -->
-<div class="dashboard-sidebar" id="dashboard-sidebar">
-    <div class="sidebar-header">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-800">Dashboard Settings</h3>
-            <button onclick="toggleDashboardSidebar()" class="text-gray-500 hover:text-gray-700">
-                <i class="las la-times text-xl"></i>
-            </button>
+    {{-- Third Row Charts --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {{-- Export Activity Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Export Activity</h2>
+                <div class="flex bg-slate-100 p-1 rounded-lg">
+                     <button id="export-week-btn" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">Week</button>
+                     <button id="export-month-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Month</button>
+                     <button id="export-year-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Year</button>
+                </div>
+            </div>
+            <div class="relative h-64">
+                <canvas id="exportChart"></canvas>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-orange-50 rounded-lg">
+                    <p class="text-sm text-slate-600">Curriculum Exports</p>
+                    <p class="text-2xl font-bold text-orange-600" id="export-curriculum-count">{{ $curriculumExports ?? 0 }}</p>
+                </div>
+                <div class="text-center p-3 bg-amber-50 rounded-lg">
+                    <p class="text-sm text-slate-600">Subject Exports</p>
+                    <p class="text-2xl font-bold text-amber-600" id="export-subject-count">{{ $subjectExports ?? 0 }}</p>
+                </div>
+            </div>
         </div>
-        <p class="text-sm text-gray-600 mt-2">Customize your dashboard view</p>
+
+        {{-- Employee Module Usage Chart --}}
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Module Usage Frequency</h2>
+                <div class="flex bg-slate-100 p-1 rounded-lg">
+                     <button id="module-week-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Week</button>
+                     <button id="module-month-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Month</button>
+                     <button id="module-year-btn" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">Year</button>
+                </div>
+            </div>
+            <div class="relative h-64">
+                <canvas id="moduleUsageChart"></canvas>
+            </div>
+            <div class="mt-4">
+            <div class="mt-4">
+                <p class="text-sm text-slate-600 text-center">Total interactions: <span id="total-usage-display" class="font-bold text-slate-800">{{ $totalModuleUsage ?? 0 }}</span></p>
+            </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="sidebar-content">
-        <div class="sidebar-section">
-            <h4>Show/Hide Sections</h4>
-            
-            <div class="sidebar-toggle-item">
-                <label onclick="toggleSection('stats-section', document.getElementById('toggle-stats'))">Statistics Grid</label>
-                <div class="toggle-switch active" id="toggle-stats" onclick="toggleSection('stats-section', this)"></div>
+
+    {{-- Recent Activity Section --}}
+    {{-- Recent Activity Section --}}
+    <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-50 p-2 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800">Recent Activity</h2>
             </div>
-            
-            <div class="sidebar-toggle-item">
-                <label onclick="toggleSection('charts-section', document.getElementById('toggle-charts'))">Charts Section</label>
-                <div class="toggle-switch active" id="toggle-charts" onclick="toggleSection('charts-section', this)"></div>
-            </div>
-            
-            <div class="sidebar-toggle-item">
-                <label onclick="toggleSection('activity-chart-section', document.getElementById('toggle-activity-chart'))">Activity Trends Chart</label>
-                <div class="toggle-switch active" id="toggle-activity-chart" onclick="toggleSection('activity-chart-section', this)"></div>
-            </div>
-            
-            <div class="sidebar-toggle-item">
-                <label onclick="toggleSection('widgets-section', document.getElementById('toggle-widgets'))">Widgets Section</label>
-                <div class="toggle-switch active" id="toggle-widgets" onclick="toggleSection('widgets-section', this)"></div>
-            </div>
-            
-            <div class="sidebar-toggle-item">
-                <label onclick="toggleSection('activities-section', document.getElementById('toggle-activities'))">Activities & Quick Actions</label>
-                <div class="toggle-switch active" id="toggle-activities" onclick="toggleSection('activities-section', this)"></div>
-            </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <h4>Quick Actions</h4>
-            <div class="space-y-2">
-                <button onclick="showAllSections()" class="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors">
-                    <i class="las la-eye mr-2"></i>Show All Sections
-                </button>
-                <button onclick="hideAllSections()" class="w-full px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                    <i class="las la-eye-slash mr-2"></i>Hide All Sections
-                </button>
-                <button onclick="resetDashboard()" class="w-full px-3 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-colors">
-                    <i class="las la-redo mr-2"></i>Reset to Default
+
+            {{-- Inline Date Filter --}}
+            <div class="flex items-center gap-2">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <input type="date" 
+                           id="activity-date" 
+                           class="pl-10 pr-3 py-2 bg-slate-50 border border-slate-200 text-slate-600 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer shadow-sm hover:border-blue-300"
+                           placeholder="Filter by date">
+                </div>
+                <button id="clear-filter-btn" 
+                        class="hidden p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100" 
+                        title="Clear filter">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
                 </button>
             </div>
         </div>
         
-        <div class="sidebar-section">
-            <h4>Dashboard Info</h4>
-            <div class="text-xs text-gray-600 space-y-1">
-                <div>Last Updated: <span id="last-updated">{{ now()->format('M d, Y g:i A') }}</span></div>
-                <div>Sections: <span id="visible-sections">5</span> visible</div>
-                <div>Settings saved automatically</div>
-            </div>
+        <div id="activities-container" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+            @forelse($recentActivities ?? [] as $activity)
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-800">{{ $activity->action ?? 'Activity' }}</p>
+                        <p class="text-xs text-slate-500 mt-1">{{ $activity->description ?? '' }}</p>
+                        <p class="text-xs text-slate-400 mt-1">{{ $activity->created_at ? $activity->created_at->diffForHumans() : '' }}</p>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    </svg>
+                    <p class="mt-4 text-sm text-slate-500">No recent activity to display</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
 
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+{{-- Chart.js Library --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-// Dashboard data from Laravel
-const dashboardStats = @json($dashboardData['stats']);
-
-// Chart instances
-let curriculumChart = null;
-let systemChart = null;
-let activityChart = null;
-
-// Chart configurations
-const chartConfigs = {
-    curriculum: {
-        bar: {
-            type: 'bar',
-            data: {
-                labels: ['Senior High', 'College', 'Total Subjects'],
-                datasets: [{
-                    label: 'Count',
-                    data: [
-                        dashboardStats.curriculum_senior_high || 0,
-                        dashboardStats.curriculum_college || 0,
-                        dashboardStats.total_subjects || 0
-                    ],
-                    backgroundColor: [
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(139, 92, 246, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgb(59, 130, 246)',
-                        'rgb(16, 185, 129)',
-                        'rgb(139, 92, 246)'
-                    ],
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        }
-    },
-    system: {
-        bar: {
-            type: 'bar',
-            data: {
-                labels: ['Active Staff', 'Total Users', 'Exports', 'Equivalencies'],
-                datasets: [{
-                    label: 'Count',
-                    data: [
-                        dashboardStats.employees_active || 0,
-                        dashboardStats.total_users || 0,
-                        dashboardStats.curriculum_exports || 0,
-                        dashboardStats.total_equivalencies || 0
-                    ],
-                    backgroundColor: [
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(6, 182, 212, 0.8)',
-                        'rgba(20, 184, 166, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgb(16, 185, 129)',
-                        'rgb(59, 130, 246)',
-                        'rgb(6, 182, 212)',
-                        'rgb(20, 184, 166)'
-                    ],
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        },
-        radar: {
-            type: 'radar',
-            data: {
-                labels: ['Staff', 'Users', 'Exports', 'Equivalencies', 'Subjects', 'Curriculums'],
-                datasets: [{
-                    label: 'System Metrics',
-                    data: [
-                        Math.max(1, Math.min(dashboardStats.employees_active || 1, 100)),
-                        Math.max(1, Math.min(dashboardStats.total_users || 1, 100)),
-                        Math.max(1, Math.min(dashboardStats.curriculum_exports || 1, 100)),
-                        Math.max(1, Math.min(dashboardStats.total_equivalencies || 1, 100)),
-                        Math.max(1, Math.min(dashboardStats.total_subjects || 1, 100)),
-                        Math.max(1, Math.min(dashboardStats.total_curriculums || 1, 100))
-                    ],
-                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                    borderColor: 'rgb(16, 185, 129)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgb(16, 185, 129)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgb(16, 185, 129)',
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 50,
-                        min: 0,
-                        ticks: {
-                            stepSize: 10,
-                            color: '#6b7280'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
-                        angleLines: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
-                        pointLabels: {
-                            color: '#374151',
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    activity: {
-        line: {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Activities',
-                    data: [
-                        dashboardStats.weekly_activities?.Mon || 0,
-                        dashboardStats.weekly_activities?.Tue || 0,
-                        dashboardStats.weekly_activities?.Wed || 0,
-                        dashboardStats.weekly_activities?.Thu || 0,
-                        dashboardStats.weekly_activities?.Fri || 0,
-                        dashboardStats.weekly_activities?.Sat || 0,
-                        dashboardStats.weekly_activities?.Sun || 0
-                    ],
-                    borderColor: 'rgb(139, 92, 246)',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: false,
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(139, 92, 246)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        },
-        area: {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Activities',
-                    data: [
-                        dashboardStats.weekly_activities?.Mon || 0,
-                        dashboardStats.weekly_activities?.Tue || 0,
-                        dashboardStats.weekly_activities?.Wed || 0,
-                        dashboardStats.weekly_activities?.Thu || 0,
-                        dashboardStats.weekly_activities?.Fri || 0,
-                        dashboardStats.weekly_activities?.Sat || 0,
-                        dashboardStats.weekly_activities?.Sun || 0
-                    ],
-                    borderColor: 'rgb(139, 92, 246)',
-                    backgroundColor: 'rgba(139, 92, 246, 0.3)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(139, 92, 246)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        }
-    }
-};
-
-// System Health Monitoring
-function updateSystemHealth() {
-    // Simulate system metrics (in a real app, these would come from actual system monitoring)
-    const memoryUsage = Math.floor(Math.random() * 30) + 50; // 50-80%
-    const responseTime = Math.floor(Math.random() * 100) + 80; // 80-180ms
-    
-    // Update memory usage
-    document.getElementById('memory-usage').textContent = memoryUsage + '%';
-    document.getElementById('memory-bar').style.width = memoryUsage + '%';
-    
-    // Update memory bar color based on usage
-    const memoryBar = document.getElementById('memory-bar');
-    if (memoryUsage > 80) {
-        memoryBar.className = 'h-full bg-red-500 rounded-full transition-all duration-300';
-    } else if (memoryUsage > 65) {
-        memoryBar.className = 'h-full bg-orange-500 rounded-full transition-all duration-300';
-    } else {
-        memoryBar.className = 'h-full bg-green-500 rounded-full transition-all duration-300';
-    }
-    
-    // Update response time
-    document.getElementById('response-time').textContent = '~' + responseTime + 'ms';
-}
-
-// Quick Search Functionality
-function quickSearch(type) {
-    const searchInput = document.getElementById('global-search');
-    const resultsDiv = document.getElementById('search-results');
-    const resultsList = document.getElementById('search-results-list');
-    
-    // Set placeholder based on type
-    const placeholders = {
-        'curriculum': 'Search curriculum by name or code...',
-        'subject': 'Search subjects by name or code...',
-        'employee': 'Search staff by name or email...'
-    };
-    
-    searchInput.placeholder = placeholders[type] || 'Search...';
-    searchInput.focus();
-    
-    // Clear previous results and show loading
-    resultsList.innerHTML = '<div class="text-sm text-gray-500 p-2 flex items-center"><i class="las la-spinner animate-spin mr-2"></i>Loading ' + type + 's...</div>';
-    resultsDiv.classList.remove('hidden');
-    
-    // Fetch data based on type
-    fetch(`/api/quick-search/${type}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.results && data.results.length > 0) {
-            resultsList.innerHTML = data.results.map(result => `
-                <a href="${result.url}" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div class="w-6 h-6 bg-${getTypeColor(result.type)}-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las ${getTypeIcon(result.type)} text-${getTypeColor(result.type)}-600 text-sm"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-medium text-gray-900">${result.name}</div>
-                        <div class="text-xs text-gray-500 capitalize">${result.type}</div>
-                    </div>
-                </a>
-            `).join('');
-        } else {
-            resultsList.innerHTML = `<div class="text-sm text-gray-500 p-2">No ${type}s found</div>`;
-        }
-    })
-    .catch(error => {
-        console.error('Quick search error:', error);
-        resultsList.innerHTML = '<div class="text-sm text-red-500 p-2">Error loading data. Please try again.</div>';
-    });
-}
-
-// Global search functionality
-function performGlobalSearch(query) {
-    const resultsDiv = document.getElementById('search-results');
-    const resultsList = document.getElementById('search-results-list');
-    
-    if (query.length < 2) {
-        resultsDiv.classList.add('hidden');
-        return;
-    }
-    
-    // Show loading state
-    resultsList.innerHTML = '<div class="text-sm text-gray-500 p-2 flex items-center"><i class="las la-spinner animate-spin mr-2"></i>Searching...</div>';
-    resultsDiv.classList.remove('hidden');
-    
-    // Perform AJAX search
-    fetch('/api/global-search', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ query: query })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.results && data.results.length > 0) {
-            resultsList.innerHTML = data.results.map(result => `
-                <a href="${result.url}" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div class="w-6 h-6 bg-${getTypeColor(result.type)}-100 rounded-lg flex items-center justify-center mr-3">
-                        <i class="las ${getTypeIcon(result.type)} text-${getTypeColor(result.type)}-600 text-sm"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-medium text-gray-900">${result.name}</div>
-                        <div class="text-xs text-gray-500 capitalize">${result.type}</div>
-                    </div>
-                </a>
-            `).join('');
-        } else {
-            resultsList.innerHTML = '<div class="text-sm text-gray-500 p-2">No results found</div>';
-        }
-    })
-    .catch(error => {
-        console.error('Search error:', error);
-        resultsList.innerHTML = '<div class="text-sm text-red-500 p-2">Search error. Please try again.</div>';
-    });
-}
-
-function getTypeColor(type) {
-    const colors = {
-        'curriculum': 'blue',
-        'subject': 'purple',
-        'employee': 'green'
-    };
-    return colors[type] || 'gray';
-}
-
-function getTypeIcon(type) {
-    const icons = {
-        'curriculum': 'la-graduation-cap',
-        'subject': 'la-book',
-        'employee': 'la-user'
-    };
-    return icons[type] || 'la-file';
-}
-
-// Recent Downloads Animation
-function animateDownloadProgress() {
-    // Simulate download progress animation
-    const progressBars = document.querySelectorAll('.download-progress');
-    progressBars.forEach(bar => {
-        let width = 0;
-        const interval = setInterval(() => {
-            width += Math.random() * 10;
-            if (width >= 100) {
-                width = 100;
-                clearInterval(interval);
-                // Change status to complete
-                const statusElement = bar.closest('.download-item').querySelector('.download-status');
-                if (statusElement) {
-                    statusElement.innerHTML = '<div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div><span class="text-xs text-green-600 font-medium">Complete</span>';
-                }
-            }
-            bar.style.width = width + '%';
-        }, 200);
-    });
-}
-
-// Dashboard Sidebar functionality
-function toggleDashboardSidebar() {
-    console.log('toggleDashboardSidebar called');
-    const sidebar = document.getElementById('dashboard-sidebar');
-    const toggleBtn = document.getElementById('dashboard-sidebar-toggle');
-    
-    if (sidebar && toggleBtn) {
-        sidebar.classList.toggle('open');
-        toggleBtn.classList.toggle('sidebar-open');
-        console.log('Dashboard sidebar toggled, open:', sidebar.classList.contains('open'));
-    } else {
-        console.error('Dashboard sidebar elements not found:', { sidebar, toggleBtn });
-    }
-}
-
-// Section toggle functionality with localStorage persistence
-function toggleSection(sectionId, toggleElement) {
-    console.log('toggleSection called:', sectionId, toggleElement);
-    const section = document.getElementById(sectionId);
-    
-    if (!section) {
-        console.error('Section not found:', sectionId);
-        return;
-    }
-    
-    const isVisible = !section.classList.contains('hidden');
-    console.log('Section current state - visible:', isVisible);
-    
-    if (isVisible) {
-        section.classList.add('hidden');
-        toggleElement.classList.remove('active');
-        console.log('Section hidden');
-    } else {
-        section.classList.remove('hidden');
-        toggleElement.classList.add('active');
-        console.log('Section shown');
-    }
-    
-    // Save state to localStorage
-    saveSectionState(sectionId, !isVisible);
-    updateVisibleSectionsCount();
-}
-
-// Save section visibility state
-function saveSectionState(sectionId, isVisible) {
-    const dashboardState = getDashboardState();
-    dashboardState[sectionId] = isVisible;
-    localStorage.setItem('dashboardState', JSON.stringify(dashboardState));
-}
-
-// Get dashboard state from localStorage
-function getDashboardState() {
-    const saved = localStorage.getItem('dashboardState');
-    return saved ? JSON.parse(saved) : {};
-}
-
-// Load saved dashboard state
-function loadDashboardState() {
-    const state = getDashboardState();
-    const sectionMappings = {
-        'stats-section': 'toggle-stats',
-        'charts-section': 'toggle-charts',
-        'activity-chart-section': 'toggle-activity-chart',
-        'widgets-section': 'toggle-widgets',
-        'activities-section': 'toggle-activities'
-    };
-    
-    Object.keys(sectionMappings).forEach(sectionId => {
-        const section = document.getElementById(sectionId);
-        const toggle = document.getElementById(sectionMappings[sectionId]);
-        
-        if (section && toggle) {
-            const isVisible = state[sectionId] !== false; // Default to visible
-            
-            if (isVisible) {
-                section.classList.remove('hidden');
-                toggle.classList.add('active');
-            } else {
-                section.classList.add('hidden');
-                toggle.classList.remove('active');
-            }
-        }
-    });
-    
-    updateVisibleSectionsCount();
-}
-
-// Show all sections
-function showAllSections() {
-    const sections = document.querySelectorAll('.dashboard-section');
-    const toggles = document.querySelectorAll('.toggle-switch');
-    
-    sections.forEach(section => {
-        section.classList.remove('hidden');
-        saveSectionState(section.id, true);
-    });
-    
-    toggles.forEach(toggle => {
-        toggle.classList.add('active');
-    });
-    
-    updateVisibleSectionsCount();
-}
-
-// Hide all sections
-function hideAllSections() {
-    const sections = document.querySelectorAll('.dashboard-section');
-    const toggles = document.querySelectorAll('.toggle-switch');
-    
-    sections.forEach(section => {
-        section.classList.add('hidden');
-        saveSectionState(section.id, false);
-    });
-    
-    toggles.forEach(toggle => {
-        toggle.classList.remove('active');
-    });
-    
-    updateVisibleSectionsCount();
-}
-
-// Reset dashboard to default state
-function resetDashboard() {
-    localStorage.removeItem('dashboardState');
-    showAllSections();
-    
-    // Show confirmation
-    const lastUpdated = document.getElementById('last-updated');
-    if (lastUpdated) {
-        lastUpdated.textContent = new Date().toLocaleString();
-    }
-}
-
-// Update visible sections count
-function updateVisibleSectionsCount() {
-    const visibleSections = document.querySelectorAll('.dashboard-section:not(.hidden)').length;
-    const countElement = document.getElementById('visible-sections');
-    if (countElement) {
-        countElement.textContent = visibleSections;
-    }
-}
-
-// Close dashboard sidebar when clicking outside
-function initializeSidebarEvents() {
-    document.addEventListener('click', (e) => {
-        const sidebar = document.getElementById('dashboard-sidebar');
-        const toggleBtn = document.getElementById('dashboard-sidebar-toggle');
-        
-        if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('open')) {
-            toggleDashboardSidebar();
-        }
-    });
-    
-    // ESC key to close dashboard sidebar
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const sidebar = document.getElementById('dashboard-sidebar');
-            if (sidebar.classList.contains('open')) {
-                toggleDashboardSidebar();
-            }
-        }
-    });
-}
-
-// Initialize widgets
-function initializeWidgets() {
-    // Update system health every 5 seconds
-    updateSystemHealth();
-    setInterval(updateSystemHealth, 5000);
-    
-    // Add search input event listener
-    const searchInput = document.getElementById('global-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            performGlobalSearch(e.target.value);
-        });
-        
-        // Hide results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#global-search') && !e.target.closest('#search-results')) {
-                document.getElementById('search-results').classList.add('hidden');
-            }
-        });
-    }
-    
-    // Animate any existing download progress
-    animateDownloadProgress();
-}
-
-// Initialize charts when page loads
-function initializeCharts() {
-    // Curriculum Chart
-    const curriculumCtx = document.getElementById('curriculumChart');
-    if (curriculumCtx) {
-        curriculumChart = new Chart(curriculumCtx, chartConfigs.curriculum.bar);
-    }
-
-    // System Chart
-    const systemCtx = document.getElementById('systemChart');
-    if (systemCtx) {
-        systemChart = new Chart(systemCtx, chartConfigs.system.bar);
-    }
-
-    // Activity Chart
-    const activityCtx = document.getElementById('activityChart');
-    if (activityCtx) {
-        activityChart = new Chart(activityCtx, chartConfigs.activity.line);
-    }
-}
-
-// Switch chart type
-function switchChart(chartName, chartType) {
-    try {
-        console.log(`Switching ${chartName} chart to ${chartType}`);
-        
-        // Update button states
-        document.querySelectorAll(`[data-chart="${chartName}"]`).forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-chart="${chartName}"][data-type="${chartType}"]`).classList.add('active');
-
-        // Get the appropriate chart instance and config
-        let chart, config, canvasId;
-        
-        switch(chartName) {
-            case 'curriculum':
-                chart = curriculumChart;
-                config = chartConfigs.curriculum[chartType];
-                canvasId = 'curriculumChart';
-                break;
-            case 'system':
-                chart = systemChart;
-                config = chartConfigs.system[chartType];
-                canvasId = 'systemChart';
-                break;
-            case 'activity':
-                chart = activityChart;
-                config = chartConfigs.activity[chartType];
-                canvasId = 'activityChart';
-                break;
-        }
-
-        if (!config) {
-            console.error(`No config found for ${chartName} chart type ${chartType}`);
-            return;
-        }
-
-        if (!canvasId) {
-            console.error(`No canvas ID found for ${chartName}`);
-            return;
-        }
-
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) {
-            console.error(`Canvas element not found: ${canvasId}`);
-            return;
-        }
-
-        // Destroy existing chart if it exists
-        if (chart) {
-            chart.destroy();
-        }
-        
-        // Get fresh canvas context
-        const ctx = canvas.getContext('2d');
-        
-        // Create new chart with animation
-        const newChart = new Chart(ctx, config);
-        
-        // Update the global chart variable
-        switch(chartName) {
-            case 'curriculum':
-                curriculumChart = newChart;
-                break;
-            case 'system':
-                systemChart = newChart;
-                break;
-            case 'activity':
-                activityChart = newChart;
-                break;
-        }
-        
-        console.log(`Successfully created ${chartType} chart for ${chartName}`);
-        
-    } catch (error) {
-        console.error(`Error switching chart ${chartName} to ${chartType}:`, error);
-    }
-}
-
-function updateDateTime() {
-    // Create a new Date object for Philippines timezone (UTC+8)
-    const now = new Date();
-    
-    // Philippines timezone options
-    const philippinesOptions = {
-        timeZone: 'Asia/Manila',
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-    };
-    
-    // Format date and time for Philippines
-    const philippinesDateTime = new Intl.DateTimeFormat('en-US', philippinesOptions).formatToParts(now);
-    
-    // Extract parts
-    let month = '';
-    let day = '';
-    let year = '';
-    let hour = '';
-    let minute = '';
-    let dayPeriod = '';
-    
-    philippinesDateTime.forEach(part => {
-        switch(part.type) {
-            case 'month': month = part.value; break;
-            case 'day': day = part.value; break;
-            case 'year': year = part.value; break;
-            case 'hour': hour = part.value; break;
-            case 'minute': minute = part.value; break;
-            case 'dayPeriod': dayPeriod = part.value; break;
-        }
-    });
-    
-    // Format the date and time
-    const formattedDate = `${month} ${day}, ${year}`;
-    const formattedTime = `${hour}:${minute} ${dayPeriod}`;
-    
-    // Update the DOM elements
-    const dateElement = document.getElementById('current-date');
-    const timeElement = document.getElementById('current-time');
-    
-    if (dateElement) {
-        dateElement.textContent = formattedDate;
-    }
-    
-    if (timeElement) {
-        timeElement.textContent = formattedTime;
-    }
-}
-
-// Update immediately when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - Initializing dashboard...');
-    
-    updateDateTime();
-    
-    // Initialize charts
-    initializeCharts();
-    
-    // Initialize widgets
-    initializeWidgets();
-    
-    // Initialize sidebar functionality
-    initializeSidebarEvents();
-    
-    // Load saved dashboard state
-    loadDashboardState();
-    
-    // Check if dashboard sidebar elements exist
-    const sidebar = document.getElementById('dashboard-sidebar');
-    const toggleBtn = document.getElementById('dashboard-sidebar-toggle');
-    console.log('Dashboard sidebar elements found:', { sidebar: !!sidebar, toggleBtn: !!toggleBtn });
-    
-    // Update every second for real-time clock
-    setInterval(updateDateTime, 1000);
-});
-
-// Also update when page becomes visible (in case user switches tabs)
-document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-        updateDateTime();
+    // Update time every second
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('current-time').textContent = timeString;
     }
+    setInterval(updateTime, 1000);
+
+    // Chart.js default configuration
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+
+    // Official Curriculum Chart with Toggle Support
+    const curriculumCtx = document.getElementById('curriculumChart').getContext('2d');
+    let curriculumChart;
+    let showingNew = true; // true = New Curriculum, false = Old Curriculum
+    
+    // Data for both views (High School vs College)
+    const newData = {
+        labels: ['New High School', 'New College'],
+        data: [{{ $newHighSchoolCount ?? 0 }}, {{ $newCollegeCount ?? 0 }}],
+        colors: ['#3b82f6', '#6366f1']
+    };
+    
+    const oldData = {
+        labels: ['Old High School', 'Old College'],
+        data: [{{ $oldHighSchoolCount ?? 0 }}, {{ $oldCollegeCount ?? 0 }}],
+        colors: ['#3b82f6', '#6366f1'] // Same colors as they represent same entities
+    };
+    
+    // Initialize chart
+    function createCurriculumChart(viewData) {
+        if (curriculumChart) {
+            curriculumChart.destroy();
+        }
+        
+        curriculumChart = new Chart(curriculumCtx, {
+            type: 'doughnut',
+            data: {
+                labels: viewData.labels,
+                datasets: [{
+                    data: viewData.data,
+                    backgroundColor: viewData.colors,
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12, weight: '600' }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true
+                }
+            }
+        });
+    }
+    
+    // Initialize with New Curriculum view
+    createCurriculumChart(newData);
+    
+    // Toggle button functionality
+    const toggleButton = document.getElementById('curriculum-view-toggle');
+    const newLabel = document.getElementById('curriculum-new-label');
+    const oldLabel = document.getElementById('curriculum-old-label');
+    const newStats = document.getElementById('curriculum-new-stats');
+    const oldStats = document.getElementById('curriculum-old-stats');
+    const toggleCircle = toggleButton.querySelector('span');
+    
+    toggleButton.addEventListener('click', function() {
+        showingNew = !showingNew;
+        
+        if (showingNew) {
+            // Switch to New Curriculum view
+            toggleButton.classList.remove('bg-gray-400');
+            toggleButton.classList.add('bg-emerald-500');
+            toggleCircle.classList.remove('translate-x-6');
+            toggleCircle.classList.add('translate-x-1');
+            
+            newLabel.classList.remove('text-slate-400');
+            newLabel.classList.add('text-slate-600');
+            oldLabel.classList.remove('text-slate-600');
+            oldLabel.classList.add('text-slate-400');
+            
+            newStats.classList.remove('hidden');
+            oldStats.classList.add('hidden');
+            createCurriculumChart(newData);
+        } else {
+            // Switch to Old Curriculum view
+            toggleButton.classList.remove('bg-emerald-500');
+            toggleButton.classList.add('bg-gray-400');
+            toggleCircle.classList.remove('translate-x-1');
+            toggleCircle.classList.add('translate-x-6');
+            
+            newLabel.classList.remove('text-slate-600');
+            newLabel.classList.add('text-slate-400');
+            oldLabel.classList.remove('text-slate-400');
+            oldLabel.classList.add('text-slate-600');
+            
+            newStats.classList.add('hidden');
+            oldStats.classList.remove('hidden');
+            createCurriculumChart(oldData);
+        }
+    });
+
+    // Course Builder Status Chart (approval status only)
+    const courseBuilderCtx = document.getElementById('courseBuilderChart').getContext('2d');
+    new Chart(courseBuilderCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Approved', 'Rejected', 'Processing'],
+            datasets: [{
+                data: [
+                    {{ $approvedCount ?? 0 }}, 
+                    {{ $rejectedCount ?? 0 }}, 
+                    {{ $processingCount ?? 0 }}
+                ],
+                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: { size: 12, weight: '600' }
+                    }
+                }
+            }
+        }
+    });
+
+    // Subject Mapping Chart
+    const subjectMappingCtx = document.getElementById('subjectMappingChart').getContext('2d');
+    new Chart(subjectMappingCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Major', 'Minor'],
+            datasets: [{
+                label: 'Number of Subjects',
+                data: [{{ $majorSubjects ?? 0 }}, {{ $minorSubjects ?? 0 }}],
+                backgroundColor: ['#a855f7', '#ec4899'],
+                borderRadius: 8,
+                barThickness: 60
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Grades Chart - Percentages
+    const gradesCtx = document.getElementById('gradesChart').getContext('2d');
+    
+    // Calculate percentages in JS to ensure valid numbers even if blade vars are missing
+    const majorSubjectCount = {{ $majorSubjects ?? 0 }};
+    const majorGradedCount = {{ $majorSubjectsWithGrades ?? 0 }};
+    const majorPercent = majorSubjectCount > 0 ? Math.round((majorGradedCount / majorSubjectCount) * 100) : 0;
+    
+    const minorSubjectCount = {{ $minorSubjects ?? 0 }};
+    const minorGradedCount = {{ $minorSubjectsWithGrades ?? 0 }};
+    const minorPercent = minorSubjectCount > 0 ? Math.round((minorGradedCount / minorSubjectCount) * 100) : 0;
+
+    new Chart(gradesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Major Subjects', 'Minor Subjects'],
+            datasets: [{
+                label: 'Graded Percentage',
+                data: [majorPercent, minorPercent],
+                backgroundColor: ['#14b8a6', '#06b6d4'],
+                borderRadius: 8,
+                barThickness: 60
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y + '% Graded';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { 
+                        stepSize: 20,
+                        callback: function(value) { return value + '%' }
+                    },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Export Activity Chart with Week/Month/Year Toggle
+    const exportCtx = document.getElementById('exportChart').getContext('2d');
+    
+    // Store export data from backend (currently only week data is available)
+    const exportDataWeek = {
+        labels: {!! json_encode($exportDates ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) !!},
+        counts: {!! json_encode($exportCounts ?? [0, 0, 0, 0, 0, 0, 0]) !!}
+    };
+    
+    let exportChart = new Chart(exportCtx, {
+        type: 'line',
+        data: {
+            labels: exportDataWeek.labels,
+            datasets: [{
+                label: 'Exports',
+                data: exportDataWeek.counts,
+                borderColor: '#f97316',
+                backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#f97316',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+    
+    // Export Activity Toggle Logic
+    const exportWeekBtn = document.getElementById('export-week-btn');
+    const exportMonthBtn = document.getElementById('export-month-btn');
+    const exportYearBtn = document.getElementById('export-year-btn');
+    
+    function updateExportActiveBtn(activeBtn) {
+        [exportWeekBtn, exportMonthBtn, exportYearBtn].forEach(btn => {
+            if (btn === activeBtn) {
+                btn.classList.add('bg-white', 'shadow-sm', 'text-slate-800');
+                btn.classList.remove('text-slate-600', 'hover:bg-white', 'hover:shadow-sm');
+            } else {
+                btn.classList.remove('bg-white', 'shadow-sm', 'text-slate-800');
+                btn.classList.add('text-slate-600', 'hover:bg-white', 'hover:shadow-sm');
+            }
+        });
+    }
+    
+    // Fetch export data for different periods
+    async function fetchExportData(period) {
+        try {
+            const response = await fetch(`/api/dashboard/export-data?period=${period}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching export data:', error);
+            return null;
+        }
+    }
+    
+    exportWeekBtn.addEventListener('click', async () => {
+        updateExportActiveBtn(exportWeekBtn);
+        const data = await fetchExportData('week');
+        if (data) {
+            exportChart.data.labels = data.labels;
+            exportChart.data.datasets[0].data = data.counts;
+            exportChart.update();
+            document.getElementById('export-curriculum-count').textContent = data.curriculumExports;
+            document.getElementById('export-subject-count').textContent = data.subjectExports;
+        }
+    });
+    
+    exportMonthBtn.addEventListener('click', async () => {
+        updateExportActiveBtn(exportMonthBtn);
+        const data = await fetchExportData('month');
+        if (data) {
+            exportChart.data.labels = data.labels;
+            exportChart.data.datasets[0].data = data.counts;
+            exportChart.update();
+            document.getElementById('export-curriculum-count').textContent = data.curriculumExports;
+            document.getElementById('export-subject-count').textContent = data.subjectExports;
+        }
+    });
+    
+    exportYearBtn.addEventListener('click', async () => {
+        updateExportActiveBtn(exportYearBtn);
+        const data = await fetchExportData('year');
+        if (data) {
+            exportChart.data.labels = data.labels;
+            exportChart.data.datasets[0].data = data.counts;
+            exportChart.update();
+            document.getElementById('export-curriculum-count').textContent = data.curriculumExports;
+            document.getElementById('export-subject-count').textContent = data.subjectExports;
+        }
+    });
+
+    // Module Usage Chart - Bar Chart
+    const moduleUsageCtx = document.getElementById('moduleUsageChart').getContext('2d');
+    
+    // Data sets
+    const moduleNames = {!! json_encode($moduleNames ?? []) !!};
+    const usageWeek = {!! json_encode($moduleUsageWeek ?? []) !!};
+    const usageMonth = {!! json_encode($moduleUsageMonth ?? []) !!};
+    const usageYear = {!! json_encode($moduleUsageYear ?? []) !!};
+    
+    let moduleUsageChart = new Chart(moduleUsageCtx, {
+        type: 'bar',
+        data: {
+            labels: moduleNames,
+            datasets: [{
+                label: 'Usage Count',
+                data: usageYear,
+                backgroundColor: '#f43f5e',
+                borderRadius: 8,
+                barThickness: 40,
+                hoverBackgroundColor: '#e11d48'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Usage: ' + context.parsed.y;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 10 },
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 0
+                    }
+                }
+            }
+        }
+    });
+
+    // Toggle Logic for Module Usage
+    const weekBtn = document.getElementById('module-week-btn');
+    const monthBtn = document.getElementById('module-month-btn');
+    const yearBtn = document.getElementById('module-year-btn');
+    const totalDisplay = document.getElementById('total-usage-display');
+    
+    function updateModuleActiveBtn(activeBtn) {
+        [weekBtn, monthBtn, yearBtn].forEach(btn => {
+            if (btn === activeBtn) {
+                btn.classList.add('bg-white', 'shadow-sm', 'text-slate-800');
+                btn.classList.remove('text-slate-600', 'hover:bg-white', 'hover:shadow-sm');
+            } else {
+                btn.classList.remove('bg-white', 'shadow-sm', 'text-slate-800');
+                btn.classList.add('text-slate-600', 'hover:bg-white', 'hover:shadow-sm');
+            }
+        });
+    }
+
+    weekBtn.addEventListener('click', () => {
+        updateModuleActiveBtn(weekBtn);
+        moduleUsageChart.data.datasets[0].data = usageWeek;
+        moduleUsageChart.update();
+        if(totalDisplay) totalDisplay.textContent = usageWeek.reduce((a, b) => a + b, 0);
+    });
+
+    monthBtn.addEventListener('click', () => {
+        updateModuleActiveBtn(monthBtn);
+        moduleUsageChart.data.datasets[0].data = usageMonth;
+        moduleUsageChart.update();
+        if(totalDisplay) totalDisplay.textContent = usageMonth.reduce((a, b) => a + b, 0);
+    });
+
+    yearBtn.addEventListener('click', () => {
+        updateModuleActiveBtn(yearBtn);
+        moduleUsageChart.data.datasets[0].data = usageYear;
+        moduleUsageChart.update();
+        if(totalDisplay) totalDisplay.textContent = usageYear.reduce((a, b) => a + b, 0);
+    });
+
+    // Recent Activity Filter
+    const clearFilterBtn = document.getElementById('clear-filter-btn');
+    const dateInput = document.getElementById('activity-date');
+    const activitiesContainer = document.getElementById('activities-container');
+
+    async function loadActivities(date = null) {
+        try {
+            let url = '/api/dashboard/recent-activities?';
+            if (date) {
+                // If a date is provided, filter by that specific day
+                url += `start_date=${date}&end_date=${date}`;
+                clearFilterBtn.classList.remove('hidden');
+            } else {
+                clearFilterBtn.classList.add('hidden');
+            }
+            
+            // Show loading state (opional but good for UX)
+            activitiesContainer.style.opacity = '0.5';
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            activitiesContainer.style.opacity = '1';
+            
+            if (data.success && data.activities) {
+                renderActivities(data.activities);
+            } else {
+                showNoActivities();
+            }
+        } catch (error) {
+            console.error('Error loading activities:', error);
+            activitiesContainer.style.opacity = '1';
+            showNoActivities('Error loading activities. Please try again.');
+        }
+    }
+
+    function renderActivities(activities) {
+        if (activities.length === 0) {
+            showNoActivities();
+            return;
+        }
+
+        activitiesContainer.innerHTML = activities.map(activity => `
+            <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors animate-fade-in">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-slate-800">${activity.action || 'Activity'}</p>
+                    <p class="text-xs text-slate-500 mt-1">${activity.description || ''}</p>
+                    <p class="text-xs text-slate-400 mt-1">${activity.relative_time || ''}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function showNoActivities(message = 'No activities found for the selected date') {
+        activitiesContainer.innerHTML = `
+            <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <p class="mt-4 text-sm text-slate-500">${message}</p>
+            </div>
+        `;
+    }
+
+    // Auto-filter on date selection
+    dateInput.addEventListener('change', () => {
+        const date = dateInput.value;
+        if (date) {
+            loadActivities(date);
+        } else {
+            loadActivities();
+        }
+    });
+
+    clearFilterBtn.addEventListener('click', () => {
+        dateInput.value = '';
+        loadActivities();
+    });
 });
 </script>
-
 @endsection

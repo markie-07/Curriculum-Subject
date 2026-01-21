@@ -7,6 +7,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\EquivalencyToolController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\GlobalSearchController;
 use App\Http\Controllers\Api\DescriptionSimilarityController; 
 
@@ -65,6 +66,10 @@ Route::get('/compliance-links', [App\Http\Controllers\ComplianceLinkController::
 Route::post('/compliance-links', [App\Http\Controllers\ComplianceLinkController::class, 'store']);
 Route::put('/compliance-links/{id}', [App\Http\Controllers\ComplianceLinkController::class, 'update']);
 Route::delete('/compliance-links/{id}', [App\Http\Controllers\ComplianceLinkController::class, 'destroy']);
+
+// --- Dashboard Routes ---
+Route::get('/dashboard/export-data', [DashboardController::class, 'getExportData']);
+Route::get('/dashboard/recent-activities', [DashboardController::class, 'getRecentActivitiesFiltered']);
 
 // --- Description Similarity Check ---
 Route::post('/check-description-similarity', [DescriptionSimilarityController::class, 'check']);

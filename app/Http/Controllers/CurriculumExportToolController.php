@@ -18,8 +18,8 @@ class CurriculumExportToolController extends Controller
         $curriculums = Curriculum::orderBy('curriculum')->get();
         $exportHistories = ExportHistory::with(['curriculum', 'user'])->latest()->get();
 
-        // Log page view activity for employees only
-        if (auth()->user() && auth()->user()->isEmployee()) {
+        // Log page view activity for all authenticated users
+        if (auth()->user()) {
             ActivityLogService::logPageView('Curriculum Export Tool');
             auth()->user()->updateLastActivity();
         }
@@ -38,18 +38,19 @@ class CurriculumExportToolController extends Controller
             'format' => 'required|string|max:255',
         ]);
 
-        // Add user information to the export history
+        // Add user information and export type to the export history
         $user = auth()->user();
         if ($user) {
             $validated['user_id'] = $user->id;
             $validated['exported_by_name'] = $user->name ?? $user->username;
             $validated['exported_by_email'] = $user->email;
         }
+        $validated['export_type'] = 'curriculum';
 
         $exportHistory = ExportHistory::create($validated);
 
-        // Log export activity for employees only
-        if (auth()->user() && auth()->user()->isEmployee()) {
+        // Log export activity for all authenticated users
+        if (auth()->user()) {
             $curriculum = Curriculum::find($validated['curriculum_id']);
             ActivityLogService::logExport(
                 'curriculum_export',
@@ -58,6 +59,7 @@ class CurriculumExportToolController extends Controller
                     'curriculum_id' => $validated['curriculum_id'],
                     'curriculum_name' => $curriculum->curriculum ?? 'Unknown',
                     'format' => $validated['format'],
+                    'export_type' => 'curriculum',
                     'export_history_id' => $exportHistory->id,
                 ]
             );
@@ -186,6 +188,37 @@ class CurriculumExportToolController extends Controller
         
         // Sanitize the curriculum name to create a valid filename
         $fileName = preg_replace('/[^A-Za-z0-9\-]/', '_', $curriculum->program_code);
+        
+        // Record Export History
+        $user = auth()->user();
+        if ($user) {
+            $history = ExportHistory::create([
+                'curriculum_id' => $curriculum->id,
+                'user_id' => $user->id,
+                'file_name' => $fileName . '_curriculum.pdf',
+                'format' => 'pdf',
+                'export_type' => 'curriculum',
+                'exported_by_name' => $user->name ?? $user->username,
+                'exported_by_email' => $user->email,
+            ]);
+
+            // Log Activity for all authenticated users
+            ActivityLogService::logExport(
+                'curriculum_export',
+                $fileName . '_curriculum.pdf',
+                [
+                    'curriculum_id' => $curriculum->id,
+                    'curriculum_name' => $curriculum->curriculum ?? 'Unknown',
+                    'format' => 'pdf',
+                    'export_type' => 'curriculum',
+                    'export_history_id' => $history->id
+                ]
+            );
+            // Also update last activity
+            if (method_exists($user, 'updateLastActivity')) {
+                $user->updateLastActivity();
+            }
+        }
         
         // Output PDF for download
         return response($mpdf->Output($fileName . '_curriculum.pdf', 'S'))

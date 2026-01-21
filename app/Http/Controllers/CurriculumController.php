@@ -111,6 +111,14 @@ class CurriculumController extends Controller
                 'Curriculum "' . $curriculum->curriculum . '" has been created by ' . Auth::user()->name,
                 ['curriculum_id' => $curriculum->id, 'action' => 'created']
             );
+
+            // Log activity
+            \App\Services\ActivityLogService::log(
+                'create_curriculum',
+                'Created curriculum "' . $curriculum->curriculum . '"',
+                ['curriculum_id' => $curriculum->id, 'program_code' => $curriculum->program_code]
+            );
+            Auth::user()->updateLastActivity();
         }
 
         session()->flash('success', 'Curriculum "' . $curriculum->curriculum . '" has been created successfully!');
@@ -174,6 +182,14 @@ class CurriculumController extends Controller
                 'Curriculum "' . $curriculum->curriculum . '" has been updated by ' . Auth::user()->name,
                 ['curriculum_id' => $curriculum->id, 'action' => 'updated']
             );
+
+            // Log activity
+            \App\Services\ActivityLogService::log(
+                'edit_curriculum',
+                'Updated curriculum "' . $curriculum->curriculum . '"',
+                ['curriculum_id' => $curriculum->id, 'changes' => array_keys($validated)]
+            );
+            Auth::user()->updateLastActivity();
         }
 
         session()->flash('success', 'Curriculum "' . $curriculum->curriculum . '" has been updated successfully!');

@@ -15,8 +15,10 @@ class EquivalencyToolController extends Controller
      */
     public function index(): View
     {
-        // Fetch all subjects to populate the dropdown
-        $subjects = Subject::orderBy('subject_code')->get();
+        // Fetch all subjects to populate the dropdown with their descriptions
+        $subjects = Subject::select('id', 'subject_code', 'subject_name', 'course_description')
+            ->orderBy('subject_code')
+            ->get();
         
         // Fetch all existing equivalencies, eager load the related subject, and order by the newest first
         $equivalencies = Equivalency::with('equivalentSubject')
@@ -45,6 +47,7 @@ class EquivalencyToolController extends Controller
     {
         $validated = $request->validate([
             'source_subject_name' => 'required|string|max:255',
+            'source_subject_description' => 'nullable|string',
             'equivalent_subject_id' => 'required|exists:subjects,id',
         ]);
 
@@ -52,7 +55,20 @@ class EquivalencyToolController extends Controller
         $equivalency->load('equivalentSubject');
 
         // Flash success message for session-based requests
-        session()->flash('success', 'Equivalency for "' . $validated['source_subject_name'] . '" has been created successfully!');
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'equivalency_create',
+                'Created equivalency for ' . $validated['source_subject_name'],
+                [
+                    'source_subject' => $validated['source_subject_name'],
+                    'equivalent_subject_id' => $validated['equivalent_subject_id']
+                ]
+            );
+            auth()->user()->updateLastActivity();
+            
+            session()->flash('success', 'Equivalency for "' . $validated['source_subject_name'] . '" has been created successfully!');
+        }
         
         if (request()->wantsJson()) {
             return response()->json([
@@ -76,6 +92,7 @@ class EquivalencyToolController extends Controller
     {
         $validated = $request->validate([
             'source_subject_name' => 'required|string|max:255',
+            'source_subject_description' => 'nullable|string',
             'equivalent_subject_id' => 'required|exists:subjects,id',
         ]);
 
@@ -83,7 +100,21 @@ class EquivalencyToolController extends Controller
         $equivalency->load('equivalentSubject');
 
         // Flash success message for session-based requests
-        session()->flash('success', 'Equivalency for "' . $validated['source_subject_name'] . '" has been updated successfully!');
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'equivalency_update',
+                'Updated equivalency for ' . $validated['source_subject_name'],
+                [
+                    'equivalency_id' => $equivalency->id,
+                    'source_subject' => $validated['source_subject_name'],
+                    'equivalent_subject_id' => $validated['equivalent_subject_id']
+                ]
+            );
+            auth()->user()->updateLastActivity();
+            
+            session()->flash('success', 'Equivalency for "' . $validated['source_subject_name'] . '" has been updated successfully!');
+        }
         
         if (request()->wantsJson()) {
             return response()->json([
@@ -109,7 +140,20 @@ class EquivalencyToolController extends Controller
         $equivalency->delete();
         
         // Flash success message for session-based requests
-        session()->flash('success', 'Equivalency for "' . $sourceName . '" has been deleted successfully!');
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'equivalency_delete',
+                'Deleted equivalency for ' . $sourceName,
+                [
+                    'source_subject' => $sourceName,
+                    'equivalency_id' => $equivalency->id
+                ]
+            );
+            auth()->user()->updateLastActivity();
+        
+            session()->flash('success', 'Equivalency for "' . $sourceName . '" has been deleted successfully!');
+        }
         
         if (request()->wantsJson()) {
             return response()->json([

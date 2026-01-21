@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Subject;
 use Mpdf\Mpdf;
 use Illuminate\Http\Request;
+use App\Models\ExportHistory;
+use App\Services\ActivityLogService;
 
 class SubjectExportController extends Controller
 {
@@ -70,6 +72,39 @@ class SubjectExportController extends Controller
         
         // Generate a filename based on the subject code and return the PDF for download.
         $fileName = preg_replace('/[^A-Za-z0-9\-]/', '_', $subject->subject_code);
+        
+        // Record Export History
+        $user = auth()->user();
+        if ($user) {
+            $history = ExportHistory::create([
+                'curriculum_id' => $curriculum ? $curriculum->id : null,
+                'user_id' => $user->id,
+                'file_name' => $fileName . '_details.pdf',
+                'format' => 'pdf',
+                'export_type' => 'subject',
+                'exported_by_name' => $user->name ?? $user->username,
+                'exported_by_email' => $user->email,
+            ]);
+
+            // Log Activity for all authenticated users
+            ActivityLogService::logExport(
+                'subject_export',
+                $fileName . '_details.pdf',
+                [
+                    'subject_id' => $subject->id,
+                    'subject_code' => $subject->subject_code,
+                    'subject_name' => $subject->subject_name ?? 'Unknown',
+                    'curriculum_id' => $curriculum ? $curriculum->id : null,
+                    'format' => 'pdf',
+                    'export_type' => 'subject',
+                    'export_history_id' => $history->id
+                ]
+            );
+            // Also update last activity
+            if (method_exists($user, 'updateLastActivity')) {
+                $user->updateLastActivity();
+            }
+        }
         
         // Output PDF for download
         return response($mpdf->Output($fileName . '_details.pdf', 'S'))

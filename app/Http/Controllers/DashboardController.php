@@ -9,6 +9,8 @@ use App\Models\Curriculum;
 use App\Models\Subject;
 use App\Models\ExportHistory;
 use App\Models\EmployeeActivityLog;
+use App\Models\Equivalency;
+use App\Models\Grade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
@@ -33,10 +35,13 @@ class DashboardController extends Controller
                 return redirect()->route('curriculum_export_tool');
             }
             
-            // Get dashboard data based on role for admins
-            $dashboardData = $this->getDashboardData($user);
+            // Get all dashboard statistics
+            $data = $this->getAllDashboardData();
             
-            return view('dashboard', compact('user', 'dashboardData'));
+            // Log the data for debugging
+            \Log::info('Dashboard Data:', $data);
+            
+            return view('dashboard', $data);
             
         } catch (\Exception $e) {
             \Log::error('Dashboard error', [
@@ -44,500 +49,559 @@ class DashboardController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             
-            // Return a simple error view or redirect
-            return response()->view('errors.500', ['error' => $e->getMessage()], 500);
+            // Return default data instead of error page
+            return view('dashboard', $this->getDefaultDashboardData());
         }
     }
 
     /**
-     * Get dashboard data based on user role
+     * Get all dashboard data
      */
-    private function getDashboardData($user)
-    {
-        $data = [
-            'role' => $user->role,
-            'welcome_message' => $this->getWelcomeMessage($user),
-            'stats' => $this->getSystemStats(),
-            'recent_activities' => $this->getRecentActivities(),
-        ];
-
-        if ($user->isSuperAdmin()) {
-            $data['permissions'] = ['manage_users', 'manage_system', 'view_all_data'];
-        } elseif ($user->isAdmin()) {
-            $data['permissions'] = ['manage_content', 'view_reports'];
-        } else {
-            $data['permissions'] = ['view_content'];
-        }
-
-        return $data;
-    }
-
-    /**
-     * Get comprehensive system statistics with caching and optimized queries
-     */
-    private function getSystemStats()
-    {
-        // Cache dashboard stats for 5 seconds to allow real-time active user tracking
-        return Cache::remember('dashboard_stats', 5, function() {
-            try {
-                // Optimized curriculum statistics with single query
-                $curriculumStats = DB::table('curriculums')
-                    ->selectRaw('
-                        COUNT(*) as total_curriculums,
-                        SUM(CASE WHEN year_level = "Senior High" THEN 1 ELSE 0 END) as curriculum_senior_high,
-                        SUM(CASE WHEN year_level = "College" THEN 1 ELSE 0 END) as curriculum_college
-                    ')
-                    ->first();
-
-                // Optimized user statistics with single query
-                $userStats = DB::table('users')
-                    ->selectRaw('
-                        COUNT(*) as total_users,
-                        SUM(CASE WHEN role = "admin" THEN 1 ELSE 0 END) as total_admins,
-                        SUM(CASE WHEN role = "employee" AND status = "active" THEN 1 ELSE 0 END) as employees_active,
-                        SUM(CASE WHEN role = "employee" AND status = "inactive" THEN 1 ELSE 0 END) as employees_inactive,
-                        SUM(CASE WHEN role = "employee" THEN 1 ELSE 0 END) as total_employees
-                    ')
-                    ->first();
-
-                // Optimized activity statistics with single query
-                $activityStats = DB::table('employee_activity_logs')
-                    ->selectRaw('
-                        SUM(CASE WHEN activity_type = "export" THEN 1 ELSE 0 END) as curriculum_exports,
-                        SUM(CASE WHEN activity_type = "export" AND MONTH(created_at) = ? THEN 1 ELSE 0 END) as exports_this_month,
-                        SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as activities_today,
-                        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as activities_this_week
-                    ', [now()->month, now()->subWeek()])
-                    ->first();
-
-                // Get weekly activity data for the chart (last 7 days)
-                $weeklyActivities = $this->getWeeklyActivityData();
-
-                // Get other statistics efficiently
-                $subjectCount = Subject::count();
-                
-                $stats = [
-                    // Curriculum Statistics
-                    'curriculum_senior_high' => $curriculumStats->curriculum_senior_high ?? 0,
-                    'curriculum_college' => $curriculumStats->curriculum_college ?? 0,
-                    'total_curriculums' => $curriculumStats->total_curriculums ?? 0,
-                    
-                    // Subject Statistics  
-                    'total_subjects' => $subjectCount,
-                    'active_subjects' => $subjectCount,
-                    
-                    // Other Statistics (cached separately if needed)
-                    'total_prerequisites' => $this->getPrerequisiteCount(),
-                    'total_mapping_history' => $this->getMappingHistoryCount(),
-                    'removed_subjects' => $this->getRemovedSubjectsCount(),
-                    'total_equivalencies' => $this->getEquivalencyCount(),
-                    'total_compliance_links' => $this->getComplianceLinksCount(),
-                    
-                    // Export Statistics
-                    'curriculum_exports' => $activityStats->curriculum_exports ?? 0,
-                    'exports_this_month' => $activityStats->exports_this_month ?? 0,
-                    'total_exports' => $activityStats->curriculum_exports ?? 0,
-                    
-                    // Employee Statistics
-                    'employees_active' => $userStats->employees_active ?? 0,
-                    'employees_inactive' => $userStats->employees_inactive ?? 0,
-                    'total_employees' => $userStats->total_employees ?? 0,
-                    
-                    // System Statistics
-                    'total_users' => $userStats->total_users ?? 0,
-                    'total_admins' => $userStats->total_admins ?? 0,
-                    'activities_today' => $activityStats->activities_today ?? 0,
-                    'activities_this_week' => $activityStats->activities_this_week ?? 0,
-                    
-                    // Real-time Active Users (last 15 minutes)
-                    'active_users_online' => $this->getActiveUsersCount(),
-                    
-                    // Weekly activity data for chart
-                    'weekly_activities' => $weeklyActivities,
-                    
-                    // System Health Metrics (Real-time)
-                    'memory_usage_percent' => $this->getMemoryUsagePercent(),
-                    'memory_used_gb' => $this->getMemoryUsedGB(),
-                    'memory_total_gb' => $this->getMemoryTotalGB(),
-                    'response_time_ms' => $this->getResponseTime(),
-                ];
-                
-                return $stats;
-                
-            } catch (\Exception $e) {
-                // Log error but don't break the dashboard
-                \Log::error('Dashboard stats error: ' . $e->getMessage());
-                return $this->getDefaultStats();
-            }
-        });
-    }
-
-    /**
-     * Get weekly activity data for the last 7 days
-     */
-    private function getWeeklyActivityData()
+    private function getAllDashboardData()
     {
         try {
-            $weeklyData = [];
+            // NEW Curriculum Statistics (Breakdown by Level)
+            $newHighSchoolCount = Curriculum::where('version_status', 'new')
+                ->where(function($query) {
+                    $query->where('year_level', 'Senior High')
+                          ->orWhere('year_level', 'LIKE', '%High School%');
+                })->count();
+
+            $newCollegeCount = Curriculum::where('version_status', 'new')
+                ->where(function($query) {
+                    $query->where('year_level', 'College')
+                          ->orWhere('year_level', 'LIKE', '%College%');
+                })->count();
+
+            // OLD Curriculum Statistics (Breakdown by Level)
+            $oldHighSchoolCount = Curriculum::where('version_status', 'old')
+                ->where(function($query) {
+                    $query->where('year_level', 'Senior High')
+                          ->orWhere('year_level', 'LIKE', '%High School%');
+                })->count();
+
+            $oldCollegeCount = Curriculum::where('version_status', 'old')
+                ->where(function($query) {
+                    $query->where('year_level', 'College')
+                          ->orWhere('year_level', 'LIKE', '%College%');
+                })->count();
             
-            // Get data for the last 7 days (Monday to Sunday)
-            for ($i = 6; $i >= 0; $i--) {
-                $date = now()->subDays($i);
-                $dayName = $date->format('D'); // Mon, Tue, Wed, etc.
+            // Total Counts (keeping these for the top stats cards)
+            $totalCurriculums = Curriculum::count();
+            $newCurriculumCount = Curriculum::where('version_status', 'new')->count();
+            $oldCurriculumCount = Curriculum::where('version_status', 'old')->count();
+
+            // Course Builder Status Statistics (case-insensitive)
+            $approvedCount = Curriculum::whereRaw('LOWER(approval_status) = ?', ['approved'])->count();
+            $rejectedCount = Curriculum::whereRaw('LOWER(approval_status) = ?', ['rejected'])->count();
+            $processingCount = Curriculum::where(function($query) {
+                $query->whereRaw('LOWER(approval_status) = ?', ['processing'])
+                      ->orWhereNull('approval_status');
+            })->count();
+
+            // Subject Mapping Statistics (Major vs Minor) - FIXED with proper grouping
+            $majorSubjects = Subject::where(function($query) {
+                $query->where('subject_type', 'Major')
+                      ->orWhere('subject_type', 'LIKE', '%Major%');
+            })->count();
+            
+            $minorSubjects = Subject::where(function($query) {
+                $query->where('subject_type', 'Minor')
+                      ->orWhere('subject_type', 'LIKE', '%Minor%');
+            })->count();
+            
+            $totalSubjects = Subject::count();
+
+            // Log individual counts for debugging
+            \Log::info('Dashboard Counts', [
+                'totalCurriculums' => $totalCurriculums,
+                'newHighSchoolCount' => $newHighSchoolCount,
+                'newCollegeCount' => $newCollegeCount,
+                'oldHighSchoolCount' => $oldHighSchoolCount,
+                'oldCollegeCount' => $oldCollegeCount,
+                'newCurriculumCount' => $newCurriculumCount,
+                'oldCurriculumCount' => $oldCurriculumCount,
+                'approvedCount' => $approvedCount,
+                'rejectedCount' => $rejectedCount,
+                'processingCount' => $processingCount,
+                'totalSubjects' => $totalSubjects,
+                'majorSubjects' => $majorSubjects,
+                'minorSubjects' => $minorSubjects,
+            ]);
+
+            // Grades Setup Statistics
+            try {
+                $curriculumsWithGrades = DB::table('grades')
+                    ->distinct()
+                    ->count('curriculum_id');
                 
-                $count = DB::table('employee_activity_logs')
-                    ->whereDate('created_at', $date->format('Y-m-d'))
-                    ->count();
-                
-                $weeklyData[$dayName] = $count;
+                $subjectsWithGrades = DB::table('grades')
+                    ->distinct()
+                    ->count('subject_id');
+
+                $majorSubjectsWithGrades = DB::table('grades')
+                    ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                    ->where(function($query) {
+                        $query->where('subjects.subject_type', 'Major')
+                              ->orWhere('subjects.subject_type', 'LIKE', '%Major%');
+                    })
+                    ->distinct('grades.subject_id')
+                    ->count('grades.subject_id');
+
+                $minorSubjectsWithGrades = DB::table('grades')
+                    ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                    ->where(function($query) {
+                        $query->where('subjects.subject_type', 'Minor')
+                              ->orWhere('subjects.subject_type', 'LIKE', '%Minor%');
+                    })
+                    ->distinct('grades.subject_id')
+                    ->count('grades.subject_id');
+            } catch (\Exception $e) {
+                \Log::warning('Grades table not found: ' . $e->getMessage());
+                $curriculumsWithGrades = 0;
+                $subjectsWithGrades = 0;
+                $majorSubjectsWithGrades = 0;
+                $minorSubjectsWithGrades = 0;
             }
+
+            // Equivalency Statistics (correct table name)
+            try {
+                $totalEquivalencies = DB::table('equivalencies')->count();
+            } catch (\Exception $e) {
+                try {
+                    $totalEquivalencies = DB::table('subject_equivalencies')->count();
+                } catch (\Exception $e2) {
+                    \Log::warning('Equivalencies table not found');
+                    $totalEquivalencies = 0;
+                }
+            }
+
+            // Export Statistics (Last 7 Days by default)
+            $exportData = $this->getExportStatistics('week');
             
-            return $weeklyData;
+            // Module Usage Statistics
+            $moduleUsageWeek = $this->getModuleUsageStatistics('week');
+            $moduleUsageMonth = $this->getModuleUsageStatistics('month');
+            $moduleUsageYear = $this->getModuleUsageStatistics('year');
+
+            // Recent Activities
+            $recentActivities = $this->getRecentActivities();
+
+            return [
+                // Basic counts
+                'totalCurriculums' => $totalCurriculums,
+                'totalSubjects' => $totalSubjects,
+                'totalEquivalencies' => $totalEquivalencies,
+                'totalExports' => $exportData['total'],
+                
+                // Detailed Curriculum Counts
+                'newHighSchoolCount' => $newHighSchoolCount,
+                'newCollegeCount' => $newCollegeCount,
+                'oldHighSchoolCount' => $oldHighSchoolCount,
+                'oldCollegeCount' => $oldCollegeCount,
+                
+                // Official Curriculum (Totals)
+                'newCurriculumCount' => $newCurriculumCount,
+                'oldCurriculumCount' => $oldCurriculumCount,
+                
+                // Course Builder Status
+                'approvedCount' => $approvedCount,
+                'rejectedCount' => $rejectedCount,
+                'processingCount' => $processingCount,
+                
+                // Subject Mapping
+                'majorSubjects' => $majorSubjects,
+                'minorSubjects' => $minorSubjects,
+                
+                // Grades Setup
+                'curriculumsWithGrades' => $curriculumsWithGrades,
+                'subjectsWithGrades' => $subjectsWithGrades,
+                'majorSubjectsWithGrades' => $majorSubjectsWithGrades,
+                'minorSubjectsWithGrades' => $minorSubjectsWithGrades,
+                
+                // Export Activity
+                'curriculumExports' => $exportData['curriculum'],
+                'subjectExports' => $exportData['subject'],
+                'exportDates' => $exportData['dates'],
+                'exportCounts' => $exportData['counts'],
+                
+                // Module Usage
+                'moduleNames' => $moduleUsageWeek['names'],
+                'moduleUsageWeek' => $moduleUsageWeek['counts'],
+                'moduleUsageMonth' => $moduleUsageMonth['counts'],
+                'moduleUsageYear' => $moduleUsageYear['counts'],
+                'totalModuleUsage' => $moduleUsageYear['total'],
+                
+                // Recent Activities
+                'recentActivities' => $recentActivities,
+            ];
             
         } catch (\Exception $e) {
-            \Log::error('Error fetching weekly activity data: ' . $e->getMessage());
-            // Return default data if there's an error
+            \Log::error('Error fetching dashboard data: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            return $this->getDefaultDashboardData();
+        }
+    }
+
+    /**
+     * API endpoint to get export data for different periods
+     */
+    public function getExportData(Request $request)
+    {
+        $period = $request->input('period', 'week');
+        $exportData = $this->getExportStatistics($period);
+        
+        return response()->json([
+            'labels' => $exportData['dates'],
+            'counts' => $exportData['counts'],
+            'curriculumExports' => $exportData['curriculum'],
+            'subjectExports' => $exportData['subject'],
+            'total' => $exportData['total']
+        ]);
+    }
+
+
+    /**
+     * Get export statistics for different time periods
+     */
+    private function getExportStatistics($period = 'week')
+    {
+        try {
+            $dates = [];
+            $counts = [];
+            $curriculumExports = 0;
+            $subjectExports = 0;
+            
+            // Determine the date range and labels based on period
+            if ($period === 'week') {
+                // Last 7 days (including today)
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = now()->copy()->subDays($i);
+                    $dates[] = $date->format('D'); // Mon, Tue, Wed, etc.
+                    
+                    $dayCount = DB::table('export_histories')
+                        ->whereDate('created_at', $date->format('Y-m-d'))
+                        ->count();
+                    
+                    $counts[] = $dayCount;
+                }
+                
+                // Count curriculum vs subject exports for the week
+                $weekStart = now()->subDays(6)->startOfDay();
+                $curriculumExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $weekStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'curriculum')
+                              ->orWhere('export_type', 'LIKE', '%curriculum%');
+                    })
+                    ->count();
+                
+                $subjectExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $weekStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'subject')
+                              ->orWhere('export_type', 'LIKE', '%subject%');
+                    })
+                    ->count();
+                    
+            } elseif ($period === 'month') {
+                // Last 30 days, grouped by week
+                for ($i = 4; $i >= 0; $i--) {
+                    $weekStart = now()->subWeeks($i)->startOfWeek();
+                    $weekEnd = now()->subWeeks($i)->endOfWeek();
+                    
+                    $dates[] = 'Week ' . (5 - $i);
+                    
+                    $weekCount = DB::table('export_histories')
+                        ->whereBetween('created_at', [$weekStart, $weekEnd])
+                        ->count();
+                    
+                    $counts[] = $weekCount;
+                }
+                
+                // Count curriculum vs subject exports for the month
+                $monthStart = now()->subWeeks(4)->startOfWeek();
+                $curriculumExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $monthStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'curriculum')
+                              ->orWhere('export_type', 'LIKE', '%curriculum%');
+                    })
+                    ->count();
+                
+                $subjectExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $monthStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'subject')
+                              ->orWhere('export_type', 'LIKE', '%subject%');
+                    })
+                    ->count();
+                    
+            } elseif ($period === 'year') {
+                // Last 12 months
+                for ($i = 11; $i >= 0; $i--) {
+                    $monthDate = now()->subMonths($i);
+                    $dates[] = $monthDate->format('M'); // Jan, Feb, Mar, etc.
+                    
+                    $monthCount = DB::table('export_histories')
+                        ->whereYear('created_at', $monthDate->year)
+                        ->whereMonth('created_at', $monthDate->month)
+                        ->count();
+                    
+                    $counts[] = $monthCount;
+                }
+                
+                // Count curriculum vs subject exports for the year
+                $yearStart = now()->subMonths(11)->startOfMonth();
+                $curriculumExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $yearStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'curriculum')
+                              ->orWhere('export_type', 'LIKE', '%curriculum%');
+                    })
+                    ->count();
+                
+                $subjectExports = DB::table('export_histories')
+                    ->where('created_at', '>=', $yearStart)
+                    ->where(function($query) {
+                        $query->where('export_type', 'subject')
+                              ->orWhere('export_type', 'LIKE', '%subject%');
+                    })
+                    ->count();
+            }
+            
+            $total = $curriculumExports + $subjectExports;
+            
             return [
-                'Mon' => 0, 'Tue' => 0, 'Wed' => 0, 'Thu' => 0, 
-                'Fri' => 0, 'Sat' => 0, 'Sun' => 0
+                'dates' => $dates,
+                'counts' => $counts,
+                'curriculum' => $curriculumExports,
+                'subject' => $subjectExports,
+                'total' => $total,
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('Error fetching export statistics: ' . $e->getMessage());
+            
+            // Return default data based on period
+            if ($period === 'month') {
+                return [
+                    'dates' => ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                    'counts' => [0, 0, 0, 0, 0],
+                    'curriculum' => 0,
+                    'subject' => 0,
+                    'total' => 0,
+                ];
+            } elseif ($period === 'year') {
+                return [
+                    'dates' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    'counts' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'curriculum' => 0,
+                    'subject' => 0,
+                    'total' => 0,
+                ];
+            } else {
+                return [
+                    'dates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    'counts' => [0, 0, 0, 0, 0, 0, 0],
+                    'curriculum' => 0,
+                    'subject' => 0,
+                    'total' => 0,
+                ];
+            }
+        }
+    }
+
+    /**
+     * Get module usage statistics from employee activity logs
+     */
+    private function getModuleUsageStatistics($period = 'year')
+    {
+        try {
+            // User-defined module list
+            $modules = [
+                'Course Builder' => ['course_builder', 'create_curriculum', 'edit_curriculum', 'Course Builder'],
+                'Subject Mapping' => ['subject_mapping', 'mapping', 'Subject Mapping'],
+                'Pre-requisite' => ['prerequisite', 'pre-requisite'],
+                'Compliance Validator' => ['compliance', 'validator'],
+                'Grade Weighting Setup' => ['grade_setup', 'grade_weight', 'grading', 'Grade Weighting'],
+                'Subject Equivalency Tool' => ['equivalency', 'equivalent'],
+                'Curriculum Export Tool' => ['export', 'curriculum_export'],
+                'Employee Management' => ['employee', 'user_management', 'hrms'],
+            ];
+            
+            $names = [];
+            $counts = [];
+            $total = 0;
+            
+            foreach ($modules as $moduleName => $keywords) {
+                $query = DB::table('employee_activity_logs');
+                
+                // Keyword filtering
+                $query->where(function($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q->orWhere('activity_type', 'LIKE', "%{$keyword}%")
+                          ->orWhere('description', 'LIKE', "%{$keyword}%");
+                    }
+                });
+                
+                // Date filtering
+                if ($period === 'week') {
+                    $query->where('created_at', '>=', now()->subWeek());
+                } elseif ($period === 'month') {
+                    $query->where('created_at', '>=', now()->subMonth());
+                } elseif ($period === 'year') {
+                    $query->where('created_at', '>=', now()->subYear());
+                }
+                
+                $count = $query->count();
+                
+                $names[] = $moduleName;
+                $counts[] = $count;
+                $total += $count;
+            }
+            
+            return [
+                'names' => $names,
+                'counts' => $counts,
+                'total' => $total,
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('Error fetching module usage statistics: ' . $e->getMessage());
+            return [
+                'names' => array_keys($modules ?? []),
+                'counts' => [],
+                'total' => 0,
             ];
         }
     }
 
     /**
-     * Get default stats in case of database errors
-     */
-    private function getDefaultStats()
-    {
-        return [
-            'curriculum_senior_high' => 0,
-            'curriculum_college' => 0,
-            'total_curriculums' => 0,
-            'total_subjects' => 0,
-            'active_subjects' => 0,
-            'total_prerequisites' => 0,
-            'total_mapping_history' => 0,
-            'removed_subjects' => 0,
-            'total_equivalencies' => 0,
-            'total_compliance_links' => 0,
-            'curriculum_exports' => 0,
-            'exports_this_month' => 0,
-            'total_exports' => 0,
-            'employees_active' => 0,
-            'employees_inactive' => 0,
-            'total_employees' => 0,
-            'total_users' => 0,
-            'total_admins' => 0,
-            'activities_today' => 0,
-            'activities_this_week' => 0,
-            'weekly_activities' => [
-                'Mon' => 0, 'Tue' => 0, 'Wed' => 0, 'Thu' => 0, 
-                'Fri' => 0, 'Sat' => 0, 'Sun' => 0
-            ],
-        ];
-    }
-
-    /**
-     * Get curriculum count by level
-     */
-    private function getCurriculumCount($level)
-    {
-        try {
-            // Use the year_level column to properly count curriculums
-            $count = Curriculum::where('year_level', $level)->count();
-            
-            // Log the count for debugging
-            \Log::info("Curriculum count for {$level}: {$count}");
-            
-            return $count;
-        } catch (\Exception $e) {
-            \Log::error("Error counting curriculums for {$level}: " . $e->getMessage());
-            return 0;
-        }
-    }
-
-    /**
-     * Get prerequisite count
-     */
-    private function getPrerequisiteCount()
-    {
-        // Count subjects that have prerequisites defined
-        try {
-            return Subject::whereNotNull('prerequisites')
-                         ->where('prerequisites', '!=', '')
-                         ->count();
-        } catch (\Exception $e) {
-            // If prerequisites column doesn't exist, return 0
-            return 0;
-        }
-    }
-
-    /**
-     * Get mapping history count (curriculum-subject relationships)
-     */
-    private function getMappingHistoryCount()
-    {
-        try {
-            // First try to get from curriculum_subject pivot table (most likely to exist)
-            return DB::table('curriculum_subject')->count();
-        } catch (\Exception $e) {
-            // If pivot table doesn't exist, try mapping_history table
-            try {
-                return DB::table('mapping_history')->count();
-            } catch (\Exception $e2) {
-                // If no mapping tables exist, return 0
-                return 0;
-            }
-        }
-    }
-
-    /**
-     * Get removed subjects count from subject offering history
-     */
-    private function getRemovedSubjectsCount()
-    {
-        try {
-            return DB::table('subject_offering_history')
-                    ->where('status', 'removed')
-                    ->orWhere('action', 'removed')
-                    ->count();
-        } catch (\Exception $e) {
-            // If table doesn't exist, return 0 as we don't have a status column
-            return 0;
-        }
-    }
-
-    /**
-     * Get subject equivalency count
-     */
-    private function getEquivalencyCount()
-    {
-        try {
-            return DB::table('subject_equivalencies')->count();
-        } catch (\Exception $e) {
-            // If equivalencies table doesn't exist, return 0
-            return 0;
-        }
-    }
-
-    /**
-     * Get compliance links count
-     */
-    private function getComplianceLinksCount()
-    {
-        try {
-            return DB::table('compliance_links')->count();
-        } catch (\Exception $e) {
-            // If compliance_links table doesn't exist, return 0
-            return 0;
-        }
-    }
-
-    /**
-     * Get recent activities for dashboard with caching
+     * Get recent activities for dashboard
      */
     private function getRecentActivities()
     {
-        return Cache::remember('dashboard_recent_activities', 120, function() {
-            try {
-                return EmployeeActivityLog::with(['user:id,name,email,role'])
-                                         ->whereHas('user', function($query) {
-                                             $query->where('role', 'employee');
-                                         })
-                                         ->select(['id', 'user_id', 'activity_type', 'description', 'created_at'])
-                                         ->orderBy('created_at', 'desc')
-                                         ->limit(5)
-                                         ->get();
-            } catch (\Exception $e) {
-                \Log::error('Error fetching recent activities: ' . $e->getMessage());
-                return collect([]);
-            }
-        });
-    }
-
-    /**
-     * Safe count for models that might not have tables
-     */
-    private function safeCount($modelName)
-    {
         try {
-            $modelClass = "App\\Models\\{$modelName}";
-            if (class_exists($modelClass)) {
-                return $modelClass::count();
-            }
-            return 0;
+            return DB::table('employee_activity_logs')
+                ->join('users', 'employee_activity_logs.user_id', '=', 'users.id')
+                ->select(
+                    'employee_activity_logs.id',
+                    'employee_activity_logs.activity_type as action',
+                    'employee_activity_logs.description',
+                    'employee_activity_logs.created_at',
+                    'users.name as user_name'
+                )
+                ->orderBy('employee_activity_logs.created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function($activity) {
+                    $activity->created_at = \Carbon\Carbon::parse($activity->created_at);
+                    return $activity;
+                });
+                
         } catch (\Exception $e) {
-            return 0;
+            \Log::error('Error fetching recent activities: ' . $e->getMessage());
+            return collect([]);
         }
     }
 
     /**
-     * Safe count with condition for models that might not have tables
+     * API endpoint to get filtered recent activities
      */
-    private function safeCountWithCondition($modelName, $callback)
+    public function getRecentActivitiesFiltered(Request $request)
     {
         try {
-            $modelClass = "App\\Models\\{$modelName}";
-            if (class_exists($modelClass)) {
-                $query = $modelClass::query();
-                return $callback($query)->count();
-            }
-            return 0;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Get active employees count
-     */
-    private function getActiveEmployeesCount()
-    {
-        try {
-            return User::where('role', 'employee')->where('status', 'active')->count();
-        } catch (\Exception $e) {
-            // If status column doesn't exist, count all employees as active
-            return User::where('role', 'employee')->count();
-        }
-    }
-
-    /**
-     * Get inactive employees count
-     */
-    private function getInactiveEmployeesCount()
-    {
-        try {
-            return User::where('role', 'employee')->where('status', 'inactive')->count();
-        } catch (\Exception $e) {
-            // If status column doesn't exist, return 0
-            return 0;
-        }
-    }
-
-    /**
-     * Get count of users who have been active in the last 5 seconds
-     */
-    private function getActiveUsersCount()
-    {
-        try {
-            // Count users who have been active in the last 5 seconds for real-time tracking
-            $activeThreshold = now()->subSeconds(5);
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             
-            return User::whereNotNull('last_activity')
-                      ->where('last_activity', '>=', $activeThreshold)
-                      ->count();
-        } catch (\Exception $e) {
-            \Log::error('Error counting active users: ' . $e->getMessage());
-            return 0;
-        }
-    }
-
-    /**
-     * Get current memory usage percentage
-     */
-    private function getMemoryUsagePercent()
-    {
-        try {
-            $memoryUsed = memory_get_usage(true);
-            $memoryLimit = $this->getMemoryLimit();
+            $query = DB::table('employee_activity_logs')
+                ->join('users', 'employee_activity_logs.user_id', '=', 'users.id')
+                ->select(
+                    'employee_activity_logs.id',
+                    'employee_activity_logs.activity_type as action',
+                    'employee_activity_logs.description',
+                    'employee_activity_logs.created_at',
+                    'users.name as user_name'
+                );
             
-            if ($memoryLimit > 0) {
-                return round(($memoryUsed / $memoryLimit) * 100, 1);
+            // Apply date filters if provided
+            if ($startDate && $endDate && $startDate == $endDate) {
+                // Single day filter - use start and end of that day
+                // Carbon will use app timezone (e.g. Asia/Manila) and convert to UTC for query
+                $query->whereBetween('employee_activity_logs.created_at', [
+                    \Carbon\Carbon::parse($startDate)->startOfDay(),
+                    \Carbon\Carbon::parse($endDate)->endOfDay()
+                ]);
+            } else {
+                // Range filter
+                if ($startDate) {
+                    $query->where('employee_activity_logs.created_at', '>=', \Carbon\Carbon::parse($startDate)->startOfDay());
+                }
+                if ($endDate) {
+                    $query->where('employee_activity_logs.created_at', '<=', \Carbon\Carbon::parse($endDate)->endOfDay());
+                }
             }
             
-            return 0;
-        } catch (\Exception $e) {
-            \Log::error('Error calculating memory usage: ' . $e->getMessage());
-            return 0;
-        }
-    }
-
-    /**
-     * Get memory used in GB
-     */
-    private function getMemoryUsedGB()
-    {
-        try {
-            $memoryUsed = memory_get_usage(true);
-            return round($memoryUsed / 1024 / 1024 / 1024, 2); // Convert to GB
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Get total memory limit in GB
-     */
-    private function getMemoryTotalGB()
-    {
-        try {
-            $memoryLimit = $this->getMemoryLimit();
-            return round($memoryLimit / 1024 / 1024 / 1024, 2); // Convert to GB
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Get PHP memory limit in bytes
-     */
-    private function getMemoryLimit()
-    {
-        $memoryLimit = ini_get('memory_limit');
-        
-        if ($memoryLimit == -1) {
-            // Unlimited memory, use a reasonable default for percentage calculation
-            return 2 * 1024 * 1024 * 1024; // 2GB default
-        }
-        
-        // Convert memory limit to bytes
-        $unit = strtoupper(substr($memoryLimit, -1));
-        $value = (int) $memoryLimit;
-        
-        switch ($unit) {
-            case 'G':
-                return $value * 1024 * 1024 * 1024;
-            case 'M':
-                return $value * 1024 * 1024;
-            case 'K':
-                return $value * 1024;
-            default:
-                return $value;
-        }
-    }
-
-    /**
-     * Get approximate response time in milliseconds
-     */
-    private function getResponseTime()
-    {
-        try {
-            // Calculate time since request started
-            if (defined('LARAVEL_START')) {
-                $responseTime = (microtime(true) - LARAVEL_START) * 1000;
-                return round($responseTime, 0);
-            }
+            $activities = $query->orderBy('employee_activity_logs.created_at', 'desc')
+                ->limit(50)
+                ->get()
+                ->map(function($activity) {
+                    $activity->created_at = \Carbon\Carbon::parse($activity->created_at);
+                    $activity->formatted_date = $activity->created_at->format('M d, Y h:i A');
+                    $activity->relative_time = $activity->created_at->diffForHumans();
+                    return $activity;
+                });
             
-            return 0;
+            return response()->json([
+                'success' => true,
+                'activities' => $activities,
+                'count' => $activities->count()
+            ]);
+                
         } catch (\Exception $e) {
-            return 0;
+            \Log::error('Error fetching filtered activities: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching activities',
+                'activities' => []
+            ], 500);
         }
     }
 
     /**
-     * Get welcome message based on user role
+     * Get default dashboard data in case of errors
      */
-    private function getWelcomeMessage($user)
+    private function getDefaultDashboardData()
     {
-        switch ($user->role) {
-            case 'super_admin':
-                return "Welcome back, Super Administrator! You have full system access.";
-            case 'admin':
-                return "Welcome back, Administrator! Manage your sections efficiently.";
-            case 'employee':
-                return "Welcome! You can access the Curriculum Export Tool to export curriculum data.";
-            default:
-                return "Welcome to the Student Management System!";
-        }
+        return [
+            'totalCurriculums' => 0,
+            'totalSubjects' => 0,
+            'totalEquivalencies' => 0,
+            'totalExports' => 0,
+            'highSchoolCount' => 0,
+            'collegeCount' => 0,
+            'newCurriculumCount' => 0,
+            'oldCurriculumCount' => 0,
+            'approvedCount' => 0,
+            'rejectedCount' => 0,
+            'processingCount' => 0,
+            'majorSubjects' => 0,
+            'minorSubjects' => 0,
+            'curriculumsWithGrades' => 0,
+            'subjectsWithGrades' => 0,
+            'majorSubjectsWithGrades' => 0,
+            'minorSubjectsWithGrades' => 0,
+            'curriculumExports' => 0,
+            'subjectExports' => 0,
+            'exportDates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            'exportCounts' => [0, 0, 0, 0, 0, 0, 0],
+            'moduleNames' => ['Course Builder', 'Subject Mapping', 'Pre-requisite', 'Compliance Validator', 'Grade Weighting Setup', 'Subject Equivalency Tool', 'Curriculum Export Tool', 'Employee Management'],
+            'moduleUsageWeek' => [0, 0, 0, 0, 0, 0, 0, 0],
+            'moduleUsageMonth' => [0, 0, 0, 0, 0, 0, 0, 0],
+            'moduleUsageYear' => [0, 0, 0, 0, 0, 0, 0, 0],
+            'totalModuleUsage' => 0,
+            'recentActivities' => collect([]),
+        ];
     }
 }

@@ -66,6 +66,16 @@ class EmployeeController extends Controller
                 'status' => 'active', // Set default status
             ]);
 
+            // Log activity
+            if (auth()->user()) {
+                \App\Services\ActivityLogService::log(
+                    'employee_create',
+                    'Created employee account for ' . $employee->name,
+                    ['employee_id' => $employee->id, 'username' => $employee->username]
+                );
+                auth()->user()->updateLastActivity();
+            }
+
             // Flash success message for session-based requests
             session()->flash('success', 'Employee "' . $employee->name . '" has been created successfully!');
             
@@ -135,6 +145,16 @@ class EmployeeController extends Controller
 
         $employee->update($updateData);
 
+        // Log activity
+        if (auth()->user()) {
+             \App\Services\ActivityLogService::log(
+                'employee_update',
+                'Updated employee account for ' . $employee->name,
+                ['employee_id' => $employee->id]
+            );
+            auth()->user()->updateLastActivity();
+        }
+
         // Flash success message for session-based requests
         session()->flash('success', 'Employee "' . $employee->name . '" has been updated successfully!');
         
@@ -161,6 +181,16 @@ class EmployeeController extends Controller
         $employee = User::where('role', 'employee')->findOrFail($id);
         $employeeName = $employee->name;
         $employee->delete();
+
+        // Log activity
+        if (auth()->user()) {
+             \App\Services\ActivityLogService::log(
+                'employee_delete',
+                'Deleted employee account for ' . $employeeName,
+                ['employee_id' => $id, 'employee_name' => $employeeName]
+            );
+            auth()->user()->updateLastActivity();
+        }
 
         // Flash success message for session-based requests
         session()->flash('success', 'Employee "' . $employeeName . '" has been deleted successfully!');
