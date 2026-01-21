@@ -572,18 +572,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // For minor courses, check if a subject is selected
-        if (currentCourseType === 'minor' && !currentSubjectId) {
-            Swal.fire({
-                title: 'Select a Minor Subject First',
-                text: 'Please select a minor subject before adding grade components.',
-                icon: 'warning',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#4f46e5'
-            });
-            return;
-        }
-        
 
         
         // Add the grade component
@@ -653,9 +641,21 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateAndUpdateTotals();
     };
     
+    let calculationDebounceTimer;
+    const CALCULATION_DEBOUNCE = 150; // ms - shorter delay for immediate feedback
+    
     const calculateAndUpdateTotals = () => {
+        clearTimeout(calculationDebounceTimer);
+        calculationDebounceTimer = setTimeout(() => {
+            performCalculation();
+        }, CALCULATION_DEBOUNCE);
+    };
+    
+    const performCalculation = () => {
+        // Cache DOM queries for better performance
+        const semestralInputs = document.querySelectorAll('.semestral-input');
         let semestralTotal = 0;
-        document.querySelectorAll('.semestral-input').forEach(input => semestralTotal += Number(input.value) || 0);
+        semestralInputs.forEach(input => semestralTotal += Number(input.value) || 0);
         
         totalWeightSpan.textContent = `${semestralTotal}%`;
         const radius = progressCircle.r.baseVal.value;
@@ -667,9 +667,11 @@ document.addEventListener('DOMContentLoaded', () => {
         progressCircle.classList.toggle('text-indigo-500', semestralTotal === 100);
 
         let allSubTotalsCorrect = true;
-        document.querySelectorAll('.period-container').forEach(container => {
+        const periodContainers = document.querySelectorAll('.period-container');
+        periodContainers.forEach(container => {
             let periodSubTotal = 0;
-            container.querySelectorAll('.main-input').forEach(input => periodSubTotal += Number(input.value) || 0);
+            const mainInputs = container.querySelectorAll('.main-input');
+            mainInputs.forEach(input => periodSubTotal += Number(input.value) || 0);
 
             const subTotalSpan = container.querySelector('.sub-total');
             subTotalSpan.textContent = `${periodSubTotal}%`;
@@ -677,7 +679,8 @@ document.addEventListener('DOMContentLoaded', () => {
             subTotalSpan.classList.toggle('text-gray-700', periodSubTotal === 100);
             if (periodSubTotal !== 100) allSubTotalsCorrect = false;
 
-            container.querySelectorAll('.main-component-row').forEach(mainRow => {
+            const mainComponentRows = container.querySelectorAll('.main-component-row');
+            mainComponentRows.forEach(mainRow => {
                 let subComponentTotal = 0;
                 let nextRow = mainRow.nextElementSibling;
                 let hasSubComponents = false;
@@ -800,9 +803,42 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('hidden');
     };
 
+    // API Response Cache
+    const apiCache = new Map();
+    const API_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    
+    const clearApiCache = (pattern = null) => {
+        if (pattern) {
+            // Clear specific cache entries matching pattern
+            for (const key of apiCache.keys()) {
+                if (key.includes(pattern)) {
+                    apiCache.delete(key);
+                }
+            }
+        } else {
+            // Clear all cache
+            apiCache.clear();
+        }
+        console.log('API cache cleared:', pattern || 'all');
+    };
+    
     const fetchAPI = async (url, options = {}) => {
         try {
             const apiUrl = `/api/${url}`;
+            
+            // Generate cache key from URL and method
+            const method = options.method || 'GET';
+            const cacheKey = `${method}:${url}`;
+            
+            // Only cache GET requests
+            if (method === 'GET') {
+                const cached = apiCache.get(cacheKey);
+                if (cached && (Date.now() - cached.timestamp) < API_CACHE_TTL) {
+                    console.log(`Cache HIT for: ${apiUrl}`);
+                    return cached.data;
+                }
+            }
+            
             console.log(`Making API request to: ${apiUrl}`);
             
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
@@ -831,6 +867,28 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             console.log('API Response data:', data);
+            
+            // Cache GET requests
+            if (method === 'GET') {
+                apiCache.set(cacheKey, {
+                    data: data,
+                    timestamp: Date.now()
+                });
+                console.log(`Cached response for: ${apiUrl}`);
+            }
+            
+            // Clear related cache on POST/PUT/DELETE operations
+            if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+                // Clear cache for related endpoints
+                if (url.includes('grades')) {
+                    clearApiCache('grades');
+                } else if (url.includes('subjects')) {
+                    clearApiCache('subjects');
+                } else if (url.includes('curriculums')) {
+                    clearApiCache('curriculums');
+                }
+            }
+            
             return data;
         } catch (error) {
             console.error('API Error:', error);
@@ -1277,10 +1335,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = e.target.closest('.grade-history-card');
         if (card) {
             const subjectId = card.dataset.subjectId;
-            // Updated to work with curriculum-based workflow
-            // This functionality needs to be updated for curriculum-based grade history
+            const curriculumId = card.dataset.curriculumId;
+            
+            // Only handle subject cards here, not curriculum cards
+            // Curriculum cards have their own click handler
+            if (!subjectId || curriculumId) {
+                return; // This is a curriculum card, not a subject card
+            }
+            
+            // This is a subject card - show grade component details
             try {
                 const gradeData = await fetchAPI(`grades/${subjectId}`);
+                
+                // Check if gradeData and components exist
+                if (!gradeData || !gradeData.components || Object.keys(gradeData.components).length === 0) {
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-600 font-medium">No grade components found</p>
+                            <p class="text-sm text-gray-500 mt-2">This subject doesn't have any grade scheme set up yet.</p>
+                        </div>
+                    `;
+                    showModal('grade-modal');
+                    return;
+                }
                 
                 let contentHtml = '<div class="space-y-6">';
                 for (const [period, data] of Object.entries(gradeData.components)) {
@@ -1325,7 +1407,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) { 
                 console.error('Error fetching grade details:', error);
-                console.log('Could not fetch grade details. This might be because no grades are set for this subject.');
+                // Show user-friendly error message in modal
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-800 font-medium">Error Loading Grade Details</p>
+                        <p class="text-sm text-gray-500 mt-2">Could not fetch grade details for this subject.</p>
+                        <p class="text-xs text-gray-400 mt-1">${error.message || 'Unknown error'}</p>
+                    </div>
+                `;
+                showModal('grade-modal');
             }
         }
     });
@@ -1772,7 +1867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleMajorSubjectSelection();
     };
 
-    const handleMajorSubjectSelection = () => {
+    const handleMajorSubjectSelection = async () => {
         const subjectId = majorSubjectSelect.value;
         if (!subjectId) {
             loadGradeDataToDOM({});
@@ -1784,12 +1879,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         currentSubjectId = subjectId;
-        loadGradeDataToDOM({});
-        toggleGradeComponents(false);
-        addGradeBtn.disabled = false;
-        addGradeComponentBtn.style.display = ''; // Show add component button
-        addGradeComponentBtn.disabled = false; // Ensure it's enabled
-        document.querySelector('.curriculum-reminder-text').textContent = '✅ Major subject selected - ready to set up grades';
+        
+        // Check if this subject already has grades
+        try {
+            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Loading subject data...';
+            const gradeData = await fetchAPI(`grades/${subjectId}`);
+            
+            if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
+                // Subject has existing grades - load them
+                console.log('Loading existing grades for major subject:', gradeData.components);
+                loadGradeDataToDOM(gradeData.components);
+                toggleGradeComponents(true); // Lock components (read-only mode)
+                addGradeBtn.classList.add('hidden');
+                updateGradeSetupBtn.classList.remove('hidden');
+                updateGradeSetupBtn.disabled = true; // Disabled until user makes changes
+                addGradeComponentBtn.style.display = 'none'; // Hide add component button in view mode
+                document.querySelector('.curriculum-reminder-text').textContent = '✅ Existing grades loaded - Click "Update Grade Scheme" to modify';
+                
+                // Show a notification
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Existing Grades Found',
+                    text: 'This subject already has a grade scheme. You can view it or click "Update Grade Scheme" to modify it.',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            } else {
+                // No existing grades - allow creating new ones
+                console.log('No existing grades found, allowing new grade creation');
+                loadGradeDataToDOM({});
+                toggleGradeComponents(false);
+                addGradeBtn.classList.remove('hidden');
+                updateGradeSetupBtn.classList.add('hidden');
+                addGradeBtn.disabled = false;
+                addGradeComponentBtn.style.display = ''; // Show add component button
+                addGradeComponentBtn.disabled = false;
+                document.querySelector('.curriculum-reminder-text').textContent = '✅ Major subject selected - ready to set up grades';
+            }
+        } catch (error) {
+            // Error fetching grades (likely 404 - no grades exist)
+            console.log('No existing grades found (error):', error);
+            loadGradeDataToDOM({});
+            toggleGradeComponents(false);
+            addGradeBtn.classList.remove('hidden');
+            updateGradeSetupBtn.classList.add('hidden');
+            addGradeBtn.disabled = false;
+            addGradeComponentBtn.style.display = ''; // Show add component button
+            addGradeComponentBtn.disabled = false;
+            document.querySelector('.curriculum-reminder-text').textContent = '✅ Major subject selected - ready to set up grades';
+        }
+        
         calculateAndUpdateTotals(); // Recalculate to update button states
     };
 
@@ -1990,12 +2131,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
             
-            // Add search functionality
+            // Add search functionality with debouncing for better performance
             const searchInput = document.getElementById('subject-search-input');
             searchInput.value = ''; // Clear search input when modal opens
             
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase().trim();
+            let subjectSearchDebounceTimer;
+            const SUBJECT_SEARCH_DEBOUNCE = 300; // ms
+            
+            const performSubjectSearch = (searchTerm) => {
                 const allSubjectCards = document.querySelectorAll('.subject-card');
                 
                 let minorVisible = 0;
@@ -2035,6 +2178,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const noResultsMsg = document.getElementById('no-major-results');
                     if (noResultsMsg) noResultsMsg.remove();
                 }
+            };
+            
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                // Clear previous timer and set new one (debouncing)
+                clearTimeout(subjectSearchDebounceTimer);
+                subjectSearchDebounceTimer = setTimeout(() => {
+                    performSubjectSearch(searchTerm);
+                }, SUBJECT_SEARCH_DEBOUNCE);
             });
             
             // Show modal
@@ -2518,13 +2671,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Search input event listener
+    // Search input event listener with debouncing
+    let curriculumSearchDebounceTimer;
+    const CURRICULUM_SEARCH_DEBOUNCE = 300; // ms
+    
     curriculumSearchInput.addEventListener('input', () => {
-        if (currentViewMode === 'curriculum') {
-            filterAndSearchCurriculums();
-        } else {
-            filterAndSearchSubjects();
-        }
+        clearTimeout(curriculumSearchDebounceTimer);
+        curriculumSearchDebounceTimer = setTimeout(() => {
+            if (currentViewMode === 'curriculum') {
+                filterAndSearchCurriculums();
+            } else {
+                filterAndSearchSubjects();
+            }
+        }, CURRICULUM_SEARCH_DEBOUNCE);
     });
     
     // Curriculum filter button event listeners
