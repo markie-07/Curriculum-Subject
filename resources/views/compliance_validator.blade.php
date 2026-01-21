@@ -155,6 +155,71 @@
             </div>
         </div>
     </div>
+
+    {{-- Add Link Modal --}}
+    <div id="addLinkModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden opacity-0">
+        <div id="add-link-modal-panel" class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out">
+            <button id="closeAddLinkModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h2 id="addLinkModalTitle" class="text-2xl font-bold text-slate-800">Add Custom Link</h2>
+                <p class="text-sm text-slate-500 mt-1">Add a custom memorandum link</p>
+            </div>
+
+            <form id="addLinkForm" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="linkTitle" class="block text-sm font-medium text-slate-700 mb-2">Link Title</label>
+                    <input type="text" id="linkTitle" name="title" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., CMO No. 123, Series of 2024" required>
+                </div>
+
+                <div>
+                    <label for="linkUrl" class="block text-sm font-medium text-slate-700 mb-2">Link URL</label>
+                    <input type="url" id="linkUrl" name="url" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="https://..." required>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" id="cancelAddLinkButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Save Link</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- External Link Confirmation Modal --}}
+    <div id="externalLinkModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden opacity-0">
+        <div id="external-link-modal-panel" class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out">
+            <button id="closeExternalLinkModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+            </div>
+            
+            <h3 class="text-lg font-semibold text-slate-800">Open External Link?</h3>
+            <p class="text-sm text-slate-500 mt-2">You are about to open:</p>
+            <p id="document-title" class="text-sm font-medium text-slate-700 mt-1"></p>
+            
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="cancelExternalLinkButton" class="px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
+                <button id="confirmExternalLinkButton" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all">Open Link</button>
+            </div>
+        </div>
+    </div>
  </main>
 
  <script>
@@ -187,6 +252,18 @@
     const addLinkForm = document.getElementById('addLinkForm');
     const linkTitleInput = document.getElementById('linkTitle');
     const linkUrlInput = document.getElementById('linkUrl');
+
+    // Debug: Check which elements are missing
+    console.log('Modal elements check:', {
+        externalLinkModal: !!externalLinkModal,
+        addLinkModal: !!addLinkModal,
+        closeExternalLinkModalButton: !!closeExternalLinkModalButton,
+        closeAddLinkModalButton: !!closeAddLinkModalButton,
+        cancelExternalLinkButton: !!cancelExternalLinkButton,
+        cancelAddLinkButton: !!cancelAddLinkButton,
+        confirmExternalLinkButton: !!confirmExternalLinkButton,
+        addLinkForm: !!addLinkForm
+    });
 
     let currentLink = null;
     let currentYear = null;
@@ -427,25 +504,39 @@
         }
     });
 
-    // Modal close events
-    closeExternalLinkModalButton.addEventListener('click', hideExternalLinkModal);
-    cancelExternalLinkButton.addEventListener('click', hideExternalLinkModal);
-    confirmExternalLinkButton.addEventListener('click', () => {
-        if (currentLink) {
-            window.open(currentLink, '_blank');
-            hideExternalLinkModal();
-        }
-    });
+    // Modal close events (with null checks)
+    if (closeExternalLinkModalButton) {
+        closeExternalLinkModalButton.addEventListener('click', hideExternalLinkModal);
+    }
+    if (cancelExternalLinkButton) {
+        cancelExternalLinkButton.addEventListener('click', hideExternalLinkModal);
+    }
+    if (confirmExternalLinkButton) {
+        confirmExternalLinkButton.addEventListener('click', () => {
+            if (currentLink) {
+                window.open(currentLink, '_blank');
+                hideExternalLinkModal();
+            }
+        });
+    }
 
-    externalLinkModal.addEventListener('click', (e) => {
-        if (e.target === externalLinkModal) hideExternalLinkModal();
-    });
+    if (externalLinkModal) {
+        externalLinkModal.addEventListener('click', (e) => {
+            if (e.target === externalLinkModal) hideExternalLinkModal();
+        });
+    }
 
-    closeAddLinkModalButton.addEventListener('click', hideAddLinkModal);
-    cancelAddLinkButton.addEventListener('click', hideAddLinkModal);
-    addLinkModal.addEventListener('click', (e) => {
-        if (e.target === addLinkModal) hideAddLinkModal();
-    });
+    if (closeAddLinkModalButton) {
+        closeAddLinkModalButton.addEventListener('click', hideAddLinkModal);
+    }
+    if (cancelAddLinkButton) {
+        cancelAddLinkButton.addEventListener('click', hideAddLinkModal);
+    }
+    if (addLinkModal) {
+        addLinkModal.addEventListener('click', (e) => {
+            if (e.target === addLinkModal) hideAddLinkModal();
+        });
+    }
 
     // Add Link clicks
     document.addEventListener('click', (e) => {

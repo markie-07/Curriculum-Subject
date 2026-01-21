@@ -208,6 +208,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-equivalency');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
+    // Debug: Check if button is found
+    console.log('Create button found:', createBtn);
+    console.log('Button clickable:', createBtn && !createBtn.disabled);
+    
     // Modal elements
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmationModalPanel = document.getElementById('confirmation-modal-panel');
@@ -234,10 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let itemToEdit = null;
     let currentAction = null;
 
-
-
-
-    // Modal Helper Functions
+    // Modal Helper Functions (MUST be defined before event listeners use them)
     const showSuccessModal = (title, message) => {
         successModalTitle.textContent = title;
         successModalMessage.textContent = message;
@@ -287,6 +288,27 @@ document.addEventListener('DOMContentLoaded', function () {
         editModalPanel.classList.add('opacity-0', 'scale-95');
         setTimeout(() => editModal.classList.add('hidden'), 300);
     };
+
+    // Event Listeners for Confirmation Modal Buttons (NOW AFTER helper functions)
+    cancelConfirmationButton.addEventListener('click', () => {
+        hideConfirmationModal();
+        currentAction = null;
+    });
+
+    confirmActionButton.addEventListener('click', () => {
+        if (currentAction && typeof currentAction === 'function') {
+            currentAction();
+        }
+        hideConfirmationModal();
+    });
+
+    // Event Listeners for Success Modal
+    closeSuccessModalButton.addEventListener('click', hideSuccessModal);
+
+    // Event Listeners for Edit Modal
+    closeEditModalButton.addEventListener('click', hideEditModal);
+    cancelEditModalButton.addEventListener('click', hideEditModal);
+
 
 
 
@@ -340,6 +362,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // CREATE
     createBtn.addEventListener('click', function () {
+        console.log('Create button clicked!'); // Debug log
+        
         const sourceSubject = sourceSubjectInput.value.trim();
         const equivalentSubjectId = equivalentSubjectSelect.value;
 

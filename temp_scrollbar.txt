@@ -1,0 +1,23 @@
+    }
+    
+    /* Scrollbar styling for stats grid */
+    .stats-grid::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .stats-grid::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    
+    .stats-grid::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+    }
+    
+    .stats-grid::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* Base stat card styles - zoom synchronized with cool hover effects */
