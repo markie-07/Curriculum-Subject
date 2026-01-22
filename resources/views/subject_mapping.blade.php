@@ -106,7 +106,7 @@
         display: none !important;
     }
 </style>
-<main class="flex-1 overflow-hidden bg-gray-100 p-6 flex flex-col">
+<main class="flex-1 overflow-y-auto bg-gray-100 p-6 flex flex-col">
     <div class="bg-white rounded-2xl shadow-xl p-8 flex-1 flex flex-col">
         
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -118,7 +118,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
             
-            <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-[calc(100vh-200px)]">
+            <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-full">
                 <div class="pb-4 border-b border-gray-200">
                     <h2 class="text-xl font-semibold text-gray-800">Available Subjects</h2>
                     <p class="text-sm text-gray-500">Find and select subjects to add to the curriculum.</p>
@@ -143,12 +143,12 @@
                     Memorandum
                 </button>
 
-                <div id="availableSubjects" class="flex-1 overflow-y-auto pr-2 -mr-2 space-y-3 pt-2.5">
+                <div id="availableSubjects" class="flex-1 pr-2 -mr-2 space-y-3 pt-2.5">
                     <p class="text-gray-500 text-center mt-4">Select a curriculum to view subjects.</p>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-[calc(100vh-200px)]">
+            <div class="lg:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
                 <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <h2 class="text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Curriculum Overview</h2>
                     <div class="relative w-full sm:w-auto">
@@ -178,29 +178,31 @@
                 </div>
 
 
-                <div id="curriculumOverview" class="mt-4 space-y-6 flex-1 overflow-y-auto">
-                    <p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>
-                </div>
-                
-                <div class="mt-auto pt-6 border-t border-gray-200 flex justify-between items-center gap-4">
-                    <div id="grand-total-container" class="hidden px-5 py-3 bg-white border-2 border-blue-200 text-gray-700 rounded-xl flex items-center gap-3 shadow-md border-l-4 border-l-blue-500">
-                        <div class="bg-blue-100 p-2.5 rounded-lg">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-sm font-semibold text-gray-600">Total Curriculum Units:</span>
-                            <span id="grand-total-units" class="text-2xl font-bold text-blue-700">0</span>
-                        </div>
+                <div class="px-1">
+                    <div id="curriculumOverview" class="mt-4 space-y-6">
+                        <p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 border-2 border-blue-700 hover:bg-white hover:text-blue-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hidden">
-                            <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                            Revise
-                        </button>
-                        <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-700 border-2 border-green-700 hover:bg-white hover:text-green-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hidden" disabled>
-                            <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h6m4-4H9m0 0V9m0 0V5a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2h-3m-4-4V9"></path></svg>
-                            Save the Mapping
-                        </button>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200 flex justify-between items-center gap-4 mb-4">
+                        <div id="grand-total-container" class="hidden px-5 py-3 bg-white border-2 border-blue-200 text-gray-700 rounded-xl flex items-center gap-3 shadow-md border-l-4 border-l-blue-500">
+                            <div class="bg-blue-100 p-2.5 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-sm font-semibold text-gray-600">Total Curriculum Units:</span>
+                                <span id="grand-total-units" class="text-2xl font-bold text-blue-700">0</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 border-2 border-blue-700 hover:bg-white hover:text-blue-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hidden">
+                                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
+                                Revise
+                            </button>
+                            <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-700 border-2 border-green-700 hover:bg-white hover:text-green-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hidden" disabled>
+                                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h6m4-4H9m0 0V9m0 0V5a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2h-3m-4-4V9"></path></svg>
+                                Save the Mapping
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3090,8 +3092,10 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     console.log('📄 Raw curriculums:', curriculums);
                     
                     // Only filter out old versions, show both approved and non-approved
+                    // Filter: Not old, AND (processing OR rejected)
                     const newCurriculums = curriculums.filter(curriculum => 
-                        curriculum.version_status !== 'old'
+                        curriculum.version_status !== 'old' && 
+                        (curriculum.approval_status === 'processing' || curriculum.approval_status === 'rejected')
                     );
                     
                     console.log('✨ Filtered curriculums (excluding old):', newCurriculums.length);
@@ -3396,6 +3400,15 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
             document.getElementById('modalSubjectSearch').classList.add('hidden'); // Hide search initially
 
+            // NEW: Reset selected memorandums
+            selectedMemorandums.clear();
+            
+            // NEW: Update button text
+            const confirmBtn = document.getElementById('confirmAddSubjects');
+            if (confirmBtn) {
+                confirmBtn.textContent = 'Show Subjects';
+            }
+
             console.log('📋 Fetching all system subjects...');
             
             // Fetch ALL subjects from the system to show in memorandum modal
@@ -3426,6 +3439,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 });
         };
 
+        const selectedMemorandums = new Set();
+
         // Function to render Memorandums
         const renderMemorandums = (subjects) => {
             const memoContainer = document.getElementById('memorandumListView');
@@ -3437,7 +3452,6 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             
             // Group subjects by memorandum
             subjects.forEach(subject => {
-                console.log('Processing subject:', subject.subject_name, 'Memorandum:', subject.memorandum, 'Year:', subject.memorandum_year, 'Category:', subject.memorandum_category);
                 const memoName = subject.memorandum || 'No Memorandum';
                 if (!memorandums[memoName]) {
                     memorandums[memoName] = {
@@ -3451,9 +3465,6 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 memorandums[memoName].count++;
                 memorandums[memoName].subjects.push(subject);
             });
-
-            console.log('📊 Grouped memorandums:', memorandums);
-            console.log('📊 Number of unique memorandums:', Object.keys(memorandums).length);
 
             // If no memorandums (e.g. all null), handle gracefully
             if (Object.keys(memorandums).length === 0) {
@@ -3469,9 +3480,13 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 const isNoMemo = memo.name === 'No Memorandum';
                 const iconColor = isNoMemo ? 'text-gray-400' : 'text-blue-500';
                 const bgColor = isNoMemo ? 'bg-gray-100' : 'bg-blue-100';
+                const isSelected = selectedMemorandums.has(memo.name);
 
                 card.innerHTML = `
                     <div class="flex items-center gap-4">
+                        <div class="flex items-center h-5" onclick="event.stopPropagation()">
+                            <input type="checkbox" class="memorandum-checkbox w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" ${isSelected ? 'checked' : ''}>
+                        </div>
                         <div class="w-12 h-12 ${bgColor} rounded-lg flex items-center justify-center">
                            <svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         </div>
@@ -3480,20 +3495,33 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                             <p class="text-sm text-gray-500">${memo.subjects.length} Subjects ${!isNoMemo ? `• ${memo.year}` : ''}</p>
                         </div>
                     </div>
-                    <div class="text-gray-400 group-hover:text-blue-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <div class="text-gray-400 group-hover:text-blue-500 flex items-center">
+                        <!-- Info icon will be added here -->
                     </div>
                 `;
                 
-                // Add click handler with right-click support
+                const checkbox = card.querySelector('.memorandum-checkbox');
+                
+                // Add change handler for checkbox
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        selectedMemorandums.add(memo.name);
+                    } else {
+                        selectedMemorandums.delete(memo.name);
+                    }
+                    updateSelectedMemoInfo();
+                });
+
+                // Add click handler for card to toggle checkbox
                 card.addEventListener('click', (e) => {
                     if (e.ctrlKey || e.metaKey || e.button === 2) {
                         // Ctrl+Click or Cmd+Click or Right-click: Show details modal
                         e.preventDefault();
                         showMemorandumDetailsModal(memo);
                     } else {
-                        // Normal click: Filter subjects
-                        selectMemorandum(memo);
+                        // Normal click: Toggle checkbox
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
                     }
                 });
                 
@@ -3518,17 +3546,50 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 });
                 
                 const rightSection = card.querySelector('.text-gray-400');
-                rightSection.insertBefore(infoIcon, rightSection.firstChild);
+                rightSection.appendChild(infoIcon);
                 
                 memoContainer.appendChild(card);
             });
+            
+            updateSelectedMemoInfo();
         };
 
-        const selectMemorandum = (memoData) => {
+        const updateSelectedMemoInfo = () => {
+            const count = selectedMemorandums.size;
+            document.getElementById('selectedSubjectsCount').textContent = count;
+            
+            // Update the count label
+            const label = document.querySelector('#selectedSubjectsCount').nextSibling;
+            if (label) {
+                label.textContent = ` memorandum(s) selected`;
+            }
+
+            // Hide the unit limit display as it is not relevant for memo selection
+            document.getElementById('modalUnitLimitDisplay').classList.add('hidden');
+        };
+
+        const applyMemorandumFilter = () => {
+             const selectedMemos = Array.from(selectedMemorandums);
+             
+             if (selectedMemos.length === 0) {
+                 // If nothing selected, show all? Or warn?
+                 // Let's assume we show all if nothing selected, or warn. 
+                 // User request implies using 2 or more.
+                 // Let's warn if empty.
+                 Swal.fire({
+                    title: 'No Selection',
+                    text: 'Please select at least one memorandum to display subjects.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#F59E0B'
+                 });
+                 return;
+             }
+
             // Filter the available subjects sidebar
             const filteredSubjects = allSystemSubjects.filter(s => {
                  const sMemo = s.memorandum || 'No Memorandum';
-                 return sMemo === memoData.name;
+                 return selectedMemorandums.has(sMemo);
             });
 
             // Update the sidebar view
@@ -3540,7 +3601,7 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             // Show confirmation toast
             Swal.fire({
                 title: 'Filtered!',
-                text: `Showing subjects from: ${memoData.name}`,
+                text: `Showing subjects from ${selectedMemos.length} memorandum(s).`,
                 icon: 'success',
                 toast: true,
                 position: 'top-end',
@@ -3766,6 +3827,13 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         });
         
         confirmAddSubjectsBtn.addEventListener('click', () => {
+            // NEW: Check if we are in Memorandum View
+            const memoListView = document.getElementById('memorandumListView');
+            if (memoListView && !memoListView.classList.contains('hidden')) {
+                applyMemorandumFilter();
+                return;
+            }
+
             if (selectedSubjectsForAdding.size === 0) {
                 Swal.fire({
                     title: 'No Subjects Selected',

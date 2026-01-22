@@ -87,7 +87,7 @@ class PrerequisiteController extends Controller
         if (auth()->user()) {
             \App\Services\ActivityLogService::log(
                 'prerequisite',
-                'Updated prerequisites for ' . $validated['subject_code'],
+                'Updated prerequisites for ' . $validated['subject_code'] . ' in ' . $curriculum->curriculum,
                 [
                     'curriculum_id' => $validated['curriculum_id'],
                     'subject_code' => $validated['subject_code'],

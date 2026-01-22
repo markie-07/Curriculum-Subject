@@ -106,11 +106,11 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button id="update-minor-grades-btn" type="button" class="hidden flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-800 transition-colors py-2 px-3 rounded-lg hover:bg-orange-50 border border-orange-300">
+                            <button id="update-minor-grades-btn" type="button" class="hidden flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors py-2 px-3 rounded-lg hover:bg-blue-50 border border-blue-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                Create new grades
+                                Select Minor Subject
                             </button>
                             <button id="add-grade-component-btn" type="button" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -319,8 +319,8 @@
             <div class="w-12 h-12 rounded-full bg-orange-100 p-2 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800">Create New Grades</h3>
-            <p class="text-sm text-gray-500 mt-2">Are you sure you want to update the grade for minor subjects? This will unlock the grade components for editing.</p>
+            <h3 class="text-lg font-semibold text-gray-800">Select Minor Subjects</h3>
+            <p class="text-sm text-gray-500 mt-2">Please select which minor subjects you want to grade. After selection, you can set up the grade components.</p>
             <div class="mt-6 flex justify-center gap-4">
                 <button id="cancelUpdateMinorGrades" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">No</button>
                 <button id="confirmUpdateMinorGrades" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700">Yes</button>
@@ -447,6 +447,65 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Select Minor Courses Modal --}}
+<div id="select-minor-courses-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl">
+            {{-- Modal Header --}}
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 flex-shrink-0 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Select Minor Courses</h3>
+                        <p class="text-sm text-gray-600">Choose which minor courses will receive this grade setup</p>
+                    </div>
+                </div>
+                <button id="close-select-minor-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="select-all-minor-courses" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-sm font-semibold text-gray-700">Select All</span>
+                        </label>
+                        <span id="selected-count" class="text-sm text-gray-600">0 selected</span>
+                    </div>
+                    <div class="relative mb-3">
+                        <input type="text" id="minor-course-search" placeholder="Search minor courses..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div id="minor-courses-checklist" class="space-y-2">
+                    {{-- Minor courses will be populated here --}}
+                    <p class="text-gray-500 text-center py-8">Loading minor courses...</p>
+                </div>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="flex justify-end gap-3 p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
+                <button id="cancel-select-minor-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Cancel
+                </button>
+                <button id="confirm-select-minor-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Confirm Selection
+                </button>
             </div>
         </div>
     </div>
@@ -1009,41 +1068,56 @@ document.addEventListener('DOMContentLoaded', () => {
         const handleGradeSchemeSave = async () => {
             if (currentCourseType === 'minor') {
                 try {
-                    const minorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Minor');
+                    // Use the previously selected minor courses
+                    const selectedCourses = window.selectedMinorCoursesForGrading || [];
+                    
+                    if (selectedCourses.length === 0) {
+                        Swal.fire('Error!', 'No minor courses selected. Please select courses first.', 'error');
+                        return;
+                    }
+                    
                     const components = getGradeDataFromDOM();
                     let savedCount = 0;
-                    for (const subject of minorSubjects) {
+                    
+                    for (const subjectId of selectedCourses) {
                         try {
                             const payload = {
-                                subject_id: subject.id,
+                                subject_id: subjectId,
                                 components,
                                 course_type: 'minor'
                             };
                             await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
                             savedCount++;
                         } catch (err) {
-                            console.error(`Failed to save minor subject ${subject.id}`, err);
+                            console.error(`Failed to save minor subject ${subjectId}`, err);
                         }
                     }
-                    console.log(`Saved grade scheme for ${savedCount} minor subject(s)`);
-                    // Show success modal
-                    document.getElementById('gradeSchemeSuccessModal').classList.remove('hidden');
                     
-                    // For minor grades, lock components again and show update button
-                    if (currentCourseType === 'minor') {
-                        minorGradesUnlocked = false;
-                        toggleGradeComponents(true);
-                        addGradeBtn.disabled = true;
-                        addGradeComponentBtn.style.display = 'none';
-                        updateMinorGradesBtn.classList.remove('hidden');
-                        document.querySelector('.curriculum-reminder-text').textContent = '✅ Grade scheme updated for minor courses - Grade components are locked';
-                        
-                        // Close all open accordion sections
-                        closeAllAccordions();
-                    } else {
-                        // Reset form for major courses
-                        resetForm();
-                    }
+                    console.log(`Saved grade scheme for ${savedCount} minor subject(s)`);
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Grades Applied!',
+                        text: `Successfully applied grade scheme to ${savedCount} minor course(s).`,
+                        timer: 3000,
+                        showConfirmButton: true
+                    });
+                    
+                    // Lock components again and reset UI
+                    minorGradesUnlocked = false;
+                    toggleGradeComponents(true);
+                    addGradeBtn.disabled = true;
+                    addGradeComponentBtn.style.display = 'none';
+                    updateMinorGradesBtn.classList.remove('hidden');
+                    document.querySelector('.curriculum-reminder-text').textContent = '✅ Grade scheme applied to selected minor courses - Click "Select Minor Subject" to modify';
+                    
+                    // Clear selected courses
+                    window.selectedMinorCoursesForGrading = [];
+                    
+                    // Close all open accordion sections
+                    closeAllAccordions();
+                    
                 } catch (e) {
                     console.error('Failed to save minor grade scheme:', e);
                     Swal.fire('Error!', 'Failed to save grade scheme: ' + e.message, 'error');
@@ -1452,16 +1526,19 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCourseTypeButtons(courseType);
         
         if (courseType === 'minor') {
-            // Hide major subject selection and load default grades for ALL minor subjects
+            // Hide major subject selection and clear grade components
             majorSubjectSection.classList.add('hidden');
-            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Loading default grades for all minor subjects...';
-            await loadMinorGradeStructure(); // Load default grade structure
+            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Preparing minor course grade setup...';
+            
+            // Clear any existing grade components
+            loadGradeDataToDOM({});
+            
             toggleGradeComponents(true); // Lock components initially
             addGradeBtn.disabled = true;
             addGradeComponentBtn.style.display = 'none'; // Hide add component button initially
-            updateMinorGradesBtn.classList.remove('hidden'); // Show update minor grades button
+            updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
             minorGradesUnlocked = false; // Set as locked initially
-            document.querySelector('.curriculum-reminder-text').textContent = '✅ Default grades applied to all minor subjects - Click "Create new grades" to modify';
+            document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Click "Select Minor Subject" to choose courses and set up grades';
         } else if (courseType === 'major') {
             // Show major subject selection
             majorSubjectSection.classList.remove('hidden');
@@ -1493,109 +1570,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadMinorGradeStructure = async () => {
         try {
-            // OPTIMIZED: Load default structure immediately without API calls
-            // This significantly improves performance by eliminating unnecessary database queries
-            // Existing custom grades will be loaded only when user clicks "Create new grades"
-            
-            const defaultStructure = {
-                'Prelim': { 
-                    weight: 30, 
-                    components: [
-                        {
-                            name: 'A.1 CLASS STANDING',
-                            weight: 40,
-                            sub_components: [
-                                { name: 'Attendance', weight: 10 },
-                                { name: 'Written Works', weight: 50 },
-                                { name: 'Performance Task', weight: 40 }
-                            ]
-                        },
-                        {
-                            name: 'A.2 PROJECT',
-                            weight: 25,
-                            sub_components: [
-                                { name: 'Course-Based Output Off-Campus Requirements', weight: 100 }
-                            ]
-                        },
-                        {
-                            name: 'A.3 EXAMINATION',
-                            weight: 35,
-                            sub_components: [
-                                { name: 'Written Examination', weight: 100 }
-                            ]
-                        }
-                    ]
-                },
-                'Midterm': { 
-                    weight: 30, 
-                    components: [
-                        {
-                            name: 'A.1 CLASS STANDING',
-                            weight: 40,
-                            sub_components: [
-                                { name: 'Attendance', weight: 10 },
-                                { name: 'Written Works', weight: 50 },
-                                { name: 'Performance Task', weight: 40 }
-                            ]
-                        },
-                        {
-                            name: 'A.2 PROJECT',
-                            weight: 25,
-                            sub_components: [
-                                { name: 'Course-Based Output Off-Campus Requirements', weight: 100 }
-                            ]
-                        },
-                        {
-                            name: 'A.3 EXAMINATION',
-                            weight: 35,
-                            sub_components: [
-                                { name: 'Written Examination', weight: 100 }
-                            ]
-                        }
-                    ]
-                },
-                'Finals': { 
-                    weight: 40, 
-                    components: [
-                        {
-                            name: 'A.1 CLASS STANDING',
-                            weight: 40,
-                            sub_components: [
-                                { name: 'Attendance', weight: 10 },
-                                { name: 'Written Works', weight: 50 },
-                                { name: 'Performance Task', weight: 40 }
-                            ]
-                        },
-                        {
-                            name: 'A.2 PROJECT',
-                            weight: 25,
-                            sub_components: [
-                                { name: 'Course-Based Output Off-Campus Requirements', weight: 100 }
-                            ]
-                        },
-                        {
-                            name: 'A.3 EXAMINATION',
-                            weight: 35,
-                            sub_components: [
-                                { name: 'Written Examination', weight: 100 }
-                            ]
-                        }
-                    ]
-                }
-            };
-            
-            loadGradeDataToDOM(defaultStructure);
-            console.log('Loaded default minor grade structure');
+            // Clear the accordion - no default structure
+            loadGradeDataToDOM({});
+            console.log('Cleared grade components for minor courses');
             
         } catch (error) {
-            console.error('Error loading minor grade structure:', error);
-            // Load basic structure as fallback
-            const basicStructure = {
-                'Prelim': { weight: 30, components: [] },
-                'Midterm': { weight: 30, components: [] },
-                'Finals': { weight: 40, components: [] }
-            };
-            loadGradeDataToDOM(basicStructure);
+            console.error('Error clearing minor grade structure:', error);
+            loadGradeDataToDOM({});
         }
     };
 
@@ -2746,6 +2727,161 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Select Minor Courses Modal Functionality
+    const selectMinorCoursesModal = document.getElementById('select-minor-courses-modal');
+    const closeSelectMinorModalBtn = document.getElementById('close-select-minor-modal-btn');
+    const cancelSelectMinorBtn = document.getElementById('cancel-select-minor-btn');
+    const confirmSelectMinorBtn = document.getElementById('confirm-select-minor-btn');
+    const minorCoursesChecklist = document.getElementById('minor-courses-checklist');
+    const selectAllCheckbox = document.getElementById('select-all-minor-courses');
+    const selectedCountSpan = document.getElementById('selected-count');
+    const minorCourseSearch = document.getElementById('minor-course-search');
+    
+    let selectedMinorCourses = [];
+    
+    // Update Minor Grades Button - Show Select Minor Courses Modal
+    updateMinorGradesBtn.addEventListener('click', () => {
+        // Populate the checklist with minor courses
+        const minorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Minor');
+        
+        if (minorSubjects.length === 0) {
+            minorCoursesChecklist.innerHTML = '<p class="text-gray-500 text-center py-8">No minor courses found.</p>';
+        } else {
+            minorCoursesChecklist.innerHTML = minorSubjects.map(subject => `
+                <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors minor-course-item" data-subject-id="${subject.id}" data-subject-name="${subject.subject_name.toLowerCase()}" data-subject-code="${subject.subject_code.toLowerCase()}">
+                    <input type="checkbox" class="minor-course-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="${subject.id}">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-800">${subject.subject_name}</p>
+                        <p class="text-sm text-gray-500">${subject.subject_code}</p>
+                    </div>
+                </label>
+            `).join('');
+        }
+        
+        selectedMinorCourses = [];
+        updateSelectedCount();
+        selectAllCheckbox.checked = false;
+        confirmSelectMinorBtn.disabled = true;
+        
+        selectMinorCoursesModal.classList.remove('hidden');
+    });
+    
+    // Handle confirmation - now this unlocks grade components
+    document.getElementById('confirmUpdateMinorGrades').addEventListener('click', () => {
+        document.getElementById('updateMinorGradesModal').classList.add('hidden');
+    });
+    
+    document.getElementById('cancelUpdateMinorGrades').addEventListener('click', () => {
+        document.getElementById('updateMinorGradesModal').classList.add('hidden');
+    });
+    
+    // Modify Set Grade Scheme button behavior for minor courses
+    // Now when Set Grade Scheme is clicked for minor courses, save to the previously selected courses
+    const originalSetGradeHandler = addGradeBtn.onclick;
+    addGradeBtn.addEventListener('click', (e) => {
+        // If we're in minor course mode and grades are unlocked, save to selected courses
+        if (currentCourseType === 'minor' && minorGradesUnlocked) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Show confirmation modal
+            document.getElementById('saveGradeSchemeModal').classList.remove('hidden');
+            return false;
+        }
+        // For major courses, let the normal flow continue
+    });
+    
+    // Close modal handlers
+    closeSelectMinorModalBtn.addEventListener('click', () => {
+        selectMinorCoursesModal.classList.add('hidden');
+    });
+    
+    cancelSelectMinorBtn.addEventListener('click', () => {
+        selectMinorCoursesModal.classList.add('hidden');
+    });
+    
+    selectMinorCoursesModal.addEventListener('click', (e) => {
+        if (e.target.id === 'select-minor-courses-modal') {
+            selectMinorCoursesModal.classList.add('hidden');
+        }
+    });
+    
+    // Handle checkbox changes
+    minorCoursesChecklist.addEventListener('change', (e) => {
+        if (e.target.classList.contains('minor-course-checkbox')) {
+            updateSelectedCourses();
+        }
+    });
+    
+    // Select all functionality
+    selectAllCheckbox.addEventListener('change', (e) => {
+        const checkboxes = minorCoursesChecklist.querySelectorAll('.minor-course-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = e.target.checked;
+        });
+        updateSelectedCourses();
+    });
+    
+    // Search functionality
+    minorCourseSearch.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const items = minorCoursesChecklist.querySelectorAll('.minor-course-item');
+        
+        items.forEach(item => {
+            const name = item.dataset.subjectName;
+            const code = item.dataset.subjectCode;
+            const matches = name.includes(searchTerm) || code.includes(searchTerm);
+            item.style.display = matches ? 'flex' : 'none';
+        });
+    });
+    
+    function updateSelectedCourses() {
+        const checkboxes = minorCoursesChecklist.querySelectorAll('.minor-course-checkbox:checked');
+        selectedMinorCourses = Array.from(checkboxes).map(cb => cb.value);
+        updateSelectedCount();
+        confirmSelectMinorBtn.disabled = selectedMinorCourses.length === 0;
+        
+        // Update select all checkbox state
+        const allCheckboxes = minorCoursesChecklist.querySelectorAll('.minor-course-checkbox');
+        selectAllCheckbox.checked = allCheckboxes.length > 0 && selectedMinorCourses.length === allCheckboxes.length;
+    }
+    
+    function updateSelectedCount() {
+        selectedCountSpan.textContent = `${selectedMinorCourses.length} selected`;
+    }
+    
+    // Confirm selection - now unlocks grade components instead of applying grades
+    confirmSelectMinorBtn.addEventListener('click', async () => {
+        if (selectedMinorCourses.length === 0) return;
+        
+        selectMinorCoursesModal.classList.add('hidden');
+        
+        // Store selected courses for later use when saving
+        window.selectedMinorCoursesForGrading = selectedMinorCourses;
+        
+        // Unlock grade components for editing
+        minorGradesUnlocked = true;
+        toggleGradeComponents(false);
+        addGradeComponentBtn.style.display = ''; // Show add component button
+        updateMinorGradesBtn.classList.add('hidden'); // Hide "Select Minor Subject" button
+        
+        // Show success notification
+        Swal.fire({
+            icon: 'success',
+            title: 'Subjects Selected!',
+            text: `${selectedMinorCourses.length} minor course(s) selected. You can now set up grade components.`,
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+        
+        // Update reminder text
+        document.querySelector('.curriculum-reminder-text').textContent = `✏️ ${selectedMinorCourses.length} minor subject(s) selected - Set up grade components and click "Set Grade Scheme" to save`;
+        
+        // Calculate totals to determine if Set Grade Scheme button should be enabled
+        calculateAndUpdateTotals();
+    });
 
     
     // Initialize global subject-based workflow

@@ -100,6 +100,20 @@ class GradeController extends Controller
         // Return the subject details so the JavaScript can add it to the "Grade History" list.
         $subject = Subject::find($validated['subject_id']);
 
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'grade_setup',
+                'Set grade scheme for subject "' . $subject->subject_name . '"',
+                [
+                    'subject_id' => $subject->id, 
+                    'subject_code' => $subject->subject_code,
+                    'curriculum_id' => $validated['curriculum_id'] ?? null
+                ]
+            );
+            auth()->user()->updateLastActivity();
+        }
+
         // Flash success message for session-based requests
         session()->flash('success', 'Grade scheme for "' . $subject->subject_name . '" has been saved successfully!');
         
@@ -252,6 +266,21 @@ class GradeController extends Controller
             }
 
             DB::commit();
+
+            // Log activity
+            if (auth()->user()) {
+                $courseTypeText = $validated['course_type'] === 'minor' ? 'minor courses' : 'major course';
+                \App\Services\ActivityLogService::log(
+                    'grade_setup',
+                    "Set grade schemes for {$courseTypeText} in curriculum \"{$curriculum->curriculum}\"",
+                    [
+                        'curriculum_id' => $curriculum->id,
+                        'course_type' => $validated['course_type'],
+                        'subject_count' => count($savedSubjects)
+                    ]
+                );
+                auth()->user()->updateLastActivity();
+            }
 
             // Flash success message
             $courseTypeText = $validated['course_type'] === 'minor' ? 'minor courses' : 'major course';

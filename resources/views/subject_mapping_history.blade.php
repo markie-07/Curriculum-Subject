@@ -1072,7 +1072,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     searchBar.addEventListener('input', filterCurriculums);
-    versionFilter.addEventListener('change', filterCurriculums);
+    versionFilter.addEventListener('change', () => {
+        const isOld = versionFilter.value === 'old';
+        
+        if (isOld) {
+            statusFilter.value = 'approved';
+        }
+        
+        Array.from(statusFilter.options).forEach(option => {
+            if (isOld) {
+                // Hide everything except 'approved'
+                if (option.value !== 'approved') {
+                    option.hidden = true;
+                    option.style.display = 'none'; // Fallback for some browsers
+                } else {
+                    option.hidden = false;
+                    option.style.display = '';
+                }
+            } else {
+                // Show all
+                option.hidden = false;
+                option.style.display = '';
+            }
+        });
+
+        filterCurriculums();
+    });
     statusFilter.addEventListener('change', filterCurriculums);
 });
 </script>

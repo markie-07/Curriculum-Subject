@@ -101,6 +101,20 @@ class SubjectController extends Controller
             $subject->curriculums()->attach($attachData);
         }
 
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'course_builder_create',
+                'Created new course/subject "' . $subject->subject_name . '"',
+                [
+                    'subject_id' => $subject->id, 
+                    'subject_code' => $subject->subject_code,
+                    'subject_type' => $subject->subject_type
+                ]
+            );
+            auth()->user()->updateLastActivity();
+        }
+
         // Flash success message for session-based requests
         session()->flash('success', 'Subject "' . $subject->subject_name . '" has been created successfully!');
         

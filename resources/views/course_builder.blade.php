@@ -29,10 +29,10 @@
             <h1 class="text-4xl font-bold text-gray-800">Course Builder</h1>
             {{-- Syllabus Type Toggle --}}
             <div class="bg-gray-200 p-1 rounded-lg inline-flex shadow-inner">
-                <button type="button" id="btn-ched" class="px-6 py-2 rounded-md text-sm font-semibold transition-all duration-200 bg-white text-blue-600 shadow-sm" onclick="switchSyllabus('CHED')">
+                <button type="button" id="btn-ched" class="px-6 py-2 rounded-md text-sm font-semibold transition-all duration-200 bg-white text-blue-600 shadow-sm" onclick="confirmSwitchSyllabus('CHED')">
                     CHED Format
                 </button>
-                <button type="button" id="btn-deped" class="px-6 py-2 rounded-md text-sm font-semibold text-gray-600 hover:text-gray-800 transition-all duration-200" onclick="switchSyllabus('DepEd')">
+                <button type="button" id="btn-deped" class="px-6 py-2 rounded-md text-sm font-semibold text-gray-600 hover:text-gray-800 transition-all duration-200" onclick="confirmSwitchSyllabus('DepEd')">
                     DepEd Format
                 </button>
             </div>
@@ -147,11 +147,11 @@
                         <div id="ched-course-info-fields" class="contents">
                             <div>
                                 <label for="credit_units" class="block text-sm font-medium text-gray-700">Credit Units</label>
-                                <input type="number" name="credit_units" id="credit_units" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <input type="number" required name="credit_units" id="credit_units" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                             <div>
                                 <label for="contact_hours" class="block text-sm font-medium text-gray-700">Contact Hours</label>
-                                <input type="number" name="contact_hours" id="contact_hours" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <input type="number" required name="contact_hours" id="contact_hours" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
@@ -172,7 +172,7 @@
 
                         <div class="lg:col-span-3">
                             <label for="course_description" class="block text-sm font-medium text-gray-700">Course Description</label>
-                            <textarea id="course_description" name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                            <textarea id="course_description" required name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                         </div>
                     </div>
                     
@@ -384,11 +384,11 @@
 
                     <div>
                         <label for="pilo_outcomes" class="block text-xl font-semibold text-gray-700 mb-2">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</label>
-                        <textarea id="pilo_outcomes" name="pilo_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <textarea id="pilo_outcomes" required name="pilo_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
                     <div>
                         <label for="cilo_outcomes" class="block text-xl font-semibold text-gray-700 mb-2">Course Intended Learning Outcomes (CILO)</label>
-                        <textarea id="cilo_outcomes" name="cilo_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <textarea id="cilo_outcomes" required name="cilo_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
                      <div class="p-4 bg-gray-50 rounded-md border">
                         <h4 class="font-semibold text-gray-600">Expected BCP Graduate Elements:</h4>
@@ -402,7 +402,7 @@
                     </div>
                     <div>
                         <label for="learning_outcomes" class="block text-xl font-semibold text-gray-700 mb-2">Learning Outcomes</label>
-                        <textarea id="learning_outcomes" name="learning_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <textarea id="learning_outcomes" required name="learning_outcomes" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
                 </div>
             </div>
@@ -448,11 +448,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_content" class="block text-sm font-medium text-gray-700">Content{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_content" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_silo" class="block text-sm font-medium text-gray-700">Student Intended Learning Outcomes{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_silo" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_silo" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                     <div>
@@ -460,11 +460,11 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 border rounded-md {{ $i == 0 ? 'bg-gray-50' : 'bg-white' }}">
                                             <div>
                                                 <label for="week_{{ $i }}_at_onsite" class="block text-xs font-semibold text-gray-600 mb-1">ONSITE</label>
-                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_onsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                             <div>
                                                 <label for="week_{{ $i }}_at_offsite" class="block text-xs font-semibold text-gray-600 mb-1">OFFSITE</label>
-                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_offsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -475,11 +475,11 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_onsite" class="block text-xs font-semibold text-gray-600 mb-1">Face to Face (On-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_onsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_offsite" class="block text-xs font-semibold text-gray-600 mb-1">Online (Off-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_offsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -487,11 +487,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_ltsm" class="block text-sm font-medium text-gray-700">Learning and Teaching Support Materials (LTSM){{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_ltsm" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_ltsm" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_output" class="block text-sm font-medium text-gray-700">Output Materials{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_output" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_output" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -512,16 +512,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label for="basic_readings" class="block text-sm font-medium text-gray-700">Basic Readings / Textbooks</label>
-                            <textarea id="basic_readings" name="basic_readings" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                            <textarea id="basic_readings" required name="basic_readings" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                         </div>
                         <div>
                             <label for="extended_readings" class="block text-sm font-medium text-gray-700">Extended Readings / References</label>
-                            <textarea id="extended_readings" name="extended_readings" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                            <textarea id="extended_readings" required name="extended_readings" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                         </div>
                     </div>
                     <div class="md:col-span-2">
                         <label for="course_assessment" class="block text-sm font-medium text-gray-700">Course Assessment</label>
-                        <textarea id="course_assessment" name="course_assessment" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                        <textarea id="course_assessment" required name="course_assessment" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                     </div>
                     <div class="md:col-span-2">
                         <div class="p-4 bg-gray-50 rounded-md border">
@@ -543,11 +543,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label for="committee_members" class="block text-sm font-medium text-gray-700">Committee Members</label>
-                            <textarea id="committee_members" name="committee_members" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                            <textarea id="committee_members" required name="committee_members" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                         </div>
                         <div>
                             <label for="consultation_schedule" class="block text-sm font-medium text-gray-700">Consultation Schedule</label>
-                            <textarea id="consultation_schedule" name="consultation_schedule" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                            <textarea id="consultation_schedule" required name="consultation_schedule" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                         </div>
                     </div>
                 </div>
@@ -567,17 +567,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
                             <label for="prepared_by" class="block text-sm font-medium text-gray-700">Prepared:</label>
-                            <input type="text" id="prepared_by" name="prepared_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
+                            <input type="text" id="prepared_by" required name="prepared_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
                             <p class="text-xs text-gray-500 mt-1">Cluster Leader</p>
                         </div>
                         <div>
                             <label for="reviewed_by" class="block text-sm font-medium text-gray-700">Reviewed:</label>
-                            <input type="text" id="reviewed_by" name="reviewed_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
+                            <input type="text" id="reviewed_by" required name="reviewed_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
                             <p class="text-xs text-gray-500 mt-1">General Education Program Head</p>
                         </div>
                         <div>
                             <label for="approved_by" class="block text-sm font-medium text-gray-700">Approved:</label>
-                            <input type="text" id="approved_by" name="approved_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
+                            <input type="text" id="approved_by" required name="approved_by" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm">
                             <p class="text-xs text-gray-500 mt-1">Vice President for Academic Affairs</p>
                         </div>
                     </div>
@@ -597,7 +597,29 @@
     </div>
 </div>
 
-{{-- Save Course Confirmation Modal --}}
+
+
+{{-- Switch Format Confirmation Modal --}}
+<div id="switchFormatConfirmModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            <div class="w-12 h-12 rounded-full bg-yellow-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Confirm Format Switch</h3>
+            <p class="text-sm text-gray-500 mt-2" id="switchFormatMessage">You are about to switch formats. Unsaved data will be lost. Are you sure?</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button type="button" id="cancelSwitchFormat" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Cancel
+                </button>
+                <button type="button" id="confirmSwitchFormat" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Yes, Switch
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="saveCourseConfirmModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
@@ -863,6 +885,25 @@
         }
     };
 
+    // Helper to toggle required attribute
+    const toggleRequired = (containerOrElement, isRequired) => {
+        if (!containerOrElement) return;
+        
+        // If it's a single element (input/select/textarea)
+        if (containerOrElement.tagName === 'INPUT' || containerOrElement.tagName === 'SELECT' || containerOrElement.tagName === 'TEXTAREA') {
+            if (isRequired) containerOrElement.setAttribute('required', 'required');
+            else containerOrElement.removeAttribute('required');
+            return;
+        }
+
+        // If it's a container
+        containerOrElement.querySelectorAll('input, textarea, select').forEach(el => {
+            if (el.type === 'hidden') return;
+            if (isRequired) el.setAttribute('required', 'required');
+            else el.removeAttribute('required');
+        });
+    };
+
     function handleComplianceChange(compliance) {
         const memorandumContainer = document.getElementById('memorandumContainer');
         const yearContainer = document.getElementById('yearContainer');
@@ -875,19 +916,30 @@
         if (memorandumSelect) {
             memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
             memorandumSelect.disabled = true;
+            // Always required when visible
+            toggleRequired(memorandumSelect, true);
         }
 
         if (compliance === 'CHED') {
             yearContainer.classList.remove('hidden');
             categoryContainer.classList.add('hidden');
             document.getElementById('memorandumCategory').selectedIndex = 0;
+            
+            toggleRequired(yearContainer, true);
+            toggleRequired(categoryContainer, false);
+            
             populateCHEDYears();
         } else if (compliance === 'DepEd') {
             yearContainer.classList.add('hidden');
             categoryContainer.classList.remove('hidden');
             document.getElementById('memorandumYear').selectedIndex = 0;
+            
+            toggleRequired(yearContainer, false);
+            toggleRequired(categoryContainer, true);
         } else {
             memorandumContainer.classList.add('hidden');
+            // Remove requirements if hidden
+            toggleRequired(memorandumContainer, false);
         }
     }
 
@@ -931,9 +983,57 @@ function toggleAccordion(button) {
 }
 
 
+
+let targetSyllabusType = null;
+
+function confirmSwitchSyllabus(type) {
+    const currentType = document.getElementById('syllabus_type').value;
+    if (currentType === type) return;
+
+    if (isFormDirty) {
+        targetSyllabusType = type;
+        const modal = document.getElementById('switchFormatConfirmModal');
+        // Update modal message based on target type
+        const messageEl = document.getElementById('switchFormatMessage');
+        messageEl.textContent = `You are about to switch to ${type} Format. This will reset the current form and unsaved data will be lost. Are you sure?`;
+        
+        modal.classList.remove('hidden');
+    } else {
+        switchSyllabus(type);
+    }
+}
+
+// Confirm Switch Handler
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelSwitchBtn = document.getElementById('cancelSwitchFormat');
+    const confirmSwitchBtn = document.getElementById('confirmSwitchFormat');
+    
+    if (cancelSwitchBtn) {
+        cancelSwitchBtn.addEventListener('click', () => {
+            document.getElementById('switchFormatConfirmModal').classList.add('hidden');
+            targetSyllabusType = null;
+        });
+    }
+    
+    if (confirmSwitchBtn) {
+        confirmSwitchBtn.addEventListener('click', () => {
+            document.getElementById('switchFormatConfirmModal').classList.add('hidden');
+            if (targetSyllabusType) {
+                // Reset form dirty state since we are intentionally resetting
+                isFormDirty = false; 
+                switchSyllabus(targetSyllabusType);
+            }
+        });
+    }
+});
+
+
+
+
 function switchSyllabus(type) {
     const chedContainer = document.getElementById('ched-container');
-    const depedContainer = document.getElementById('deped-container');
+    // const depedContainer = document.getElementById('deped-container'); // Unused
+    
     const btnChed = document.getElementById('btn-ched');
     const btnDeped = document.getElementById('btn-deped');
     
@@ -976,12 +1076,17 @@ function switchSyllabus(type) {
 
     if (type === 'CHED') {
         chedContainer.classList.remove('hidden');
-        // depedContainer.classList.add('hidden'); // Removed depedContainer
         
         // Show CHED fields, Hide DepEd fields and grids
         chedFields.classList.remove('hidden');
         depedFields.classList.add('hidden');
         depedGrids.classList.add('hidden');
+        
+        // Toggle Required Attributes
+        toggleRequired(chedContainer, true);
+        toggleRequired(chedFields, true);
+        toggleRequired(depedFields, false);
+        toggleRequired(depedGrids, false);
         
         btnChed.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
         btnChed.classList.remove('text-gray-600');
@@ -1017,12 +1122,17 @@ function switchSyllabus(type) {
         }
     } else {
         chedContainer.classList.add('hidden');
-        // depedContainer.classList.remove('hidden'); // Removed depedContainer
         
         // Hide CHED fields, Show DepEd fields and grids
         chedFields.classList.add('hidden');
         depedFields.classList.remove('hidden');
         depedGrids.classList.remove('hidden');
+        
+        // Toggle Required Attributes
+        toggleRequired(chedContainer, false);
+        toggleRequired(chedFields, false);
+        toggleRequired(depedFields, true);
+        toggleRequired(depedGrids, true);
         
         btnDeped.classList.add('bg-white', 'text-red-600', 'shadow-sm');
         btnDeped.classList.remove('text-gray-600');
@@ -1050,6 +1160,8 @@ function switchSyllabus(type) {
             // Clear weekly plan
             for (let i = 0; i <= 18; i++) {
                 const contentEl = document.getElementById(`week_${i}_content`);
+                // ... (rest of clearing logic)
+
                 const siloEl = document.getElementById(`week_${i}_silo`);
                 const atOnsiteEl = document.getElementById(`week_${i}_at_onsite`);
                 const atOffsiteEl = document.getElementById(`week_${i}_at_offsite`);
@@ -1321,6 +1433,7 @@ Learning Management System`;
 
     // Handle the actual save logic when user confirms
     const handleCourseSave = async () => {
+        disableDirtyCheck();
 
         const payload = {
             course_title: document.getElementById('course_title').value,
@@ -1721,11 +1834,41 @@ Learning Management System`;
 const createMappingTableRow = (isPilo = true) => {
     const row = document.createElement('tr');
     row.className = '';
-    row.innerHTML = `<td class="py-2 px-4 border-b"><input type="text" placeholder="${isPilo ? 'PILO...' : 'CILO...'}" class="w-full p-1 border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b text-center"><button type="button" class="delete-row-btn text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`;
+    row.innerHTML = `<td class="py-2 px-4 border-b"><input type="text" required placeholder="${isPilo ? 'PILO...' : 'CILO...'}" class="w-full p-1 border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" required class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" required class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" required class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b"><input type="text" required class="w-full p-1 text-center border-gray-300 rounded"></td><td class="py-2 px-4 border-b text-center"><button type="button" class="delete-row-btn text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`;
     return row;
 };
 
-// Function to handle Syllabus PDF Upload
+// ... (existing code) ...
+
+function addDepEdRow(quarter) {
+    const container = document.getElementById(`q_${quarter}_rows_container`);
+    const newRow = document.createElement('div');
+    newRow.className = 'grid grid-cols-1 md:grid-cols-3 gap-6 relative group deped-row pt-6 border-t border-dashed';
+    
+    newRow.innerHTML = `
+        <div>
+            <textarea name="q_${quarter}_content[]" required rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="Enter Content..."></textarea>
+        </div>
+        <div>
+            <textarea name="q_${quarter}_content_standards[]" required rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="The learners demonstrate understanding of..."></textarea>
+        </div>
+        <div>
+            <textarea name="q_${quarter}_learning_competencies[]" required rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="The learners..."></textarea>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="absolute -top-3 right-0 bg-white text-red-500 hover:text-red-700 rounded-full p-1 shadow-sm border border-gray-200" title="Remove Row">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    `;
+    
+    container.appendChild(newRow);
+    
+    // Auto-resize the newly added textareas
+    newRow.querySelectorAll('textarea').forEach(textarea => {
+        if (typeof setupAutoResize === 'function') {
+            setupAutoResize(textarea);
+        }
+    });
+}
 // Function to handle Syllabus PDF Upload
 function handleSyllabusUpload(input) {
     if (input.files && input.files[0]) {
@@ -1925,33 +2068,7 @@ if (closeExtractionModalBtn) {
     });
 }
 
-function addDepEdRow(quarter) {
-    const container = document.getElementById(`q_${quarter}_rows_container`);
-    const newRow = document.createElement('div');
-    newRow.className = 'grid grid-cols-1 md:grid-cols-3 gap-6 relative group deped-row pt-6 border-t border-dashed';
-    
-    newRow.innerHTML = `
-        <div>
-            <textarea name="q_${quarter}_content[]" rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="Enter Content..."></textarea>
-        </div>
-        <div>
-            <textarea name="q_${quarter}_content_standards[]" rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="The learners demonstrate understanding of..."></textarea>
-        </div>
-        <div>
-            <textarea name="q_${quarter}_learning_competencies[]" rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" placeholder="The learners..."></textarea>
-        </div>
-        <button type="button" onclick="this.parentElement.remove()" class="absolute -top-3 right-0 bg-white text-red-500 hover:text-red-700 rounded-full p-1 shadow-sm border border-gray-200" title="Remove Row">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-    `;
-    
-    container.appendChild(newRow);
-    
-    // Auto-resize the newly added textareas
-    newRow.querySelectorAll('textarea').forEach(textarea => {
-        setupAutoResize(textarea);
-    });
-}
+
 
 // Setup auto-resize for a textarea element
 function setupAutoResize(textarea) {
@@ -2029,6 +2146,34 @@ window.addEventListener('load', function() {
     });
 });
 
+// --- PREVENT ACCIDENTAL NAVIGATION ---
+let isFormDirty = false;
+let isSubmitting = false;
+
+// Mark form as dirty when user types or changes inputs
+document.getElementById('courseForm').addEventListener('input', () => {
+    isFormDirty = true;
+});
+
+document.getElementById('courseForm').addEventListener('change', () => {
+    isFormDirty = true;
+});
+
+// Prevent leaving the page
+window.addEventListener('beforeunload', (e) => {
+    if (isFormDirty && !isSubmitting) {
+        // Custom message is often ignored by modern browsers, but required for the event to work
+        const message = "You have unsaved changes. Are you sure you want to leave?";
+        e.preventDefault();
+        e.returnValue = message;
+        return message;
+    }
+});
+
+// Helper to disable dirty check (call this before programmatic redirects or saves)
+const disableDirtyCheck = () => {
+    isSubmitting = true;
+};
 
 
 </script>

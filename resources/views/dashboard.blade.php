@@ -232,114 +232,112 @@
         </div>
     </div>
 
-    {{-- Third Row Charts --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {{-- Export Activity Chart --}}
-        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-slate-800">Export Activity</h2>
-                <div class="flex bg-slate-100 p-1 rounded-lg">
-                     <button id="export-week-btn" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">Week</button>
-                     <button id="export-month-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Month</button>
-                     <button id="export-year-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Year</button>
-                </div>
-            </div>
-            <div class="relative h-64">
-                <canvas id="exportChart"></canvas>
-            </div>
-            <div class="mt-4 grid grid-cols-2 gap-4">
-                <div class="text-center p-3 bg-orange-50 rounded-lg">
-                    <p class="text-sm text-slate-600">Curriculum Exports</p>
-                    <p class="text-2xl font-bold text-orange-600" id="export-curriculum-count">{{ $curriculumExports ?? 0 }}</p>
-                </div>
-                <div class="text-center p-3 bg-amber-50 rounded-lg">
-                    <p class="text-sm text-slate-600">Subject Exports</p>
-                    <p class="text-2xl font-bold text-amber-600" id="export-subject-count">{{ $subjectExports ?? 0 }}</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Employee Module Usage Chart --}}
-        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+    {{-- Reorganized Bottom Section --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {{-- Module Usage Frequency (Takes 2 Columns) --}}
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-slate-200 p-6 flex flex-col">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-slate-800">Module Usage Frequency</h2>
                 <div class="flex bg-slate-100 p-1 rounded-lg">
+                     <button id="module-day-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Day</button>
                      <button id="module-week-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Week</button>
                      <button id="module-month-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Month</button>
                      <button id="module-year-btn" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">Year</button>
                 </div>
             </div>
-            <div class="relative h-64">
+            {{-- Increased height for better visibility --}}
+            <div class="relative flex-1 min-h-[500px]">
                 <canvas id="moduleUsageChart"></canvas>
             </div>
             <div class="mt-4">
-            <div class="mt-4">
                 <p class="text-sm text-slate-600 text-center">Total interactions: <span id="total-usage-display" class="font-bold text-slate-800">{{ $totalModuleUsage ?? 0 }}</span></p>
             </div>
-            </div>
         </div>
-    </div>
 
-    {{-- Recent Activity Section --}}
-    {{-- Recent Activity Section --}}
-    <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-50 p-2 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-slate-800">Recent Activity</h2>
-            </div>
-
-            {{-- Inline Date Filter --}}
-            <div class="flex items-center gap-2">
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+        {{-- Side Column: Export & Recent Activity (Takes 1 Column) --}}
+        <div class="flex flex-col gap-6">
+            {{-- Export Activity Chart --}}
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-slate-800">Export Activity</h2>
+                    <div class="flex bg-slate-100 p-1 rounded-lg">
+                         <button id="export-week-btn" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">Week</button>
+                         <button id="export-month-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Month</button>
+                         <button id="export-year-btn" class="px-3 py-1 text-xs font-medium rounded-md text-slate-600 hover:bg-white hover:shadow-sm transition-all">Year</button>
                     </div>
-                    <input type="date" 
-                           id="activity-date" 
-                           class="pl-10 pr-3 py-2 bg-slate-50 border border-slate-200 text-slate-600 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer shadow-sm hover:border-blue-300"
-                           placeholder="Filter by date">
                 </div>
-                <button id="clear-filter-btn" 
-                        class="hidden p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100" 
-                        title="Clear filter">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+                <div class="relative h-48">
+                    <canvas id="exportChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div class="text-center p-3 bg-orange-50 rounded-lg">
+                        <p class="text-sm text-slate-600">Curriculum</p>
+                        <p class="text-2xl font-bold text-orange-600" id="export-curriculum-count">{{ $curriculumExports ?? 0 }}</p>
+                    </div>
+                    <div class="text-center p-3 bg-amber-50 rounded-lg">
+                        <p class="text-sm text-slate-600">Subjects</p>
+                        <p class="text-2xl font-bold text-amber-600" id="export-subject-count">{{ $subjectExports ?? 0 }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div id="activities-container" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-            @forelse($recentActivities ?? [] as $activity)
-                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+
+            {{-- Recent Activity Section --}}
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 flex-1 flex flex-col">
+                <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-blue-50 p-1.5 rounded-lg">
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
+                        <h2 class="text-lg font-bold text-slate-800">Recent Activity</h2>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-slate-800">{{ $activity->action ?? 'Activity' }}</p>
-                        <p class="text-xs text-slate-500 mt-1">{{ $activity->description ?? '' }}</p>
-                        <p class="text-xs text-slate-400 mt-1">{{ $activity->created_at ? $activity->created_at->diffForHumans() : '' }}</p>
+
+                    {{-- Inline Date Filter --}}
+                    <div class="flex items-center gap-2">
+                        <div class="relative group w-full xl:w-auto">
+                            <input type="date" 
+                                   id="activity-date" 
+                                   value="{{ now()->format('Y-m-d') }}"
+                                   class="w-full xl:w-auto px-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-600 text-xs rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer shadow-sm hover:border-blue-300"
+                                   placeholder="Filter">
+                        </div>
+                        <button id="clear-filter-btn" 
+                                class="hidden p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100" 
+                                title="Clear filter">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-            @empty
-                <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                    </svg>
-                    <p class="mt-4 text-sm text-slate-500">No recent activity to display</p>
+                
+                <div id="activities-container" class="space-y-3 overflow-y-auto custom-scrollbar flex-1 min-h-[200px] max-h-[400px]">
+                    @forelse($recentActivities ?? [] as $activity)
+                        <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-slate-800">{{ $activity->action ?? 'Activity' }}</p>
+                                <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">{{ $activity->description ?? '' }}</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">{{ $activity->created_at ? $activity->created_at->diffForHumans() : '' }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-8">
+                            <svg class="mx-auto h-10 w-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                            <p class="mt-2 text-xs text-slate-500">No recent activity</p>
+                        </div>
+                    @endforelse
                 </div>
-            @endforelse
+            </div>
         </div>
     </div>
 </div>
@@ -692,26 +690,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Module Usage Chart - Bar Chart
+    // Module Usage Chart - Bubble Chart for Frequency Heatmap
     const moduleUsageCtx = document.getElementById('moduleUsageChart').getContext('2d');
     
-    // Data sets
-    const moduleNames = {!! json_encode($moduleNames ?? []) !!};
-    const usageWeek = {!! json_encode($moduleUsageWeek ?? []) !!};
-    const usageMonth = {!! json_encode($moduleUsageMonth ?? []) !!};
-    const usageYear = {!! json_encode($moduleUsageYear ?? []) !!};
-    
     let moduleUsageChart = new Chart(moduleUsageCtx, {
-        type: 'bar',
+        type: 'bubble',
         data: {
-            labels: moduleNames,
             datasets: [{
-                label: 'Usage Count',
-                data: usageYear,
-                backgroundColor: '#f43f5e',
-                borderRadius: 8,
-                barThickness: 40,
-                hoverBackgroundColor: '#e11d48'
+                label: 'Usage Frequency',
+                data: [],
+                backgroundColor: 'rgba(244, 63, 94, 0.6)', // Rose-500 with opacity
+                borderColor: '#f43f5e',
+                borderWidth: 1,
             }]
         },
         options: {
@@ -722,38 +712,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return 'Usage: ' + context.parsed.y;
+                            const point = context.raw;
+                            return `${point.x} (${point.y}): ${point.r / 3} interactions`; 
+                            // Reversed scaling logic for tooltip
                         }
                     }
                 }
             },
             scales: {
                 y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 },
-                    grid: { color: '#f1f5f9' }
+                    type: 'category',
+                    labels: [], // Populated dynamically
+                    grid: { color: '#f1f5f9' },
+                    offset: true
                 },
                 x: {
+                    type: 'category', // Modules on bottom
+                    labels: {!! json_encode($moduleNames ?? []) !!},
                     grid: { display: false },
                     ticks: {
                         font: { size: 10 },
                         autoSkip: false,
                         maxRotation: 45,
                         minRotation: 0
-                    }
+                    },
+                    offset: true
                 }
             }
         }
     });
 
     // Toggle Logic for Module Usage
+    const dayBtn = document.getElementById('module-day-btn'); // New button
     const weekBtn = document.getElementById('module-week-btn');
     const monthBtn = document.getElementById('module-month-btn');
     const yearBtn = document.getElementById('module-year-btn');
     const totalDisplay = document.getElementById('total-usage-display');
     
     function updateModuleActiveBtn(activeBtn) {
-        [weekBtn, monthBtn, yearBtn].forEach(btn => {
+        [dayBtn, weekBtn, monthBtn, yearBtn].forEach(btn => {
             if (btn === activeBtn) {
                 btn.classList.add('bg-white', 'shadow-sm', 'text-slate-800');
                 btn.classList.remove('text-slate-600', 'hover:bg-white', 'hover:shadow-sm');
@@ -764,26 +761,63 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    async function fetchModuleUsageData(period) {
+        try {
+            const response = await fetch(`/api/dashboard/module-usage?period=${period}`);
+            const data = await response.json();
+            
+            if (data) {
+                // Update Y-Axis Labels (Time)
+                moduleUsageChart.options.scales.y.labels = data.time_labels;
+                
+                // Update X-Axis Labels (Modules) - just in case they change or order differs
+                moduleUsageChart.options.scales.x.labels = data.modules;
+
+                // Update Bubble Data
+                // Scale radius 'r' for better visibility. 
+                // e.g., count 1 => r=5, count 10 => r=15
+                const scaledData = data.data.map(p => ({
+                    ...p,
+                    r: p.r * 3 // Scale factor
+                }));
+
+                moduleUsageChart.data.datasets[0].data = scaledData;
+                moduleUsageChart.update();
+                
+                if (totalDisplay) totalDisplay.textContent = data.total;
+            }
+        } catch (error) {
+            console.error('Error loading module data:', error);
+        }
+    }
+
+    // Event Listeners
+    if(dayBtn) {
+        dayBtn.addEventListener('click', () => {
+            updateModuleActiveBtn(dayBtn);
+            fetchModuleUsageData('day');
+        });
+    }
+
     weekBtn.addEventListener('click', () => {
         updateModuleActiveBtn(weekBtn);
-        moduleUsageChart.data.datasets[0].data = usageWeek;
-        moduleUsageChart.update();
-        if(totalDisplay) totalDisplay.textContent = usageWeek.reduce((a, b) => a + b, 0);
+        fetchModuleUsageData('week');
     });
 
     monthBtn.addEventListener('click', () => {
         updateModuleActiveBtn(monthBtn);
-        moduleUsageChart.data.datasets[0].data = usageMonth;
-        moduleUsageChart.update();
-        if(totalDisplay) totalDisplay.textContent = usageMonth.reduce((a, b) => a + b, 0);
+        fetchModuleUsageData('month');
     });
 
     yearBtn.addEventListener('click', () => {
         updateModuleActiveBtn(yearBtn);
-        moduleUsageChart.data.datasets[0].data = usageYear;
-        moduleUsageChart.update();
-        if(totalDisplay) totalDisplay.textContent = usageYear.reduce((a, b) => a + b, 0);
+        fetchModuleUsageData('year');
     });
+
+    // Initial Load (Default to Year as before, or Week?)
+    // Let's load 'year' to match previous state
+    updateModuleActiveBtn(yearBtn);
+    fetchModuleUsageData('year');
 
     // Recent Activity Filter
     const clearFilterBtn = document.getElementById('clear-filter-btn');
@@ -870,6 +904,11 @@ document.addEventListener('DOMContentLoaded', function() {
         dateInput.value = '';
         loadActivities();
     });
+
+    // Initial load with filter if date is set
+    if (dateInput.value) {
+        loadActivities(dateInput.value);
+    }
 });
 </script>
 @endsection

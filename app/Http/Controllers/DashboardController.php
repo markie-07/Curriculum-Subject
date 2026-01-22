@@ -420,14 +420,15 @@ class DashboardController extends Controller
         try {
             // User-defined module list
             $modules = [
-                'Course Builder' => ['course_builder', 'create_curriculum', 'edit_curriculum', 'Course Builder'],
-                'Subject Mapping' => ['subject_mapping', 'mapping', 'Subject Mapping'],
-                'Pre-requisite' => ['prerequisite', 'pre-requisite'],
-                'Compliance Validator' => ['compliance', 'validator'],
-                'Grade Weighting Setup' => ['grade_setup', 'grade_weight', 'grading', 'Grade Weighting'],
-                'Subject Equivalency Tool' => ['equivalency', 'equivalent'],
-                'Curriculum Export Tool' => ['export', 'curriculum_export'],
-                'Employee Management' => ['employee', 'user_management', 'hrms'],
+                'Curriculum Builder' => ['create_curriculum', 'edit_curriculum', 'revise_curriculum', 'approve_curriculum', 'reject_curriculum', 'restore_curriculum'],
+                'Course Builder' => ['course_builder_create', 'course_builder_update', 'course_builder_delete'],
+                'Subject Mapping' => ['subject_mapping'],
+                'Pre-requisite' => ['prerequisite'],
+                'Compliance Validator' => ['compliance_link_create', 'compliance_link_update', 'compliance_link_delete'],
+                'Grade Weighting Setup' => ['grade_setup'],
+                'Subject Equivalency Tool' => ['equivalency_create', 'equivalency_update', 'equivalency_delete'],
+                'Curriculum Export Tool' => ['curriculum_export'],
+                'Employee Management' => ['employee_create', 'employee_update', 'employee_delete', 'status_change', 'employee_activity_report'],
             ];
             
             $names = [];
@@ -492,6 +493,7 @@ class DashboardController extends Controller
                     'employee_activity_logs.created_at',
                     'users.name as user_name'
                 )
+                ->where('employee_activity_logs.activity_type', '!=', 'view')
                 ->orderBy('employee_activity_logs.created_at', 'desc')
                 ->limit(10)
                 ->get()
@@ -523,7 +525,8 @@ class DashboardController extends Controller
                     'employee_activity_logs.description',
                     'employee_activity_logs.created_at',
                     'users.name as user_name'
-                );
+                )
+                ->where('employee_activity_logs.activity_type', '!=', 'view');
             
             // Apply date filters if provided
             if ($startDate && $endDate && $startDate == $endDate) {
@@ -596,12 +599,154 @@ class DashboardController extends Controller
             'subjectExports' => 0,
             'exportDates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             'exportCounts' => [0, 0, 0, 0, 0, 0, 0],
-            'moduleNames' => ['Course Builder', 'Subject Mapping', 'Pre-requisite', 'Compliance Validator', 'Grade Weighting Setup', 'Subject Equivalency Tool', 'Curriculum Export Tool', 'Employee Management'],
+            'moduleNames' => ['Curriculum Builder', 'Course Builder', 'Subject Mapping', 'Pre-requisite', 'Compliance Validator', 'Grade Weighting Setup', 'Subject Equivalency Tool', 'Curriculum Export Tool', 'Employee Management'],
             'moduleUsageWeek' => [0, 0, 0, 0, 0, 0, 0, 0],
             'moduleUsageMonth' => [0, 0, 0, 0, 0, 0, 0, 0],
             'moduleUsageYear' => [0, 0, 0, 0, 0, 0, 0, 0],
             'totalModuleUsage' => 0,
             'recentActivities' => collect([]),
         ];
+    }
+    /**
+     * API endpoint to get detailed module usage data
+     */
+    public function getModuleUsageData(Request $request)
+    {
+        $period = $request->input('period', 'day');
+        $data = $this->getModuleUsageDetailed($period);
+        return response()->json($data);
+    }
+
+    /**
+     * Get detailed module usage statistics for matrix/bubble chart
+     */
+    private function getModuleUsageDetailed($period = 'day')
+    {
+        try {
+            // User-defined module list (X-Axis)
+            $modules = [
+                'Curriculum Builder' => ['create_curriculum', 'edit_curriculum', 'revise_curriculum', 'approve_curriculum', 'reject_curriculum', 'restore_curriculum'],
+                'Course Builder' => ['course_builder_create', 'course_builder_update', 'course_builder_delete'],
+                'Subject Mapping' => ['subject_mapping'],
+                'Pre-requisite' => ['prerequisite'],
+                'Compliance Validator' => ['compliance_link_create', 'compliance_link_update', 'compliance_link_delete'],
+                'Grade Weighting Setup' => ['grade_setup'],
+                'Subject Equivalency Tool' => ['equivalency_create', 'equivalency_update', 'equivalency_delete'],
+                'Curriculum Export Tool' => ['curriculum_export'],
+                'Employee Management' => ['employee_create', 'employee_update', 'employee_delete', 'status_change', 'employee_activity_report'],
+            ];
+
+            $moduleNames = array_keys($modules);
+            $timeLabels = [];
+            $dataPoints = [];
+            $totalInteractions = 0;
+
+            // Define Time Labels (Y-Axis) and Query Range
+            $query = DB::table('employee_activity_logs');
+            
+            if ($period === 'day') {
+                // Day: 2-hour intervals
+                $timeLabels = [
+                    '12 AM - 2 AM', '2 AM - 4 AM', '4 AM - 6 AM', '6 AM - 8 AM', 
+                    '8 AM - 10 AM', '10 AM - 12 PM', '12 PM - 2 PM', '2 PM - 4 PM', 
+                    '4 PM - 6 PM', '6 PM - 8 PM', '8 PM - 10 PM', '10 PM - 12 AM'
+                ];
+                // Filter for today
+                $query->whereDate('created_at', now());
+            } elseif ($period === 'week') {
+                // Week: Mon-Sun
+                $timeLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                $query->where('created_at', '>=', now()->startOfWeek());
+            } elseif ($period === 'month') {
+                // Month: Weeks
+                $timeLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'];
+                $query->whereYear('created_at', now()->year)
+                      ->whereMonth('created_at', now()->month);
+            } elseif ($period === 'year') {
+                // Year: Jan-Dec
+                $timeLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                $query->whereYear('created_at', now()->year);
+            }
+
+            // Fetch raw logs to process in PHP (easier than complex SQL grouping for keyword matching)
+            // Optimize: Select only needed fields
+            $logs = $query->select('activity_type', 'description', 'created_at')->get();
+
+            // Initialize Grid with 0
+            // Map: [ModuleIndex][TimeIndex] => Count
+            $grid = [];
+
+            foreach ($logs as $log) {
+                $createdAt = \Carbon\Carbon::parse($log->created_at);
+                $timeIndex = -1;
+                $moduleIndex = -1;
+
+                // Determine Time Index
+                if ($period === 'day') {
+                    $hour = $createdAt->hour;
+                    $timeIndex = floor($hour / 2); // 0-11
+                } elseif ($period === 'week') {
+                    $timeIndex = $createdAt->dayOfWeekIso - 1; // 0 (Mon) - 6 (Sun). Carbon dayOfWeekIso is 1-7
+                } elseif ($period === 'month') {
+                    $timeIndex = floor(($createdAt->day - 1) / 7); // 0-4
+                    if ($timeIndex > 4) $timeIndex = 4;
+                } elseif ($period === 'year') {
+                    $timeIndex = $createdAt->month - 1; // 0-11
+                }
+
+                if ($timeIndex < 0 || $timeIndex >= count($timeLabels)) continue;
+
+                // Determine Module Index
+                $activityType = $log->activity_type ?? '';
+                $description = $log->description ?? '';
+                
+                foreach ($moduleNames as $idx => $name) {
+                    $keywords = $modules[$name];
+                    foreach ($keywords as $keyword) {
+                        if (stripos($activityType, $keyword) !== false || stripos($description, $keyword) !== false) {
+                            $moduleIndex = $idx;
+                            break 2;
+                        }
+                    }
+                }
+
+                if ($moduleIndex >= 0) {
+                    if (!isset($grid[$moduleIndex][$timeIndex])) {
+                        $grid[$moduleIndex][$timeIndex] = 0;
+                    }
+                    $grid[$moduleIndex][$timeIndex]++;
+                    $totalInteractions++;
+                }
+            }
+
+            // Convert Grid to Bubble Data Points
+            foreach ($grid as $mIdx => $timeData) {
+                foreach ($timeData as $tIdx => $count) {
+                    if ($count > 0) {
+                        $dataPoints[] = [
+                            'x' => $moduleNames[$mIdx], // Category String for X
+                            'y' => $timeLabels[$tIdx],  // Category String for Y
+                            'r' => $count // Raw count, will scale in JS
+                        ];
+                    }
+                }
+            }
+
+            return [
+                'modules' => $moduleNames,
+                'time_labels' => $timeLabels, // Reversed or not? Usually bottom-to-top. JS handles order.
+                'data' => $dataPoints,
+                'total' => $totalInteractions
+            ];
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching module usage details: ' . $e->getMessage());
+            return [
+                'modules' => [],
+                'time_labels' => [],
+                'data' => [],
+                'total' => 0
+            ];
+        }
     }
 }

@@ -81,6 +81,7 @@ Route::get('/test-view', function () {
 // Protected Routes
 Route::middleware(['auth', 'prevent.back'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/api/dashboard/module-usage', [DashboardController::class, 'getModuleUsageData'])->name('dashboard.module-usage');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
     // Profile Routes
@@ -223,4 +224,68 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::get('/employee-activities', [EmployeeController::class, 'allActivities'])->name('employees.all-activities');
         Route::get('/employee-activities/export', [EmployeeController::class, 'exportActivities'])->name('employees.export-activities');
     });
+
+    // API Routes moved from api.php to share session/auth state
+    Route::prefix('api')->group(function () {
+        // --- Curriculum Routes ---
+        Route::get('/curriculums', [CurriculumController::class, 'index']);
+        Route::post('/curriculums', [CurriculumController::class, 'store']);
+        Route::get('/curriculums/{id}', [CurriculumController::class, 'getCurriculumData']);
+        Route::put('/curriculums/{id}', [CurriculumController::class, 'update']);
+        Route::delete('/curriculums/{id}', [CurriculumController::class, 'destroy']);
+        Route::post('/curriculums/save', [CurriculumController::class, 'saveSubjects']);
+        Route::post('/curriculum/remove-subject', [CurriculumController::class, 'removeSubject']);
+        Route::get('/curriculum/{id}/details', [CurriculumController::class, 'getCurriculumDetailsForExport']);
+        Route::get('/curriculums/{id}/subjects', [CurriculumController::class, 'getCurriculumSubjects']);
+        Route::post('/curriculums/{id}/add-subjects', [CurriculumController::class, 'addSubjectsToCurriculum']);
+        Route::post('/curriculums/{id}/approve', [CurriculumController::class, 'approve']);
+        Route::post('/curriculums/{id}/reject', [CurriculumController::class, 'reject']);
+        Route::post('/curriculums/{id}/restore', [CurriculumController::class, 'restore']);
+
+        // --- Subject Routes ---
+        Route::get('/subjects', [SubjectController::class, 'index']);
+        Route::post('/subjects', [SubjectController::class, 'store']);
+        Route::get('/subjects/{id}', [SubjectController::class, 'show']);
+        Route::get('/subjects/{id}/versions', [SubjectController::class, 'getVersionHistory']);
+        Route::put('/subjects/{id}', [SubjectController::class, 'update']);
+        Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy']);
+
+        // --- Prerequisite Routes ---
+        Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
+        Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
+
+        // --- Grade Routes ---
+        Route::post('/grades', [GradeController::class, 'store']);
+        Route::get('/grades/{subjectId}', [GradeController::class, 'show']);
+        Route::get('/grades/{subjectId}/version-history', [GradeController::class, 'getGradeVersionHistory']);
+
+        // --- Curriculum Grade Routes ---
+        Route::get('/curriculum-grades', [GradeController::class, 'getAllCurriculumGrades']);
+        Route::post('/curriculum-grades', [GradeController::class, 'storeCurriculumGrades']);
+        Route::get('/curriculum-grades/{curriculumId}', [GradeController::class, 'getCurriculumGrades']);
+
+        // --- Equivalency Tool Routes ---
+        Route::get('/equivalencies', [EquivalencyToolController::class, 'getEquivalencies']);
+        Route::post('/equivalencies', [EquivalencyToolController::class, 'store']);
+        Route::patch('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'update']);
+        Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'destroy']);
+
+        // --- Global Search Routes ---
+        Route::post('/global-search', [\App\Http\Controllers\Api\GlobalSearchController::class, 'search']);
+        Route::get('/quick-search/{type}', [\App\Http\Controllers\Api\GlobalSearchController::class, 'quickSearch']);
+
+        // --- Compliance Links Routes ---
+        Route::get('/compliance-links', [\App\Http\Controllers\ComplianceLinkController::class, 'index']);
+        Route::post('/compliance-links', [\App\Http\Controllers\ComplianceLinkController::class, 'store']);
+        Route::put('/compliance-links/{id}', [\App\Http\Controllers\ComplianceLinkController::class, 'update']);
+        Route::delete('/compliance-links/{id}', [\App\Http\Controllers\ComplianceLinkController::class, 'destroy']);
+
+        // --- Dashboard Routes ---
+        Route::get('/dashboard/export-data', [DashboardController::class, 'getExportData']);
+        Route::get('/dashboard/recent-activities', [DashboardController::class, 'getRecentActivitiesFiltered']);
+
+        // --- Description Similarity Check ---
+        Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);
+    });
+
 }); // End of auth middleware group

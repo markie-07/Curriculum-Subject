@@ -44,6 +44,16 @@ class ComplianceLinkController extends Controller
 
         $link = ComplianceLink::create($validated);
 
+        // Log activity
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::log(
+                'compliance_link_create',
+                'Added compliance link "' . $validated['title'] . '" for ' . $validated['agency'],
+                ['agency' => $validated['agency'], 'year' => $validated['year'], 'url' => $validated['url']]
+            );
+            auth()->user()->updateLastActivity();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Link added successfully',

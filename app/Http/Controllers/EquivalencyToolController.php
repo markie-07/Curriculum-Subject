@@ -47,6 +47,7 @@ class EquivalencyToolController extends Controller
     {
         $validated = $request->validate([
             'source_subject_name' => 'required|string|max:255',
+            'source_subject_code' => 'nullable|string|max:255',
             'source_subject_description' => 'nullable|string',
             'equivalent_subject_id' => 'required|exists:subjects,id',
         ]);
@@ -62,6 +63,7 @@ class EquivalencyToolController extends Controller
                 'Created equivalency for ' . $validated['source_subject_name'],
                 [
                     'source_subject' => $validated['source_subject_name'],
+                    'source_code' => $validated['source_subject_code'] ?? null,
                     'equivalent_subject_id' => $validated['equivalent_subject_id']
                 ]
             );
@@ -92,6 +94,7 @@ class EquivalencyToolController extends Controller
     {
         $validated = $request->validate([
             'source_subject_name' => 'required|string|max:255',
+            'source_subject_code' => 'nullable|string|max:255',
             'source_subject_description' => 'nullable|string',
             'equivalent_subject_id' => 'required|exists:subjects,id',
         ]);

@@ -18,7 +18,7 @@
     </div>
 
     {{-- Main Content Grid --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {{-- Left Panel: Create Equivalency --}}
         <div class="lg:col-span-4">
             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 sticky top-8">
@@ -34,6 +34,16 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494m-5.747-5.747H17.747" /></svg>
                             </span>
                             <input type="text" id="source-subject" placeholder="e.g., Introduction to Programming" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="source-code" class="block text-sm font-medium text-gray-700">Source Subject Code</label>
+                        <p class="text-xs text-gray-500 mb-1">The code of the subject from the other institution.</p>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>
+                            </span>
+                            <input type="text" id="source-code" placeholder="e.g., COMP101" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                     </div>
                     <div>
@@ -81,8 +91,8 @@
 
 
         {{-- Right Panel: Existing Equivalencies --}}
-        <div class="lg:col-span-8">
-             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+        <div class="lg:col-span-8 h-full">
+             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 h-full flex flex-col">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Existing Equivalencies</h2>
                 <div class="relative flex items-center mb-6">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -95,13 +105,17 @@
 
                 <div id="equivalency-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                     @forelse ($equivalencies as $item)
-                        <div class="equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer" data-id="{{ $item->id }}" data-source-name="{{ $item->source_subject_name }}" data-source-description="{{ $item->source_subject_description }}" data-equivalent-code="{{ $item->equivalentSubject->subject_code }}" data-equivalent-name="{{ $item->equivalentSubject->subject_name }}" data-equivalent-description="{{ $item->equivalentSubject->course_description }}" data-equivalent-id="{{ $item->equivalent_subject_id }}">
+                        <div class="equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer" data-id="{{ $item->id }}" data-source-name="{{ $item->source_subject_name }}" data-source-code="{{ $item->source_subject_code }}" data-source-description="{{ $item->source_subject_description }}" data-equivalent-code="{{ $item->equivalentSubject->subject_code }}" data-equivalent-name="{{ $item->equivalentSubject->subject_name }}" data-equivalent-description="{{ $item->equivalentSubject->course_description }}" data-equivalent-id="{{ $item->equivalent_subject_id }}">
                             <div class="flex items-center">
                                 <div class="bg-green-100 text-green-600 p-2 rounded-md mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                                 </div>
                                 <div class="flex-grow">
-                                    <h3 class="font-semibold text-gray-800">{{ $item->source_subject_name }} - {{ $item->equivalentSubject->subject_code }} {{ $item->equivalentSubject->subject_name }}</h3>
+                                    <h3 class="font-semibold text-gray-800">
+                                        {{ $item->source_subject_code ? $item->source_subject_code . ' - ' : '' }}{{ $item->source_subject_name }} 
+                                        <span class="text-gray-400 mx-2">|</span> 
+                                        {{ $item->equivalentSubject->subject_code }} {{ $item->equivalentSubject->subject_name }}
+                                    </h3>
                                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -178,6 +192,13 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Source Subject Code</label>
+                    <div class="w-full px-4 py-3 bg-gray-50 border border-slate-200 rounded-lg">
+                        <p id="view-source-code" class="text-gray-800 font-medium"></p>
+                    </div>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Source Subject Description</label>
                     <div class="w-full px-4 py-3 bg-gray-50 border border-slate-200 rounded-lg min-h-[80px]">
                         <p id="view-source-description" class="text-gray-700 whitespace-pre-wrap"></p>
@@ -209,6 +230,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const createBtn = document.getElementById('create-equivalency-btn');
     const sourceSubjectInput = document.getElementById('source-subject');
+    const sourceCodeInput = document.getElementById('source-code');
     const sourceDescriptionInput = document.getElementById('source-description');
     const equivalentSubjectSelect = document.getElementById('equivalent-subject');
     const equivalentDescriptionContainer = document.getElementById('equivalent-description-container');
@@ -240,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const descriptionModalPanel = document.getElementById('description-modal-panel');
     const closeDescriptionModalButton = document.getElementById('closeDescriptionModalButton');
     const viewSourceSubject = document.getElementById('view-source-subject');
+    const viewSourceCode = document.getElementById('view-source-code');
     const viewSourceDescription = document.getElementById('view-source-description');
     const viewEquivalentSubject = document.getElementById('view-equivalent-subject');
     const viewEquivalentDescription = document.getElementById('view-equivalent-description');
@@ -347,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
         card.className = 'equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer';
         card.dataset.id = equivalency.id;
         card.dataset.sourceName = equivalency.source_subject_name;
+        card.dataset.sourceCode = equivalency.source_subject_code || '';
         card.dataset.sourceDescription = equivalency.source_subject_description || '';
         card.dataset.equivalentCode = equivalency.equivalent_subject.subject_code;
         card.dataset.equivalentName = equivalency.equivalent_subject.subject_name;
@@ -359,7 +383,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                 </div>
                 <div class="flex-grow">
-                    <h3 class="font-semibold text-gray-800">${equivalency.source_subject_name} - ${equivalency.equivalent_subject.subject_code} ${equivalency.equivalent_subject.subject_name}</h3>
+                    <h3 class="font-semibold text-gray-800">
+                        ${equivalency.source_subject_code ? equivalency.source_subject_code + ' - ' : ''}${equivalency.source_subject_name}
+                        <span class="text-gray-400 mx-2">|</span>
+                        ${equivalency.equivalent_subject.subject_code} ${equivalency.equivalent_subject.subject_name}
+                    </h3>
                     <p class="text-xs text-gray-400 mt-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -386,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Create button clicked!'); // Debug log
         
         const sourceSubject = sourceSubjectInput.value.trim();
+        const sourceCode = sourceCodeInput.value.trim();
         const sourceDescription = sourceDescriptionInput.value.trim();
         const equivalentSubjectId = equivalentSubjectSelect.value;
 
@@ -411,7 +440,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
                         body: JSON.stringify({ 
-                            source_subject_name: sourceSubject, 
+                            source_subject_name: sourceSubject,
+                            source_subject_code: sourceCode,
                             source_subject_description: sourceDescription,
                             equivalent_subject_id: equivalentSubjectId 
                         })
@@ -432,6 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                     
                     sourceSubjectInput.value = '';
+                    sourceCodeInput.value = '';
                     sourceDescriptionInput.value = '';
                     equivalentSubjectSelect.value = '';
                     equivalentDescriptionContainer.classList.add('hidden');
@@ -457,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (card) {
             console.log('Card data:', {
                 sourceName: card.dataset.sourceName,
+                sourceCode: card.dataset.sourceCode,
                 sourceDescription: card.dataset.sourceDescription,
                 equivalentCode: card.dataset.equivalentCode,
                 equivalentName: card.dataset.equivalentName,
@@ -465,6 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Populate modal with data
             viewSourceSubject.textContent = card.dataset.sourceName;
+            viewSourceCode.textContent = card.dataset.sourceCode || 'N/A';
             viewSourceDescription.textContent = card.dataset.sourceDescription || 'No description available.';
             viewEquivalentSubject.textContent = `${card.dataset.equivalentCode} - ${card.dataset.equivalentName}`;
             viewEquivalentDescription.textContent = card.dataset.equivalentDescription || 'No description available.';

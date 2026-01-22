@@ -142,20 +142,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex gap-2 mt-3">
-                                        <button type="button" id="reviseButton" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-1">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                            </svg>
-                                            Revise
-                                        </button>
-                                        <button type="button" id="createAnotherButton" class="flex-1 px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                                            </svg>
-                                            Create Another
-                                        </button>
-                                    </div>
+                                    {{-- Buttons removed as per user request --}}
                                 </div>
                                 
                                 {{-- Browse Curriculums Dropdown --}}
@@ -183,7 +170,7 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date (Optional)</label>
+                                <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date</label>
                                 <div class="relative">
                                     <div class="relative group">
                                         <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-colors group-focus-within:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
@@ -266,7 +253,7 @@
                                 <label for="compliance" class="block text-sm font-medium text-slate-700 mb-1">Choose Compliance</label>
                                 <div class="relative">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c0 .621-.504 1.125-1.125 1.125H18a2.25 2.25 0 01-2.25-2.25M6.75 17.25h-.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V4.875c0-.621.504-1.125 1.125-1.125H6.75a1.125 1.125 0 011.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125z" /></svg>
-                                    <select id="compliance" name="compliance" class="w-full appearance-none pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                    <select id="compliance" name="compliance" class="w-full appearance-none pl-10 pr-4 py-2.5 bg-gray-100 text-slate-500 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pointer-events-none" required>
                                         <option value="" disabled selected>Select Compliance</option>
                                         <option value="CHED">CHED</option>
                                         <option value="DepEd">DepEd</option>
@@ -550,8 +537,7 @@
             const curriculumInput = document.getElementById('curriculum');
             const duplicateAlert = document.getElementById('duplicateAlert');
             const duplicateList = document.getElementById('duplicateList');
-            const reviseButton = document.getElementById('reviseButton');
-            const createAnotherButton = document.getElementById('createAnotherButton');
+
             const browseCurriculumsButton = document.getElementById('browseCurriculumsButton');
             const browseCurriculumsDropdown = document.getElementById('browseCurriculumsDropdown');
             const browseCurriculumsList = document.getElementById('browseCurriculumsList');
@@ -1005,19 +991,7 @@
                 duplicateAlert.classList.remove('hidden');
             };
             
-            // Handle revise button click
-            const handleReviseClick = () => {
-                if (matchingCurriculums.length === 1) {
-                    // Only one matching curriculum, load it for editing
-                    const curriculum = matchingCurriculums[0];
-                    loadCurriculumForEditing(curriculum);
-                } else if (matchingCurriculums.length > 1) {
-                    // Multiple matches, show selection UI
-                    showCurriculumSelector(matchingCurriculums, (selectedCurriculum) => {
-                        loadCurriculumForEditing(selectedCurriculum);
-                    });
-                }
-            };
+
             
             // Function to load a curriculum for editing
             const loadCurriculumForEditing = (curriculum) => {
@@ -1028,74 +1002,9 @@
                 showAddEditModal(true, curriculum);
             };
             
-            // Function to show curriculum selector when multiple matches exist
-            const showCurriculumSelector = (curriculums, onSelect) => {
-                // Hide the duplicate alert temporarily
-                duplicateAlert.classList.add('hidden');
-                
-                // Create a temporary selection modal
-                const selectorHTML = `
-                    <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p class="text-sm font-medium text-blue-800 mb-2">Select which curriculum to revise:</p>
-                        <div class="space-y-2" id="curriculumSelectorList">
-                            ${curriculums.map((curr, index) => {
-                                const memorandumInfo = curr.memorandum 
-                                    ? (curr.memorandum_year ? `${curr.memorandum_year} • ` : '') + 
-                                      curr.memorandum.substring(0, 35) + '...'
-                                    : 'No memorandum';
-                                
-                                return `
-                                    <button type="button" class="w-full p-2 bg-white hover:bg-blue-100 border border-blue-300 rounded text-left transition-colors curriculum-selector-item" data-index="${index}">
-                                        <div class="font-medium text-blue-900 text-sm">${curr.program_code} • ${curr.academic_year}</div>
-                                        <div class="text-xs text-blue-700">${memorandumInfo}</div>
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                        <button type="button" id="cancelSelector" class="mt-2 w-full px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded transition-colors">
-                            Cancel
-                        </button>
-                    </div>
-                `;
-                
-                // Insert after duplicate alert
-                duplicateAlert.insertAdjacentHTML('afterend', selectorHTML);
-                
-                // Add event listeners to selector items
-                document.querySelectorAll('.curriculum-selector-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const index = parseInt(item.dataset.index);
-                        const selected = curriculums[index];
-                        
-                        // Remove selector
-                        item.closest('.bg-blue-50').remove();
-                        
-                        // Call the callback
-                        onSelect(selected);
-                    });
-                });
-                
-                // Cancel button
-                document.getElementById('cancelSelector').addEventListener('click', () => {
-                    document.querySelector('.bg-blue-50').remove();
-                    duplicateAlert.classList.remove('hidden');
-                });
-            };
+
             
-            // Handle create another button click
-            const handleCreateAnotherClick = () => {
-                // Set flag to allow creating another curriculum
-                createAnotherMode = true;
-                
-                // Hide duplicate alert
-                duplicateAlert.classList.add('hidden');
-                
-                // Clear curriculum ID to ensure new creation
-                curriculumIdField.value = '';
-                
-                // Focus on the next field (program code)
-                document.getElementById('programCode').focus();
-            };
+
             
             // Browse button functionality
             const handleBrowseClick = () => {
@@ -1153,8 +1062,7 @@
             
             // Event listeners for duplicate detection and browse
             curriculumInput.addEventListener('blur', checkDuplicateCurriculum);
-            reviseButton.addEventListener('click', handleReviseClick);
-            createAnotherButton.addEventListener('click', handleCreateAnotherClick);
+
             browseCurriculumsButton.addEventListener('click', handleBrowseClick);
             
             // Browse search functionality
@@ -1293,6 +1201,15 @@
             yearLevelSelect.addEventListener('change', function() {
                 const selectedLevel = this.value;
                 generateSemesterInputs(selectedLevel);
+                
+                // Auto-select compliance based on level
+                if (selectedLevel === 'College') {
+                    complianceSelect.value = 'CHED';
+                    complianceSelect.dispatchEvent(new Event('change'));
+                } else if (selectedLevel === 'Senior High') {
+                    complianceSelect.value = 'DepEd';
+                    complianceSelect.dispatchEvent(new Event('change'));
+                }
                 
                 const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
                 if (selectedLevel === 'Senior High') {
@@ -1491,7 +1408,7 @@
 
                 // Action buttons based on status
                 let actionButtons = '';
-                if (approvalStatus === 'processing') {
+                if (approvalStatus === 'processing' && curriculum.subjects_count > 0) {
                     actionButtons = `
                         <div class="flex gap-2 mt-2">
                             <button onclick="event.stopPropagation(); approveCurriculum(${curriculum.id})" 
@@ -1507,18 +1424,6 @@
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                                 </svg>
                                 Reject
-                            </button>
-                        </div>
-                    `;
-                } else if (approvalStatus === 'rejected') {
-                    actionButtons = `
-                        <div class="flex gap-2 mt-2">
-                            <button onclick="event.stopPropagation(); handleCardClick(${curriculum.id}, 'rejected')" 
-                                    class="revise-btn px-3 py-1.5 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-xs font-medium rounded-lg transition-all duration-200 flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                                Revise
                             </button>
                         </div>
                     `;
@@ -1542,7 +1447,7 @@
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            Expires: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                            End Date: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </span>
                                     ` : ''}
                                 </div>
@@ -1623,7 +1528,7 @@
                 duplicateMemorandumAlert.classList.add('hidden');
                 
                 // Reset form state (remove read-only and disabled styles)
-                const fieldsToReset = ['curriculum', 'programCode', 'academicYear', 'yearLevel', 'compliance', 'memorandum', 'memorandumYear', 'memorandumCategory'];
+                const fieldsToReset = ['curriculum', 'programCode', 'academicYear', 'yearLevel', /* 'compliance' excluded to keep it read-only */ 'memorandum', 'memorandumYear', 'memorandumCategory'];
                 fieldsToReset.forEach(id => {
                     const el = document.getElementById(id);
                     if(el) {
@@ -1856,12 +1761,47 @@
             });
 
             versionFilter.addEventListener('change', (e) => {
+                updateApprovalOptions();
                 filterCurriculums();
             });
 
             approvalFilter.addEventListener('change', (e) => {
                 filterCurriculums();
             });
+
+            // Function to manage approval filter options
+            function updateApprovalOptions() {
+                const isOld = versionFilter.value === 'old';
+                const options = approvalFilter.options;
+                
+                // Processing option (value="processing")
+                // Rejected option (value="rejected")
+                // Approved option (value="approved")
+                // All Status option (value="all")
+
+                for (let i = 0; i < options.length; i++) {
+                    const opt = options[i];
+                    if (isOld) {
+                        // Hide Processing, Rejected, AND All Status for Old version
+                        if (opt.value === 'processing' || opt.value === 'rejected' || opt.value === 'all') {
+                            opt.hidden = true;
+                            opt.style.display = 'none'; // Fallback for some browsers
+                        } else {
+                            opt.hidden = false;
+                            opt.style.display = '';
+                        }
+                    } else {
+                        // Restore all
+                        opt.hidden = false;
+                        opt.style.display = '';
+                    }
+                }
+
+                // If Old, force selection to 'approved' since it's the only one visible
+                if (isOld) {
+                    approvalFilter.value = 'approved';
+                }
+            }
 
             function filterCurriculums() {
                 const searchTerm = searchBar.value.toLowerCase();
@@ -1876,11 +1816,22 @@
                     
                     const matchesSearch = name.includes(searchTerm) || code.includes(searchTerm);
                     const matchesVersion = version === versionStatus;
+                    
+                    // Safeguard: If Old version selected, strictly filter out non-approved if the user implies "only show approved"
+                    // But if dropdown logic is correct, approvalStatus will be 'approved' or 'all'.
+                    // If 'all', matchesApproval logic below is true for everything. 
+                    // If we strictly want ONLY approved for Old, we can add:
+                    // if (versionStatus === 'old' && approvalStatus === 'all') matchesApproval = approval === 'approved'; (Assuming Old => Approved)
+                    // Let's rely on standard filtering, but ensure dropdown state is correct.
+                    
                     const matchesApproval = approvalStatus === 'all' || approval === approvalStatus;
                     
                     card.style.display = (matchesSearch && matchesVersion && matchesApproval) ? 'flex' : 'none';
                 });
             }
+
+            // Initial call to set up correct options state based on default selection
+            updateApprovalOptions();
 
             addCurriculumButton.addEventListener('click', () => showAddEditModal());
             closeModalButton.addEventListener('click', hideAddEditModal);

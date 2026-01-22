@@ -185,8 +185,8 @@ class CurriculumController extends Controller
 
             // Log activity
             \App\Services\ActivityLogService::log(
-                'edit_curriculum',
-                'Updated curriculum "' . $curriculum->curriculum . '"',
+                'revise_curriculum',
+                'Revised curriculum "' . $curriculum->curriculum . '"',
                 ['curriculum_id' => $curriculum->id, 'changes' => array_keys($validated)]
             );
             Auth::user()->updateLastActivity();
@@ -374,6 +374,16 @@ public function saveSubjects(Request $request)
             $curriculum->id,
             $fullDescription
         );
+        
+        // Log activity
+        \App\Services\ActivityLogService::log(
+            'subject_mapping',
+            'Updated subject mapping for curriculum "' . $curriculum->curriculum . '"',
+            [
+                'curriculum_id' => $curriculum->id, 
+                'changes' => $changeDescriptions
+            ]
+        );
     }
 
     session()->flash('success', 'Curriculum subjects have been saved successfully!');
@@ -439,6 +449,13 @@ public function saveSubjects(Request $request)
                     $subject->subject_name
                 );
             });
+
+            // Log activity
+            \App\Services\ActivityLogService::log(
+                'subject_mapping',
+                'Removed subject "' . $subjectName . '" from curriculum',
+                ['curriculum_id' => $validated['curriculumId'], 'subject_id' => $validated['subjectId']]
+            );
 
             session()->flash('success', 'Subject "' . $subjectName . '" has been removed from curriculum successfully!');
             
@@ -607,6 +624,13 @@ public function saveSubjects(Request $request)
                     'Curriculum "' . $curriculum->curriculum . '" has been approved by ' . Auth::user()->name,
                     ['curriculum_id' => $curriculum->id, 'action' => 'approved']
                 );
+
+                // Log activity
+                \App\Services\ActivityLogService::log(
+                    'approve_curriculum',
+                    'Approved curriculum "' . $curriculum->curriculum . '"',
+                    ['curriculum_id' => $curriculum->id]
+                );
             }
 
             return response()->json([
@@ -658,6 +682,13 @@ public function saveSubjects(Request $request)
                     'Curriculum Rejected',
                     'Curriculum "' . $curriculum->curriculum . '" has been rejected by ' . Auth::user()->name,
                     ['curriculum_id' => $curriculum->id, 'action' => 'rejected']
+                );
+
+                // Log activity
+                \App\Services\ActivityLogService::log(
+                    'reject_curriculum',
+                    'Rejected curriculum "' . $curriculum->curriculum . '"',
+                    ['curriculum_id' => $curriculum->id]
                 );
             }
 
@@ -713,6 +744,13 @@ public function saveSubjects(Request $request)
                     'Curriculum Restored',
                     'Curriculum "' . $curriculum->curriculum . '" has been restored to processing by ' . Auth::user()->name,
                     ['curriculum_id' => $curriculum->id, 'action' => 'restored']
+                );
+
+                // Log activity
+                \App\Services\ActivityLogService::log(
+                    'restore_curriculum',
+                    'Restored/Revised curriculum "' . $curriculum->curriculum . '"',
+                    ['curriculum_id' => $curriculum->id]
                 );
             }
 
