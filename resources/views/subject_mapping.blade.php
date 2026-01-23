@@ -1407,8 +1407,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-sm">
                     <span class="subject-code font-mono ${textColorClass} bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">${subject.subject_code}</span>
-                    <span class="separator-dot ${dotColorClass}">•</span>
-                    <span class="subject-units font-medium ${unitsColorClass}">${subject.subject_unit} Units</span>
+                    ${subject.subject_unit && subject.subject_unit > 0 ? `<span class="separator-dot ${dotColorClass}">•</span><span class="subject-units font-medium ${unitsColorClass}">${subject.subject_unit} Units</span>` : ''}
                     ${subject.memorandum_year ? `<span class="separator-dot ${dotColorClass}">•</span><span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">${subject.memorandum_year}</span>` : ''}
                 </div>
                 ${subject.memorandum ? `<div class="text-xs text-gray-500 italic truncate mt-1" title="${subject.memorandum}">${subject.memorandum}</div>` : ''}
@@ -1501,7 +1500,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 ml-2 flex-shrink-0">
-                    <span class="text-xs font-semibold px-2 py-1 rounded-md ${unitClass}">${subjectData.subject_unit} units</span>
+                    ${subjectData.subject_unit && subjectData.subject_unit > 0 ? `<span class="text-xs font-semibold px-2 py-1 rounded-md ${unitClass}">${subjectData.subject_unit} units</span>` : ''}
                     <button class="delete-subject-tag ${isEditing ? '' : 'hidden'} ${deleteBtnClasses}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
@@ -3398,7 +3397,12 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             document.getElementById('subjectListView').classList.add('hidden');
             document.getElementById('addSubjectsModalTitle').textContent = 'Select Memorandum';
             document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
-            document.getElementById('modalSubjectSearch').classList.add('hidden'); // Hide search initially
+            
+            // Show search bar and clear it
+            const searchInput = document.getElementById('modalSubjectSearch');
+            searchInput.classList.remove('hidden');
+            searchInput.value = '';
+            searchInput.placeholder = 'Search memorandums...';
 
             // NEW: Reset selected memorandums
             selectedMemorandums.clear();
@@ -3406,10 +3410,16 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             // NEW: Update button text
             const confirmBtn = document.getElementById('confirmAddSubjects');
             if (confirmBtn) {
-                confirmBtn.textContent = 'Show Subjects';
+                confirmBtn.textContent = 'Confirm';
             }
 
-            console.log('📋 Fetching all system subjects...');
+            // Determine Memorandum Category Filter based on Curriculum Format
+            // CHED Format is for College (Default), DepEd Format is for Senior High
+            const yearLevel = selectedOption.dataset.yearLevel;
+            const isSeniorHigh = yearLevel === 'Senior High';
+            const requiredCategory = isSeniorHigh ? 'DepEd' : 'CHED';
+            
+            console.log(`📋 Fetching all system subjects... Filter: ${requiredCategory}`);
             
             // Fetch ALL subjects from the system to show in memorandum modal
             fetch('/api/subjects')
@@ -3418,7 +3428,7 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     console.log('📋 All System Subjects:', subjects);
                     
                     allSystemSubjects = subjects;
-                    renderMemorandums(subjects);
+                    renderMemorandums(subjects, requiredCategory);
                     
                     // Show modal with animation
                     addSubjectsModal.classList.remove('hidden');
@@ -3440,13 +3450,17 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         };
 
         const selectedMemorandums = new Set();
+        const confirmedMemorandums = new Set(); // Track which memorandums have been confirmed
 
         // Function to render Memorandums
-        const renderMemorandums = (subjects) => {
+        const renderMemorandums = (subjects, requiredCategory = null) => {
             const memoContainer = document.getElementById('memorandumListView');
             memoContainer.innerHTML = '';
 
             console.log('🔍 Rendering memorandums for subjects:', subjects);
+            
+            // Check if we're in locked mode (memorandums have been confirmed)
+            const isLockedMode = confirmedMemorandums.size > 0;
 
             const memorandums = {};
             
@@ -3473,85 +3487,163 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             }
 
             // Create cards for each memorandum
-            Object.values(memorandums).sort((a, b) => a.name.localeCompare(b.name)).forEach(memo => {
+            const filteredMemos = Object.values(memorandums)
+                .filter(memo => {
+                    // Filter by required category if specified
+                    if (!requiredCategory) return true;
+                    
+                    // Get the category, trim whitespace
+                    const memoCat = (memo.category || '').trim();
+                    
+                    // If no category is set, don't show it when filtering is active
+                    if (!memoCat || memoCat === 'N/A') return false;
+                    
+                    // Define DepEd categories
+                    const depedCategories = [
+                        'Shape Paper',
+                        'Curriculum Guides (Core)',
+                        'Curriculum Guides (Academic)',
+                        'Curriculum Guides (TechPro)'
+                    ];
+                    
+                    // Check based on required category
+                    if (requiredCategory.toUpperCase() === 'DEPED') {
+                        // For DepEd, check if category is in the DepEd categories list
+                        return depedCategories.includes(memoCat);
+                    } else if (requiredCategory.toUpperCase() === 'CHED') {
+                        // For CHED, check if it's NOT a DepEd category (and not empty)
+                        return !depedCategories.includes(memoCat);
+                    }
+                    
+                    return false;
+                });
+
+            if (filteredMemos.length === 0) {
+                 memoContainer.innerHTML = `<p class="text-gray-500 text-center py-8">No ${requiredCategory} memorandums found.</p>`;
+                 return;
+            }
+
+            filteredMemos.sort((a, b) => a.name.localeCompare(b.name))
+                .forEach(memo => {
                 const card = document.createElement('div');
-                card.className = 'p-4 border border-gray-200 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors group flex justify-between items-center';
                 
                 const isNoMemo = memo.name === 'No Memorandum';
                 const iconColor = isNoMemo ? 'text-gray-400' : 'text-blue-500';
                 const bgColor = isNoMemo ? 'bg-gray-100' : 'bg-blue-100';
                 const isSelected = selectedMemorandums.has(memo.name);
+                
+                // Check if this memorandum is locked (not in confirmed list when in locked mode)
+                const isLocked = isLockedMode && !confirmedMemorandums.has(memo.name);
+                
+                // Base card classes
+                let cardClasses = 'p-4 border border-gray-200 rounded-lg transition-colors flex justify-between items-center';
+                
+                if (isLocked) {
+                    // Locked state: gray, not clickable
+                    cardClasses += ' bg-gray-50 opacity-50 cursor-not-allowed';
+                } else {
+                    // Unlocked state: interactive
+                    cardClasses += ' hover:bg-blue-50 cursor-pointer group';
+                }
+                
+                card.className = cardClasses;
 
                 card.innerHTML = `
                     <div class="flex items-center gap-4">
+                        ${!isLockedMode ? `
                         <div class="flex items-center h-5" onclick="event.stopPropagation()">
-                            <input type="checkbox" class="memorandum-checkbox w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" ${isSelected ? 'checked' : ''}>
+                            <input type="checkbox" class="memorandum-checkbox w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" ${isSelected ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
                         </div>
-                        <div class="w-12 h-12 ${bgColor} rounded-lg flex items-center justify-center">
+                        ` : ''}
+                        <div class="w-12 h-12 ${bgColor} rounded-lg flex items-center justify-center ${isLocked ? 'opacity-50' : ''}">
                            <svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-800 group-hover:text-blue-700">${memo.name}</h3>
-                            <p class="text-sm text-gray-500">${memo.subjects.length} Subjects ${!isNoMemo ? `• ${memo.year}` : ''}</p>
+                            <h3 class="font-semibold ${isLocked ? 'text-gray-400' : 'text-gray-800 group-hover:text-blue-700'}">${memo.name}</h3>
+                            <p class="text-sm ${isLocked ? 'text-gray-400' : 'text-gray-500'}">${memo.subjects.length} Subjects ${!isNoMemo ? `• ${memo.year}` : ''}</p>
                         </div>
                     </div>
                     <div class="text-gray-400 group-hover:text-blue-500 flex items-center">
-                        <!-- Info icon will be added here -->
+                        ${isLocked ? `
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        ` : ''}
                     </div>
                 `;
                 
-                const checkbox = card.querySelector('.memorandum-checkbox');
-                
-                // Add change handler for checkbox
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        selectedMemorandums.add(memo.name);
-                    } else {
-                        selectedMemorandums.delete(memo.name);
-                    }
-                    updateSelectedMemoInfo();
-                });
+                if (!isLocked && !isLockedMode) {
+                    const checkbox = card.querySelector('.memorandum-checkbox');
+                    
+                    // Add change handler for checkbox
+                    checkbox.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedMemorandums.add(memo.name);
+                        } else {
+                            selectedMemorandums.delete(memo.name);
+                        }
+                        updateSelectedMemoInfo();
+                    });
 
-                // Add click handler for card to toggle checkbox
-                card.addEventListener('click', (e) => {
-                    if (e.ctrlKey || e.metaKey || e.button === 2) {
-                        // Ctrl+Click or Cmd+Click or Right-click: Show details modal
+                    // Add click handler for card to toggle checkbox
+                    card.addEventListener('click', (e) => {
+                        if (e.ctrlKey || e.metaKey || e.button === 2) {
+                            // Ctrl+Click or Cmd+Click or Right-click: Show details modal
+                            e.preventDefault();
+                            showMemorandumDetailsModal(memo);
+                        } else {
+                            // Normal click: Toggle checkbox
+                            checkbox.checked = !checkbox.checked;
+                            checkbox.dispatchEvent(new Event('change'));
+                        }
+                    });
+                    
+                    // Add context menu handler
+                    card.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         showMemorandumDetailsModal(memo);
-                    } else {
-                        // Normal click: Toggle checkbox
-                        checkbox.checked = !checkbox.checked;
-                        checkbox.dispatchEvent(new Event('change'));
-                    }
-                });
-                
-                // Add context menu handler
-                card.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    showMemorandumDetailsModal(memo);
-                });
-                
-                // Add info icon for viewing details
-                const infoIcon = document.createElement('button');
-                infoIcon.className = 'ml-2 p-1 rounded-full hover:bg-blue-100 transition-colors';
-                infoIcon.innerHTML = `
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                `;
-                infoIcon.title = 'View memorandum details';
-                infoIcon.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showMemorandumDetailsModal(memo);
-                });
-                
-                const rightSection = card.querySelector('.text-gray-400');
-                rightSection.appendChild(infoIcon);
+                    });
+                    
+                    // Add info icon for viewing details
+                    const infoIcon = document.createElement('button');
+                    infoIcon.className = 'ml-2 p-1 rounded-full hover:bg-blue-100 transition-colors';
+                    infoIcon.innerHTML = `
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    `;
+                    infoIcon.title = 'View memorandum details';
+                    infoIcon.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showMemorandumDetailsModal(memo);
+                    });
+                    
+                    const rightSection = card.querySelector('.text-gray-400');
+                    rightSection.appendChild(infoIcon);
+                } else if (!isLocked && isLockedMode) {
+                    // In locked mode but this memo is unlocked - allow viewing subjects
+                    card.addEventListener('click', () => {
+                        // Directly show subjects for this memorandum
+                        selectedMemorandums.clear();
+                        selectedMemorandums.add(memo.name);
+                        applyMemorandumFilter();
+                    });
+                }
                 
                 memoContainer.appendChild(card);
             });
             
             updateSelectedMemoInfo();
+            
+            // Hide/show confirm button based on locked mode
+            const confirmBtn = document.getElementById('confirmAddSubjects');
+            if (confirmBtn) {
+                if (isLockedMode) {
+                    confirmBtn.style.display = 'none';
+                } else {
+                    confirmBtn.style.display = 'block';
+                }
+            }
         };
 
         const updateSelectedMemoInfo = () => {
@@ -3586,6 +3678,10 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                  return;
              }
 
+            // Save selected memorandums as confirmed (locked for next time)
+            confirmedMemorandums.clear();
+            selectedMemorandums.forEach(memo => confirmedMemorandums.add(memo));
+
             // Filter the available subjects sidebar
             const filteredSubjects = allSystemSubjects.filter(s => {
                  const sMemo = s.memorandum || 'No Memorandum';
@@ -3617,7 +3713,12 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
              
              document.getElementById('addSubjectsModalTitle').textContent = 'Select Memorandum';
              document.getElementById('addSubjectsModalSubtitle').textContent = 'Choose a memorandum to view associated subjects';
-             document.getElementById('modalSubjectSearch').classList.add('hidden');
+             
+             // Show search bar and clear it
+             const searchInput = document.getElementById('modalSubjectSearch');
+             searchInput.classList.remove('hidden');
+             searchInput.value = '';
+             searchInput.placeholder = 'Search memorandums...';
         };
 
         document.getElementById('backToMemorandumsBtn').addEventListener('click', backToMemorandums);
@@ -3798,23 +3899,39 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         const filterModalSubjects = (searchTerm) => {
             const term = searchTerm.toLowerCase();
             
-            const filterList = (listId) => {
-                const list = document.getElementById(listId);
-                if (!list) return;
-                
-                Array.from(list.children).forEach(item => {
-                    // Skip if it's not a subject item (e.g. "No subjects" message)
-                    if (!item.dataset.subjectData) return;
-                    
-                    const subjectData = JSON.parse(item.dataset.subjectData);
-                    const matchesSearch = subjectData.subject_name.toLowerCase().includes(term) || 
-                                         subjectData.subject_code.toLowerCase().includes(term);
-                    item.style.display = matchesSearch ? 'block' : 'none';
-                });
-            };
+            // Check if we're in memorandum view
+            const memoListView = document.getElementById('memorandumListView');
+            const subjectListView = document.getElementById('subjectListView');
             
-            filterList('modalMinorSubjectList');
-            filterList('modalMajorSubjectList');
+            if (memoListView && !memoListView.classList.contains('hidden')) {
+                // Filter memorandums
+                const memorandumCards = memoListView.querySelectorAll('.p-4.border');
+                memorandumCards.forEach(card => {
+                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                    const subtitle = card.querySelector('.text-sm')?.textContent.toLowerCase() || '';
+                    const matchesSearch = title.includes(term) || subtitle.includes(term);
+                    card.style.display = matchesSearch ? 'flex' : 'none';
+                });
+            } else if (subjectListView && !subjectListView.classList.contains('hidden')) {
+                // Filter subjects (existing logic)
+                const filterList = (listId) => {
+                    const list = document.getElementById(listId);
+                    if (!list) return;
+                    
+                    Array.from(list.children).forEach(item => {
+                        // Skip if it's not a subject item (e.g. "No subjects" message)
+                        if (!item.dataset.subjectData) return;
+                        
+                        const subjectData = JSON.parse(item.dataset.subjectData);
+                        const matchesSearch = subjectData.subject_name.toLowerCase().includes(term) || 
+                                             subjectData.subject_code.toLowerCase().includes(term);
+                        item.style.display = matchesSearch ? 'block' : 'none';
+                    });
+                };
+                
+                filterList('modalMinorSubjectList');
+                filterList('modalMajorSubjectList');
+            }
         };
         
         // Event listeners for Add Subjects Modal

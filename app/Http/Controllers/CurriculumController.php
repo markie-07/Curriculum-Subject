@@ -24,6 +24,7 @@ class CurriculumController extends Controller
         // \Illuminate\Support\Facades\Artisan::call('curriculums:expire');
 
         $curriculums = Curriculum::withCount('subjects')
+            ->withSum('subjects', 'subject_unit')
             ->orderBy('year_level')
             ->orderBy('curriculum')
             ->orderByDesc('academic_year')
@@ -46,6 +47,7 @@ class CurriculumController extends Controller
                     'approval_status' => $curriculum->approval_status,
                     'created_at' => $curriculum->created_at,
                     'subjects_count' => $curriculum->subjects_count,
+                    'mapped_units' => $curriculum->subjects_sum_subject_unit,
                 ];
             });
         return response()->json($curriculums);

@@ -33,9 +33,14 @@
                     <div class="bg-gray-50 border border-gray-200 rounded-xl p-8">
                         <h3 id="links-header" class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4"></h3>
 
-                        {{-- NEW: Search Bar --}}
-                        <div class="mb-6">
-                            <input type="text" id="search-bar" placeholder="Search for issuances..." class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {{-- NEW: Search Bar and Add Issuance Button --}}
+                        <div class="mb-6 flex items-center justify-between gap-4">
+                            <input type="text" id="search-bar" placeholder="Search for issuances..." class="flex-1 max-w-lg px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" id="add-year-btn" class="ml-auto px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
                         </div>
 
                         {{-- CHED Links Section --}}
@@ -220,6 +225,50 @@
             </div>
         </div>
     </div>
+
+    {{-- Add New Year Modal --}}
+    <div id="addYearModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden opacity-0">
+        <div id="add-year-modal-panel" class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out">
+            <button id="closeAddYearModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Add New Issuance</h2>
+                <p class="text-sm text-slate-500 mt-1">Create a new category for CHED or DepEd issuances</p>
+            </div>
+
+            <form id="addYearForm" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="newYear" class="block text-sm font-medium text-slate-700 mb-2">Issuance Name</label>
+                    <input type="text" id="newYear" name="year" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 2026 CHED Memorandum Orders" required>
+                    <p class="text-xs text-slate-500 mt-1">Enter the complete name as you want it to appear</p>
+                </div>
+
+                <div>
+                    <label for="newYearAgency" class="block text-sm font-medium text-slate-700 mb-2">Agency</label>
+                    <select id="newYearAgency" name="agency" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+                        <option value="">Select Agency</option>
+                        <option value="CHED">CHED</option>
+                        <option value="DepEd">DepEd</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" id="cancelAddYearButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Create</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
  </main>
 
  <script>
@@ -234,6 +283,7 @@
     const selectedAgencySpan = document.getElementById('selected-agency');
     const linksHeader = document.getElementById('links-header');
     const searchBar = document.getElementById('search-bar');
+    const addYearBtn = document.getElementById('add-year-btn');
     
     // Modal elements
     const externalLinkModal = document.getElementById('externalLinkModal');
@@ -253,16 +303,29 @@
     const linkTitleInput = document.getElementById('linkTitle');
     const linkUrlInput = document.getElementById('linkUrl');
 
+    // Add Year Modal elements
+    const addYearModal = document.getElementById('addYearModal');
+    const addYearModalPanel = document.getElementById('add-year-modal-panel');
+    const closeAddYearModalButton = document.getElementById('closeAddYearModalButton');
+    const cancelAddYearButton = document.getElementById('cancelAddYearButton');
+    const addYearForm = document.getElementById('addYearForm');
+    const newYearInput = document.getElementById('newYear');
+    const newYearAgencySelect = document.getElementById('newYearAgency');
+
     // Debug: Check which elements are missing
     console.log('Modal elements check:', {
         externalLinkModal: !!externalLinkModal,
         addLinkModal: !!addLinkModal,
+        addYearModal: !!addYearModal,
         closeExternalLinkModalButton: !!closeExternalLinkModalButton,
         closeAddLinkModalButton: !!closeAddLinkModalButton,
+        closeAddYearModalButton: !!closeAddYearModalButton,
         cancelExternalLinkButton: !!cancelExternalLinkButton,
         cancelAddLinkButton: !!cancelAddLinkButton,
+        cancelAddYearButton: !!cancelAddYearButton,
         confirmExternalLinkButton: !!confirmExternalLinkButton,
-        addLinkForm: !!addLinkForm
+        addLinkForm: !!addLinkForm,
+        addYearForm: !!addYearForm
     });
 
     let currentLink = null;
@@ -387,6 +450,133 @@
         }, 300);
     };
 
+    const showAddYearModal = () => {
+        const currentAgency = selectedAgencySpan.textContent.trim();
+        if (currentAgency && currentAgency !== 'Select Agency') {
+            newYearAgencySelect.value = currentAgency;
+        }
+        
+        addYearModal.classList.remove('hidden');
+        setTimeout(() => {
+            addYearModal.classList.remove('opacity-0');
+            addYearModalPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+
+    const hideAddYearModal = () => {
+        addYearModal.classList.add('opacity-0');
+        addYearModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            addYearModal.classList.add('hidden');
+            addYearForm.reset();
+        }, 300);
+    };
+
+    const createYearAccordion = async (year, agency, skipSave = false) => {
+        const container = agency === 'CHED' ? document.getElementById('ched-links') : document.getElementById('deped-links');
+        if (!container) return;
+
+        // Check if year/category already exists
+        const existingAccordion = container.querySelector(`[data-year="${year}"]`);
+        if (existingAccordion) {
+            if (!skipSave) {
+                alert(`This ${agency} issuance already exists!`);
+            }
+            return;
+        }
+
+        const accordionDiv = document.createElement('div');
+        accordionDiv.className = `${agency.toLowerCase()}-accordion border border-gray-200 rounded-lg`;
+        accordionDiv.dataset.year = year;
+        
+        accordionDiv.innerHTML = `
+            <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                <span class="font-semibold text-gray-700">${year}</span>
+                <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
+                <!-- Add Link Button -->
+                <div class="mb-3 flex justify-end">
+                    <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="${year}" data-agency="${agency}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add Link
+                    </button>
+                </div>
+                
+                <!-- Custom Links Container -->
+                <div class="custom-links-container space-y-2" data-year="${year}" data-agency="${agency}"></div>
+                
+                <!-- Fallback Link -->
+                ${agency === 'CHED' ? `<a href="https://ched.gov.ph/${year}-ched-memorandum-orders/" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">View all ${year} issuances on the CHED website</a>` : ''}
+            </div>
+        `;
+
+        // Insert at the top of the container
+        container.insertBefore(accordionDiv, container.firstChild);
+
+        // Add accordion click handler
+        const header = accordionDiv.querySelector('.accordion-header');
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('svg');
+            const isOpening = content.classList.contains('hidden');
+            
+            content.classList.toggle('hidden', !isOpening);
+            icon.classList.toggle('rotate-180', isOpening);
+        });
+
+        // Save to database if not skipping (i.e., user-created, not loaded from DB)
+        if (!skipSave) {
+            try {
+                console.log('Saving category to database:', { agency, year });
+                const response = await fetch(`${API_BASE_URL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        agency: agency,
+                        year: year,
+                        is_category: true,
+                        title: null,
+                        url: null
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    console.error('Failed to save category to database:', result);
+                    alert('Failed to save category. Please try again.');
+                } else {
+                    console.log('Category saved successfully:', result);
+                }
+            } catch (error) {
+                console.error('Error saving category:', error);
+                alert('Error saving category: ' + error.message);
+            }
+        }
+    };
+
+    const loadCategories = async (agency) => {
+        try {
+            console.log('Loading categories for agency:', agency);
+            const response = await fetch(`${API_BASE_URL}/categories?agency=${agency}`);
+            const categories = await response.json();
+            
+            console.log('Loaded categories:', categories);
+            
+            categories.forEach(category => {
+                createYearAccordion(category.year, category.agency, true); // skipSave = true
+            });
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        }
+    };
+
     // --- Event Listeners ---
     
     // Agency Selection
@@ -404,6 +594,12 @@
             linksContainer.querySelectorAll('div[id$="-links"]').forEach(div => div.classList.add('hidden'));
             const targetSection = document.getElementById(targetId);
             if (targetSection) targetSection.classList.remove('hidden');
+
+            // Load categories first
+            if (!targetSection.dataset.categoriesLoaded) {
+                await loadCategories(agency);
+                targetSection.dataset.categoriesLoaded = 'true';
+            }
 
             // Load data if needed
             const containers = targetSection.querySelectorAll('.custom-links-container');
@@ -510,6 +706,47 @@
     if (addLinkModal) {
         addLinkModal.addEventListener('click', (e) => {
             if (e.target === addLinkModal) hideAddLinkModal();
+        });
+    }
+
+    // Add Year Modal events
+    if (addYearBtn) {
+        addYearBtn.addEventListener('click', () => {
+            const currentAgency = selectedAgencySpan.textContent.trim();
+            if (currentAgency === 'Select Agency') {
+                alert('Please select an agency first (CHED or DepEd)');
+                return;
+            }
+            showAddYearModal();
+        });
+    }
+
+    if (closeAddYearModalButton) {
+        closeAddYearModalButton.addEventListener('click', hideAddYearModal);
+    }
+    if (cancelAddYearButton) {
+        cancelAddYearButton.addEventListener('click', hideAddYearModal);
+    }
+    if (addYearModal) {
+        addYearModal.addEventListener('click', (e) => {
+            if (e.target === addYearModal) hideAddYearModal();
+        });
+    }
+
+    // Add Year Form Submit
+    if (addYearForm) {
+        addYearForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const year = newYearInput.value.trim();
+            const agency = newYearAgencySelect.value;
+            
+            if (!year || !agency) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            createYearAccordion(year, agency);
+            hideAddYearModal();
         });
     }
 

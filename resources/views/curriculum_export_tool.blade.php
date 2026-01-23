@@ -438,6 +438,11 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Apply filter
         filterOptions(searchInput.value);
+        
+        // Automatically open dropdown to show filtered curriculums
+        if (selectedStatus && !isDropdownOpen) {
+            toggleDropdown();
+        }
     });
 
     // Event Listeners

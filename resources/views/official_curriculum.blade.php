@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Official Memorandum</p>
-                                    <p id="modal-memorandum" class="font-semibold text-slate-800 text-sm mt-0.5 truncate" title="">N/A</p>
+                                    <p id="modal-memorandum" class="font-semibold text-slate-800 text-sm mt-0.5 truncate" title=""></p>
                                 </div>
                             </div>
 
@@ -145,6 +145,48 @@
                         </div>
                     </div>
                     <div id="modal-curriculum-content" class="p-6 space-y-4 flex-1 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        {{-- External Link Confirmation Modal --}}
+        <div id="externalLinkModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out" id="external-link-panel">
+                    <div class="p-6">
+                        {{-- Close Button --}}
+                        <button id="closeExternalLinkModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        {{-- Icon --}}
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        {{-- Title --}}
+                        <h3 class="text-xl font-bold text-slate-800 text-center mb-2">Open External Link?</h3>
+
+                        {{-- Description --}}
+                        <p class="text-sm text-slate-500 text-center mb-1">You are about to open:</p>
+                        <p id="external-link-title" class="text-sm font-medium text-slate-700 text-center mb-6 px-4"></p>
+
+                        {{-- Buttons --}}
+                        <div class="flex gap-3">
+                            <button id="cancelExternalLink" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors">
+                                Cancel
+                            </button>
+                            <button id="confirmExternalLink" class="flex-1 px-4 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                Open Link
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -173,6 +215,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalVersionBadge = document.getElementById('modal-version-badge');
     const modalCurriculumContent = document.getElementById('modal-curriculum-content');
 
+    // External link modal elements
+    const externalLinkModal = document.getElementById('externalLinkModal');
+    const externalLinkPanel = document.getElementById('external-link-panel');
+    const closeExternalLinkModalBtn = document.getElementById('closeExternalLinkModal');
+    const cancelExternalLinkBtn = document.getElementById('cancelExternalLink');
+    const confirmExternalLinkBtn = document.getElementById('confirmExternalLink');
+    const externalLinkTitle = document.getElementById('external-link-title');
+    
+    let pendingExternalUrl = '';
+    let pendingLinkTitle = '';
+
     // Modal functions
     const showCurriculumModal = () => {
         curriculumModal.classList.remove('hidden');
@@ -188,6 +241,42 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => curriculumModal.classList.add('hidden'), 300);
     };
     
+    // External link modal functions
+    const showExternalLinkModal = (url, title) => {
+        pendingExternalUrl = url;
+        pendingLinkTitle = title;
+        externalLinkTitle.textContent = title;
+        externalLinkModal.classList.remove('hidden');
+        setTimeout(() => {
+            externalLinkModal.classList.remove('opacity-0');
+            externalLinkPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+    
+    const hideExternalLinkModal = () => {
+        externalLinkModal.classList.add('opacity-0');
+        externalLinkPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            externalLinkModal.classList.add('hidden');
+            pendingExternalUrl = '';
+            pendingLinkTitle = '';
+        }, 300);
+    };
+    
+    // External link modal event listeners
+    closeExternalLinkModalBtn.addEventListener('click', hideExternalLinkModal);
+    cancelExternalLinkBtn.addEventListener('click', hideExternalLinkModal);
+    confirmExternalLinkBtn.addEventListener('click', () => {
+        if (pendingExternalUrl) {
+            window.open(pendingExternalUrl, '_blank');
+            hideExternalLinkModal();
+        }
+    });
+    externalLinkModal.addEventListener('click', (e) => { 
+        if (e.target === externalLinkModal) hideExternalLinkModal(); 
+    });
+
+    // Curriculum modal event listeners
     closeCurriculumModalBtn.addEventListener('click', hideCurriculumModal);
     curriculumModal.addEventListener('click', (e) => { if (e.target === curriculumModal) hideCurriculumModal(); });
 
@@ -209,6 +298,103 @@ document.addEventListener('DOMContentLoaded', () => {
         if (memoCat) fullMemo = `${memoCat} • ${fullMemo}`;
         modalMemorandum.textContent = fullMemo;
         modalMemorandum.title = fullMemo;
+
+        // Reset memorandum styling and click handler
+        modalMemorandum.style.cursor = 'default';
+        modalMemorandum.classList.remove('text-blue-600', 'hover:text-blue-700', 'hover:underline');
+        modalMemorandum.classList.add('text-slate-800');
+        modalMemorandum.onclick = null;
+
+        // Try to find the memorandum link and make text clickable
+        if (memoText && memoText !== 'No memorandum selected') {
+            try {
+                const agency = curriculum.compliance || '';
+                console.log('Searching for memorandum link:', { agency, memoText, memoCat });
+                
+                // Fetch all links for the agency
+                const response = await fetch(`/api/compliance-links?agency=${agency}&is_category=false`);
+                const links = await response.json();
+                
+                console.log('Available links:', links);
+                
+                // Helper function to normalize text for comparison
+                const normalizeText = (text) => {
+                    return text
+                        .toLowerCase()
+                        .replace(/[()•\-_,]/g, ' ')  // Remove special characters
+                        .replace(/\s+/g, ' ')         // Normalize spaces
+                        .trim();
+                };
+                
+                // Helper function to extract significant words (3+ characters)
+                const getSignificantWords = (text) => {
+                    const normalized = normalizeText(text);
+                    return normalized.split(' ').filter(w => w.length >= 3);
+                };
+                
+                // Extract the subject name from memorandum
+                let subjectName = memoText;
+                if (memoText.includes('•')) {
+                    subjectName = memoText.split('•').pop().trim();
+                }
+                
+                console.log('Subject name extracted:', subjectName);
+                
+                // Get significant words from the subject name
+                const subjectWords = getSignificantWords(subjectName);
+                console.log('Search terms:', subjectWords);
+                
+                // Find the best matching link
+                let bestMatch = null;
+                let bestScore = 0;
+                
+                links.forEach(link => {
+                    if (!link.title && !link.url) return;
+                    
+                    const linkTitle = link.title || '';
+                    const linkUrl = link.url || '';
+                    
+                    // Get words from link title and URL
+                    const titleWords = getSignificantWords(linkTitle);
+                    const urlWords = getSignificantWords(linkUrl);
+                    const allLinkWords = [...titleWords, ...urlWords];
+                    
+                    // Calculate match score (how many subject words appear in link)
+                    const matchCount = subjectWords.filter(word => 
+                        allLinkWords.some(linkWord => 
+                            linkWord.includes(word) || word.includes(linkWord)
+                        )
+                    ).length;
+                    
+                    const score = matchCount / subjectWords.length;
+                    
+                    console.log(`Link "${linkTitle}" score: ${score} (${matchCount}/${subjectWords.length} words matched)`);
+                    
+                    // Keep track of best match (need at least 50% match)
+                    if (score > bestScore && score >= 0.5) {
+                        bestScore = score;
+                        bestMatch = link;
+                    }
+                });
+                
+                console.log('Best matching link:', bestMatch, 'Score:', bestScore);
+                
+                if (bestMatch && bestMatch.url) {
+                    // Make the memorandum text clickable and blue
+                    modalMemorandum.classList.remove('text-slate-800');
+                    modalMemorandum.classList.add('text-blue-600', 'hover:text-blue-700', 'hover:underline');
+                    modalMemorandum.style.cursor = 'pointer';
+                    modalMemorandum.onclick = () => {
+                        showExternalLinkModal(bestMatch.url, bestMatch.title || subjectName);
+                    };
+                    console.log('✅ Memorandum text is now clickable for URL:', bestMatch.url);
+                } else {
+                    console.log('❌ No matching link found (best score:', bestScore, ')');
+                }
+            } catch (error) {
+                console.error('Error fetching memorandum link:', error);
+            }
+        }
 
         // Expiration Date Logic (replaces Status Badge)
         let statusHtml = '';
@@ -441,7 +627,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     return num % 1 === 0 ? Math.floor(num) : num;
                 };
 
-                const totalUnitsDisplay = curriculum.total_units 
+                // Only show total units badge for College curriculums
+                const totalUnitsDisplay = (curriculum.total_units && curriculum.year_level === 'College')
                     ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                         ${formatUnits(curriculum.total_units)} units
                     </span>`

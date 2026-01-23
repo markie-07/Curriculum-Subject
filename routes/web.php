@@ -276,6 +276,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
 
         // --- Compliance Links Routes ---
         Route::get('/compliance-links', [\App\Http\Controllers\ComplianceLinkController::class, 'index']);
+        Route::get('/compliance-links/categories', [\App\Http\Controllers\ComplianceLinkController::class, 'getCategories']);
         Route::post('/compliance-links', [\App\Http\Controllers\ComplianceLinkController::class, 'store']);
         Route::put('/compliance-links/{id}', [\App\Http\Controllers\ComplianceLinkController::class, 'update']);
         Route::delete('/compliance-links/{id}', [\App\Http\Controllers\ComplianceLinkController::class, 'destroy']);

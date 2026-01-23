@@ -1128,11 +1128,33 @@ function switchSyllabus(type) {
         depedFields.classList.remove('hidden');
         depedGrids.classList.remove('hidden');
         
+        
         // Toggle Required Attributes
         toggleRequired(chedContainer, false);
         toggleRequired(chedFields, false);
         toggleRequired(depedFields, true);
         toggleRequired(depedGrids, true);
+        
+        // Explicitly remove required from CHED-specific fields to ensure form validation works
+        const chedSpecificFields = [
+            'credit_units', 'contact_hours', 'pilo_outcomes', 'cilo_outcomes',
+            'learning_outcomes', 'basic_readings', 'extended_readings',
+            'course_assessment', 'committee_members', 'consultation_schedule'
+        ];
+        
+        chedSpecificFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) field.removeAttribute('required');
+        });
+        
+        // Remove required from all week fields (CHED weekly plan)
+        for (let i = 1; i <= 18; i++) {
+            if ([6, 12, 18].includes(i)) continue; // Skip exam weeks
+            ['content', 'silo', 'at_onsite', 'at_offsite', 'tla_onsite', 'tla_offsite', 'ltsm', 'output'].forEach(suffix => {
+                const field = document.getElementById(`week_${i}_${suffix}`);
+                if (field) field.removeAttribute('required');
+            });
+        }
         
         btnDeped.classList.add('bg-white', 'text-red-600', 'shadow-sm');
         btnDeped.classList.remove('text-gray-600');
@@ -1192,6 +1214,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const subjectIdField = document.getElementById('subject_id');
     const saveButton = document.getElementById('saveCourseButton');
     const pageTitle = document.querySelector('h1.text-4xl');
+
+    // Helper function to show errors
+    const showError = (title, message) => {
+        alert(`${title}\n\n${message}`);
+    };
 
     // --- DEFAULT WEEK 0 CONTENT ---
     // --- DEFAULT CONTENT ---
@@ -1421,12 +1448,14 @@ Learning Management System`;
     if (courseForm) {
         courseForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Use HTML5 validation
             if (!courseForm.checkValidity()) {
                 courseForm.reportValidity();
                 return;
             }
             
-            // Show confirmation modal first
+            // Show confirmation modal
             document.getElementById('saveCourseConfirmModal').classList.remove('hidden');
         });
     }
@@ -1439,8 +1468,8 @@ Learning Management System`;
             course_title: document.getElementById('course_title').value,
             subject_code: document.getElementById('course_code').value,
             subject_type: document.getElementById('subject_type').value,
-            subject_unit: document.getElementById('credit_units').value,
-            contact_hours: document.getElementById('contact_hours').value,
+            subject_unit: document.getElementById('syllabus_type').value === 'DepEd' ? 0 : (document.getElementById('credit_units').value || 0),
+            contact_hours: document.getElementById('contact_hours').value || null,
             course_description: document.getElementById('course_description').value,
             pilo_outcomes: document.getElementById('pilo_outcomes').value,
             cilo_outcomes: document.getElementById('cilo_outcomes').value,

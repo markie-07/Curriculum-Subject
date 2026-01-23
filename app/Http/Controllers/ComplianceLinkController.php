@@ -14,6 +14,7 @@ class ComplianceLinkController extends Controller
     {
         $agency = $request->query('agency');
         $year = $request->query('year');
+        $isCategory = $request->query('is_category');
 
         $query = ComplianceLink::query();
 
@@ -25,40 +26,86 @@ class ComplianceLinkController extends Controller
             $query->where('year', $year);
         }
 
+        if ($isCategory !== null) {
+            $query->where('is_category', $isCategory === 'true' || $isCategory === '1');
+        }
+
         $links = $query->orderBy('id', 'asc')->get();
 
         return response()->json($links);
     }
 
     /**
-     * Store a new compliance link
+     * Get all categories for a specific agency
+     */
+    public function getCategories(Request $request)
+    {
+        $agency = $request->query('agency');
+
+        $query = ComplianceLink::where('is_category', true);
+
+        if ($agency) {
+            $query->where('agency', $agency);
+        }
+
+        $categories = $query->orderBy('id', 'desc')->get();
+
+        return response()->json($categories);
+    }
+
+    /**
+     * Store a new compliance link or category
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'agency' => 'required|string|max:255',
-            'year' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'url' => 'required|url'
-        ]);
+        try {
+            \Log::info('ComplianceLink store request:', $request->all());
 
-        $link = ComplianceLink::create($validated);
+            $validated = $request->validate([
+                'agency' => 'required|string|max:255',
+                'year' => 'required|string|max:255',
+                'is_category' => 'nullable|boolean',
+                'title' => 'nullable|string|max:500',
+                'url' => 'nullable|string'
+            ]);
 
-        // Log activity
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::log(
-                'compliance_link_create',
-                'Added compliance link "' . $validated['title'] . '" for ' . $validated['agency'],
-                ['agency' => $validated['agency'], 'year' => $validated['year'], 'url' => $validated['url']]
-            );
-            auth()->user()->updateLastActivity();
+            // Ensure is_category is set properly
+            $validated['is_category'] = $request->input('is_category', false);
+
+            \Log::info('Validated data:', $validated);
+
+            $link = ComplianceLink::create($validated);
+
+            \Log::info('Created ComplianceLink:', $link->toArray());
+
+            // Log activity
+            if (auth()->user()) {
+                $type = $validated['is_category'] ? 'category' : 'link';
+                $name = $validated['is_category'] ? $validated['year'] : ($validated['title'] ?? 'Untitled');
+                \App\Services\ActivityLogService::log(
+                    'compliance_' . $type . '_create',
+                    'Added compliance ' . $type . ' "' . $name . '" for ' . $validated['agency'],
+                    ['agency' => $validated['agency'], 'year' => $validated['year']]
+                );
+                auth()->user()->updateLastActivity();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => ($validated['is_category'] ? 'Category' : 'Link') . ' added successfully',
+                'link' => $link
+            ], 201);
+        } catch (\Exception $e) {
+            \Log::error('Error creating compliance link/category:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Link added successfully',
-            'link' => $link
-        ], 201);
     }
 
     /**

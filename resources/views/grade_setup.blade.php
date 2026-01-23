@@ -22,74 +22,78 @@
                     <p class="text-sm text-gray-600 mt-1">Design and manage grading schemes for entire curriculums with automatic minor course grading.</p>
                 </div>
 
-                {{-- Course Type Selection --}}
-                <div id="course-type-section" class="border border-gray-200 bg-gray-50/50 p-6 rounded-xl">
+                {{-- Curriculum Level Selection --}}
+                <div id="curriculum-level-section" class="border border-gray-200 bg-gray-50/50 p-6 rounded-xl">
                     <div class="flex items-center gap-3 pb-3 mb-4">
-                        <div class="w-10 h-10 flex-shrink-0 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                        <div class="w-10 h-10 flex-shrink-0 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-700">Course Type</h2>
+                        <h2 class="text-xl font-semibold text-gray-700">Curriculum Level</h2>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <button id="minor-courses-btn" type="button" class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors text-left">
+                        <button id="senior-high-btn" type="button" class="p-4 border-2 border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors text-left group">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-gray-800">Minor Courses</h3>
-                                    <p class="text-sm text-gray-600">Auto-assign default grades</p>
-                                </div>
-                            </div>
-                        </button>
-                        <button id="major-courses-btn" type="button" class="p-4 border-2 border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-left">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                                <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                                 </div>
                                 <div>
-                                    <h3 class="font-semibold text-gray-800">Major Courses</h3>
-                                    <p class="text-sm text-gray-600">Manual grade setup</p>
+                                    <h3 class="font-semibold text-gray-800">Senior High</h3>
+                                    <p class="text-sm text-gray-600">DepEd Grading System</p>
+                                </div>
+                            </div>
+                        </button>
+                        <button id="college-btn" type="button" class="p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors text-left group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">College</h3>
+                                    <p class="text-sm text-gray-600">CHED Grading System</p>
                                 </div>
                             </div>
                         </button>
                     </div>
                 </div>
 
-                {{-- Subject Selection for Major Courses --}}
-                <div id="major-subject-section" class="mt-8 border border-gray-200 bg-gray-50/50 p-6 rounded-xl hidden">
+                {{-- Memorandum Selection (Unlocks for College) --}}
+                <div id="memorandum-section" class="mt-8 border border-gray-200 bg-gray-50/50 p-6 rounded-xl hidden">
                     <div class="flex items-center gap-3 pb-3 mb-4">
-                        <div class="w-10 h-10 flex-shrink-0 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <div class="w-10 h-10 flex-shrink-0 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-700">Select Major Subject</h2>
+                        <h2 class="text-xl font-semibold text-gray-700">Memorandum</h2>
                     </div>
                     <div>
-                        <label for="major-subject-select" class="block text-sm font-medium text-gray-600 mb-1">Major Subject</label>
-                        
-                        {{-- Custom Dropdown --}}
-                        <div class="relative">
-                            <button type="button" id="major-subject-dropdown-btn" class="w-full py-3 pl-4 pr-10 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm transition-colors text-left flex items-center justify-between">
-                                <span id="major-subject-selected-text" class="text-gray-500">Select a major subject...</span>
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <button id="select-memorandum-btn" type="button" class="w-full flex items-center justify-between gap-2 bg-white hover:bg-amber-50 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 border border-amber-300">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                                 </svg>
-                            </button>
-                            
-                            {{-- Dropdown Menu --}}
-                            <div id="major-subject-dropdown-menu" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                <div class="py-1">
-                                    <!-- Options will be populated here -->
-                                </div>
+                                <span id="memorandum-btn-text">Select Memorandum</span>
                             </div>
-                        </div>
-                        
-                        {{-- Hidden select for form compatibility --}}
-                        <select id="major-subject-select" class="hidden">
-                            <option value="">Select a major subject...</option>
-                        </select>
+                            <span id="memorandum-arrow" class="text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                            </span>
+                        </button>
                     </div>
                 </div>
+
+                {{-- Selected Subjects Section --}}
+                <div id="selected-subjects-section" class="mt-8 border border-gray-200 bg-gray-50/50 p-6 rounded-xl hidden">
+                    <div class="flex items-center gap-3 pb-3 mb-4">
+                        <div class="w-10 h-10 flex-shrink-0 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-700">Selected Subjects</h2>
+                    </div>
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div id="selected-subjects-list" class="divide-y divide-gray-100">
+                            {{-- Selected subjects will be listed here --}}
+                        </div>
+                    </div>
+                </div>
+
 
 
 
@@ -106,13 +110,8 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button id="update-minor-grades-btn" type="button" class="hidden flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors py-2 px-3 rounded-lg hover:bg-blue-50 border border-blue-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Select Minor Subject
-                            </button>
-                            <button id="add-grade-component-btn" type="button" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
+
+                            <button id="add-grade-component-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                                 </svg>
@@ -157,20 +156,27 @@
             <h2 id="grade-history-title" class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Curriculum Grade History</h2>
             
             {{-- View Mode Toggle --}}
-            <div class="mb-4 flex gap-2 bg-gray-100 p-1 rounded-lg">
+            <div class="mb-4 flex gap-1 bg-gray-100 p-1 rounded-lg">
                 <button 
                     id="view-curriculum-btn" 
-                    class="view-mode-btn flex-1 px-4 py-2 text-sm font-semibold rounded-md transition-colors bg-white text-indigo-600 shadow-sm"
+                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors bg-white text-indigo-600 shadow-sm"
                     data-view="curriculum"
                 >
-                    📚 Curriculums
+                    Curriculums
+                </button>
+                <button 
+                    id="view-memorandum-btn" 
+                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
+                    data-view="memorandum"
+                >
+                    Memorandums
                 </button>
                 <button 
                     id="view-subject-btn" 
-                    class="view-mode-btn flex-1 px-4 py-2 text-sm font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
+                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
                     data-view="subject"
                 >
-                    📖 All Subjects
+                    Subjects
                 </button>
             </div>
             
@@ -312,22 +318,7 @@
     </div>
 </div>
 
-{{-- Update Minor Grades Confirmation Modal --}}
-<div id="updateMinorGradesModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
-            <div class="w-12 h-12 rounded-full bg-orange-100 p-2 flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            </div>
-            <h3 class="text-lg font-semibold text-gray-800">Select Minor Subjects</h3>
-            <p class="text-sm text-gray-500 mt-2">Please select which minor subjects you want to grade. After selection, you can set up the grade components.</p>
-            <div class="mt-6 flex justify-center gap-4">
-                <button id="cancelUpdateMinorGrades" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">No</button>
-                <button id="confirmUpdateMinorGrades" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 {{-- Update Grade Scheme Confirmation Modal --}}
 <div id="editGradeSchemeModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
@@ -452,24 +443,66 @@
     </div>
 </div>
 
-{{-- Select Minor Courses Modal --}}
-<div id="select-minor-courses-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+{{-- Select Memorandum Modal --}}
+<div id="select-memorandum-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl">
             {{-- Modal Header --}}
             <div class="flex justify-between items-center p-6 border-b border-gray-200">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 flex-shrink-0 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">Select Minor Courses</h3>
-                        <p class="text-sm text-gray-600">Choose which minor courses will receive this grade setup</p>
+                        <h3 class="text-xl font-bold text-gray-800">Select Memorandum</h3>
+                        <p class="text-sm text-gray-600">Choose a memorandum to view its associated subjects</p>
                     </div>
                 </div>
-                <button id="close-select-minor-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
+                <button id="close-select-memorandum-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="mb-4">
+                    <div class="relative mb-3">
+                        <input type="text" id="memorandum-search" placeholder="Search memorandums..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div id="memorandum-list" class="space-y-2">
+                    {{-- Memorandums will be populated here --}}
+                    <p class="text-gray-500 text-center py-8">Loading memorandums...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Select Subjects Modal --}}
+<div id="select-subjects-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl">
+            {{-- Modal Header --}}
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 flex-shrink-0 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Select Subjects</h3>
+                        <p class="text-sm text-gray-600">Select the subjects you want to set up grades for</p>
+                    </div>
+                </div>
+                <button id="close-select-subjects-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -479,31 +512,31 @@
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-3">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="select-all-minor-courses" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <input type="checkbox" id="select-all-subjects" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
                             <span class="text-sm font-semibold text-gray-700">Select All</span>
                         </label>
-                        <span id="selected-count" class="text-sm text-gray-600">0 selected</span>
+                        <span id="selected-subjects-count" class="text-sm text-gray-600">0 selected</span>
                     </div>
                     <div class="relative mb-3">
-                        <input type="text" id="minor-course-search" placeholder="Search minor courses..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <input type="text" id="subject-search" placeholder="Search subjects..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm">
                         <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                 </div>
                 
-                <div id="minor-courses-checklist" class="space-y-2">
-                    {{-- Minor courses will be populated here --}}
-                    <p class="text-gray-500 text-center py-8">Loading minor courses...</p>
+                <div id="subjects-checklist" class="space-y-2">
+                    {{-- Subjects will be populated here --}}
+                    <p class="text-gray-500 text-center py-8">Loading subjects...</p>
                 </div>
             </div>
 
             {{-- Modal Footer --}}
             <div class="flex justify-end gap-3 p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
-                <button id="cancel-select-minor-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <button id="cancel-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                     Cancel
                 </button>
-                <button id="confirm-select-minor-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <button id="confirm-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                     Confirm Selection
                 </button>
             </div>
@@ -514,40 +547,54 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    let curriculums = [];
-    let currentCurriculumSubjects = [];
-    // Default structure for initial grade components setup
-    let minorGradesUnlocked = false;
+    // Top Level State
+    let selectedLevel = null; // 'Senior High' or 'College'
+    let selectedMemorandum = null;
+    let selectedSubjects = [];
 
-    // Main form elements
+    // Layout Elements
     const accordionContainer = document.getElementById('semestral-grade-accordion');
     const totalWeightSpan = document.getElementById('total-weight');
     const progressCircle = document.getElementById('progress-circle');
-    const addGradeBtn = document.getElementById('setGradeSchemeButton');
+    const addGradeBtn = document.getElementById('setGradeSchemeButton'); // "Set Grade Scheme"
     const updateGradeSetupBtn = document.getElementById('update-grade-setup-btn');
-    const curriculumSelect = document.getElementById('curriculum-select');
-    const courseTypeSection = document.getElementById('course-type-section');
-    const majorSubjectSection = document.getElementById('major-subject-section');
-    const majorSubjectSelect = document.getElementById('major-subject-select');
-    const gradeHistoryContainer = document.getElementById('grade-history-container');
     const addGradeComponentBtn = document.getElementById('add-grade-component-btn');
-    const updateMinorGradesBtn = document.getElementById('update-minor-grades-btn');
-    const minorCoursesBtn = document.getElementById('minor-courses-btn');
-    const majorCoursesBtn = document.getElementById('major-courses-btn');
+    const gradeHistoryContainer = document.getElementById('grade-history-container');
 
-    // Modal elements
-    const gradeModal = document.getElementById('grade-modal');
-    const curriculumGradeModal = document.getElementById('curriculum-grade-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const closeCurriculumModalBtn = document.getElementById('close-curriculum-modal-btn');
-    const modalContent = document.getElementById('modal-content');
-    const editGradeSetupBtn = document.getElementById('edit-grade-setup-btn');
+    // Section Elements
+    const curriculumLevelSection = document.getElementById('curriculum-level-section');
+    const seniorHighBtn = document.getElementById('senior-high-btn');
+    const collegeBtn = document.getElementById('college-btn');
     
-    // State
+    const memorandumSection = document.getElementById('memorandum-section');
+    const selectMemorandumBtn = document.getElementById('select-memorandum-btn');
+    const memorandumBtnText = document.getElementById('memorandum-btn-text');
+    
+    const selectedSubjectsSection = document.getElementById('selected-subjects-section');
+    const selectedSubjectsList = document.getElementById('selected-subjects-list');
+
+    // Modals
+    const selectMemorandumModal = document.getElementById('select-memorandum-modal');
+    const selectSubjectsModal = document.getElementById('select-subjects-modal');
+    const gradeModal = document.getElementById('grade-modal');
+    
+    // Modal Close Buttons
+    const closeSelectMemorandumModalBtn = document.getElementById('close-select-memorandum-modal-btn');
+    const closeSelectSubjectsModalBtn = document.getElementById('close-select-subjects-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    // Other Elements
+    const memorandumSearchInput = document.getElementById('memorandum-search');
+    const memorandumList = document.getElementById('memorandum-list');
+    
+    const subjectSearchInput = document.getElementById('subject-search');
+    const subjectsChecklist = document.getElementById('subjects-checklist');
+    const selectAllSubjectsCheckbox = document.getElementById('select-all-subjects');
+    const selectedSubjectsCountSpan = document.getElementById('selected-subjects-count');
+    const cancelSelectSubjectsBtn = document.getElementById('cancel-select-subjects-btn');
+    const confirmSelectSubjectsBtn = document.getElementById('confirm-select-subjects-btn');
+
     let isEditMode = false;
-    let currentCurriculumId = null;
-    let currentSubjectId = null;
-    let currentCourseType = null; // 'minor' or 'major'
     let componentCounter = 0;
 
     const createGradeComponent = (period = `component${++componentCounter}`, weight = 0, components = []) => {
@@ -607,31 +654,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     addGradeComponentBtn.addEventListener('click', () => {
-        // Check if course type is selected
-        if (!currentCourseType) {
+        // Check if subjects are selected
+        if (!selectedSubjects || selectedSubjects.length === 0) {
             Swal.fire({
-                title: 'Select Course Type First',
-                text: 'Please select a course type (Minor or Major) before adding grade components.',
+                title: 'Select Subjects First',
+                text: 'Please select subjects before adding grade components.',
                 icon: 'warning',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#4f46e5'
             });
             return;
         }
-        
-        // For major courses, check if a subject is selected
-        if (currentCourseType === 'major' && !currentSubjectId) {
-            Swal.fire({
-                title: 'Select a Major Subject First',
-                text: 'Please select a major subject before adding grade components.',
-                icon: 'warning',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#4f46e5'
-            });
-            return;
-        }
-        
-
         
         // Add the grade component
         accordionContainer.appendChild(createGradeComponent());
@@ -956,7 +989,681 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Old subject fetching function removed - now using curriculum-based workflow
+    // --- New Workflow Functions ---
+
+    const handleLevelSelection = async (level) => {
+        selectedLevel = level;
+        
+        // Update UI state
+        if (level === 'Senior High') {
+            seniorHighBtn.classList.add('border-purple-500', 'bg-purple-50');
+            seniorHighBtn.classList.remove('border-gray-300');
+            collegeBtn.classList.remove('border-blue-500', 'bg-blue-50');
+            collegeBtn.classList.add('border-gray-300');
+        } else {
+            collegeBtn.classList.add('border-blue-500', 'bg-blue-50');
+            collegeBtn.classList.remove('border-gray-300');
+            seniorHighBtn.classList.remove('border-purple-500', 'bg-purple-50');
+            seniorHighBtn.classList.add('border-gray-300');
+        }
+
+        // Reset subsequent steps
+        selectedMemorandum = null;
+        selectedSubjects = [];
+        memorandumBtnText.textContent = 'Select Memorandum';
+        selectedSubjectsSection.classList.add('hidden');
+        selectedSubjectsList.innerHTML = '';
+        
+        // Unlock Memorandum Section
+        memorandumSection.classList.remove('hidden');
+        
+        // Fetch Memorandums immediately to check
+        // We will fetch when modal opens, but good to know if we can pre-load
+    };
+
+    const fetchMemorandums = async () => {
+        try {
+            const subjects = await fetchAPI('subjects');
+            const memorandums = new Set();
+            
+            subjects.forEach(sub => {
+                if (sub.memorandum && sub.memorandum !== 'N/A') {
+                    const memo = sub.memorandum;
+                    const category = (sub.category || '').toUpperCase();
+                    
+                    // Known DepEd Categories
+                    const depEdCategories = ['SHAPE PAPER', 'CURRICULUM GUIDES (CORE)', 'CURRICULUM GUIDES (ACADEMIC)', 'CURRICULUM GUIDES (TECHPRO)'];
+                    const isDepEdCategory = depEdCategories.includes(category);
+                    
+                    // Text Heuristics for DepEd (Senior High)
+                    const depEdPatterns = [
+                        /^Arts\s+\d/i, 
+                        /^Business\s+\d/i, 
+                        /^Economics\s+\d/i, 
+                        /^Management\s+\d/i, 
+                        /^Engineering\s+\d/i, 
+                        /^Health Science\s+\d/i, 
+                        /^Social Science\s+\d/i, 
+                        /^Humanities\s+\d/i,
+                        /NC\s+(I|II|III|IV)/i, 
+                        /DepEd/i, 
+                        /K\s?to\s?12/i, 
+                        /Curriculum Guide/i
+                    ];
+                    
+                    const isDepEdText = depEdPatterns.some(pattern => pattern.test(memo));
+                    const isDepEd = isDepEdCategory || isDepEdText;
+                    
+                    // Text Heuristics for CHED (College)
+                    const isCHEDText = /CMO|CHED|Higher Education|Joint Circular/i.test(memo);
+                    
+                    if (selectedLevel === 'Senior High') {
+                         if (isDepEd) memorandums.add(memo);
+                    } else if (selectedLevel === 'College') {
+                         // Include if explicitly CHED or (Not DepEd and Not explicitly marked as SHS)
+                         if (isCHEDText || !isDepEd) {
+                            memorandums.add(memo);
+                         }
+                    }
+                }
+            });
+            
+            return Array.from(memorandums).sort();
+        } catch (error) {
+            console.error('Error fetching memorandums:', error);
+            Swal.fire('Error', 'Failed to fetch memorandums', 'error');
+            return [];
+        }
+    };
+    
+    const populateMemorandumList = (memos) => {
+        memorandumList.innerHTML = '';
+        if (memos.length === 0) {
+            memorandumList.innerHTML = '<p class="text-gray-500 text-center py-4">No memorandums found for this level.</p>';
+            return;
+        }
+        
+        memos.forEach(memo => {
+            const div = document.createElement('div');
+            div.className = 'p-3 hover:bg-amber-50 rounded-lg cursor-pointer border border-transparent hover:border-amber-200 transition-colors duration-150';
+            div.innerHTML = `<p class="font-medium text-gray-800">${memo}</p>`;
+            div.addEventListener('click', () => {
+                handleMemorandumSelection(memo);
+                hideModal('select-memorandum-modal');
+            });
+            memorandumList.appendChild(div);
+        });
+    };
+    
+    const handleMemorandumSelection = async (memo) => {
+        selectedMemorandum = memo;
+        memorandumBtnText.textContent = memo;
+        memorandumBtnText.classList.add('text-gray-900', 'font-bold');
+        
+        // Immediately trigger subject selection modal
+        await openSubjectsModal(memo);
+    };
+    
+    const openSubjectsModal = async (memo) => {
+        showModal('select-subjects-modal');
+        subjectsChecklist.innerHTML = '<p class="text-gray-500 text-center py-8">Loading subjects...</p>';
+        confirmSelectSubjectsBtn.disabled = true;
+        
+        const subjects = await fetchSubjectsByMemorandum(memo);
+        populateSubjectsChecklist(subjects);
+    };
+    
+    const fetchSubjectsByMemorandum = async (memo) => {
+         try {
+            const allSubjects = await fetchAPI('subjects');
+            return allSubjects.filter(s => s.memorandum === memo);
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+            return [];
+        }
+    };
+    
+    const populateSubjectsChecklist = (subjects) => {
+        subjectsChecklist.innerHTML = '';
+        if (subjects.length === 0) {
+            subjectsChecklist.innerHTML = '<p class="text-gray-500 text-center py-4">No subjects found for this memorandum.</p>';
+            return;
+        }
+        
+        // Sorting: Group by Year Level, then Name
+        subjects.sort((a, b) => {
+            if (a.year_level !== b.year_level) return (a.year_level || '').localeCompare(b.year_level || '');
+            return a.subject_name.localeCompare(b.subject_name);
+        });
+        
+        subjects.forEach(subject => {
+            const isSelected = selectedSubjects.some(s => s.id === subject.id);
+            const div = document.createElement('div');
+            div.className = `subject-item p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors ${isSelected ? 'border-green-500 bg-green-50' : 'border-gray-200'}`;
+            // Store full subject data
+            div.dataset.subject = JSON.stringify(subject);
+            
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 mt-0.5">
+                        <input type="checkbox" class="subject-checkbox w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500" ${isSelected ? 'checked' : ''}>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <p class="text-sm font-semibold text-gray-900">${subject.subject_code}</p>
+                            <span class="text-xs font-mono text-gray-500 border px-1 rounded">${subject.subject_type}</span>
+                        </div>
+                        <p class="text-sm text-gray-600">${subject.subject_name}</p>
+                        <div class="flex gap-2 mt-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                ${subject.units || 0} Units
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            div.addEventListener('click', (e) => {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = div.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+            
+            div.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+                const itemDiv = e.target.closest('.subject-item');
+                if (e.target.checked) {
+                    itemDiv.classList.add('border-green-500', 'bg-green-50');
+                    itemDiv.classList.remove('border-gray-200');
+                } else {
+                    itemDiv.classList.remove('border-green-500', 'bg-green-50');
+                    itemDiv.classList.add('border-gray-200');
+                }
+                updateSelectedSubjectsCount();
+            });
+            
+            subjectsChecklist.appendChild(div);
+        });
+        
+        // Handle Select All
+        if (selectAllSubjectsCheckbox) {
+            selectAllSubjectsCheckbox.onclick = () => {
+                const isChecked = selectAllSubjectsCheckbox.checked;
+                const checkboxes = document.querySelectorAll('.subject-checkbox');
+                checkboxes.forEach(cb => {
+                    cb.checked = isChecked;
+                    // Update visual style
+                    const itemDiv = cb.closest('.subject-item');
+                    if (isChecked) {
+                        itemDiv.classList.add('border-green-500', 'bg-green-50');
+                        itemDiv.classList.remove('border-gray-200');
+                    } else {
+                        itemDiv.classList.remove('border-green-500', 'bg-green-50');
+                        itemDiv.classList.add('border-gray-200');
+                    }
+                });
+                updateSelectedSubjectsCount();
+            };
+        }
+        
+        updateSelectedSubjectsCount();
+    };
+    
+    const updateSelectedSubjectsCount = () => {
+        const checkboxes = document.querySelectorAll('.subject-checkbox');
+        const checked = document.querySelectorAll('.subject-checkbox:checked');
+        
+        selectedSubjectsCountSpan.textContent = `${checked.length} selected`;
+        confirmSelectSubjectsBtn.disabled = checked.length === 0;
+        
+        if (selectAllSubjectsCheckbox && checkboxes.length > 0) {
+            selectAllSubjectsCheckbox.checked = checkboxes.length === checked.length;
+        }
+    };
+    
+    const updateSelectedSubjectsList = () => {
+        selectedSubjectsList.innerHTML = '';
+        selectedSubjectsSection.classList.remove('hidden');
+        
+        if (selectedSubjects.length === 0) {
+            selectedSubjectsSection.classList.add('hidden');
+            return;
+        }
+        
+        selectedSubjects.forEach(subject => {
+            const div = document.createElement('div');
+            div.className = 'p-4 flex justify-between items-center hover:bg-gray-50';
+            div.innerHTML = `
+                <div>
+                    <p class="font-medium text-gray-900">${subject.subject_code} - ${subject.subject_name}</p>
+                    <p class="text-sm text-gray-500">${subject.memorandum || 'No Memo'}</p>
+                </div>
+                <button class="text-red-500 hover:text-red-700 text-sm font-medium remove-subject-btn" data-id="${subject.id}">Remove</button>
+            `;
+            
+            div.querySelector('.remove-subject-btn').addEventListener('click', () => {
+                selectedSubjects = selectedSubjects.filter(s => s.id != subject.id);
+                updateSelectedSubjectsList();
+                // Also update eligibility for grading
+                checkGradingEligibility();
+            });
+            
+            selectedSubjectsList.appendChild(div);
+        });
+        
+        checkGradingEligibility();
+    };
+    
+    const checkGradingEligibility = () => {
+        if (selectedSubjects.length > 0) {
+            addGradeComponentBtn.disabled = false;
+            toggleGradeComponents(false); // Enable grading form
+            addGradeComponentBtn.style.display = '';
+            document.querySelector('.curriculum-reminder-text').textContent = `✅ Ready to set grades for ${selectedSubjects.length} selected subject(s).`;
+            document.querySelector('.curriculum-reminder-text').classList.remove('text-amber-600');
+            document.querySelector('.curriculum-reminder-text').classList.add('text-green-600');
+        } else {
+            addGradeComponentBtn.disabled = true;
+            toggleGradeComponents(true); // Disable grading form
+            document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Select subjects to proceed';
+            document.querySelector('.curriculum-reminder-text').classList.add('text-amber-600');
+            document.querySelector('.curriculum-reminder-text').classList.remove('text-green-600');
+        }
+    };
+
+    const resetForm = () => {
+        // Reset State
+        selectedLevel = null;
+        selectedMemorandum = null;
+        selectedSubjects = [];
+        
+        // Reset UI Elements
+        if (seniorHighBtn) {
+            seniorHighBtn.classList.remove('border-purple-500', 'bg-purple-50');
+            seniorHighBtn.classList.add('border-gray-300');
+        }
+        if (collegeBtn) {
+            collegeBtn.classList.remove('border-blue-500', 'bg-blue-50');
+            collegeBtn.classList.add('border-gray-300');
+        }
+        
+        memorandumSection.classList.add('hidden');
+        memorandumBtnText.textContent = 'Select Memorandum';
+        memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
+        
+        selectedSubjectsSection.classList.add('hidden');
+        selectedSubjectsList.innerHTML = '';
+        
+        // Reset Grade Form
+        accordionContainer.innerHTML = '';
+        toggleGradeComponents(true);
+        addGradeBtn.disabled = true;
+        addGradeComponentBtn.disabled = true;
+        addGradeComponentBtn.style.display = 'none'; // Hide initially
+        
+        document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Please select a curriculum level first';
+        document.querySelector('.curriculum-reminder-text').classList.add('text-amber-600');
+        document.querySelector('.curriculum-reminder-text').classList.remove('text-green-600');
+        
+        calculateAndUpdateTotals();
+    };
+
+    // Global Filter State
+    let historyStats = { curriculums: [], memorandums: [], subjects: [] };
+    let currentHistoryView = 'curriculum'; // curriculum, memorandum, subject
+    let currentHistoryFilter = 'all'; // all, college/ched, seniorhigh/deped, major, minor
+
+    const refreshHistory = async () => {
+        const container = document.getElementById('grade-history-container');
+        if (container) container.innerHTML = '<p class="text-gray-500 text-center py-4">Loading history...</p>';
+        
+        try {
+            // 1. Fetch Inputs
+            const [allSubjectsItems, allCurriculumsItems] = await Promise.all([
+                fetchAPI('subjects').catch(() => []),
+                fetchAPI('curriculums').catch(() => [])
+            ]);
+            
+            // Cleanup wrapped responses
+            let allSubjects = Array.isArray(allSubjectsItems) ? allSubjectsItems : (allSubjectsItems.data || []);
+            let allCurriculums = Array.isArray(allCurriculumsItems) ? allCurriculumsItems : (allCurriculumsItems.data || []);
+            
+            // 2. Discover Curriculums IDs
+            const curriculumIds = new Set();
+            allCurriculums.forEach(c => curriculumIds.add(c.id));
+            allSubjects.forEach(s => { if(s.curriculum_id) curriculumIds.add(s.curriculum_id); });
+            
+            // 3. Scan for Graded Status
+            const results = await Promise.all(Array.from(curriculumIds).map(async currId => {
+                try {
+                     const data = await fetchAPI(`curriculum-grades/${currId}`);
+                     return { curriculum: data.curriculum, subjects: data.subjects || [] };
+                } catch (e) { return null; }
+            }));
+            
+            // Check direct grades endpoint if available
+            let directGrades = [];
+            try { directGrades = await fetchAPI('grades'); } catch (e) {}
+
+            const validResults = results.filter(r => r !== null);
+            
+            // 4. Process Data
+            let pooledSubjects = [];
+            let seenSubIds = new Set();
+            let processedCurriculums = [];
+            
+            validResults.forEach(res => {
+                const subjects = res.subjects;
+                const total = subjects.length;
+                const gradedCount = subjects.filter(s => s.has_grades).length;
+                
+                // Classify Curriculum
+                const c = res.curriculum;
+                if (c) {
+                    // Heuristic for type
+                    const isSHS = c.program_code && /SHS|STEM|ABM|HUMSS|GAS|TVL|Arts|Sports/i.test(c.program_code);
+                    const type = c.curriculum_type === 'seniorhigh' || isSHS ? 'seniorhigh' : 'college';
+                    
+                    processedCurriculums.push({
+                        ...c,
+                        total_subjects: total,
+                        graded_subjects: gradedCount,
+                        percentage: total > 0 ? Math.round((gradedCount / total) * 100) : 0,
+                        type: type
+                    });
+                }
+                
+                // Add to pool
+                subjects.forEach(s => {
+                    if (!seenSubIds.has(s.id)) {
+                        // Merge with allSubjects to ensure 'memorandum' field exists
+                        let finalSubject = s;
+                        if (Array.isArray(allSubjects)) {
+                             const full = allSubjects.find(sub => sub.id == s.id);
+                             if (full) {
+                                 // Preserve has_grades from 's', take memo from 'full'
+                                 finalSubject = { ...full, ...s, memorandum: full.memorandum || s.memorandum };
+                             }
+                        }
+                        
+                        seenSubIds.add(s.id);
+                        pooledSubjects.push(finalSubject);
+                    }
+                });
+            });
+            
+            // Overlay direct grades
+            if (Array.isArray(directGrades)) {
+                directGrades.forEach(g => {
+                    const subId = g.subject_id;
+                    const existing = pooledSubjects.find(s => s.id == subId);
+                    if (existing) existing.has_grades = true;
+                    else {
+                        const info = allSubjects.find(s => s.id == subId);
+                        if (info) {
+                            pooledSubjects.push({ ...info, has_grades: true });
+                            seenSubIds.add(subId);
+                        }
+                    }
+                });
+            }
+            
+            // 5. Finalize Stats
+            historyStats.subjects = pooledSubjects.filter(s => s.has_grades);
+            historyStats.curriculums = processedCurriculums.filter(c => c.graded_subjects > 0);
+            
+            // Memorandums Logic
+            const memoMap = {};
+            const depEdPatterns = [
+                /^Arts\s+\d/i, /^Business\s+\d/i, /^Economics\s+\d/i, /^Management\s+\d/i, 
+                /^Engineering\s+\d/i, /^Health Science\s+\d/i, /^Social Science\s+\d/i, 
+                /^Humanities\s+\d/i, /NC\s+(I|II|III|IV)/i, /DepEd/i, /K\s?to\s?12/i, /Curriculum Guide/i
+            ];
+            
+            pooledSubjects.forEach(s => {
+                const mName = s.memorandum;
+                if (mName && mName !== 'N/A') {
+                    if (!memoMap[mName]) {
+                        // Classify Memorandum
+                        const isDepEd = depEdPatterns.some(p => p.test(mName));
+                        memoMap[mName] = { 
+                            name: mName, total: 0, graded: 0, 
+                            type: isDepEd ? 'seniorhigh' : 'college' 
+                        };
+                    }
+                    memoMap[mName].total++;
+                    if (s.has_grades) memoMap[mName].graded++;
+                }
+            });
+            
+            historyStats.memorandums = Object.values(memoMap)
+                .filter(m => m.graded > 0)
+                .map(m => ({
+                    ...m,
+                    percentage: m.total > 0 ? Math.round((m.graded / m.total) * 100) : 0
+                }));
+            
+            renderHistory();
+            
+        } catch (e) {
+            console.error('History Error', e);
+            if (container) container.innerHTML = '<p class="text-red-500 text-center py-4">Error loading history.</p>';
+        }
+    };
+
+    const renderHistory = () => {
+        const container = document.getElementById('grade-history-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        // Select Data Source
+        let allItems = [];
+        if (currentHistoryView === 'memorandum') allItems = historyStats.memorandums;
+        else if (currentHistoryView === 'subject') allItems = historyStats.subjects;
+        else allItems = historyStats.curriculums;
+        
+        // Apply Filter
+        let items = allItems;
+        if (currentHistoryFilter !== 'all') {
+            if (currentHistoryView === 'subject') {
+                // Filter Major/Minor
+                items = items.filter(i => (i.subject_type || 'major').toLowerCase() === currentHistoryFilter);
+            } else {
+                // Filter College/Senior High (mapped to 'college' / 'seniorhigh')
+                items = items.filter(i => i.type === currentHistoryFilter); 
+            }
+        }
+        
+        if (items.length === 0) {
+            container.innerHTML = `<p class="text-gray-500 text-sm text-center py-4">No items found matching filter.</p>`;
+            return;
+        }
+        
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'p-3 border rounded-lg hover:bg-gray-50 mb-2 transition-colors cursor-pointer group';
+            
+            if (currentHistoryView === 'subject') {
+                const typeBadge = (item.subject_type || 'Major').toLowerCase() === 'minor' 
+                    ? '<span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">Minor</span>' 
+                    : '<span class="text-xs bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded">Major</span>';
+                    
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium text-gray-800 text-sm flex items-center gap-2">${item.subject_code} ${typeBadge}</p>
+                            <p class="text-xs text-gray-600 truncate mt-0.5">${item.subject_name}</p>
+                        </div>
+                        <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">Graded</span>
+                    </div>
+                `;
+                
+                // Add Double Click listener to view details
+                div.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    showGradeComponentDetails(item.id, item.subject_name, item.subject_code);
+                });
+                
+            } else {
+                // Curriculum or Memorandum
+                const name = currentHistoryView === 'curriculum' ? (item.curriculum_name || item.program_code) : item.name;
+                const percent = item.percentage;
+                const countText = `${item.graded_subjects || item.graded} / ${item.total_subjects || item.total} Subjects`;
+                const tagColor = item.type === 'seniorhigh' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100';
+                const tagText = currentHistoryView === 'memorandum' 
+                    ? (item.type === 'seniorhigh' ? 'DepEd' : 'CHED') 
+                    : (item.type === 'seniorhigh' ? 'Senior High' : 'College');
+                
+                div.innerHTML = `
+                   <div class="flex flex-col h-full justify-between">
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                             <h4 class="font-semibold text-gray-800 text-sm leading-tight line-clamp-2" title="${name}">${name}</h4>
+                             <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor} border whitespace-nowrap">${tagText}</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-xs text-slate-500 font-medium">${countText}</span>
+                            
+                            <!-- Liquid Badge -->
+                            <div class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-indigo-100 bg-white min-w-[65px] h-6 shadow-sm">
+                                <div class="absolute bottom-0 left-0 w-full bg-indigo-100/80 transition-all duration-700 ease-out border-t border-indigo-200" 
+                                     style="height: ${percent}%"></div>
+                                <span class="relative z-10 text-[10px] font-bold ${percent >= 75 ? 'text-indigo-700' : 'text-slate-600'}">
+                                    ${percent}%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            container.appendChild(div);
+        });
+    };
+    
+    // Initial Load
+    setTimeout(refreshHistory, 500);
+
+    // Updated Event Listeners
+    if (seniorHighBtn) seniorHighBtn.addEventListener('click', () => handleLevelSelection('Senior High'));
+    if (collegeBtn) collegeBtn.addEventListener('click', () => handleLevelSelection('College'));
+    
+    // Filtering Logic
+    const filterButtons = {
+        all: document.getElementById('filter-all-btn'),
+        college: document.getElementById('filter-college-btn'),
+        seniorhigh: document.getElementById('filter-seniorhigh-btn'),
+        sub_all: document.getElementById('subject-filter-all-btn'),
+        sub_major: document.getElementById('subject-filter-major-btn'),
+        sub_minor: document.getElementById('subject-filter-minor-btn')
+    };
+    
+    const setFilter = (filter) => {
+        currentHistoryFilter = filter;
+        
+        // Update Button Styles
+        Object.values(filterButtons).forEach(btn => {
+            if(!btn) return;
+            btn.classList.remove('bg-indigo-600', 'text-white');
+            btn.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        
+        let activeBtn = null;
+        if (filter === 'all' && (currentHistoryView !== 'subject')) activeBtn = filterButtons.all;
+        if (filter === 'college') activeBtn = filterButtons.college;
+        if (filter === 'seniorhigh') activeBtn = filterButtons.seniorhigh;
+        if (filter === 'all' && currentHistoryView === 'subject') activeBtn = filterButtons.sub_all;
+        if (filter === 'major') activeBtn = filterButtons.sub_major;
+        if (filter === 'minor') activeBtn = filterButtons.sub_minor;
+        
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+            activeBtn.classList.add('bg-indigo-600', 'text-white');
+        }
+        
+        renderHistory();
+    };
+    
+    // Attach Filter Listeners
+    if (filterButtons.all) filterButtons.all.onclick = () => setFilter('all');
+    if (filterButtons.college) filterButtons.college.onclick = () => setFilter('college');
+    if (filterButtons.seniorhigh) filterButtons.seniorhigh.onclick = () => setFilter('seniorhigh');
+    if (filterButtons.sub_all) filterButtons.sub_all.onclick = () => setFilter('all');
+    if (filterButtons.sub_major) filterButtons.sub_major.onclick = () => setFilter('major');
+    if (filterButtons.sub_minor) filterButtons.sub_minor.onclick = () => setFilter('minor');
+
+    const viewCurriculumBtn = document.getElementById('view-curriculum-btn');
+    const viewMemorandumBtn = document.getElementById('view-memorandum-btn');
+    const viewSubjectBtn = document.getElementById('view-subject-btn');
+    
+    const updateHistoryTabs = (view) => {
+        currentHistoryView = view;
+        currentHistoryFilter = 'all'; // Reset filter on view switch
+        
+        // Toggle Tab Styles
+        [viewCurriculumBtn, viewMemorandumBtn, viewSubjectBtn].forEach(btn => {
+            if (!btn) return;
+            if (btn.dataset.view === view) {
+                 btn.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+                 btn.classList.remove('text-gray-600', 'hover:text-gray-800');
+            } else {
+                 btn.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                 btn.classList.add('text-gray-600', 'hover:text-gray-800');
+            }
+        });
+        
+        // Toggle Filter Sections via CSS classes
+        const currFilters = document.getElementById('curriculum-type-filters');
+        const subFilters = document.getElementById('subject-type-filters');
+        
+        if (view === 'subject') {
+            if(currFilters) currFilters.classList.add('hidden');
+            if(subFilters) subFilters.classList.remove('hidden');
+        } else {
+            // Curriculum or Memorandum
+            if(currFilters) {
+                currFilters.classList.remove('hidden');
+                
+                const colBtn = document.getElementById('filter-college-btn');
+                const shBtn = document.getElementById('filter-seniorhigh-btn');
+                
+                if (view === 'memorandum') {
+                    if(colBtn) colBtn.textContent = 'CHED';
+                    if(shBtn) shBtn.textContent = 'DepEd';
+                } else {
+                    if(colBtn) colBtn.textContent = 'College';
+                    if(shBtn) shBtn.textContent = 'Senior High';
+                }
+            }
+            if(subFilters) subFilters.classList.add('hidden');
+        }
+        
+        setFilter('all'); 
+    };
+    
+    if (viewCurriculumBtn) viewCurriculumBtn.onclick = () => updateHistoryTabs('curriculum');
+    if (viewMemorandumBtn) viewMemorandumBtn.onclick = () => updateHistoryTabs('memorandum');
+    if (viewSubjectBtn) viewSubjectBtn.onclick = () => updateHistoryTabs('subject');
+    
+    if (selectMemorandumBtn) selectMemorandumBtn.addEventListener('click', async () => {
+        showModal('select-memorandum-modal');
+        memorandumList.innerHTML = '<p class="text-gray-500 text-center py-8">Loading memorandums...</p>';
+        const memorandums = await fetchMemorandums();
+        populateMemorandumList(memorandums);
+    });
+    
+    if (closeSelectMemorandumModalBtn) closeSelectMemorandumModalBtn.addEventListener('click', () => hideModal('select-memorandum-modal'));
+    if (closeSelectSubjectsModalBtn) closeSelectSubjectsModalBtn.addEventListener('click', () => hideModal('select-subjects-modal'));
+    if (cancelSelectSubjectsBtn) cancelSelectSubjectsBtn.addEventListener('click', () => hideModal('select-subjects-modal'));
+    
+    if (confirmSelectSubjectsBtn) confirmSelectSubjectsBtn.addEventListener('click', () => {
+        // Gather selected subjects from the modal
+        const checkboxes = document.querySelectorAll('.subject-checkbox:checked');
+        selectedSubjects = Array.from(checkboxes).map(cb => JSON.parse(cb.closest('.subject-item').dataset.subject));
+        
+        updateSelectedSubjectsList();
+        hideModal('select-subjects-modal');
+    });
 
     const fetchGradeSetupForSubject = (subjectId) => {
         if (!subjectId) {
@@ -1066,161 +1773,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Handle the actual save logic when user confirms
         const handleGradeSchemeSave = async () => {
-            if (currentCourseType === 'minor') {
-                try {
-                    // Use the previously selected minor courses
-                    const selectedCourses = window.selectedMinorCoursesForGrading || [];
-                    
-                    if (selectedCourses.length === 0) {
-                        Swal.fire('Error!', 'No minor courses selected. Please select courses first.', 'error');
-                        return;
-                    }
-                    
-                    const components = getGradeDataFromDOM();
-                    let savedCount = 0;
-                    
-                    for (const subjectId of selectedCourses) {
-                        try {
-                            const payload = {
-                                subject_id: subjectId,
-                                components,
-                                course_type: 'minor'
-                            };
-                            await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
-                            savedCount++;
-                        } catch (err) {
-                            console.error(`Failed to save minor subject ${subjectId}`, err);
-                        }
-                    }
-                    
-                    console.log(`Saved grade scheme for ${savedCount} minor subject(s)`);
-                    
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Grades Applied!',
-                        text: `Successfully applied grade scheme to ${savedCount} minor course(s).`,
-                        timer: 3000,
-                        showConfirmButton: true
-                    });
-                    
-                    // Lock components again and reset UI
-                    minorGradesUnlocked = false;
-                    toggleGradeComponents(true);
-                    addGradeBtn.disabled = true;
-                    addGradeComponentBtn.style.display = 'none';
-                    updateMinorGradesBtn.classList.remove('hidden');
-                    document.querySelector('.curriculum-reminder-text').textContent = '✅ Grade scheme applied to selected minor courses - Click "Select Minor Subject" to modify';
-                    
-                    // Clear selected courses
-                    window.selectedMinorCoursesForGrading = [];
-                    
-                    // Close all open accordion sections
-                    closeAllAccordions();
-                    
-                } catch (e) {
-                    console.error('Failed to save minor grade scheme:', e);
-                    Swal.fire('Error!', 'Failed to save grade scheme: ' + e.message, 'error');
-                }
-                return;
+            if (!selectedSubjects || selectedSubjects.length === 0) {
+                 Swal.fire('Error!', 'No subjects selected.', 'error');
+                 return;
             }
 
-            // Handle major course grades (individual subject)
-            if (currentCourseType === 'major' && currentSubjectId) {
-                try {
-                    const gradeData = getGradeDataFromDOM();
-                    const payload = {
-                        subject_id: currentSubjectId,
-                        components: gradeData,
-                        course_type: 'major'
-                    };
-                    
-                    const response = await fetchAPI('grades', {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    console.log('Major subject grade scheme saved successfully:', response);
-                    
-                    // Check if this was an update (by checking if we have currentSubjectData)
-                    const isUpdate = currentSubjectData && currentSubjectData.subjectId === currentSubjectId;
-                    
-                    // Show success modal with specific message for major subjects
-                    Swal.fire({
-                        icon: 'success',
-                        title: isUpdate ? 'Grade Scheme Updated!' : 'Grade Scheme Saved!',
-                        text: isUpdate ? 'Successfully updated grade scheme for this major subject. The previous version has been saved to history.' : 'Successfully added grade scheme for this major subject.',
-                        timer: 3000,
-                        showConfirmButton: true
-                    });
-                    
-                    // Clear currentSubjectData after successful update
-                    if (isUpdate) {
-                        currentSubjectData = null;
-                        
-                        // For updates, maintain the major courses state but reset the grade components
-                        loadGradeDataToDOM({});
-                        toggleGradeComponents(true);
-                        addGradeBtn.disabled = true;
-                        addGradeComponentBtn.style.display = 'none';
-                        
-                        // Reset major subject selection
-                        majorSubjectSelect.value = '';
-                        const selectedText = document.getElementById('major-subject-selected-text');
-                        if (selectedText) {
-                            selectedText.textContent = 'Select a major subject...';
-                            selectedText.classList.remove('text-gray-900');
-                            selectedText.classList.add('text-gray-500');
-                        }
-                        
-                        // Update reminder text
-                        document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Please select a major subject to set up grades';
-                        
-                        // Refresh major subjects to show updated status
-                        await populateMajorSubjects();
-                    } else {
-                        // For new grades, do full reset
-                        resetForm();
-                        await populateMajorSubjects();
-                    }
-                    
-                } catch (e) {
-                    console.error('Failed to save major subject grade scheme:', e);
-                    Swal.fire('Error!', 'Failed to save grade scheme: ' + e.message, 'error');
-                }
-                return;
-            }
-
-            // This section is for curriculum-based workflows (if needed)
-            let payload;
-            if (currentCourseType === 'major' && currentCurriculumId) {
-                payload = {
-                    curriculum_id: currentCurriculumId,
-                    course_type: 'major',
-                    subjects: [{
-                        subject_id: currentSubjectId,
-                        components: getGradeDataFromDOM()
-                    }]
-                };
+            try {
+                const components = getGradeDataFromDOM();
+                let savedCount = 0;
                 
-                try {
-                    console.log('Saving curriculum grade scheme with payload:', payload);
-                    const data = await fetchAPI('curriculum-grades', { method: 'POST', body: JSON.stringify(payload) });
-                    console.log('Curriculum grade scheme saved successfully:', data);
-                    
-                    // Show success modal
-                    document.getElementById('gradeSchemeSuccessModal').classList.remove('hidden');
-                    
-                    // Add curriculum to history
-                    addCurriculumToHistory(data.curriculum);
-                    
-                    // Reset form
-                    resetForm();
-                    
-                } catch(e) { 
-                    console.error('Failed to save curriculum grade scheme:', e);
-                    Swal.fire('Error!', 'Failed to save grade scheme: ' + e.message, 'error');
+                // Show loading state
+                Swal.fire({
+                    title: 'Saving Grade Schemes...',
+                    text: `Please wait while we save the grade scheme for ${selectedSubjects.length} selected subjects.`,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                for (const subject of selectedSubjects) {
+                    try {
+                        const payload = {
+                            subject_id: subject.id,
+                            curriculum_id: subject.curriculum_id || null, // Include curriculum_id if available
+                            components,
+                            course_type: 'major'
+                        };
+                        await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
+                        savedCount++;
+                    } catch (err) {
+                        console.error(`Failed to save subject ${subject.id}`, err);
+                    }
                 }
+                
+                console.log(`Saved grade scheme for ${savedCount} subjects`);
+                
+                // Refresh History Panel stats
+                await refreshHistory();
+                
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Grade Schemes Saved!',
+                    text: `Successfully applied grade scheme to ${savedCount} subject(s).`,
+                    timer: 3000,
+                    showConfirmButton: true
+                });
+                
+                // Reset UI
+                resetForm();
+                
+            } catch (e) {
+                console.error('Failed to save grade schemes:', e);
+                Swal.fire('Error!', 'Failed to save grade schemes: ' + e.message, 'error');
             }
         };
 
@@ -1248,19 +1854,7 @@ document.addEventListener('DOMContentLoaded', () => {
             handleGradeSchemeUpdate();
         });
         
-        // Update Minor Grades button and modal handlers
-        updateMinorGradesBtn.addEventListener('click', () => {
-            document.getElementById('updateMinorGradesModal').classList.remove('hidden');
-        });
-        
-        document.getElementById('cancelUpdateMinorGrades').addEventListener('click', () => {
-            document.getElementById('updateMinorGradesModal').classList.add('hidden');
-        });
-        
-        document.getElementById('confirmUpdateMinorGrades').addEventListener('click', () => {
-            document.getElementById('updateMinorGradesModal').classList.add('hidden');
-            unlockMinorGrades();
-        });
+
         
         document.getElementById('closeGradeSchemeUpdateSuccess').addEventListener('click', () => {
             document.getElementById('gradeSchemeUpdateSuccessModal').classList.add('hidden');
@@ -1390,16 +1984,20 @@ document.addEventListener('DOMContentLoaded', () => {
             addGradeBtn.disabled = true;
             
             // Re-enable form elements after successful update
+            /* 
             if (curriculumSelect) {
                 curriculumSelect.disabled = false;
                 curriculumSelect.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-60');
             }
-            minorCoursesBtn.disabled = false;
-            minorCoursesBtn.classList.remove('cursor-not-allowed', 'opacity-60');
-            majorCoursesBtn.disabled = false;
-            majorCoursesBtn.classList.remove('cursor-not-allowed', 'opacity-60');
-            majorSubjectSelect.disabled = false;
-            majorSubjectSelect.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-60');
+            */
+            if (seniorHighBtn) {
+                 seniorHighBtn.disabled = false;
+                 seniorHighBtn.classList.remove('cursor-not-allowed', 'opacity-60');
+            }
+            if (collegeBtn) {
+                 collegeBtn.disabled = false;
+                 collegeBtn.classList.remove('cursor-not-allowed', 'opacity-60');
+            }
         } catch (e) { 
             Swal.fire('Error!', 'Failed to update grade scheme: ' + e.message, 'error');
         }
@@ -1521,38 +2119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const handleCourseTypeSelection = async (courseType) => {
-        currentCourseType = courseType;
-        updateCourseTypeButtons(courseType);
-        
-        if (courseType === 'minor') {
-            // Hide major subject selection and clear grade components
-            majorSubjectSection.classList.add('hidden');
-            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Preparing minor course grade setup...';
-            
-            // Clear any existing grade components
-            loadGradeDataToDOM({});
-            
-            toggleGradeComponents(true); // Lock components initially
-            addGradeBtn.disabled = true;
-            addGradeComponentBtn.style.display = 'none'; // Hide add component button initially
-            updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
-            minorGradesUnlocked = false; // Set as locked initially
-            document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Click "Select Minor Subject" to choose courses and set up grades';
-        } else if (courseType === 'major') {
-            // Show major subject selection
-            majorSubjectSection.classList.remove('hidden');
-            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Loading major subjects...';
-            await populateMajorSubjects();
-            loadGradeDataToDOM({});
-            toggleGradeComponents(true);
-            addGradeBtn.disabled = true;
-            addGradeComponentBtn.style.display = ''; // Show add component button for major courses
-            updateMinorGradesBtn.classList.add('hidden'); // Hide update minor grades button for major courses
-            document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Please select a major subject to set up grades';
-        }
-    };
-    
+    // Obsolete functions removed (handleCourseTypeSelection, populateMajorSubjects, etc.)
 
     const closeAllAccordions = () => {
         // Close all accordion sections
@@ -1568,377 +2135,137 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('All accordion sections closed');
     };
 
-    const loadMinorGradeStructure = async () => {
-        try {
-            // Clear the accordion - no default structure
-            loadGradeDataToDOM({});
-            console.log('Cleared grade components for minor courses');
-            
-        } catch (error) {
-            console.error('Error clearing minor grade structure:', error);
-            loadGradeDataToDOM({});
-        }
-    };
 
-    const unlockMinorGrades = async () => {
-        // Check if the current subject has existing custom grades
-        if (currentSubjectId) {
-            try {
-                const gradeData = await fetchAPI(`grades/${currentSubjectId}`);
-                
-                if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
-                    // Load existing custom grades for editing
-                    loadGradeDataToDOM(gradeData.components);
-                    console.log('Loaded existing custom grades for editing:', gradeData.components);
-                }
-            } catch (error) {
-                console.log('No existing custom grades found, using default structure');
-                // Default structure is already loaded, no need to reload
-            }
-        }
-        
-        // Set unlock flag
-        minorGradesUnlocked = true;
-        
-        // Unlock grade components for editing
-        toggleGradeComponents(false);
-        
-        // Show Add Grade Component button
-        addGradeComponentBtn.style.display = '';
-        
-        // Hide Update Minor Grades button (since it's now unlocked)
-        updateMinorGradesBtn.classList.add('hidden');
-        
-        // Show Set Grade Scheme button
-        addGradeBtn.classList.remove('hidden');
-        updateGradeSetupBtn.classList.add('hidden');
-        
-        // Update reminder text
-        document.querySelector('.curriculum-reminder-text').textContent = '✏️ Minor grades unlocked - You can now edit the grade components';
-        
-        // Calculate totals to determine if Set Grade Scheme button should be enabled
-        calculateAndUpdateTotals();
-        
-        // Show success notification
-        Swal.fire({
-            icon: 'success',
-            title: 'Unlocked!',
-            text: 'Minor grade components are now editable. Make your changes and click "Set Grade Scheme" to save.',
-            timer: 3000,
-            showConfirmButton: false,
-            toast: true,
-            position: 'top-end'
-        });
-    };
+    
 
-    const populateMajorSubjects = async () => {
-        const majorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Major');
-        
-        // Get dropdown elements
-        const dropdownMenu = document.getElementById('major-subject-dropdown-menu');
-        const dropdownContainer = dropdownMenu.querySelector('.py-1');
-        
-        // Clear existing options
-        dropdownContainer.innerHTML = '';
-        majorSubjectSelect.innerHTML = '<option value="">Select a major subject...</option>';
-        
-        // OPTIMIZED: Display all subjects immediately without checking grades
-        // Grade status will be checked when user selects a subject
-        majorSubjects.forEach(subject => {
-            // Create custom dropdown option
-            const optionDiv = document.createElement('div');
-            optionDiv.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between transition-colors';
-            optionDiv.dataset.subjectId = subject.id;
-            optionDiv.dataset.subjectName = subject.subject_name;
-            optionDiv.dataset.subjectCode = subject.subject_code;
-            
-            optionDiv.innerHTML = `
-                <span class="text-sm text-gray-900">${subject.subject_name} <span class="text-gray-900">(${subject.subject_code})</span></span>
-            `;
-            
-            // Single click to select
-            optionDiv.addEventListener('click', () => {
-                selectMajorSubject(subject.id, subject.subject_name, subject.subject_code);
-            });
-            
-            dropdownContainer.appendChild(optionDiv);
-            
-            // Also add to hidden select for compatibility
-            const option = document.createElement('option');
-            option.value = subject.id;
-            option.textContent = `${subject.subject_name} (${subject.subject_code})`;
-            majorSubjectSelect.appendChild(option);
-        });
-    };
-    
-    const populateMinorSubjects = async () => {
-        const minorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Minor');
-        
-        // Get dropdown elements
-        const dropdownMenu = document.getElementById('minor-subject-dropdown-menu');
-        const dropdownContainer = dropdownMenu.querySelector('.py-1');
-        
-        // Clear existing options
-        dropdownContainer.innerHTML = '';
-        minorSubjectSelect.innerHTML = '<option value="">Select a minor subject...</option>';
-        
-        // Check if there are any minor subjects
-        if (minorSubjects.length === 0) {
-            const noSubjectsDiv = document.createElement('div');
-            noSubjectsDiv.className = 'px-4 py-3 text-sm text-gray-500 text-center';
-            noSubjectsDiv.textContent = 'No minor subjects available';
-            dropdownContainer.appendChild(noSubjectsDiv);
-            return;
-        }
-        
-        // Display all minor subjects
-        minorSubjects.forEach(subject => {
-            // Create custom dropdown option
-            const optionDiv = document.createElement('div');
-            optionDiv.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center justify-between transition-colors';
-            optionDiv.dataset.subjectId = subject.id;
-            optionDiv.dataset.subjectName = subject.subject_name;
-            optionDiv.dataset.subjectCode = subject.subject_code;
-            
-            optionDiv.innerHTML = `
-                <span class="text-sm text-gray-900">${subject.subject_name} <span class="text-gray-900">(${subject.subject_code})</span></span>
-            `;
-            
-            // Single click to select
-            optionDiv.addEventListener('click', () => {
-                selectMinorSubject(subject.id, subject.subject_name, subject.subject_code);
-            });
-            
-            dropdownContainer.appendChild(optionDiv);
-            
-            // Also add to hidden select for compatibility
-            const option = document.createElement('option');
-            option.value = subject.id;
-            option.textContent = `${subject.subject_name} (${subject.subject_code})`;
-            minorSubjectSelect.appendChild(option);
-        });
-    };
-    
-    const selectMinorSubject = async (subjectId, subjectName, subjectCode) => {
-        currentSubjectId = subjectId;
-        
-        // Update dropdown display
-        document.getElementById('minor-subject-selected-text').textContent = `${subjectName} (${subjectCode})`;
-        document.getElementById('minor-subject-selected-text').classList.remove('text-gray-500');
-        document.getElementById('minor-subject-selected-text').classList.add('text-gray-900');
-        document.getElementById('minor-subject-dropdown-menu').classList.add('hidden');
-        
-        // Update hidden select
-        minorSubjectSelect.value = subjectId;
-        
-        // OPTIMIZED: Load default structure immediately without checking for existing grades
-        // This provides instant feedback and eliminates unnecessary API calls
-        // Existing custom grades will be loaded when user clicks "Create new grades"
-        await loadMinorGradeStructure(); // Reload defaults instantly
-        toggleGradeComponents(true); // Lock components
-        isEditMode = false;
-        addGradeBtn.classList.add('hidden');
-        updateGradeSetupBtn.classList.add('hidden');
-        updateMinorGradesBtn.classList.remove('hidden'); // Show "Create new grades" button
-        minorGradesUnlocked = false;
-        document.querySelector('.curriculum-reminder-text').textContent = '✅ Default grades applied - Click "Create new grades" to modify';
-        
-        calculateAndUpdateTotals();
-    };
     
     // Function to show grade component details for graded subjects
-    const showGradeComponentDetails = async (subjectId, subjectName, subjectCode) => {
+    // Function to show grade component details for graded subjects
+    async function showGradeComponentDetails(subjectId, subjectName, subjectCode) {
         try {
-            // Fetch grade details with version history
             const gradeData = await fetchAPI(`grades/${subjectId}/version-history`);
             
             if (!gradeData || !gradeData.current_version) {
-                Swal.fire('Error!', 'No grade data found for this subject.', 'error');
+                Swal.fire({ icon: 'error', title: 'No Data', text: 'No grade scheme found.', confirmButtonColor: '#4F46E5' });
                 return;
             }
-            
-            // Show grade details modal (you can create this modal or use SweetAlert)
-            let detailsHTML = `
-                <div style="text-align: left;">
-                    <h3 style="margin-bottom: 10px; color: #1F2937; font-weight: bold;">${subjectName} (${subjectCode})</h3>
-                    <div style="margin-bottom: 15px;">
-                        <span style="background: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
-                            Current Version - Updated: ${new Date(gradeData.current_version.updated_at).toLocaleDateString()}
-                        </span>
-                    </div>
-            `;
-            
-            // Display current grade components
-            const components = gradeData.current_version.components;
-            Object.keys(components).forEach(period => {
-                const periodData = components[period];
-                detailsHTML += `
-                    <div style="margin-bottom: 15px;">
-                        <h4 style="color: #059669; font-weight: bold; margin-bottom: 8px;">${period} (${periodData.weight}%)</h4>
-                `;
-                
-                if (periodData.components && periodData.components.length > 0) {
-                    periodData.components.forEach(comp => {
-                        detailsHTML += `
-                            <div style="margin-left: 15px; margin-bottom: 8px;">
-                                <strong>${comp.name}</strong> - ${comp.weight}%
-                        `;
-                        
+
+            const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+
+            const renderComponents = (components) => {
+                if (!components || Object.keys(components).length === 0) return '<p class="text-gray-400 italic text-sm">No components.</p>';
+                let html = '<div class="space-y-3">';
+                Object.keys(components).forEach(period => {
+                    const pData = components[period];
+                    html += `
+                        <div class="bg-gray-50/50 rounded-lg border border-gray-100 overflow-hidden">
+                            <div class="flex justify-between items-center px-4 py-2 bg-gray-100/50">
+                                <span class="font-semibold text-gray-700 text-sm capitalize">${period}</span>
+                                <span class="text-xs font-bold bg-white border border-gray-200 text-gray-600 px-2 py-0.5 rounded shadow-sm">${pData.weight}%</span>
+                            </div>
+                            <div class="px-4 py-3 space-y-2">`;
+                    
+                    (pData.components || []).forEach(comp => {
+                        html += `
+                            <div class="text-sm">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="text-gray-800 font-medium">${comp.name}</span>
+                                    <span class="text-gray-500 font-mono text-xs">${comp.weight}%</span>
+                                </div>`;
                         if (comp.sub_components && comp.sub_components.length > 0) {
+                            html += `<div class="mt-1 pl-3 border-l-2 border-gray-200 ml-1 space-y-1">`;
                             comp.sub_components.forEach(sub => {
-                                detailsHTML += `<br><span style="margin-left: 20px; color: #6B7280;">${sub.name}: ${sub.weight}%</span>`;
+                                html += `<div class="flex justify-between items-baseline text-xs text-gray-500"><span>${sub.name}</span><span>${sub.weight}%</span></div>`;
                             });
+                            html += `</div>`;
                         }
-                        
-                        detailsHTML += `</div>`;
+                        html += `</div>`;
                     });
-                }
-                
-                detailsHTML += `</div>`;
-            });
+                    html += `</div></div>`;
+                });
+                html += '</div>';
+                return html;
+            };
             
-            // Show previous versions if any
-            if (gradeData.previous_versions && gradeData.previous_versions.length > 0) {
-                detailsHTML += `
-                    <hr style="margin: 20px 0; border-color: #E5E7EB;">
-                    <h4 style="color: #6B7280; margin-bottom: 10px;">Previous Versions:</h4>
-                `;
-                
-                gradeData.previous_versions.forEach((version, index) => {
-                    detailsHTML += `
-                        <div style="margin-bottom: 8px; color: #6B7280; font-size: 14px;">
-                            Version ${gradeData.previous_versions.length - index} - ${new Date(version.updated_at).toLocaleDateString()}
+            let html = `
+                <div class="text-left font-sans bg-white pb-6">
+                    <!-- Header -->
+                    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-start bg-gradient-to-r from-gray-50 to-white">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 leading-tight">${subjectName}</h3>
+                            <p class="text-sm text-gray-500 font-mono mt-1">${subjectCode}</p>
                         </div>
-                    `;
-                });
-            }
-            
-            detailsHTML += `</div>`;
-            
+                        <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide border border-green-200">Active</span>
+                    </div>
+                    
+                    <div class="px-6 pt-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                        <!-- Current Version -->
+                        <details class="group border border-indigo-100 rounded-xl bg-white shadow-sm overflow-hidden [&_summary::-webkit-details-marker]:hidden" open>
+                            <summary class="flex cursor-pointer items-center justify-between p-4 bg-indigo-50/40 hover:bg-indigo-50/70 transition-colors group-open:border-b group-open:border-indigo-100">
+                                <div class="flex items-center gap-3">
+                                    <span class="flex h-2.5 w-2.5 rounded-full bg-indigo-500 ring-2 ring-indigo-100"></span>
+                                    <span class="font-semibold text-gray-800 text-sm">Current Grade Scheme</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] text-gray-500 font-medium bg-white px-2 py-0.5 rounded border border-gray-200 shadow-sm">
+                                        ${formatDate(gradeData.current_version.updated_at)}
+                                    </span>
+                                    <svg class="h-4 w-4 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                            </summary>
+                            <div class="p-4 text-sm bg-white">
+                                ${renderComponents(gradeData.current_version.components)}
+                            </div>
+                        </details>
+
+                        <!-- Previous Versions -->
+                        ${gradeData.previous_versions && gradeData.previous_versions.length > 0 ? `
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1 mt-6">Version History</h4>
+                                <div class="space-y-3">
+                                    ${gradeData.previous_versions.map((ver, idx) => `
+                                        <details class="group border border-gray-200 rounded-lg bg-white [&_summary::-webkit-details-marker]:hidden">
+                                            <summary class="flex cursor-pointer items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors group-open:border-b group-open:border-gray-100 rounded-lg group-open:rounded-b-none">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="flex h-1.5 w-1.5 rounded-full bg-gray-300"></span>
+                                                    <span class="font-medium text-gray-600 text-xs">Version ${gradeData.previous_versions.length - idx}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-[10px] text-gray-400 font-medium">${formatDate(ver.updated_at)}</span>
+                                                    <svg class="h-3 w-3 text-gray-300 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                                </div>
+                                            </summary>
+                                            <div class="p-4 bg-gray-50/50 text-sm">
+                                                ${renderComponents(ver.components)}
+                                            </div>
+                                        </details>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>`;
+
             Swal.fire({
-                title: 'Grade Component Details',
-                html: detailsHTML,
+                html: html,
                 width: '600px',
-                showCancelButton: false,
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#4F46E5'
+                showConfirmButton: false,
+                showCloseButton: true,
+                padding: '0',
+                customClass: { popup: 'rounded-2xl overflow-hidden' }
             });
-            
+
         } catch (error) {
-            console.error('Error fetching grade details:', error);
-            Swal.fire('Error!', 'Failed to load grade details.', 'error');
+            console.error('Details Error:', error);
+            Swal.fire('Error', 'Failed to load details.', 'error');
         }
     };
 
-    // Function to handle major subject selection from custom dropdown
-    const selectMajorSubject = (subjectId, subjectName, subjectCode) => {
-        // Update hidden select
-        majorSubjectSelect.value = subjectId;
-        
-        // Update button text
-        const selectedText = document.getElementById('major-subject-selected-text');
-        selectedText.textContent = `${subjectName} (${subjectCode})`;
-        selectedText.classList.remove('text-gray-500');
-        selectedText.classList.add('text-gray-900');
-        
-        // Close dropdown
-        document.getElementById('major-subject-dropdown-menu').classList.add('hidden');
-        
-        // Trigger the selection handler
-        handleMajorSubjectSelection();
-    };
 
-    const handleMajorSubjectSelection = async () => {
-        const subjectId = majorSubjectSelect.value;
-        if (!subjectId) {
-            loadGradeDataToDOM({});
-            toggleGradeComponents(true);
-            addGradeBtn.disabled = true;
-            addGradeComponentBtn.style.display = 'none';
-            document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Please select a major subject to set up grades';
-            return;
-        }
 
-        currentSubjectId = subjectId;
-        
-        // Check if this subject already has grades
-        try {
-            document.querySelector('.curriculum-reminder-text').textContent = '⏳ Loading subject data...';
-            const gradeData = await fetchAPI(`grades/${subjectId}`);
-            
-            if (gradeData && gradeData.components && Object.keys(gradeData.components).length > 0) {
-                // Subject has existing grades - load them
-                console.log('Loading existing grades for major subject:', gradeData.components);
-                loadGradeDataToDOM(gradeData.components);
-                toggleGradeComponents(true); // Lock components (read-only mode)
-                addGradeBtn.classList.add('hidden');
-                updateGradeSetupBtn.classList.remove('hidden');
-                updateGradeSetupBtn.disabled = true; // Disabled until user makes changes
-                addGradeComponentBtn.style.display = 'none'; // Hide add component button in view mode
-                document.querySelector('.curriculum-reminder-text').textContent = '✅ Existing grades loaded - Click "Update Grade Scheme" to modify';
-                
-                // Show a notification
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Existing Grades Found',
-                    text: 'This subject already has a grade scheme. You can view it or click "Update Grade Scheme" to modify it.',
-                    timer: 3000,
-                    showConfirmButton: false,
-                    toast: true,
-                    position: 'top-end'
-                });
-            } else {
-                // No existing grades - allow creating new ones
-                console.log('No existing grades found, allowing new grade creation');
-                loadGradeDataToDOM({});
-                toggleGradeComponents(false);
-                addGradeBtn.classList.remove('hidden');
-                updateGradeSetupBtn.classList.add('hidden');
-                addGradeBtn.disabled = false;
-                addGradeComponentBtn.style.display = ''; // Show add component button
-                addGradeComponentBtn.disabled = false;
-                document.querySelector('.curriculum-reminder-text').textContent = '✅ Major subject selected - ready to set up grades';
-            }
-        } catch (error) {
-            // Error fetching grades (likely 404 - no grades exist)
-            console.log('No existing grades found (error):', error);
-            loadGradeDataToDOM({});
-            toggleGradeComponents(false);
-            addGradeBtn.classList.remove('hidden');
-            updateGradeSetupBtn.classList.add('hidden');
-            addGradeBtn.disabled = false;
-            addGradeComponentBtn.style.display = ''; // Show add component button
-            addGradeComponentBtn.disabled = false;
-            document.querySelector('.curriculum-reminder-text').textContent = '✅ Major subject selected - ready to set up grades';
-        }
-        
-        calculateAndUpdateTotals(); // Recalculate to update button states
-    };
-
-    const updateCourseTypeButtons = (selectedType) => {
-        resetCourseTypeButtons();
-        
-        if (selectedType === 'minor') {
-            minorCoursesBtn.classList.add('border-blue-500', 'bg-blue-50');
-            minorCoursesBtn.classList.remove('border-gray-300');
-        } else if (selectedType === 'major') {
-            majorCoursesBtn.classList.add('border-green-500', 'bg-green-50');
-            majorCoursesBtn.classList.remove('border-gray-300');
-        }
-    };
-
-    const resetCourseTypeButtons = () => {
-        minorCoursesBtn.classList.remove('border-blue-500', 'bg-blue-50');
-        minorCoursesBtn.classList.add('border-gray-300');
-        majorCoursesBtn.classList.remove('border-green-500', 'bg-green-50');
-        majorCoursesBtn.classList.add('border-gray-300');
-    };
-
-    const updateCurriculumSelectionUI = () => {
-        courseTypeSection.classList.add('hidden');
-        majorSubjectSection.classList.add('hidden');
-        document.querySelector('.curriculum-reminder-text').textContent = '⚠️ Please select a curriculum first to set up grades';
-    };
+    // Obsolete UI functions removed (updateCourseTypeButtons, resetCourseTypeButtons, updateCurriculumSelectionUI)
 
     const addCurriculumToHistory = (curriculum) => {
         const noHistoryMessage = document.getElementById('no-history-message');
@@ -1995,36 +2322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gradeHistoryContainer.appendChild(card);
     };
 
-    const resetForm = () => {
-        if (curriculumSelect) {
-            curriculumSelect.value = '';
-        }
-        courseTypeSection.classList.add('hidden');
-        majorSubjectSection.classList.add('hidden');
-        majorSubjectSelect.innerHTML = '<option value="">Select a major subject...</option>';
-        currentCurriculumId = null;
-        currentSubjectId = null;
-        currentCourseType = null;
-        currentCurriculumSubjects = [];
-        minorGradesUnlocked = false; // Reset minor grades unlock status
-        resetCourseTypeButtons();
-        loadGradeDataToDOM({});
-        toggleGradeComponents(true);
-        addGradeBtn.disabled = true;
-        updateCurriculumSelectionUI();
-        
-        // Re-enable form elements
-        if (curriculumSelect) {
-            curriculumSelect.disabled = false;
-            curriculumSelect.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-60');
-        }
-        minorCoursesBtn.disabled = false;
-        minorCoursesBtn.classList.remove('cursor-not-allowed', 'opacity-60');
-        majorCoursesBtn.disabled = false;
-        majorCoursesBtn.classList.remove('cursor-not-allowed', 'opacity-60');
-        majorSubjectSelect.disabled = false;
-        majorSubjectSelect.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-60');
-    };
+
 
     const showCurriculumGradeModal = async (curriculumId) => {
         try {
@@ -2711,25 +3009,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Custom dropdown toggle for major subjects
-    const dropdownBtn = document.getElementById('major-subject-dropdown-btn');
-    const dropdownMenu = document.getElementById('major-subject-dropdown-menu');
-    
-    dropdownBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle('hidden');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
+
     
     // Select Minor Courses Modal Functionality
-    const selectMinorCoursesModal = document.getElementById('select-minor-courses-modal');
-    const closeSelectMinorModalBtn = document.getElementById('close-select-minor-modal-btn');
+
     const cancelSelectMinorBtn = document.getElementById('cancel-select-minor-btn');
     const confirmSelectMinorBtn = document.getElementById('confirm-select-minor-btn');
     const minorCoursesChecklist = document.getElementById('minor-courses-checklist');
@@ -2737,10 +3020,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedCountSpan = document.getElementById('selected-count');
     const minorCourseSearch = document.getElementById('minor-course-search');
     
-    let selectedMinorCourses = [];
+
     
     // Update Minor Grades Button - Show Select Minor Courses Modal
-    updateMinorGradesBtn.addEventListener('click', () => {
+    selectMinorSubjectBtn.addEventListener('click', () => {
         // Populate the checklist with minor courses
         const minorSubjects = currentCurriculumSubjects.filter(subject => subject.subject_type === 'Minor');
         
@@ -2766,14 +3049,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectMinorCoursesModal.classList.remove('hidden');
     });
     
-    // Handle confirmation - now this unlocks grade components
-    document.getElementById('confirmUpdateMinorGrades').addEventListener('click', () => {
-        document.getElementById('updateMinorGradesModal').classList.add('hidden');
-    });
-    
-    document.getElementById('cancelUpdateMinorGrades').addEventListener('click', () => {
-        document.getElementById('updateMinorGradesModal').classList.add('hidden');
-    });
+
     
     // Modify Set Grade Scheme button behavior for minor courses
     // Now when Set Grade Scheme is clicked for minor courses, save to the previously selected courses
@@ -2863,7 +3139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         minorGradesUnlocked = true;
         toggleGradeComponents(false);
         addGradeComponentBtn.style.display = ''; // Show add component button
-        updateMinorGradesBtn.classList.add('hidden'); // Hide "Select Minor Subject" button
+        
+        // Update button UI
+        minorSubjectBtnText.textContent = `${selectedMinorCourses.length} selected`;
+        minorSubjectCountBadge.textContent = `${selectedMinorCourses.length} selected`;
+        minorSubjectCountBadge.classList.remove('hidden');
+        
+        // Ensure section remains visible (logic in handleCourseTypeSelection covers this, but good to ensure)
         
         // Show success notification
         Swal.fire({
@@ -2893,10 +3175,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners for course type selection
     minorCoursesBtn.addEventListener('click', () => handleCourseTypeSelection('minor'));
     majorCoursesBtn.addEventListener('click', () => handleCourseTypeSelection('major'));
-    majorSubjectSelect.addEventListener('change', handleMajorSubjectSelection);
+    selectMajorSubjectBtn.addEventListener('click', () => {
+        selectMajorSubjectsModal.classList.remove('hidden');
+        populateMajorSubjectsChecklist();
+    });
+    
     closeCurriculumModalBtn.addEventListener('click', () => hideModal('curriculum-grade-modal'));
     curriculumGradeModal.addEventListener('click', (e) => { 
         if (e.target.id === 'curriculum-grade-modal') hideModal('curriculum-grade-modal'); 
+    });
+    
+    // Major Subject Modal Event Listeners
+    closeSelectMajorModalBtn.addEventListener('click', () => selectMajorSubjectsModal.classList.add('hidden'));
+    cancelSelectMajorBtn.addEventListener('click', () => selectMajorSubjectsModal.classList.add('hidden'));
+    selectMajorSubjectsModal.addEventListener('click', (e) => {
+        if (e.target.id === 'select-major-subjects-modal') selectMajorSubjectsModal.classList.add('hidden');
+    });
+
+    majorSubjectSearchInput.addEventListener('input', (e) => populateMajorSubjectsChecklist(e.target.value));
+    
+    selectAllMajorSubjectsCheckbox.addEventListener('change', (e) => {
+        const checkboxes = document.querySelectorAll('.major-subject-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = e.target.checked;
+        });
+        updateSelectedMajorCount();
+        confirmSelectMajorBtn.disabled = document.querySelectorAll('.major-subject-checkbox:checked').length === 0;
+    });
+    
+    confirmSelectMajorBtn.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.major-subject-checkbox:checked');
+        selectedMajorSubjects = [];
+        
+        checkboxes.forEach(cb => {
+            selectedMajorSubjects.push({
+                subject_id: cb.value,
+                subject_code: cb.dataset.code,
+                subject_description: cb.dataset.description
+            });
+        });
+        
+        if (selectedMajorSubjects.length === 0) return;
+        
+        selectMajorSubjectsModal.classList.add('hidden');
+        
+        // Update UI
+        majorSubjectBtnText.textContent = `${selectedMajorSubjects.length} Major Subject(s) Selected`;
+        majorSubjectCountBadge.textContent = `${selectedMajorSubjects.length} selected`;
+        majorSubjectCountBadge.classList.remove('hidden');
+        
+        // Store selected courses (aliasing to minor variable for consistency if needed, or keeping separate)
+        // window.selectedMajorCoursesForGrading = selectedMajorSubjects; 
+        
+        // Unlock grade components
+        minorGradesUnlocked = true; // Reusing this flag or create a new one 'gradingUnlocked'
+        toggleGradeComponents(false);
+        
+        // Add default components if empty
+        if (accordionContainer.children.length === 0) {
+            accordionContainer.innerHTML = '';
+            // Add typical major course components (Midterm/Final or Prelim/Mid/Pre-Fi/Fi)
+            accordionContainer.appendChild(createGradeComponent('Midterm Grade', 50));
+            accordionContainer.appendChild(createGradeComponent('Final Grade', 50));
+        }
+        
+        calculateAndUpdateTotals();
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Subjects Selected!',
+            text: `${selectedMajorSubjects.length} major subject(s) selected.`,
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+        });
     });
 
     // Sync History Card Height with Setup Card

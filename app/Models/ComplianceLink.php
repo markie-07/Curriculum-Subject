@@ -8,8 +8,13 @@ class ComplianceLink extends Model
 {
     protected $fillable = [
         'agency',
+        'is_category',
         'year',
         'title',
         'url'
+    ];
+
+    protected $casts = [
+        'is_category' => 'boolean',
     ];
 }

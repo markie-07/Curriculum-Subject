@@ -1213,15 +1213,15 @@
                 
                 const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
                 if (selectedLevel === 'Senior High') {
-                    semesterUnitsLabel.textContent = 'Quarter Units';
+                    // Hide units section for Senior High (they don't use units)
+                    unitsContainer.classList.add('hidden');
                 } else {
                     semesterUnitsLabel.textContent = 'Semester Units';
-                }
-
-                if (selectedLevel) {
-                    unitsContainer.classList.remove('hidden');
-                } else {
-                    unitsContainer.classList.add('hidden');
+                    if (selectedLevel) {
+                        unitsContainer.classList.remove('hidden');
+                    } else {
+                        unitsContainer.classList.add('hidden');
+                    }
                 }
             });
             
@@ -1346,9 +1346,18 @@
                     return num % 1 === 0 ? Math.floor(num) : num;
                 };
 
-                const totalUnitsDisplay = curriculum.total_units 
-                    ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                        ${formatUnits(curriculum.total_units)} units
+                // Calculate Completion Percentage (College)
+                let completionPercent = 0;
+                let mappedUnits = parseFloat(curriculum.mapped_units || 0);
+                let totalUnits = parseFloat(curriculum.total_units || 0);
+                
+                if (curriculum.year_level === 'College' && totalUnits > 0) {
+                    completionPercent = Math.min(100, Math.round((mappedUnits / totalUnits) * 100));
+                }
+
+                const totalUnitsDisplay = totalUnits > 0
+                    ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800" title="Mapped: ${formatUnits(mappedUnits)} / ${formatUnits(totalUnits)}">
+                        ${formatUnits(totalUnits)} units
                     </span>`
                     : '';
 
@@ -1408,7 +1417,15 @@
 
                 // Action buttons based on status
                 let actionButtons = '';
-                if (approvalStatus === 'processing' && curriculum.subjects_count > 0) {
+                
+                // Show if Processing AND (College >= 75% OR Not College & has subjects)
+                const showActionButtons = (approvalStatus === 'processing') && 
+                                        ((curriculum.year_level === 'College' && completionPercent >= 75) || 
+                                         (curriculum.year_level !== 'College' && curriculum.subjects_count > 0));
+
+                if (showActionButtons) {
+                    const isSeniorHigh = curriculum.year_level === 'Senior High';
+                    
                     actionButtons = `
                         <div class="flex gap-2 mt-2">
                             <button onclick="event.stopPropagation(); approveCurriculum(${curriculum.id})" 
@@ -1418,6 +1435,10 @@
                                 </svg>
                                 Approve
                             </button>
+                    `;
+                    
+                    if (!isSeniorHigh) {
+                        actionButtons += `
                             <button onclick="event.stopPropagation(); rejectCurriculum(${curriculum.id})" 
                                     class="reject-btn px-3 py-1.5 bg-transparent border border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-xs font-medium rounded-lg transition-all duration-200 flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -1425,8 +1446,10 @@
                                 </svg>
                                 Reject
                             </button>
-                        </div>
-                    `;
+                        `;
+                    }
+                    
+                    actionButtons += `</div>`;
                 }
 
 
@@ -1469,6 +1492,18 @@
                                 <div class="flex items-center gap-1 flex-wrap justify-end">
                                     ${complianceBadge}
                                     ${totalUnitsDisplay}
+                                    ${curriculum.year_level === 'College' && totalUnits > 0 ? `
+                                    <div class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-1 rounded-full border border-blue-100 bg-white min-w-[85px] shadow-sm" title="${formatUnits(mappedUnits)} / ${formatUnits(totalUnits)} units mapped">
+                                        <!-- Water Fill Effect -->
+                                        <div class="absolute bottom-0 left-0 w-full bg-blue-100/80 transition-all duration-700 ease-out border-t border-blue-200" 
+                                             style="height: ${completionPercent}%"></div>
+                                        
+                                        <!-- Percentage Text -->
+                                        <span class="relative z-10 text-[10px] font-bold ${completionPercent >= 75 ? 'text-blue-700' : 'text-slate-600'}">
+                                            ${completionPercent}% Filled
+                                        </span>
+                                    </div>
+                                    ` : ''}
                                     ${versionBadge}
                                     ${approvalBadge}
                                 </div>
@@ -1593,26 +1628,28 @@
                     // Generate semester inputs and populate if data exists
                     if (curriculum.year_level) {
                         generateSemesterInputs(curriculum.year_level);
-                        unitsContainer.classList.remove('hidden'); // Ensure units container is visible
                         
-                        const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
+                        // Hide units container for Senior High, show for College
                         if (curriculum.year_level === 'Senior High') {
-                            semesterUnitsLabel.textContent = 'Quarter Units';
+                            unitsContainer.classList.add('hidden');
                         } else {
+                            unitsContainer.classList.remove('hidden'); // Ensure units container is visible
+                            
+                            const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
                             semesterUnitsLabel.textContent = 'Semester Units';
-                        }
-                        
-                        // Populate semester units if available
-                        if (curriculum.semester_units) {
-                            setTimeout(() => {
-                                curriculum.semester_units.forEach((units, index) => {
-                                    const input = document.getElementById(`semester_${index}`);
-                                    if (input) {
-                                        input.value = units;
-                                    }
-                                });
-                                calculateTotalUnits();
-                            }, 100);
+                            
+                            // Populate semester units if available
+                            if (curriculum.semester_units) {
+                                setTimeout(() => {
+                                    curriculum.semester_units.forEach((units, index) => {
+                                        const input = document.getElementById(`semester_${index}`);
+                                        if (input) {
+                                            input.value = units;
+                                        }
+                                    });
+                                    calculateTotalUnits();
+                                }, 100);
+                            }
                         }
                     }
                 } else {

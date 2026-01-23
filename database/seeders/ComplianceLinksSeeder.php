@@ -65,12 +65,68 @@ class ComplianceLinksSeeder extends Seeder
             ['title' => 'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-15-s.-2025.pdf'],
         ];
 
+        // DepEd Curriculum Guides (Academic)
+        $depedAcademicLinks = [
+            // ARTS, SOCIAL SCIENCE, AND HUMANITIES
+            ['title' => 'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-1-Creative-Industries-Visual-Art-Literary-Art-Media-Art-Applied-Art-and-Traditional-Art.pdf'],
+            ['title' => 'Arts 2 (Creative Industries II – Performing Arts, Music, Dance, Theater, and Film)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-2-Creative-Industries-II-Performing-Arts-Music-Dance-Theater-and-Film.pdf'],
+            ['title' => 'Social Science 1 (Introduction to Social Sciences)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Social-Science-1-Introduction-to-Social-Sciences.pdf'],
+            ['title' => 'Social Science 2 (Introduction to World Religions and Belief Systems)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Social-Science-2-Introduction-to-World-Religions-and-Belief-Systems.pdf'],
+            ['title' => 'Humanities 1 (Creative Writing)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-1-Creative-Writing.pdf'],
+            ['title' => 'Humanities 2 (Introduction to World Religions and Belief Systems)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-2-Introduction-to-World-Religions-and-Belief-Systems.pdf'],
+
+            // BUSINESS, ECONOMICS, AND MANAGEMENT
+            ['title' => 'Business 1 (Business Enterprise Simulation)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Business-1-Business-Enterprise-Simulation.pdf'],
+            ['title' => 'Economics 1 (Introduction to Economics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Economics-1-Introduction-to-Economics.pdf'],
+            ['title' => 'Management 1 (Fundamentals of Accountancy, Business, and Management)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Management-1-Fundamentals-of-Accountancy-Business-and-Management.pdf'],
+
+            // ENGINEERING AND TECHNOLOGY
+            ['title' => 'Engineering 1 (Calculus)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-1-Calculus.pdf'],
+            ['title' => 'Engineering 2 (Fundamentals of Programming)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-2-Fundamentals-of-Programming.pdf'],
+            ['title' => 'Engineering 3 (Basic Electricity and Electronics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-3-Basic-Electricity-and-Electronics.pdf'],
+
+            // HEALTH AND MEDICAL SCIENCES
+            ['title' => 'Health Science 1 (Introduction to Health Science)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-1-Introduction-to-Health-Science.pdf'],
+            ['title' => 'Health Science 2 (Basic Human Anatomy and Physiology)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-2-Basic-Human-Anatomy-and-Physiology.pdf'],
+        ];
+
+        // DepEd Curriculum Guides (TechPro)
+        $depedTechProLinks = [
+            ['title' => 'Automotive Servicing NC I', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Automotive-Servicing-NC-I.pdf'],
+            ['title' => 'Automotive Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Automotive-Servicing-NC-II.pdf'],
+            ['title' => 'Cookery NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Cookery-NC-II.pdf'],
+            ['title' => 'Food and Beverage Services NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Food-and-Beverage-Services-NC-II.pdf'],
+            ['title' => 'Housekeeping NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Housekeeping-NC-II.pdf'],
+            ['title' => 'Bread and Pastry Production NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Bread-and-Pastry-Production-NC-II.pdf'],
+            ['title' => 'Computer Systems Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Computer-Systems-Servicing-NC-II.pdf'],
+            ['title' => 'Electrical Installation and Maintenance NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Electrical-Installation-and-Maintenance-NC-II.pdf'],
+            ['title' => 'Electronics Products Assembly and Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Electronics-Products-Assembly-and-Servicing-NC-II.pdf'],
+            ['title' => 'Plumbing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Plumbing-NC-II.pdf'],
+            ['title' => 'Welding NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Welding-NC-II.pdf'],
+            ['title' => 'Shielded Metal Arc Welding (SMAW) NC I', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Shielded-Metal-Arc-Welding-SMAW-NC-I.pdf'],
+            ['title' => 'Shielded Metal Arc Welding (SMAW) NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Shielded-Metal-Arc-Welding-SMAW-NC-II.pdf'],
+            ['title' => 'Carpentry NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Carpentry-NC-II.pdf'],
+            ['title' => 'Masonry NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Masonry-NC-II.pdf'],
+            ['title' => 'Tile Setting NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Tile-Setting-NC-II.pdf'],
+            ['title' => 'Painting NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Painting-NC-II.pdf'],
+            ['title' => 'Hairdressing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Hairdressing-NC-II.pdf'],
+            ['title' => 'Beauty Care (Nail Care) NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Beauty-Care-Nail-Care-NC-II.pdf'],
+            ['title' => 'Dressmaking NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Dressmaking-NC-II.pdf'],
+            ['title' => 'Tailoring NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Tailoring-NC-II.pdf'],
+        ];
+
+
+
         $added2023 = 0;
         $updated2023 = 0;
         $added2024 = 0;
         $updated2024 = 0;
         $added2025 = 0;
         $updated2025 = 0;
+        $addedDepEdAcademic = 0;
+        $updatedDepEdAcademic = 0;
+        $addedDepEdTechPro = 0;
+        $updatedDepEdTechPro = 0;
 
         // Process 2023 links
         foreach ($chedLinks2023 as $link) {
@@ -81,7 +137,8 @@ class ComplianceLinksSeeder extends Seeder
                     'title' => $link['title']
                 ],
                 [
-                    'url' => $link['url']
+                    'url' => $link['url'],
+                    'is_category' => false
                 ]
             );
 
@@ -101,7 +158,8 @@ class ComplianceLinksSeeder extends Seeder
                     'title' => $link['title']
                 ],
                 [
-                    'url' => $link['url']
+                    'url' => $link['url'],
+                    'is_category' => false
                 ]
             );
 
@@ -121,7 +179,8 @@ class ComplianceLinksSeeder extends Seeder
                     'title' => $link['title']
                 ],
                 [
-                    'url' => $link['url']
+                    'url' => $link['url'],
+                    'is_category' => false
                 ]
             );
 
@@ -129,6 +188,48 @@ class ComplianceLinksSeeder extends Seeder
                 $added2025++;
             } else {
                 $updated2025++;
+            }
+        }
+
+        // Process DepEd Academic links
+        foreach ($depedAcademicLinks as $link) {
+            $result = ComplianceLink::updateOrCreate(
+                [
+                    'agency' => 'DepEd',
+                    'year' => 'Curriculum Guides (Academic)',
+                    'title' => $link['title']
+                ],
+                [
+                    'url' => $link['url'],
+                    'is_category' => false
+                ]
+            );
+
+            if ($result->wasRecentlyCreated) {
+                $addedDepEdAcademic++;
+            } else {
+                $updatedDepEdAcademic++;
+            }
+        }
+
+        // Process DepEd TechPro links
+        foreach ($depedTechProLinks as $link) {
+            $result = ComplianceLink::updateOrCreate(
+                [
+                    'agency' => 'DepEd',
+                    'year' => 'Curriculum Guides (TechPro)',
+                    'title' => $link['title']
+                ],
+                [
+                    'url' => $link['url'],
+                    'is_category' => false
+                ]
+            );
+
+            if ($result->wasRecentlyCreated) {
+                $addedDepEdTechPro++;
+            } else {
+                $updatedDepEdTechPro++;
             }
         }
 
@@ -150,5 +251,22 @@ class ComplianceLinksSeeder extends Seeder
         if ($updated2025 > 0) {
             $this->command->info("  📝 Updated {$updated2025} existing links");
         }
+
+        $this->command->info("📚 DepEd Curriculum Guides (Academic):");
+        $this->command->info("  ✅ Added {$addedDepEdAcademic} new links");
+        if ($updatedDepEdAcademic > 0) {
+            $this->command->info("  📝 Updated {$updatedDepEdAcademic} existing links");
+        }
+
+        $this->command->info("🔧 DepEd Curriculum Guides (TechPro):");
+        $this->command->info("  ✅ Added {$addedDepEdTechPro} new links");
+        if ($updatedDepEdTechPro > 0) {
+            $this->command->info("  📝 Updated {$updatedDepEdTechPro} existing links");
+        }
+
+        $totalAdded = $added2023 + $added2024 + $added2025 + $addedDepEdAcademic + $addedDepEdTechPro;
+        $totalUpdated = $updated2023 + $updated2024 + $updated2025 + $updatedDepEdAcademic + $updatedDepEdTechPro;
+        
+        $this->command->info("\n🎉 Total: {$totalAdded} links added, {$totalUpdated} links updated");
     }
 }
