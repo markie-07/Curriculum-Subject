@@ -68,53 +68,53 @@ class ComplianceLinksSeeder extends Seeder
         // DepEd Curriculum Guides (Academic)
         $depedAcademicLinks = [
             // ARTS, SOCIAL SCIENCE, AND HUMANITIES
-            ['title' => 'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-1-Creative-Industries-Visual-Art-Literary-Art-Media-Art-Applied-Art-and-Traditional-Art.pdf'],
-            ['title' => 'Arts 2 (Creative Industries II – Performing Arts, Music, Dance, Theater, and Film)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-2-Creative-Industries-II-Performing-Arts-Music-Dance-Theater-and-Film.pdf'],
-            ['title' => 'Social Science 1 (Introduction to Social Sciences)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Social-Science-1-Introduction-to-Social-Sciences.pdf'],
-            ['title' => 'Social Science 2 (Introduction to World Religions and Belief Systems)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Social-Science-2-Introduction-to-World-Religions-and-Belief-Systems.pdf'],
-            ['title' => 'Humanities 1 (Creative Writing)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-1-Creative-Writing.pdf'],
-            ['title' => 'Humanities 2 (Introduction to World Religions and Belief Systems)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-2-Introduction-to-World-Religions-and-Belief-Systems.pdf'],
+            ['group' => 'ARTS, SOCIAL SCIENCE, AND HUMANITIES', 'title' => 'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-1-Creative-Industries-Visual-Art-Literary-Art-Media-Art-Applied-Art-and-Traditional-Art.pdf'],
+            ['group' => 'ARTS, SOCIAL SCIENCE, AND HUMANITIES', 'title' => 'Arts 2 (Creative Industries II – Performing Arts)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Arts-2-Creative-Industries-II-%E2%80%93-Performing-Arts.pdf'],
+            ['group' => 'ARTS, SOCIAL SCIENCE, AND HUMANITIES', 'title' => 'Social Science 1 (Introduction to Social Sciences)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Social-Science-1-Introduction-to-Social-Sciences.pdf'],
+            ['group' => 'ARTS, SOCIAL SCIENCE, AND HUMANITIES', 'title' => 'Humanities 1 (Creative Writing)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-1-Creative-Writing.pdf'],
+            ['group' => 'ARTS, SOCIAL SCIENCE, AND HUMANITIES', 'title' => 'Humanities 2 (Introduction to World Religions and Belief Systems)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Humanities-2-Introduction-to-World-Religions-and-Belief-Systems.pdf'],
 
-            // BUSINESS, ECONOMICS, AND MANAGEMENT
-            ['title' => 'Business 1 (Business Enterprise Simulation)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Business-1-Business-Enterprise-Simulation.pdf'],
-            ['title' => 'Economics 1 (Introduction to Economics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Economics-1-Introduction-to-Economics.pdf'],
-            ['title' => 'Management 1 (Fundamentals of Accountancy, Business, and Management)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Management-1-Fundamentals-of-Accountancy-Business-and-Management.pdf'],
+            // BUSINESS AND ENTREPRENEURSHIP
+            ['group' => 'BUSINESS AND ENTREPRENEURSHIP', 'title' => 'Business 1 (Business Enterprise Simulation)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Business-1-Business-Enterprise-Simulation.pdf'],
+            ['group' => 'BUSINESS AND ENTREPRENEURSHIP', 'title' => 'Economics 1 (Introduction to Economics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Economics-1-Introduction-to-Economics.pdf'],
+            ['group' => 'BUSINESS AND ENTREPRENEURSHIP', 'title' => 'Management 1 (Fundamentals of Accountancy, Business, and Management)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Management-1-Fundamentals-of-Accountancy-Business-and-Management.pdf'],
 
-            // ENGINEERING AND TECHNOLOGY
-            ['title' => 'Engineering 1 (Calculus)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-1-Calculus.pdf'],
-            ['title' => 'Engineering 2 (Fundamentals of Programming)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-2-Fundamentals-of-Programming.pdf'],
-            ['title' => 'Engineering 3 (Basic Electricity and Electronics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-3-Basic-Electricity-and-Electronics.pdf'],
+            // SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS
+            ['group' => 'SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS', 'title' => 'Engineering 1 (Calculus)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-1-Calculus.pdf'],
+            ['group' => 'SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS', 'title' => 'Engineering 2 (Fundamentals of Programming)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-2-Fundamentals-of-Programming.pdf'],
+            ['group' => 'SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS', 'title' => 'Engineering 3 (Basic Electricity and Electronics)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Engineering-3-Basic-Electricity-and-Electronics.pdf'],
 
-            // HEALTH AND MEDICAL SCIENCES
-            ['title' => 'Health Science 1 (Introduction to Health Science)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-1-Introduction-to-Health-Science.pdf'],
-            ['title' => 'Health Science 2 (Basic Human Anatomy and Physiology)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-2-Basic-Human-Anatomy-and-Physiology.pdf'],
+            // SPORTS, HEALTH, AND WELLNESS
+            ['group' => 'SPORTS, HEALTH, AND WELLNESS', 'title' => 'Health Science 1 (Introduction to Health Science)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-1-Introduction-to-Health-Science.pdf'],
+            ['group' => 'SPORTS, HEALTH, AND WELLNESS', 'title' => 'Health Science 2 (Basic Human Anatomy and Physiology)', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Health-Science-2-Basic-Human-Anatomy-and-Physiology.pdf'],
         ];
 
         // DepEd Curriculum Guides (TechPro)
         $depedTechProLinks = [
-            ['title' => 'Automotive Servicing NC I', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Automotive-Servicing-NC-I.pdf'],
-            ['title' => 'Automotive Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Automotive-Servicing-NC-II.pdf'],
-            ['title' => 'Cookery NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Cookery-NC-II.pdf'],
-            ['title' => 'Food and Beverage Services NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Food-and-Beverage-Services-NC-II.pdf'],
-            ['title' => 'Housekeeping NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Housekeeping-NC-II.pdf'],
-            ['title' => 'Bread and Pastry Production NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Bread-and-Pastry-Production-NC-II.pdf'],
-            ['title' => 'Computer Systems Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Computer-Systems-Servicing-NC-II.pdf'],
-            ['title' => 'Electrical Installation and Maintenance NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Electrical-Installation-and-Maintenance-NC-II.pdf'],
-            ['title' => 'Electronics Products Assembly and Servicing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Electronics-Products-Assembly-and-Servicing-NC-II.pdf'],
-            ['title' => 'Plumbing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Plumbing-NC-II.pdf'],
-            ['title' => 'Welding NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Welding-NC-II.pdf'],
-            ['title' => 'Shielded Metal Arc Welding (SMAW) NC I', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Shielded-Metal-Arc-Welding-SMAW-NC-I.pdf'],
-            ['title' => 'Shielded Metal Arc Welding (SMAW) NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Shielded-Metal-Arc-Welding-SMAW-NC-II.pdf'],
-            ['title' => 'Carpentry NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Carpentry-NC-II.pdf'],
-            ['title' => 'Masonry NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Masonry-NC-II.pdf'],
-            ['title' => 'Tile Setting NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Tile-Setting-NC-II.pdf'],
-            ['title' => 'Painting NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Painting-NC-II.pdf'],
-            ['title' => 'Hairdressing NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Hairdressing-NC-II.pdf'],
-            ['title' => 'Beauty Care (Nail Care) NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Beauty-Care-Nail-Care-NC-II.pdf'],
-            ['title' => 'Dressmaking NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Dressmaking-NC-II.pdf'],
-            ['title' => 'Tailoring NC II', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/Tailoring-NC-II.pdf'],
+            // INFORMATION AND COMMUNICATIONS TECHNOLOGY
+            ['group' => 'INFORMATION AND COMMUNICATIONS TECHNOLOGY', 'title' => 'Digital Tools and Productivity Applications', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Digital-Tools-and-Productivity-Applications.pdf'],
+            ['group' => 'INFORMATION AND COMMUNICATIONS TECHNOLOGY', 'title' => 'Multimedia Development and Design', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Multimedia-Development-and-Design.pdf'],
+            ['group' => 'INFORMATION AND COMMUNICATIONS TECHNOLOGY', 'title' => 'Computer Systems and Network Administration', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Systems-and-Network-Administration.pdf'],
+            ['group' => 'INFORMATION AND COMMUNICATIONS TECHNOLOGY', 'title' => 'Web Development', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Web-Development.pdf'],
+            ['group' => 'INFORMATION AND COMMUNICATIONS TECHNOLOGY', 'title' => 'Computer Programming', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Programming.pdf'],
         ];
 
+        // DepEd Curriculum Guides (Core)
+        $depedCoreLinks = [
+            ['title' => 'Effective Communication', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Effective-Communication.pdf'],
+            ['title' => 'General Mathematics', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Mathematics.pdf'],
+            ['title' => 'General Science', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Science.pdf'],
+            ['title' => 'Life and Career Skills', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Life-and-Career-Skills.pdf'],
+            ['title' => 'Mabisang Komunikasyon', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Mabisang-Komunikasyon.pdf'],
+            ['title' => 'Pag-aaral ng Kasaysayan at Lipunang Pilipino', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/Pag-aaral-ng-Kasaysayan-at-Lipunang-Pilipino.pdf'],
+        ];
+
+
+
+        // DepEd Shape Paper
+        $depedShapePaperLinks = [
+            ['title' => 'The Strengthened Senior High School Program Shaping Paper', 'url' => 'https://www.deped.gov.ph/wp-content/uploads/2024/05/The-Strengthened-Senior-High-School-Program-Shaping-Paper.pdf'],
+        ];
 
 
         $added2023 = 0;
@@ -201,6 +201,7 @@ class ComplianceLinksSeeder extends Seeder
                 ],
                 [
                     'url' => $link['url'],
+                    'group' => $link['group'] ?? null,
                     'is_category' => false
                 ]
             );
@@ -222,6 +223,7 @@ class ComplianceLinksSeeder extends Seeder
                 ],
                 [
                     'url' => $link['url'],
+                    'group' => $link['group'] ?? null,
                     'is_category' => false
                 ]
             );
@@ -230,6 +232,58 @@ class ComplianceLinksSeeder extends Seeder
                 $addedDepEdTechPro++;
             } else {
                 $updatedDepEdTechPro++;
+            }
+        }
+
+        $addedDepEdCore = 0;
+        $updatedDepEdCore = 0;
+
+        // Process DepEd Core links
+        foreach ($depedCoreLinks as $link) {
+            $result = ComplianceLink::updateOrCreate(
+                [
+                    'agency' => 'DepEd',
+                    'year' => 'Curriculum Guides (Core)',
+                    'title' => $link['title']
+                ],
+                [
+                    'url' => $link['url'],
+                    'group' => null, // Core links don't have subgroups in this context
+                    'is_category' => false
+                ]
+            );
+
+            if ($result->wasRecentlyCreated) {
+                $addedDepEdCore++;
+            } else {
+                $updatedDepEdCore++;
+            }
+        }
+
+
+
+        $addedDepEdShapePaper = 0;
+        $updatedDepEdShapePaper = 0;
+
+        // Process DepEd Shape Paper links
+        foreach ($depedShapePaperLinks as $link) {
+            $result = ComplianceLink::updateOrCreate(
+                [
+                    'agency' => 'DepEd',
+                    'year' => 'Shape Paper',
+                    'title' => $link['title']
+                ],
+                [
+                    'url' => $link['url'],
+                    'group' => null, // Shape Paper links don't have subgroups in this context
+                    'is_category' => false
+                ]
+            );
+
+            if ($result->wasRecentlyCreated) {
+                $addedDepEdShapePaper++;
+            } else {
+                $updatedDepEdShapePaper++;
             }
         }
 
@@ -264,8 +318,20 @@ class ComplianceLinksSeeder extends Seeder
             $this->command->info("  📝 Updated {$updatedDepEdTechPro} existing links");
         }
 
-        $totalAdded = $added2023 + $added2024 + $added2025 + $addedDepEdAcademic + $addedDepEdTechPro;
-        $totalUpdated = $updated2023 + $updated2024 + $updated2025 + $updatedDepEdAcademic + $updatedDepEdTechPro;
+        $this->command->info("🔧 DepEd Curriculum Guides (Core):");
+        $this->command->info("  ✅ Added {$addedDepEdCore} new links");
+        if ($updatedDepEdCore > 0) {
+            $this->command->info("  📝 Updated {$updatedDepEdCore} existing links");
+        }
+
+        $this->command->info("📄 DepEd Shape Paper:");
+        $this->command->info("  ✅ Added {$addedDepEdShapePaper} new links");
+        if ($updatedDepEdShapePaper > 0) {
+            $this->command->info("  📝 Updated {$updatedDepEdShapePaper} existing links");
+        }
+
+        $totalAdded = $added2023 + $added2024 + $added2025 + $addedDepEdAcademic + $addedDepEdTechPro + $addedDepEdCore + $addedDepEdShapePaper;
+        $totalUpdated = $updated2023 + $updated2024 + $updated2025 + $updatedDepEdAcademic + $updatedDepEdTechPro + $updatedDepEdCore + $updatedDepEdShapePaper;
         
         $this->command->info("\n🎉 Total: {$totalAdded} links added, {$totalUpdated} links updated");
     }

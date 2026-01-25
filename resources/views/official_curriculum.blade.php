@@ -82,9 +82,16 @@
                         </div>
 
                         <!-- Curriculum Details Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-inner">
+                        <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-inner">
+                            <!-- Status Badges (Absolute Positioned for Senior High look) -->
+                            <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                                <div id="modal-version-badge"></div>
+                                <div id="modal-status-badge">
+                                    <!-- Dynamic Badge -->
+                                </div>
+                            </div>
                             <!-- Academic Year -->
-                            <div class="flex items-start gap-3">
+                            <div class="flex items-start gap-3" id="modal-academic-year-container">
                                 <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -97,7 +104,7 @@
                             </div>
                             
                             <!-- Total Units -->
-                            <div class="flex items-start gap-3">
+                            <div class="flex items-start gap-3" id="modal-units-container">
                                 <div class="p-2 bg-orange-100 text-orange-600 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -135,13 +142,7 @@
                                 </div>
                             </div>
 
-                            <!-- Status -->
-                            <div class="flex items-center justify-start lg:justify-end gap-2">
-                                 <div id="modal-version-badge"></div>
-                                 <div id="modal-status-badge">
-                                    <!-- Dynamic Badge -->
-                                 </div>
-                            </div>
+
                         </div>
                     </div>
                     <div id="modal-curriculum-content" class="p-6 space-y-4 flex-1 overflow-y-auto"></div>
@@ -207,7 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeCurriculumModalBtn = document.getElementById('closeCurriculumModal');
     const modalCurriculumTitle = document.getElementById('modal-curriculum-title');
     const modalCurriculumSubtitle = document.getElementById('modal-curriculum-subtitle');
+    const modalAcademicYearContainer = document.getElementById('modal-academic-year-container');
     const modalAcademicYear = document.getElementById('modal-academic-year');
+    const modalUnitsContainer = document.getElementById('modal-units-container');
     const modalTotalUnits = document.getElementById('modal-total-units');
     const modalCompliance = document.getElementById('modal-compliance');
     const modalMemorandum = document.getElementById('modal-memorandum');
@@ -286,8 +289,15 @@ document.addEventListener('DOMContentLoaded', () => {
         modalCurriculumTitle.textContent = curriculum.curriculum_name;
         modalCurriculumSubtitle.textContent = `${curriculum.program_code} • ${curriculum.year_level}`;
         
-        modalAcademicYear.textContent = curriculum.academic_year || 'N/A';
-        modalTotalUnits.textContent = curriculum.total_units ? `${parseFloat(curriculum.total_units)} Units` : 'N/A';
+        if (curriculum.year_level === 'Senior High') {
+            modalAcademicYearContainer.classList.add('hidden');
+            modalUnitsContainer.classList.add('hidden');
+        } else {
+            modalAcademicYearContainer.classList.remove('hidden');
+            modalUnitsContainer.classList.remove('hidden');
+            modalAcademicYear.textContent = curriculum.academic_year || 'N/A';
+            modalTotalUnits.textContent = curriculum.total_units ? `${parseFloat(curriculum.total_units)} Units` : 'N/A';
+        }
         modalCompliance.textContent = curriculum.compliance || 'N/A';
         
         // Memorandum Logic
@@ -307,92 +317,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Try to find the memorandum link and make text clickable
         if (memoText && memoText !== 'No memorandum selected') {
-            try {
-                const agency = curriculum.compliance || '';
-                console.log('Searching for memorandum link:', { agency, memoText, memoCat });
+            const agency = curriculum.compliance || '';
+            const yearLevel = curriculum.year_level || '';
+
+            // Check if DepEd and Senior High - use hardcoded link
+            if (agency === 'DepEd' && yearLevel === 'Senior High') {
+                const targetUrl = 'https://www.deped.gov.ph/strengthened-shs-program/?fbclid=IwY2xjawPhXw5leHRuA2FlbQIxMABicmlkETFHd005bEc2WlFJcmxCUkVPc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhPBJeQ9dNzzNKzEAvIBsBisdygkFJpgn8fD39MUNOUCBovsp8fErU2UWclH_aem_LEMh6cQ-GyZcw22XknCH7w';
                 
-                // Fetch all links for the agency
-                const response = await fetch(`/api/compliance-links?agency=${agency}&is_category=false`);
-                const links = await response.json();
-                
-                console.log('Available links:', links);
-                
-                // Helper function to normalize text for comparison
-                const normalizeText = (text) => {
-                    return text
-                        .toLowerCase()
-                        .replace(/[()•\-_,]/g, ' ')  // Remove special characters
-                        .replace(/\s+/g, ' ')         // Normalize spaces
-                        .trim();
+                modalMemorandum.classList.remove('text-slate-800');
+                modalMemorandum.classList.add('text-blue-600', 'hover:text-blue-700', 'hover:underline');
+                modalMemorandum.style.cursor = 'pointer';
+                modalMemorandum.onclick = () => {
+                    showExternalLinkModal(targetUrl, 'The Strengthened Senior High School Program');
                 };
-                
-                // Helper function to extract significant words (3+ characters)
-                const getSignificantWords = (text) => {
-                    const normalized = normalizeText(text);
-                    return normalized.split(' ').filter(w => w.length >= 3);
-                };
-                
-                // Extract the subject name from memorandum
-                let subjectName = memoText;
-                if (memoText.includes('•')) {
-                    subjectName = memoText.split('•').pop().trim();
-                }
-                
-                console.log('Subject name extracted:', subjectName);
-                
-                // Get significant words from the subject name
-                const subjectWords = getSignificantWords(subjectName);
-                console.log('Search terms:', subjectWords);
-                
-                // Find the best matching link
-                let bestMatch = null;
-                let bestScore = 0;
-                
-                links.forEach(link => {
-                    if (!link.title && !link.url) return;
+                console.log('✅ DepEd Senior High memorandum set to hardcoded URL');
+            } else {
+                // Existing logic for other types
+                try {
+                    console.log('Searching for memorandum link:', { agency, memoText, memoCat });
                     
-                    const linkTitle = link.title || '';
-                    const linkUrl = link.url || '';
+                    // Fetch all links for the agency
+                    const response = await fetch(`/api/compliance-links?agency=${agency}&is_category=false`);
+                    const links = await response.json();
                     
-                    // Get words from link title and URL
-                    const titleWords = getSignificantWords(linkTitle);
-                    const urlWords = getSignificantWords(linkUrl);
-                    const allLinkWords = [...titleWords, ...urlWords];
+                    console.log('Available links:', links);
                     
-                    // Calculate match score (how many subject words appear in link)
-                    const matchCount = subjectWords.filter(word => 
-                        allLinkWords.some(linkWord => 
-                            linkWord.includes(word) || word.includes(linkWord)
-                        )
-                    ).length;
-                    
-                    const score = matchCount / subjectWords.length;
-                    
-                    console.log(`Link "${linkTitle}" score: ${score} (${matchCount}/${subjectWords.length} words matched)`);
-                    
-                    // Keep track of best match (need at least 50% match)
-                    if (score > bestScore && score >= 0.5) {
-                        bestScore = score;
-                        bestMatch = link;
-                    }
-                });
-                
-                console.log('Best matching link:', bestMatch, 'Score:', bestScore);
-                
-                if (bestMatch && bestMatch.url) {
-                    // Make the memorandum text clickable and blue
-                    modalMemorandum.classList.remove('text-slate-800');
-                    modalMemorandum.classList.add('text-blue-600', 'hover:text-blue-700', 'hover:underline');
-                    modalMemorandum.style.cursor = 'pointer';
-                    modalMemorandum.onclick = () => {
-                        showExternalLinkModal(bestMatch.url, bestMatch.title || subjectName);
+                    // Helper function to normalize text for comparison
+                    const normalizeText = (text) => {
+                        return text
+                            .toLowerCase()
+                            .replace(/[()•\-_,]/g, ' ')  // Remove special characters
+                            .replace(/\s+/g, ' ')         // Normalize spaces
+                            .trim();
                     };
-                    console.log('✅ Memorandum text is now clickable for URL:', bestMatch.url);
-                } else {
-                    console.log('❌ No matching link found (best score:', bestScore, ')');
+                    
+                    // Helper function to extract significant words (3+ characters)
+                    const getSignificantWords = (text) => {
+                        const normalized = normalizeText(text);
+                        return normalized.split(' ').filter(w => w.length >= 3);
+                    };
+                    
+                    // Extract the subject name from memorandum
+                    let subjectName = memoText;
+                    if (memoText.includes('•')) {
+                        subjectName = memoText.split('•').pop().trim();
+                    }
+                    
+                    console.log('Subject name extracted:', subjectName);
+                    
+                    // Get significant words from the subject name
+                    const subjectWords = getSignificantWords(subjectName);
+                    console.log('Search terms:', subjectWords);
+                    
+                    // Find the best matching link
+                    let bestMatch = null;
+                    let bestScore = 0;
+                    
+                    links.forEach(link => {
+                        if (!link.title && !link.url) return;
+                        
+                        const linkTitle = link.title || '';
+                        const linkUrl = link.url || '';
+                        
+                        // Get words from link title and URL
+                        const titleWords = getSignificantWords(linkTitle);
+                        const urlWords = getSignificantWords(linkUrl);
+                        const allLinkWords = [...titleWords, ...urlWords];
+                        
+                        // Calculate match score (how many subject words appear in link)
+                        const matchCount = subjectWords.filter(word => 
+                            allLinkWords.some(linkWord => 
+                                linkWord.includes(word) || word.includes(linkWord)
+                            )
+                        ).length;
+                        
+                        const score = matchCount / subjectWords.length;
+                        
+                        console.log(`Link "${linkTitle}" score: ${score} (${matchCount}/${subjectWords.length} words matched)`);
+                        
+                        // Keep track of best match (need at least 50% match)
+                        if (score > bestScore && score >= 0.5) {
+                            bestScore = score;
+                            bestMatch = link;
+                        }
+                    });
+                    
+                    console.log('Best matching link:', bestMatch, 'Score:', bestScore);
+                    
+                    if (bestMatch && bestMatch.url) {
+                        // Make the memorandum text clickable and blue
+                        modalMemorandum.classList.remove('text-slate-800');
+                        modalMemorandum.classList.add('text-blue-600', 'hover:text-blue-700', 'hover:underline');
+                        modalMemorandum.style.cursor = 'pointer';
+                        modalMemorandum.onclick = () => {
+                            showExternalLinkModal(bestMatch.url, bestMatch.title || subjectName);
+                        };
+                        console.log('✅ Memorandum text is now clickable for URL:', bestMatch.url);
+                    } else {
+                        console.log('❌ No matching link found (best score:', bestScore, ')');
+                    }
+                } catch (error) {
+                    console.error('Error fetching memorandum link:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching memorandum link:', error);
             }
         }
 
@@ -481,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += `<div class="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 shadow-md">
                     <div class="border-b border-gray-300 pb-2 mb-3 flex justify-between items-center">
                         <h4 class="font-semibold text-gray-700">${semesterTitle}</h4>
-                        <div class="text-sm font-bold text-gray-700">Units: ${totalUnits}</div>
+                        ${yearLevel === 'Senior High' ? '' : `<div class="text-sm font-bold text-gray-700">Units: ${totalUnits}</div>`}
                     </div>
                     <div class="space-y-2 min-h-[50px]">`;
 
@@ -578,6 +604,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Determine card border, icon, and title colors based on approval status
                 const approvalStatus = curriculum.approval_status || 'processing';
+                
+                // Check if expired (compare dates ignoring time)
+                const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+                
+                // Determine effective version (explicitly set to old, OR expired)
+                const effectiveVersion = (curriculum.version_status === 'old' || isExpired) ? 'old' : 'new';
+
                 let cardBorderClass = 'border-slate-200 hover:border-blue-500';
                 let iconBgClass = 'bg-slate-100 group-hover:bg-blue-100';
                 let iconColorClass = 'text-slate-500 group-hover:text-blue-600';
@@ -593,6 +626,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     iconBgClass = 'bg-red-100 group-hover:bg-red-200';
                     iconColorClass = 'text-red-600 group-hover:text-red-700';
                     titleColorClass = 'text-red-700 group-hover:text-red-800';
+                } else {
+                     // Processing or other status
                 }
                 
                 // Add cursor-pointer since it opens a modal
@@ -600,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.dataset.name = curriculum.curriculum_name.toLowerCase();
                 card.dataset.code = curriculum.program_code.toLowerCase();
                 card.dataset.id = curriculum.id;
-                card.dataset.version = curriculum.version_status || 'new';
+                card.dataset.version = effectiveVersion;
                 card.dataset.approvalStatus = approvalStatus;
 
                 const date = new Date(curriculum.created_at);
@@ -634,11 +669,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>`
                     : '';
 
-                // Check if expired (compare dates ignoring time)
-                const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
-
-                // Version status badge
-                const versionBadge = curriculum.version_status === 'old'
+                // Version status badge (Used effectiveVersion)
+                const versionBadge = effectiveVersion === 'old'
                     ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
@@ -695,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="flex-grow min-w-0 w-full sm:pr-2">
                                 <h3 class="font-bold ${titleColorClass} transition-colors duration-300 truncate mb-1">${curriculum.curriculum_name}</h3>
                                 <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
-                                    <span>${curriculum.program_code} • ${curriculum.academic_year}</span>
+                                    <span>${curriculum.program_code}${curriculum.year_level === 'Senior High' ? '' : ` • ${curriculum.academic_year}`}</span>
                                     ${curriculum.expiration_date ? `
                                         <span class="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -15,6 +15,7 @@ class Subject extends Model
     protected $fillable = [
         'subject_code',
         'subject_name',
+        'syllabus_type',
         'subject_type',
         'subject_unit',
         'memorandum',
@@ -39,6 +40,14 @@ class Subject extends Model
         'prepared_by',
         'reviewed_by',
         'approved_by',
+        'q_1_performance_standards',
+        'q_1_performance_tasks',
+        'q_2_performance_standards',
+        'q_2_performance_tasks',
+        'deped_data',
+        'time_allotment',
+        'schedule',
+        'syllabus_path',
     ];
 
     /**
@@ -50,6 +59,7 @@ class Subject extends Model
         'lessons' => 'array',
         'program_mapping_grid' => 'array',
         'course_mapping_grid' => 'array',
+        'deped_data' => 'array',
     ];
 
     /**

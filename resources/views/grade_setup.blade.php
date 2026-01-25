@@ -56,21 +56,24 @@
                     </div>
                 </div>
 
-                {{-- Memorandum Selection (Unlocks for College) --}}
+                {{-- Curriculum Selection (Unlocks for College) --}}
                 <div id="memorandum-section" class="mt-8 border border-gray-200 bg-gray-50/50 p-6 rounded-xl hidden">
                     <div class="flex items-center gap-3 pb-3 mb-4">
-                        <div class="w-10 h-10 flex-shrink-0 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <div class="w-10 h-10 flex-shrink-0 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
                         </div>
-                        <h2 class="text-xl font-semibold text-gray-700">Memorandum</h2>
+                        <h2 class="text-xl font-semibold text-gray-700">Curriculum</h2>
                     </div>
                     <div>
-                        <button id="select-memorandum-btn" type="button" class="w-full flex items-center justify-between gap-2 bg-white hover:bg-amber-50 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 border border-amber-300">
+                        <button id="select-memorandum-btn" type="button" class="w-full flex items-center justify-between gap-2 bg-white hover:bg-blue-50 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 border border-blue-300">
                             <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
                                 </svg>
-                                <span id="memorandum-btn-text">Select Memorandum</span>
+                                <span id="memorandum-btn-text">Select Curriculum</span>
                             </div>
                             <span id="memorandum-arrow" class="text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
@@ -139,7 +142,7 @@
                 </div>
 
                 <div class="mt-10 pt-6 border-t border-gray-200">
-                    <button id="setGradeSchemeButton" type="button" class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-black font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300">
+                    <button id="setGradeSchemeButton" type="button" disabled class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-black font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6a1 1 0 10-2 0v5.586L7.707 10.293zM10 18a8 8 0 100-16 8 8 0 000 16z" /></svg>
                         Set Grade Scheme
                     </button>
@@ -443,21 +446,21 @@
     </div>
 </div>
 
-{{-- Select Memorandum Modal --}}
+{{-- Select Curriculum Modal --}}
 <div id="select-memorandum-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl">
             {{-- Modal Header --}}
             <div class="flex justify-between items-center p-6 border-b border-gray-200">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 flex-shrink-0 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">Select Memorandum</h3>
-                        <p class="text-sm text-gray-600">Choose a memorandum to view its associated subjects</p>
+                        <h3 class="text-xl font-bold text-gray-800">Select Curriculum</h3>
+                        <p class="text-sm text-gray-600">Choose a curriculum to view its associated subjects</p>
                     </div>
                 </div>
                 <button id="close-select-memorandum-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
@@ -469,7 +472,7 @@
             <div class="p-6 max-h-[60vh] overflow-y-auto">
                 <div class="mb-4">
                     <div class="relative mb-3">
-                        <input type="text" id="memorandum-search" placeholder="Search memorandums..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                        <input type="text" id="memorandum-search" placeholder="Search curriculums..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                         <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -477,8 +480,8 @@
                 </div>
                 
                 <div id="memorandum-list" class="space-y-2">
-                    {{-- Memorandums will be populated here --}}
-                    <p class="text-gray-500 text-center py-8">Loading memorandums...</p>
+                    {{-- Curriculums will be populated here --}}
+                    <p class="text-gray-500 text-center py-8">Loading curriculums...</p>
                 </div>
             </div>
         </div>
@@ -594,6 +597,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelSelectSubjectsBtn = document.getElementById('cancel-select-subjects-btn');
     const confirmSelectSubjectsBtn = document.getElementById('confirm-select-subjects-btn');
 
+    // Confirm Subject Selection Logic
+    if (confirmSelectSubjectsBtn) {
+        confirmSelectSubjectsBtn.addEventListener('click', () => {
+             console.log('Confirm button clicked');
+             console.log('Current selectedSubjects:', selectedSubjects);
+
+             // Re-evaluate graded status just to be safe
+             const gradedSubjects = selectedSubjects.filter(s => {
+                 const isGraded = s.is_graded || historyStats.subjects.some(h => h.id === s.id);
+                 return isGraded;
+             });
+             
+             console.log('Graded subjects found:', gradedSubjects);
+             
+             if (gradedSubjects.length > 0) {
+                 const subjectNames = gradedSubjects.map(s => s.subject_code).join(', ');
+                const confirmHtml = `
+                    <div class="text-center px-4 pt-2 pb-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 p-2 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Update Graded Subjects?</h3>
+                        <p class="text-sm text-gray-500 mb-4">The following subjects already have grades:</p>
+                        <div class="bg-gray-50 p-2 rounded-lg mb-4 text-sm font-medium text-gray-700 break-all border border-gray-100">
+                             ${subjectNames}
+                        </div>
+                        <p class="text-sm text-gray-500">Are you sure you want to update grades for these subjects?</p>
+                    </div>
+                `;
+
+                 Swal.fire({
+                     html: confirmHtml,
+                     width: '380px', // Matches max-w-sm roughly
+                     showCancelButton: true,
+                     confirmButtonColor: '#F59E0B',
+                     cancelButtonColor: '#F3F4F6', // gray-100
+                     confirmButtonText: 'Yes, update grades',
+                     cancelButtonText: 'Cancel',
+                     buttonsStyling: false,
+                     customClass: {
+                         popup: 'rounded-2xl p-0 overflow-hidden',
+                         actions: 'gap-3 mb-6',
+                         confirmButton: 'w-full px-6 py-2.5 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 focus:outline-none transition-colors shadow-sm',
+                         cancelButton: 'w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none transition-colors'
+                     }
+                 }).then((result) => {
+                     if (result.isConfirmed) {
+                         updateSelectedSubjectsList();
+                         hideModal('select-subjects-modal');
+                     } else if (result.dismiss === Swal.DismissReason.cancel) {
+                         hideModal('select-subjects-modal');
+                         
+                         // Reset Memorandum Selection since user cancelled
+                         selectedMemorandum = null;
+                         memorandumBtnText.textContent = 'Select Memorandum';
+                         memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
+                         
+                         // Reset Selected Subjects
+                         selectedSubjects = [];
+                         updateSelectedSubjectsList();
+
+                         // Clear Grade Components explicitly and update UI state
+                         accordionContainer.innerHTML = '';
+                         checkGradingEligibility();
+                     }
+                 });
+             } else {
+                 console.log('No graded subjects, proceeding directly.');
+                 updateSelectedSubjectsList();
+                 hideModal('select-subjects-modal');
+             }
+        });
+    }
+
     let isEditMode = false;
     let componentCounter = 0;
 
@@ -641,14 +720,21 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
             
         const tbody = componentContainer.querySelector('.component-tbody');
-        components.forEach(comp => {
-            const mainRow = createRow(false, period, comp);
-            tbody.appendChild(mainRow);
-            (comp.sub_components || []).forEach(sub => {
-                const subRow = createRow(true, period, sub);
-                tbody.appendChild(subRow);
+        if (components.length === 0) {
+            // Add default row if no components provided
+            tbody.appendChild(createRow(false, period));
+             // Add default sub-component row as requested
+            tbody.appendChild(createRow(true, period));
+        } else {
+            components.forEach(comp => {
+                const mainRow = createRow(false, period, comp);
+                tbody.appendChild(mainRow);
+                (comp.sub_components || []).forEach(sub => {
+                    const subRow = createRow(true, period, sub);
+                    tbody.appendChild(subRow);
+                });
             });
-        });
+        }
         
         return componentContainer;
     };
@@ -667,7 +753,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Add the grade component
-        accordionContainer.appendChild(createGradeComponent());
+        const newComponent = createGradeComponent();
+        accordionContainer.appendChild(newComponent);
+
+        // Auto-open the accordion
+        const content = newComponent.querySelector('.accordion-content');
+        const icon = newComponent.querySelector('.accordion-toggle svg:last-child');
+        
+        requestAnimationFrame(() => {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('rotate-180');
+            
+            // Focus on the first input of the new row for better UX
+            const firstInput = content.querySelector('input');
+            if (firstInput) firstInput.focus();
+        });
+        
         calculateAndUpdateTotals();
     });
 
@@ -739,6 +840,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateAndUpdateTotals = () => {
         clearTimeout(calculationDebounceTimer);
         calculationDebounceTimer = setTimeout(() => {
+            // Assume any calculation trigger is a result of user input or modification
+            // Only set if subjects are actually selected to avoid triggering on initial load/reset
+            if (selectedSubjects && selectedSubjects.length > 0) {
+                 hasUnsavedChanges = true;
+            }
             performCalculation();
         }, CALCULATION_DEBOUNCE);
     };
@@ -783,7 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 if (hasSubComponents && subComponentTotal !== 100) {
-                    mainRow.classList.add('bg-red-100');
+                    // mainRow.classList.add('bg-red-100'); // Removed red highlight
                     allSubTotalsCorrect = false;
                 } else {
                     mainRow.classList.remove('bg-red-100');
@@ -791,12 +897,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
+        // Safe access to legacy variables
+        const safeCourseType = typeof currentCourseType !== 'undefined' ? currentCourseType : null;
+        const safeSubjectId = typeof currentSubjectId !== 'undefined' ? currentSubjectId : null;
+        const safeMinorGradesUnlocked = typeof minorGradesUnlocked !== 'undefined' ? minorGradesUnlocked : false;
+
         // Check curriculum-based validation
-        const hasValidSelection = currentCourseType && 
-            (currentCourseType === 'minor' || (currentCourseType === 'major' && currentSubjectId));
+        // Use short-circuiting carefully but variables in the second clause must be defined
+        const hasLegacyValidSelection = safeCourseType && 
+            (safeCourseType === 'minor' || (safeCourseType === 'major' && safeSubjectId));
+            
+        const hasValidSelection = (selectedSubjects && selectedSubjects.length > 0) || hasLegacyValidSelection;
         
         // For minor courses, also check if grades are unlocked
-        const minorGradesReady = currentCourseType !== 'minor' || minorGradesUnlocked;
+        const minorGradesReady = !safeCourseType || safeCourseType !== 'minor' || safeMinorGradesUnlocked;
         
         // Enable Set Grade Scheme button when totals are correct, valid selection exists, and minor grades are ready
         const saveButtonIsDisabled = semestralTotal !== 100 || !allSubTotalsCorrect || !hasValidSelection || !minorGradesReady;
@@ -1010,113 +1124,112 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset subsequent steps
         selectedMemorandum = null;
         selectedSubjects = [];
-        memorandumBtnText.textContent = 'Select Memorandum';
+        memorandumBtnText.textContent = 'Select Curriculum';
         selectedSubjectsSection.classList.add('hidden');
         selectedSubjectsList.innerHTML = '';
         
         // Unlock Memorandum Section
         memorandumSection.classList.remove('hidden');
         
-        // Fetch Memorandums immediately to check
+        // Fetch Curriculums immediately to check
         // We will fetch when modal opens, but good to know if we can pre-load
     };
 
-    const fetchMemorandums = async () => {
+    const fetchCurriculums = async () => {
         try {
-            const subjects = await fetchAPI('subjects');
-            const memorandums = new Set();
+            const curriculums = await fetchAPI('curriculums');
             
-            subjects.forEach(sub => {
-                if (sub.memorandum && sub.memorandum !== 'N/A') {
-                    const memo = sub.memorandum;
-                    const category = (sub.category || '').toUpperCase();
-                    
-                    // Known DepEd Categories
-                    const depEdCategories = ['SHAPE PAPER', 'CURRICULUM GUIDES (CORE)', 'CURRICULUM GUIDES (ACADEMIC)', 'CURRICULUM GUIDES (TECHPRO)'];
-                    const isDepEdCategory = depEdCategories.includes(category);
-                    
-                    // Text Heuristics for DepEd (Senior High)
-                    const depEdPatterns = [
-                        /^Arts\s+\d/i, 
-                        /^Business\s+\d/i, 
-                        /^Economics\s+\d/i, 
-                        /^Management\s+\d/i, 
-                        /^Engineering\s+\d/i, 
-                        /^Health Science\s+\d/i, 
-                        /^Social Science\s+\d/i, 
-                        /^Humanities\s+\d/i,
-                        /NC\s+(I|II|III|IV)/i, 
-                        /DepEd/i, 
-                        /K\s?to\s?12/i, 
-                        /Curriculum Guide/i
-                    ];
-                    
-                    const isDepEdText = depEdPatterns.some(pattern => pattern.test(memo));
-                    const isDepEd = isDepEdCategory || isDepEdText;
-                    
-                    // Text Heuristics for CHED (College)
-                    const isCHEDText = /CMO|CHED|Higher Education|Joint Circular/i.test(memo);
-                    
-                    if (selectedLevel === 'Senior High') {
-                         if (isDepEd) memorandums.add(memo);
-                    } else if (selectedLevel === 'College') {
-                         // Include if explicitly CHED or (Not DepEd and Not explicitly marked as SHS)
-                         if (isCHEDText || !isDepEd) {
-                            memorandums.add(memo);
-                         }
-                    }
+            console.log('Filtering Curriculums for Level:', selectedLevel);
+            
+            const filtered = curriculums.filter(c => {
+                // Robustly get year level
+                const rawLevel = c.year_level || c.yearLevel || '';
+                const level = String(rawLevel).trim();
+                
+                const isSeniorHigh = /^Senior High|^SHS/i.test(level);
+                
+                if (selectedLevel === 'Senior High') {
+                    return isSeniorHigh;
+                } else {
+                    // College = Not Senior High
+                    return !isSeniorHigh;
                 }
             });
             
-            return Array.from(memorandums).sort();
+            return filtered.sort((a, b) => (a.curriculum_name || '').localeCompare(b.curriculum_name || ''));
         } catch (error) {
-            console.error('Error fetching memorandums:', error);
-            Swal.fire('Error', 'Failed to fetch memorandums', 'error');
+            console.error('Error fetching curriculums:', error);
+            Swal.fire('Error', 'Failed to fetch curriculums', 'error');
             return [];
         }
     };
     
-    const populateMemorandumList = (memos) => {
+    const populateCurriculumList = (curriculums) => {
         memorandumList.innerHTML = '';
-        if (memos.length === 0) {
-            memorandumList.innerHTML = '<p class="text-gray-500 text-center py-4">No memorandums found for this level.</p>';
+        if (curriculums.length === 0) {
+            memorandumList.innerHTML = '<p class="text-gray-500 text-center py-4">No curriculums found for this level.</p>';
             return;
         }
         
-        memos.forEach(memo => {
+        curriculums.forEach(curriculum => {
             const div = document.createElement('div');
-            div.className = 'p-3 hover:bg-amber-50 rounded-lg cursor-pointer border border-transparent hover:border-amber-200 transition-colors duration-150';
-            div.innerHTML = `<p class="font-medium text-gray-800">${memo}</p>`;
+            // Blue styling for curriculum items
+            div.className = 'p-3 hover:bg-blue-50 rounded-lg cursor-pointer border border-transparent hover:border-blue-200 transition-colors duration-150';
+            
+            // Format display text
+            let displayText = curriculum.curriculum_name;
+            if (curriculum.program_code) displayText += ` (${curriculum.program_code})`;
+            
+            // Only show academic year if not Senior High (as per previous patterns, though user said "all listed there")
+            if (curriculum.year_level !== 'Senior High' && curriculum.academic_year) {
+                displayText += ` - ${curriculum.academic_year}`;
+            }
+            // If user wants to see statuses like "Approved" etc, we can add a badge? 
+            // User requested "all curriculum will listed there".
+            // Let's just show the name clearly.
+            
+            div.innerHTML = `<p class="font-medium text-gray-800">${displayText}</p>`;
+            
             div.addEventListener('click', () => {
-                handleMemorandumSelection(memo);
+                handleCurriculumSelection(curriculum);
                 hideModal('select-memorandum-modal');
             });
             memorandumList.appendChild(div);
         });
     };
     
-    const handleMemorandumSelection = async (memo) => {
-        selectedMemorandum = memo;
-        memorandumBtnText.textContent = memo;
+    const handleCurriculumSelection = async (curriculum) => {
+        selectedMemorandum = curriculum; // We keep the variable name 'selectedMemorandum' internally to avoid massive diffs, or we can update it. Let's update usage.
+        
+        let displayText = curriculum.curriculum_name;
+        if (curriculum.program_code) displayText += ` (${curriculum.program_code})`;
+        if (curriculum.year_level !== 'Senior High' && curriculum.academic_year) displayText += ` - ${curriculum.academic_year}`;
+
+        memorandumBtnText.textContent = displayText;
         memorandumBtnText.classList.add('text-gray-900', 'font-bold');
         
         // Immediately trigger subject selection modal
-        await openSubjectsModal(memo);
+        await openSubjectsModal(curriculum);
     };
     
-    const openSubjectsModal = async (memo) => {
+    const openSubjectsModal = async (curriculum) => {
         showModal('select-subjects-modal');
         subjectsChecklist.innerHTML = '<p class="text-gray-500 text-center py-8">Loading subjects...</p>';
         confirmSelectSubjectsBtn.disabled = true;
         
-        const subjects = await fetchSubjectsByMemorandum(memo);
+        const subjects = await fetchSubjectsByCurriculum(curriculum.id);
         populateSubjectsChecklist(subjects);
     };
     
-    const fetchSubjectsByMemorandum = async (memo) => {
+    const fetchSubjectsByCurriculum = async (curriculumId) => {
          try {
-            const allSubjects = await fetchAPI('subjects');
-            return allSubjects.filter(s => s.memorandum === memo);
+            // New Endpoint: /api/curriculums/{id}/subjects
+            // Logic: This endpoint (CurriculumController@getCurriculumSubjects) returns subjects linked to the curriculum.
+            // Note: If the curriculum has NO subjects mapped yet, this returns empty. 
+            // This is correct behavior for "Grade Setup" - you can only grade what is in the curriculum.
+            
+            const subjects = await fetchAPI(`curriculums/${curriculumId}/subjects`);
+            return subjects || [];
         } catch (error) {
             console.error('Error fetching subjects:', error);
             return [];
@@ -1138,9 +1251,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         subjects.forEach(subject => {
             const isSelected = selectedSubjects.some(s => s.id === subject.id);
+            // Check if subject is already graded
+            // We can check against historyStats.subjects which contains graded subjects
+            const isGraded = historyStats.subjects.some(s => s.id === subject.id);
+            
             const div = document.createElement('div');
             div.className = `subject-item p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors ${isSelected ? 'border-green-500 bg-green-50' : 'border-gray-200'}`;
-            // Store full subject data
+            // Store full subject data including graded status
+            subject.is_graded = isGraded; 
             div.dataset.subject = JSON.stringify(subject);
             
             div.innerHTML = `
@@ -1154,10 +1272,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="text-xs font-mono text-gray-500 border px-1 rounded">${subject.subject_type}</span>
                         </div>
                         <p class="text-sm text-gray-600">${subject.subject_name}</p>
-                        <div class="flex gap-2 mt-1">
+                        <div class="flex gap-2 mt-1 items-center">
+                            ${selectedLevel !== 'Senior High' ? `
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                ${subject.units || 0} Units
-                            </span>
+                                ${subject.subject_unit || 0} Units
+                            </span>` : ''}
+                            ${isGraded ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800 border border-green-200">✅ Graded</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -1173,12 +1293,20 @@ document.addEventListener('DOMContentLoaded', () => {
             
             div.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
                 const itemDiv = e.target.closest('.subject-item');
-                if (e.target.checked) {
+                const isChecked = e.target.checked;
+                
+                if (isChecked) {
                     itemDiv.classList.add('border-green-500', 'bg-green-50');
                     itemDiv.classList.remove('border-gray-200');
+                    // Add to selectedSubjects if not present
+                    if (!selectedSubjects.some(s => s.id === subject.id)) {
+                        selectedSubjects.push(subject);
+                    }
                 } else {
                     itemDiv.classList.remove('border-green-500', 'bg-green-50');
                     itemDiv.classList.add('border-gray-200');
+                    // Remove from selectedSubjects
+                    selectedSubjects = selectedSubjects.filter(s => s.id !== subject.id);
                 }
                 updateSelectedSubjectsCount();
             });
@@ -1191,10 +1319,13 @@ document.addEventListener('DOMContentLoaded', () => {
             selectAllSubjectsCheckbox.onclick = () => {
                 const isChecked = selectAllSubjectsCheckbox.checked;
                 const checkboxes = document.querySelectorAll('.subject-checkbox');
+                
                 checkboxes.forEach(cb => {
-                    cb.checked = isChecked;
-                    // Update visual style
                     const itemDiv = cb.closest('.subject-item');
+                    // Get subject data safely (parse back from dataset or find in subjects array if needed, 
+                    // but here we can just rebuild selectedSubjects for bulk op)
+                    
+                    cb.checked = isChecked;
                     if (isChecked) {
                         itemDiv.classList.add('border-green-500', 'bg-green-50');
                         itemDiv.classList.remove('border-gray-200');
@@ -1203,6 +1334,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         itemDiv.classList.add('border-gray-200');
                     }
                 });
+                
+                // Update selectedSubjects Array
+                if (isChecked) {
+                    // Add all visible subjects (that are not already selected? no, just replacement or union)
+                    // Simplest is to union:
+                    subjects.forEach(s => {
+                        if (!selectedSubjects.some(sel => sel.id === s.id)) {
+                            // Ensure is_graded is correctly set on these objects before adding
+                            s.is_graded = historyStats.subjects.some(h => h.id === s.id); 
+                            selectedSubjects.push(s);
+                        }
+                    });
+                } else {
+                    // Remove all visible subjects from selection
+                    const currentIds = new Set(subjects.map(s => s.id));
+                    selectedSubjects = selectedSubjects.filter(s => !currentIds.has(s.id));
+                }
+                
                 updateSelectedSubjectsCount();
             };
         }
@@ -1237,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             div.innerHTML = `
                 <div>
                     <p class="font-medium text-gray-900">${subject.subject_code} - ${subject.subject_name}</p>
-                    <p class="text-sm text-gray-500">${subject.memorandum || 'No Memo'}</p>
+                    <p class="text-sm text-gray-500">${subject.curriculum_name || selectedMemorandum?.curriculum_name || 'Curriculum'}</p>
                 </div>
                 <button class="text-red-500 hover:text-red-700 text-sm font-medium remove-subject-btn" data-id="${subject.id}">Remove</button>
             `;
@@ -1263,6 +1412,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.curriculum-reminder-text').textContent = `✅ Ready to set grades for ${selectedSubjects.length} selected subject(s).`;
             document.querySelector('.curriculum-reminder-text').classList.remove('text-amber-600');
             document.querySelector('.curriculum-reminder-text').classList.add('text-green-600');
+            
+            // Auto-create first component if empty to save user a click
+            if (accordionContainer.children.length === 0) {
+                // Use setTimeout to ensure UI updates first and transition works
+                setTimeout(() => {
+                    addGradeComponentBtn.click();
+                }, 100);
+            }
         } else {
             addGradeComponentBtn.disabled = true;
             toggleGradeComponents(true); // Disable grading form
@@ -1270,6 +1427,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.curriculum-reminder-text').classList.add('text-amber-600');
             document.querySelector('.curriculum-reminder-text').classList.remove('text-green-600');
         }
+        calculateAndUpdateTotals();
     };
 
     const resetForm = () => {
@@ -1306,6 +1464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.curriculum-reminder-text').classList.add('text-amber-600');
         document.querySelector('.curriculum-reminder-text').classList.remove('text-green-600');
         
+        hasUnsavedChanges = false;
         calculateAndUpdateTotals();
     };
 
@@ -1541,13 +1700,67 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
+    // --- Unsaved Changes Protection ---
+    let hasUnsavedChanges = false;
+
+    const checkUnsavedChanges = async (callback) => {
+        if (hasUnsavedChanges) {
+             const result = await Swal.fire({
+                title: 'Unsaved Changes',
+                text: "You have unsaved changes. Are you sure you want to leave? Your progress will be lost.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, leave',
+                cancelButtonText: 'Stay'
+            });
+            if (result.isConfirmed) {
+                hasUnsavedChanges = false; // Prevent double warning
+                callback();
+            }
+        } else {
+            callback();
+        }
+    };
+
+    // Native browser prompt for reload/close
+    window.addEventListener('beforeunload', (e) => {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = ''; // Chrome requires returnValue to be set
+        }
+    });
+
+    // Intercept all link clicks
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && !link.target && !e.defaultPrevented) {
+             // If it's a navigational link (has href, not just #)
+             const href = link.getAttribute('href');
+             if (href && href !== '#' && !href.startsWith('javascript:')) {
+                 e.preventDefault();
+                 checkUnsavedChanges(() => {
+                     window.location.href = href;
+                 });
+             }
+        }
+    });
+
+    // Overwrite existing event listeners with protection
+    if (seniorHighBtn) seniorHighBtn.addEventListener('click', () => {
+        checkUnsavedChanges(() => handleLevelSelection('Senior High'));
+    });
+    
+    if (collegeBtn) collegeBtn.addEventListener('click', () => {
+        checkUnsavedChanges(() => handleLevelSelection('College'));
+    });
+
+    // ------------------------------------
+
     // Initial Load
     setTimeout(refreshHistory, 500);
 
-    // Updated Event Listeners
-    if (seniorHighBtn) seniorHighBtn.addEventListener('click', () => handleLevelSelection('Senior High'));
-    if (collegeBtn) collegeBtn.addEventListener('click', () => handleLevelSelection('College'));
-    
     // Filtering Logic
     const filterButtons = {
         all: document.getElementById('filter-all-btn'),
@@ -1645,16 +1858,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewMemorandumBtn) viewMemorandumBtn.onclick = () => updateHistoryTabs('memorandum');
     if (viewSubjectBtn) viewSubjectBtn.onclick = () => updateHistoryTabs('subject');
     
-    if (selectMemorandumBtn) selectMemorandumBtn.addEventListener('click', async () => {
+    // Event Listeners
+    selectMemorandumBtn.addEventListener('click', async () => {
         showModal('select-memorandum-modal');
-        memorandumList.innerHTML = '<p class="text-gray-500 text-center py-8">Loading memorandums...</p>';
-        const memorandums = await fetchMemorandums();
-        populateMemorandumList(memorandums);
+        memorandumList.innerHTML = '<p class="text-gray-500 text-center py-8">Loading curriculums...</p>';
+        memorandumSearchInput.value = '';
+        memorandumSearchInput.focus();
+        
+        const curriculums = await fetchCurriculums();
+        populateCurriculumList(curriculums);
+        
+        // Simple client-side search
+        memorandumSearchInput.oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = curriculums.filter(c => 
+                (c.curriculum_name || '').toLowerCase().includes(term) || 
+                (c.program_code || '').toLowerCase().includes(term)
+            );
+            populateCurriculumList(filtered);
+        };
     });
-    
     if (closeSelectMemorandumModalBtn) closeSelectMemorandumModalBtn.addEventListener('click', () => hideModal('select-memorandum-modal'));
     if (closeSelectSubjectsModalBtn) closeSelectSubjectsModalBtn.addEventListener('click', () => hideModal('select-subjects-modal'));
-    if (cancelSelectSubjectsBtn) cancelSelectSubjectsBtn.addEventListener('click', () => hideModal('select-subjects-modal'));
+    if (cancelSelectSubjectsBtn) cancelSelectSubjectsBtn.addEventListener('click', () => {
+        hideModal('select-subjects-modal');
+        
+        // Reset Memorandum Selection since user cancelled
+        memorandumBtnText.textContent = 'Select Memorandum';
+        memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
+        
+        // Reset Selected Subjects
+        selectedSubjects = [];
+        updateSelectedSubjectsList();
+    });
     
     if (confirmSelectSubjectsBtn) confirmSelectSubjectsBtn.addEventListener('click', () => {
         // Gather selected subjects from the modal
@@ -1813,15 +2049,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 await refreshHistory();
                 
                 // Show success message
+                const successHtml = `
+                    <div class="text-center px-4 pt-2 pb-4">
+                        <div class="w-12 h-12 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Grade Schemes Saved!</h3>
+                        <p class="text-sm text-gray-500">Successfully applied grade scheme to ${savedCount} subject(s).</p>
+                    </div>
+                `;
+
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Grade Schemes Saved!',
-                    text: `Successfully applied grade scheme to ${savedCount} subject(s).`,
+                    html: successHtml,
+                    width: '380px',
                     timer: 3000,
-                    showConfirmButton: true
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#10B981',
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'rounded-2xl p-0 overflow-hidden',
+                        actions: 'gap-3 mb-6',
+                        confirmButton: 'w-full px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none transition-colors shadow-sm mx-6'
+                    }
                 });
                 
                 // Reset UI
+                hasUnsavedChanges = false;
                 resetForm();
                 
             } catch (e) {

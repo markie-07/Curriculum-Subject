@@ -10,6 +10,7 @@ class ComplianceLink extends Model
         'agency',
         'is_category',
         'year',
+        'group',
         'title',
         'url'
     ];

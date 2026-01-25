@@ -55,7 +55,7 @@
                 </h2>
                 <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div>
+                        <div class="md:col-span-2 lg:col-span-2">
                             <label for="course_title" class="block text-sm font-medium text-gray-700">Course Title</label>
                             <input type="text" name="course_title" id="course_title" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
@@ -71,7 +71,19 @@
                                 <option value="Minor">Minor</option>
                             </select>
                         </div>
-                        
+
+                        <div class="md:col-span-2 lg:col-span-2">
+                            <label for="curriculum_id" class="block text-sm font-medium text-gray-700">Curriculum</label>
+
+                            <div class="relative cursor-pointer" id="openCurriculumModal">
+                                <div class="block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm bg-white hover:bg-gray-50 transition-colors flex justify-between items-center group">
+                                    <span id="curriculumButtonText" class="text-gray-500">Select curriculums for this subject...</span>
+                                    <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                <!-- Hidden inputs will be appended by JS or handled via FormData construction -->
+                            </div>
+                        </div>
+
                         {{-- Memorandum Container (Hidden by default) --}}
                         <div id="memorandumContainer" class="hidden md:col-span-2 lg:col-span-3">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
@@ -79,7 +91,7 @@
                                 <div id="yearContainer" class="hidden">
                                     <label for="memorandumYear" class="block text-sm font-medium text-gray-700">Memorandum Year</label>
                                     <div class="relative">
-                                        <select id="memorandumYear" name="memorandumYear" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                        <select id="memorandumYear" name="memorandumYear" class="appearance-none block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
                                             <option value="" disabled selected>Select Year</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -104,8 +116,21 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- Title Selection for DepEd (Hidden by default) --}}
+                                <div id="titleContainer" class="hidden md:col-span-2">
+                                    <label for="memorandumTitle" class="block text-sm font-medium text-gray-700">Title / Group</label>
+                                    <div class="relative">
+                                        <select id="memorandumTitle" name="memorandumTitle" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                            <option value="" disabled selected>Select Title</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <div class="md:col-span-2">
+                                <div id="memoContainer" class="md:col-span-2">
                                     <label for="memorandum" class="block text-sm font-medium text-gray-700">Official Memorandum</label>
                                     <div class="relative">
                                         <select id="memorandum" name="memorandum" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
@@ -120,27 +145,29 @@
                         </div>
                         {{-- DepEd Specific Fields --}}
                         <div id="deped-course-info-fields" class="contents hidden">
-                            <div>
-                                <label for="time_allotment" class="block text-sm font-medium text-gray-700">Time Allotment</label>
-                                <input type="text" name="time_allotment" id="time_allotment" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. 80 hours">
-                            </div>
-                            <div>
-                                <label for="schedule" class="block text-sm font-medium text-gray-700">Schedule</label>
-                                <input type="text" name="schedule" id="schedule" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. M-W-F 9-10">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
-                                <div class="flex items-center space-x-4">
-                                    <button type="button" onclick="document.getElementById('syllabus_file').click()" class="px-4 py-3 bg-red-50 text-red-600 rounded-md border border-red-200 hover:bg-red-100 transition-colors flex items-center w-full justify-center">
+                            <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Syllabus Document (PDF/Image)</label>
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <button type="button" onclick="document.getElementById('syllabus_file').click()" class="px-6 py-3 bg-red-50 text-red-600 rounded-md border border-red-200 hover:bg-red-100 transition-colors flex items-center shadow-sm">
                                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                        Import
+                                        Upload Syllabus
                                     </button>
-                                    <input type="file" id="syllabus_file" class="hidden" accept=".pdf" onchange="handleSyllabusUpload(this)">
+                                    <span id="file_name_display" class="text-gray-500 italic text-sm">No file selected</span>
+                                    <input type="file" id="syllabus_file" name="syllabus_path" class="hidden" accept=".pdf, .jpg, .jpeg, .png" onchange="handleSyllabusUpload(this)">
                                 </div>
-                                <p class="text-xs text-gray-500 mt-2 truncate" title="Auto-extraction works best with standard DepEd formats.">
-                                    <svg class="w-4 h-4 inline mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Note: Standard DepEd formats best.
+                                <p class="text-xs text-gray-500 mb-4">
+                                    <svg class="w-4 h-4 inline mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Uploading a file will replace the manual curriculum guide fields.
                                 </p>
+                                
+                                <div id="pdf-preview-container" class="w-full h-[600px] border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 overflow-hidden relative">
+                                    <div id="pdf-placeholder" class="text-center text-gray-400 p-8">
+                                        <svg class="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        <p>Document preview will appear here</p>
+                                    </div>
+                                    <iframe id="pdf-frame" class="w-full h-full hidden" src=""></iframe>
+                                    <img id="image-preview" class="max-w-full max-h-full hidden object-contain" src="" alt="Syllabus Preview">
+                                </div>
                             </div>
                         </div>
                         {{-- CHED Specific Fields --}}
@@ -170,7 +197,7 @@
                         </div>
 
 
-                        <div class="lg:col-span-3">
+                        <div id="course_description_container" class="lg:col-span-3">
                             <label for="course_description" class="block text-sm font-medium text-gray-700">Course Description</label>
                             <textarea id="course_description" required name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                         </div>
@@ -558,7 +585,7 @@
             </div> {{-- End of CHED Container --}}
 
             {{-- Approval Section (Shared) --}}
-            <div class="mb-12">
+            <div id="approval-section" class="mb-12">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     Approval
@@ -788,41 +815,70 @@
 </div>
 
 <script>
-    // DepEd memorandum categories (kept static as they are not year-based)
-    const depedCategories = {
-        'Shape Paper': [
-            'The Strengthened Senior High School Program Shaping Paper'
-        ],
-        'Curriculum Guides (Core)': [
-            'Effective Communication - Core Subject Guide',
-            'General Mathematics - Core Subject Guide',
-            'General Science - Core Subject Guide',
-            'Life and Career Skills - Core Subject Guide',
-            'Mabisang Komunikasyon - Core Subject Guide',
-            'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
-        ],
-        'Curriculum Guides (Academic)': [
-            'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
-            'Arts 2 (Creative Industries II – Performing Arts)',
-            'Social Science 1 (Introduction to Social Sciences)',
-            'Humanities 1 (Creative Writing)',
-            'Humanities 2 (Introduction to World Religions and Belief Systems)',
-            'Engineering 1 (Calculus)',
-            'Engineering 2 (Fundamentals of Programming)',
-            'Engineering 3 (Basic Electricity and Electronics)',
-            'Business 1 (Business Enterprise Simulation)',
-            'Economics 1 (Introduction to Economics)',
-            'Management 1 (Fundamentals of Accountancy, Business, and Management)',
-            'Health Science 1 (Introduction to Health Science)',
-            'Health Science 2 (Basic Human Anatomy and Physiology)'
-        ],
-        'Curriculum Guides (TechPro)': [
-            'Digital Tools and Productivity Applications',
-            'Multimedia Development and Design',
-            'Computer Systems and Network Administration',
-            'Web Development',
-            'Computer Programming'
-        ]
+    // Global variable to store current DepEd links for filtering
+    let currentDepEdLinks = [];
+    let allCurriculums = []; // Store all curriculums for client-side filtering
+
+    // Render curriculums based on Year Level (College vs Senior High)
+    const renderCurriculumOptions = (yearLevel) => {
+        const curriculumSelect = document.getElementById('curriculum_id');
+        if (!curriculumSelect) return;
+        
+        curriculumSelect.innerHTML = '<option value="" disabled selected>Select Curriculum</option>';
+        
+        let filtered = allCurriculums.filter(c => c.year_level === yearLevel);
+        
+        // Filter out Approved and Old curriculums for BOTH formats (CHED and DepEd)
+        // Only display "Processing" and "Reject" (and implicitly "New"/Pending)
+        filtered = filtered.filter(c => {
+             const status = String(c.approval_status || '').toLowerCase().trim();
+             const version = String(c.version_status || '').toLowerCase().trim();
+             
+             // NOT Approved AND NOT Old/History
+             // If status is 'approved', return false.
+             // If version is 'old' or 'history', return false.
+             return !['approved'].includes(status) && !['old', 'history'].includes(version);
+        });
+        
+        if (filtered.length === 0) {
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = `No ${yearLevel} curriculums found`;
+            curriculumSelect.appendChild(option);
+            return;
+        }
+
+        filtered.forEach(curr => {
+            const option = document.createElement('option');
+            option.value = curr.id; 
+            if (yearLevel === 'Senior High') {
+                option.textContent = curr.curriculum_name;
+            } else {
+                option.textContent = `${curr.curriculum_name} (${curr.academic_year})`;
+            } 
+            curriculumSelect.appendChild(option);
+        });
+    };
+
+    // Fetch Curriculums logic
+    const fetchCurriculums = async () => {
+        const curriculumSelect = document.getElementById('curriculum_id');
+        if (!curriculumSelect) return;
+        
+        try {
+            const response = await fetch('/api/curriculums');
+            if (!response.ok) throw new Error('Failed to fetch curriculums');
+            allCurriculums = await response.json();
+            
+            // Initial render based on current syllabus type
+            const currentType = document.getElementById('syllabus_type').value || 'CHED';
+            const yearLevel = currentType === 'CHED' ? 'College' : 'Senior High';
+            renderCurriculumOptions(yearLevel);
+
+        } catch (error) {
+            console.error('Error fetching curriculums:', error);
+            curriculumSelect.innerHTML = '<option value="" disabled selected>Error loading curriculums</option>';
+        }
     };
 
     // Function to populate CHED years (matching compliance_validator range)
@@ -843,37 +899,28 @@
     // Function to fetch memorandums based on compliance, year, or category
     const fetchMemorandumData = async (compliance, yearOrCategory = null) => {
         try {
-            if (compliance === 'CHED' && yearOrCategory) {
-                const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${yearOrCategory}`);
-                if (!response.ok) throw new Error('API request failed');
-                const data = await response.json();
-                return data.map(link => link.title);
-            } else if (compliance === 'DepEd' && yearOrCategory) {
-                return depedCategories[yearOrCategory] || [];
-            }
-            return [];
+            if (!yearOrCategory) return [];
+            const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${encodeURIComponent(yearOrCategory)}`);
+            if (!response.ok) throw new Error('API request failed');
+            return await response.json();
         } catch (error) {
             console.error('Error fetching memorandum data:', error);
             return [];
         }
     };
 
-    const updateMemorandumDropdown = async (compliance, filter) => {
+    const updateMemorandumSelectOptions = (data) => {
         const memorandumSelect = document.getElementById('memorandum');
         if (!memorandumSelect) return;
-        
-        memorandumSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
-        memorandumSelect.disabled = true;
 
-        const data = await fetchMemorandumData(compliance, filter);
-        
         memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
         if (data && data.length > 0) {
             memorandumSelect.disabled = false;
-            data.forEach(memo => {
+            data.forEach(link => {
                 const option = document.createElement('option');
-                option.value = memo;
-                option.textContent = memo;
+                // Use title for value as per existing logic
+                option.value = link.title; 
+                option.textContent = link.title;
                 memorandumSelect.appendChild(option);
             });
         } else {
@@ -883,6 +930,83 @@
             option.value = '';
             memorandumSelect.appendChild(option);
         }
+    };
+
+    // CHED Specific Update
+    const updateCHEDMemorandumDropdown = async (year) => {
+        const memorandumSelect = document.getElementById('memorandum');
+        if (!memorandumSelect) return;
+        
+        memorandumSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
+        memorandumSelect.disabled = true;
+
+        const data = await fetchMemorandumData('CHED', year);
+        updateMemorandumSelectOptions(data);
+    };
+
+    // DepEd Category Change Handler
+    const handleDepEdCategoryChange = async (category) => {
+        const memorandumSelect = document.getElementById('memorandum');
+        const titleContainer = document.getElementById('titleContainer');
+        const categoryContainer = document.getElementById('categoryContainer');
+        const titleSelect = document.getElementById('memorandumTitle');
+        
+        if (!memorandumSelect) return;
+
+        memorandumSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
+        memorandumSelect.disabled = true;
+        
+        // Reset title dropdown
+        titleSelect.innerHTML = '<option value="" disabled selected>Select Title</option>';
+        titleContainer.classList.add('hidden');
+
+        // Fetch Data
+        currentDepEdLinks = await fetchMemorandumData('DepEd', category);
+        
+        // Extract Unique Groups (Titles)
+        // Groups come from two sources:
+        // 1. The 'group' column of normal links (e.g. link.group = 'ARTS...')
+        // 2. The 'title' column of Category records (e.g. link.title = 'ARTS...', link.is_category = 1)
+        const groups = [...new Set([
+            ...currentDepEdLinks.map(link => link.group).filter(g => g),
+            ...currentDepEdLinks.filter(link => link.is_category == 1 || link.is_category === true).map(link => link.title)
+        ])];
+        
+        if (groups.length > 0) {
+            // Data found with groups -> Shrink Category, Show Title
+            if(categoryContainer) {
+                categoryContainer.classList.remove('md:col-span-3');
+                categoryContainer.classList.add('md:col-span-1');
+            }
+            
+            // Show Title Dropdown
+            titleContainer.classList.remove('hidden');
+            groups.sort().forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                titleSelect.appendChild(option);
+            });
+            
+            // Wait for user to select title before populating memorandum
+            memorandumSelect.innerHTML = '<option value="" disabled selected>Select Title First</option>';
+        } else {
+            // No groups -> Expand Category to Full Width
+            if(categoryContainer) {
+                categoryContainer.classList.remove('md:col-span-1');
+                categoryContainer.classList.add('md:col-span-3');
+            }
+            
+            // No groups, populate memorandum directly with all links (excluding pure categories)
+            const linksOnly = currentDepEdLinks.filter(link => !link.is_category);
+            updateMemorandumSelectOptions(linksOnly.length > 0 ? linksOnly : currentDepEdLinks);
+        }
+    };
+    
+    // DepEd Title Change Handler
+    const handleDepEdTitleChange = (selectedGroup) => {
+        const filteredLinks = currentDepEdLinks.filter(link => link.group === selectedGroup);
+        updateMemorandumSelectOptions(filteredLinks);
     };
 
     // Helper to toggle required attribute
@@ -908,6 +1032,8 @@
         const memorandumContainer = document.getElementById('memorandumContainer');
         const yearContainer = document.getElementById('yearContainer');
         const categoryContainer = document.getElementById('categoryContainer');
+        const titleContainer = document.getElementById('titleContainer');
+        const memoContainer = document.getElementById('memoContainer'); // Defined in HTML now
         const memorandumSelect = document.getElementById('memorandum');
         
         if (!memorandumContainer) return;
@@ -916,29 +1042,54 @@
         if (memorandumSelect) {
             memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
             memorandumSelect.disabled = true;
-            // Always required when visible
             toggleRequired(memorandumSelect, true);
         }
 
         if (compliance === 'CHED') {
             yearContainer.classList.remove('hidden');
             categoryContainer.classList.add('hidden');
+            if(titleContainer) titleContainer.classList.add('hidden');
+            
+            // CHED Layout: Year(1) + Memo(2) = 3 cols (1 row)
+            if(memoContainer) {
+                memoContainer.classList.remove('md:col-span-3');
+                memoContainer.classList.add('md:col-span-2');
+            }
+            
             document.getElementById('memorandumCategory').selectedIndex = 0;
+            if(document.getElementById('memorandumTitle')) document.getElementById('memorandumTitle').selectedIndex = 0;
+            
+            toggleRequired(yearContainer, true);
+            toggleRequired(categoryContainer, false);
             
             toggleRequired(yearContainer, true);
             toggleRequired(categoryContainer, false);
             
             populateCHEDYears();
+            renderCurriculumOptions('College'); // Filter for CHED
         } else if (compliance === 'DepEd') {
             yearContainer.classList.add('hidden');
             categoryContainer.classList.remove('hidden');
             document.getElementById('memorandumYear').selectedIndex = 0;
             
+            // DepEd Initial Layout: Category Full Width (3) because Title is hidden initially
+            if(categoryContainer) {
+                categoryContainer.classList.remove('md:col-span-1');
+                categoryContainer.classList.add('md:col-span-3');
+            }
+            
+            // Memo is also Full Width (3) on valid rows
+            if(memoContainer) {
+                memoContainer.classList.remove('md:col-span-2');
+                memoContainer.classList.add('md:col-span-3');
+            }
+            
             toggleRequired(yearContainer, false);
             toggleRequired(categoryContainer, true);
+            
+            renderCurriculumOptions('Senior High'); // Filter for DepEd
         } else {
             memorandumContainer.classList.add('hidden');
-            // Remove requirements if hidden
             toggleRequired(memorandumContainer, false);
         }
     }
@@ -946,20 +1097,28 @@
     document.addEventListener('DOMContentLoaded', () => {
         const memorandumYearSelect = document.getElementById('memorandumYear');
         const memorandumCategorySelect = document.getElementById('memorandumCategory');
+        const memorandumTitleSelect = document.getElementById('memorandumTitle');
 
         if(memorandumYearSelect) {
             memorandumYearSelect.addEventListener('change', function() {
-                updateMemorandumDropdown('CHED', this.value);
+                updateCHEDMemorandumDropdown(this.value);
             });
         }
 
         if(memorandumCategorySelect) {
             memorandumCategorySelect.addEventListener('change', function() {
-                updateMemorandumDropdown('DepEd', this.value);
+                handleDepEdCategoryChange(this.value);
+            });
+        }
+        
+        if(memorandumTitleSelect) {
+            memorandumTitleSelect.addEventListener('change', function() {
+                handleDepEdTitleChange(this.value);
             });
         }
         
         populateCHEDYears();
+        fetchCurriculums(); // Load curriculums
     });
     
     // Initialize default view if needed based on initial syllabus type
@@ -1047,6 +1206,7 @@ function switchSyllabus(type) {
     const chedFields = document.getElementById('ched-course-info-fields');
     const depedFields = document.getElementById('deped-course-info-fields');
     const depedGrids = document.getElementById('deped-curriculum-grids');
+    const approvalSection = document.getElementById('approval-section');
 
     syllabusTypeInput.value = type;
     
@@ -1088,12 +1248,23 @@ function switchSyllabus(type) {
         toggleRequired(depedFields, false);
         toggleRequired(depedGrids, false);
         
+        // Show Approval Section
+        approvalSection.classList.remove('hidden');
+        toggleRequired(approvalSection, true);
+        
         btnChed.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
         btnChed.classList.remove('text-gray-600');
         
         btnDeped.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
         btnDeped.classList.add('text-gray-600');
         
+        // Show Course Description for CHED
+        const courseDescContainer = document.getElementById('course_description_container');
+        if (courseDescContainer) {
+            courseDescContainer.classList.remove('hidden');
+            toggleRequired(courseDescContainer, true);
+        }
+
         // Clear DepEd-specific fields if not editing
         if (!isEditing) {
             document.getElementById('time_allotment').value = '';
@@ -1123,17 +1294,29 @@ function switchSyllabus(type) {
     } else {
         chedContainer.classList.add('hidden');
         
-        // Hide CHED fields, Show DepEd fields and grids
+        // Hide CHED fields, Show DepEd fields (which is now just PDF upload)
         chedFields.classList.add('hidden');
         depedFields.classList.remove('hidden');
-        depedGrids.classList.remove('hidden');
         
+        // Hide Curriculum Grids (User requested removal for DepEd as PDF replaces them)
+        depedGrids.classList.add('hidden');
         
         // Toggle Required Attributes
         toggleRequired(chedContainer, false);
         toggleRequired(chedFields, false);
-        toggleRequired(depedFields, true);
-        toggleRequired(depedGrids, true);
+        toggleRequired(depedFields, false);
+        toggleRequired(depedGrids, false);
+
+        // Hide Course Description for DepEd
+        const courseDescContainer = document.getElementById('course_description_container');
+        if (courseDescContainer) {
+            courseDescContainer.classList.add('hidden');
+            toggleRequired(courseDescContainer, false);
+        }
+
+        // Hide Approval Section
+        approvalSection.classList.add('hidden');
+        toggleRequired(approvalSection, false);
         
         // Explicitly remove required from CHED-specific fields to ensure form validation works
         const chedSpecificFields = [
@@ -1427,6 +1610,112 @@ Learning Management System`;
         populateMappingGrid('course-mapping-table-body', subject.course_mapping_grid, 'cilo');
         populateWeeklyPlan(subject.lessons);
 
+        // Populate DepEd Fields
+        if (subject.syllabus_type === 'DepEd') {
+            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; }
+            
+            // Syllabus File Preview
+            if (subject.syllabus_path) {
+                const fileName = subject.syllabus_path.split('/').pop();
+                const displayEl = document.getElementById('file_name_display');
+                if (displayEl) displayEl.textContent = fileName;
+
+                const pdfFrame = document.getElementById('pdf-frame');
+                const imagePreview = document.getElementById('image-preview');
+                const placeholder = document.getElementById('pdf-placeholder');
+                
+                const ext = fileName.split('.').pop().toLowerCase();
+
+                if (ext === 'pdf') {
+                    if (pdfFrame) {
+                        pdfFrame.src = subject.syllabus_path;
+                        pdfFrame.classList.remove('hidden');
+                        if (placeholder) placeholder.classList.add('hidden');
+                    }
+                } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                     if (imagePreview) {
+                        imagePreview.src = subject.syllabus_path;
+                        imagePreview.classList.remove('hidden');
+                        if (placeholder) placeholder.classList.add('hidden');
+                    }
+                }
+            } else {
+                 // Reset preview if no file
+                 const placeholder = document.getElementById('pdf-placeholder');
+                 const pdfFrame = document.getElementById('pdf-frame');
+                 const imagePreview = document.getElementById('image-preview');
+                 if (placeholder) placeholder.classList.remove('hidden');
+                 if (pdfFrame) {
+                     pdfFrame.classList.add('hidden');
+                     pdfFrame.src = '';
+                 }
+                 if (imagePreview) {
+                     imagePreview.classList.add('hidden');
+                     imagePreview.src = '';
+                 }
+                 const displayEl = document.getElementById('file_name_display');
+                 if (displayEl) displayEl.textContent = 'No file selected';
+            }
+
+            setVal('time_allotment', subject.time_allotment);
+            setVal('schedule', subject.schedule);
+            
+            // Handle flat properties or properties inside deped_data just in case
+            setVal('q_1_performance_standards', subject.q_1_performance_standards || subject.performance_standards_q1);
+            setVal('q_1_performance_task', subject.q_1_performance_tasks || subject.performance_tasks_q1);
+            setVal('q_2_performance_standards', subject.q_2_performance_standards || subject.performance_standards_q2);
+            setVal('q_2_performance_task', subject.q_2_performance_tasks || subject.performance_tasks_q2);
+
+            const depedData = subject.deped_data || {};
+            const populateRows = (quarter, rows) => {
+                const container = document.getElementById(`q_${quarter}_rows_container`);
+                if (!container || !rows) return;
+                
+                // Clear existing extra rows (keep first one)
+                container.innerHTML = ''; 
+                // We need to rebuild rows. 
+                // Actually, the structure assumes we add rows. 
+                // Let's create rows.
+                
+                rows.forEach((row, index) => {
+                   const rowDiv = document.createElement('div');
+                   rowDiv.className = 'grid grid-cols-1 md:grid-cols-12 gap-4 mb-4 deped-row relative group';
+                   rowDiv.innerHTML = `
+                        <div class="md:col-span-4">
+                            <textarea class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm min-h-[100px]" placeholder="Content...">${row.content || ''}</textarea>
+                        </div>
+                        <div class="md:col-span-4">
+                            <textarea class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm min-h-[100px]" placeholder="Content Standards...">${row.content_standards || ''}</textarea>
+                        </div>
+                        <div class="md:col-span-3">
+                            <textarea class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm min-h-[100px]" placeholder="Learning Competencies...">${row.learning_competencies || ''}</textarea>
+                        </div>
+                        <div class="md:col-span-1 flex items-center justify-center">
+                            <button type="button" class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors remove-row-btn" onclick="this.closest('.deped-row').remove()">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                   `;
+                   container.appendChild(rowDiv);
+                });
+                
+                // If no rows, ensure at least one empty row is present? 
+                // The addRow function handles creating a new blank one.
+                if (rows.length === 0) {
+                     // Trigger add row? Or manually add one blank.
+                     // The container should probably have at least one blank row if empty, 
+                     // but let's leave it empty if data is empty, user can click "Add Row".
+                     // Actually, for UX, having one empty row is better.
+                     if (typeof addDepEdRow === 'function') {
+                         addDepEdRow(quarter);
+                     }
+                }
+            };
+
+            populateRows(1, depedData.q_1_rows || subject.q_1_rows || []);
+            populateRows(2, depedData.q_2_rows || subject.q_2_rows || []);
+        }
+
         pageTitle.textContent = 'Edit Course';
         saveButton.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> <span>Update Course</span>`;
     };
@@ -1460,64 +1749,177 @@ Learning Management System`;
         });
     }
 
+    // Helper to collect DepEd dynamic rows
+    const collectDepEdRows = (quarter) => {
+        const container = document.getElementById(`q_${quarter}_rows_container`);
+        if (!container) return [];
+        
+        const rows = [];
+        const rowDivs = container.querySelectorAll('.deped-row');
+        
+        rowDivs.forEach(rowDiv => {
+            const textareas = rowDiv.querySelectorAll('textarea');
+            // Expected order: Content, Content Standards, Learning Competencies
+            if (textareas.length >= 3) {
+                // Ensure value exists or is at least empty string
+                rows.push({
+                    content: textareas[0].value || '',
+                    content_standards: textareas[1].value || '',
+                    learning_competencies: textareas[2].value || ''
+                });
+            }
+        });
+        
+        return rows;
+    };
+
     // Handle the actual save logic when user confirms
     const handleCourseSave = async () => {
         disableDirtyCheck();
 
-        const payload = {
-            course_title: document.getElementById('course_title').value,
-            subject_code: document.getElementById('course_code').value,
-            subject_type: document.getElementById('subject_type').value,
-            subject_unit: document.getElementById('syllabus_type').value === 'DepEd' ? 0 : (document.getElementById('credit_units').value || 0),
-            contact_hours: document.getElementById('contact_hours').value || null,
-            course_description: document.getElementById('course_description').value,
-            pilo_outcomes: document.getElementById('pilo_outcomes').value,
-            cilo_outcomes: document.getElementById('cilo_outcomes').value,
-            learning_outcomes: document.getElementById('learning_outcomes').value,
-            basic_readings: document.getElementById('basic_readings').value,
-            extended_readings: document.getElementById('extended_readings').value,
-            course_assessment: document.getElementById('course_assessment').value,
-            course_policies: document.getElementById('course_policies').value, // Make sure to collect this
-            committee_members: document.getElementById('committee_members').value,
-            consultation_schedule: document.getElementById('consultation_schedule').value,
-            prepared_by: document.getElementById('prepared_by').value,
-            reviewed_by: document.getElementById('reviewed_by').value,
-            approved_by: document.getElementById('approved_by').value,
-            memorandum: document.getElementById('memorandum').value || null,
-            memorandum_year: document.getElementById('memorandumYear').value || null,
-            memorandum_category: document.getElementById('memorandumCategory').value || null,
-            lessons: collectWeeklyPlan(),
-            program_mapping_grid: collectMappingGridData('program-mapping-table-body'),
-            course_mapping_grid: collectMappingGridData('course-mapping-table-body'),
-            curriculum_ids: Array.from(selectedCurriculums), // Include selected curriculums
-        };
-
+        const formData = new FormData();
         const subjectId = subjectIdField.value;
-        const method = subjectId ? 'PUT' : 'POST';
+
+        // Basic Fields
+        formData.append('course_title', document.getElementById('course_title').value);
+        formData.append('subject_code', document.getElementById('course_code').value);
+        formData.append('subject_type', document.getElementById('subject_type').value);
+        
+        const syllabusType = document.getElementById('syllabus_type').value;
+        formData.append('syllabus_type', syllabusType);
+
+        if (syllabusType === 'DepEd') {
+             formData.append('subject_unit', 0);
+             // DepEd fields are largely removed or optional now
+             if (document.getElementById('time_allotment')) formData.append('time_allotment', document.getElementById('time_allotment').value);
+             if (document.getElementById('schedule')) formData.append('schedule', document.getElementById('schedule').value);
+             
+             // Handle Syllabus File
+             const syllabusFile = document.getElementById('syllabus_file').files[0];
+             if (syllabusFile) {
+                 formData.append('syllabus_path', syllabusFile);
+             }
+
+        } else {
+             formData.append('subject_unit', document.getElementById('credit_units').value || 0);
+             formData.append('contact_hours', document.getElementById('contact_hours').value || '');
+        }
+
+        formData.append('course_description', document.getElementById('course_description').value);
+        formData.append('pilo_outcomes', document.getElementById('pilo_outcomes').value);
+        formData.append('cilo_outcomes', document.getElementById('cilo_outcomes').value);
+        formData.append('learning_outcomes', document.getElementById('learning_outcomes').value);
+        formData.append('basic_readings', document.getElementById('basic_readings').value);
+        formData.append('extended_readings', document.getElementById('extended_readings').value);
+        formData.append('course_assessment', document.getElementById('course_assessment').value);
+        formData.append('course_policies', document.getElementById('course_policies').value);
+        formData.append('committee_members', document.getElementById('committee_members').value);
+        formData.append('consultation_schedule', document.getElementById('consultation_schedule').value);
+        formData.append('prepared_by', document.getElementById('prepared_by').value);
+        formData.append('reviewed_by', document.getElementById('reviewed_by').value);
+        formData.append('approved_by', document.getElementById('approved_by').value);
+        
+        formData.append('memorandum', document.getElementById('memorandum').value || '');
+        formData.append('memorandum_year', document.getElementById('memorandumYear').value || '');
+        formData.append('memorandum_category', document.getElementById('memorandumCategory').value || '');
+
+        // Complex Data (JSON)
+        // Note: For existing manual DepEd logic (if any remains), we keep it, but user wants them removed.
+        // We will send null or empty for removed fields to avoid validaton errors if they were required (validation was removed in blade)
+        
+        // However, we still need to send structure for legacy compatibility if we don't want to break DB
+        // But since we are allowed to have nulls in DB (based on migration), it's fine.
+
+        const weeklyPlan = collectWeeklyPlan();
+        if (weeklyPlan) {
+            // PHP side expects 'lessons' array, but if we send FormData, we have to handle it carefully.
+            // The existing Controller validation says 'lessons' => 'nullable|array'. 
+            // Sending JSON string might fail validation if it expects array directly.
+            // In Laravel, to send array via FormData, check how Controller handles it.
+            // Actually, usually we can't send nested objects easily in FormData without manual indexing or JSON strings.
+            // Simplest way: Send as JSON string and decode in Controller? 
+            // BUT the controller validation `nullable|array` expects an array. 
+            // If we send `lessons` as a JSON string, validation `array` might fail.
+            // We should use array notation `lessons[key]=value` or modify Controller to accept JSON string.
+            // Since I cannot modify Controller drastically in this step (I did modify it earlier but not for this),
+            // I should try to mimic array structure or...
+            // Wait, standard way for complex JSON in Laravel API with FormData is often sending a JSON string and decoding it, 
+            // but the validation rule `array` will fail on a string.
+            // 
+            // Let's look at `program_mapping_grid` etc.
+            // The best way is to iterate.
+            
+            // Actually, the previous fetch call used `JSON.stringify(payload)`.
+            // So `lessons` was an Object/Array in JSON.
+            // If I change to FormData, `lessons` with `array` rule must be sent as `lessons[key]...`
+            
+            // To be safe and minimal: I will assume the Controller can handle JSON decoding if I change the input name or logic?
+            // No, the controller is strict: `lessons => nullable|array`.
+            // I will iterate weeklyPlan (which is an object) and append fields.
+             // `collectWeeklyPlan` returns object: { "Week 0": "...", "Week 1": "..." }
+             Object.keys(weeklyPlan).forEach(key => {
+                 formData.append(`lessons[${key}]`, weeklyPlan[key]);
+             });
+        }
+        
+        const programMapping = collectMappingGridData('program-mapping-table-body');
+        if (programMapping) {
+            programMapping.forEach((row, index) => {
+                Object.keys(row).forEach(key => {
+                    formData.append(`program_mapping_grid[${index}][${key}]`, row[key]);
+                });
+            });
+        }
+        
+        const courseMapping = collectMappingGridData('course-mapping-table-body');
+        if (courseMapping) {
+            courseMapping.forEach((row, index) => {
+                Object.keys(row).forEach(key => {
+                    formData.append(`course_mapping_grid[${index}][${key}]`, row[key]);
+                });
+            });
+        }
+        
+        // Curriculums
+        Array.from(selectedCurriculums).forEach((id, index) => {
+            formData.append(`curriculum_ids[${index}]`, id);
+        });
+
+        // DepEd Data - If manual rows are still present (not in this request, but for completeness)
+        // Since we removed them visually, we won't append them.
+
+        // CSRF Token
+        // Headers handled by fetch, but we need X-CSRF-TOKEN
+        
+        // Method Spoofing for Update
+        if (subjectId) {
+            formData.append('_method', 'PUT');
+        }
+
         const url = subjectId ? `/api/subjects/${subjectId}` : '/api/subjects';
 
         try {
             const response = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                body: JSON.stringify(payload)
+                method: 'POST', // Always POST for FormData (with _method for PUT)
+                headers: { 
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json' 
+                    // Content-Type MUST NOT be set manually
+                },
+                body: formData
             });
             const result = await response.json();
             if (!response.ok) {
-                let errorMessage = result.message || `Failed to ${method === 'POST' ? 'create' : 'update'} course.`;
+                let errorMessage = result.message || `Failed to ${subjectId ? 'update' : 'create'} course.`;
                 if (result.errors) errorMessage += '\n' + Object.values(result.errors).flat().join('\n');
                 throw new Error(errorMessage);
             }
 
             const action = subjectId ? 'updated' : 'created';
             if (action === 'updated') {
-                // Show update success modal
                 document.getElementById('courseUpdateSuccessModal').classList.remove('hidden');
             } else {
-                // Show create success modal with grade setup option
                 document.getElementById('courseSuccessModal').classList.remove('hidden');
-                
-                // Store subject data for grade setup
                 window.newSubjectData = {
                     id: result.subject.id,
                     name: result.subject.subject_name,
@@ -1530,6 +1932,8 @@ Learning Management System`;
     };
 
     // --- MODAL EVENT HANDLERS ---
+
+
     // Save Course Confirmation Modal
     const cancelSaveCourseBtn = document.getElementById('cancelSaveCourse');
     if (cancelSaveCourseBtn) {
@@ -1710,7 +2114,15 @@ Learning Management System`;
             if (response.ok) {
                 const data = await response.json();
                 // Filter to match Curriculum Builder's "New" view (includes null as new)
-                allCurriculums = data.filter(c => (c.version_status || 'new') === 'new');
+                // Filter for "Processing" and "Reject" (not Approved, not Old)
+                allCurriculums = data.filter(c => {
+                    const status = (c.approval_status || '').toLowerCase();
+                    const version = (c.version_status || '').toLowerCase();
+                    // Show only if NOT approved AND NOT old/history
+                    // User requested: "only processing and reject".
+                    // This implies Approved is definitely out.
+                    return status !== 'approved' && version !== 'old' && version !== 'history';
+                });
                 renderCurriculumChecklist();
             } else {
                 console.error('Failed to load curriculums');
@@ -1722,30 +2134,54 @@ Learning Management System`;
 
     const renderCurriculumChecklist = () => {
         const term = (document.getElementById('curriculumSearchInput')?.value || '').toLowerCase();
+        const syllabusType = document.getElementById('syllabus_type').value || 'CHED';
+        
         const filterMatch = (c) => {
             const s = `${c.curriculum_name} ${c.program_code} ${c.academic_year}`.toLowerCase();
             return term === '' || s.includes(term);
         };
 
         const seniorHigh = allCurriculums.filter(c => c.year_level === 'Senior High' && filterMatch(c));
-        // Match Curriculum Builder logic: anything not Senior High goes to College
         const college = allCurriculums.filter(c => c.year_level !== 'Senior High' && filterMatch(c));
 
         const renderGroup = (containerId, list) => {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
+            
+            if (list.length === 0) {
+                 container.innerHTML = '<p class="text-sm text-gray-400 italic py-2 col-span-2 text-center">No curriculums found.</p>';
+                 return;
+            }
+
             list.forEach(curriculum => {
                 const isSelected = selectedCurriculums.has(curriculum.id);
+                // Determine status color
+                let statusColor = 'text-gray-500 bg-gray-100';
+                const status = (curriculum.approval_status || '').toLowerCase();
+                if (status === 'rejected' || status === 'returned') {
+                    statusColor = 'text-red-700 bg-red-100';
+                } else if (status === 'processing') {
+                    statusColor = 'text-yellow-700 bg-yellow-100';
+                } else if (status === 'approved') {
+                    statusColor = 'text-green-700 bg-green-100';
+                }
+
                 const card = document.createElement('div');
-                card.className = `border rounded-lg p-4 cursor-pointer transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`;
+                card.className = `border rounded-lg p-3 cursor-pointer transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`;
                 card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <input type="checkbox" class="curriculum-checkbox w-5 h-5 text-blue-600 rounded focus:ring-blue-500" data-curriculum-id="${curriculum.id}" ${isSelected ? 'checked' : ''}>
-                        <div class="flex-1">
-                            <h4 class="font-medium text-gray-900">${curriculum.curriculum_name}</h4>
-                            <p class="text-sm text-gray-600">${curriculum.program_code} - ${curriculum.academic_year}</p>
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" class="curriculum-checkbox mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0" data-curriculum-id="${curriculum.id}" ${isSelected ? 'checked' : ''}>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-medium text-gray-900 text-sm truncate pr-2" title="${curriculum.curriculum_name}">${curriculum.curriculum_name}</h4>
+                                <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${statusColor} flex-shrink-0">
+                                    ${curriculum.approval_status || 'New'}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1">${curriculum.program_code} ${curriculum.year_level !== 'Senior High' ? '• ' + curriculum.academic_year : ''}</p>
                         </div>
                     </div>`;
+                
                 card.addEventListener('click', (e) => {
                     if (e.target.tagName !== 'INPUT') {
                         const checkbox = card.querySelector('input[type="checkbox"]');
@@ -1753,6 +2189,7 @@ Learning Management System`;
                         checkbox.dispatchEvent(new Event('change'));
                     }
                 });
+                
                 const checkbox = card.querySelector('input[type="checkbox"]');
                 checkbox.addEventListener('change', (e) => {
                     const curriculumId = parseInt(e.target.dataset.curriculumId);
@@ -1767,8 +2204,22 @@ Learning Management System`;
             });
         };
 
-        renderGroup('seniorHighContainer', seniorHigh);
-        renderGroup('collegeContainer', college);
+        // DOM Elements for Sections
+        // FIXED: Use parentElement to target the wrapper div containing the Header and the Container
+        const seniorHighSection = document.getElementById('seniorHighContainer').parentElement;
+        const collegeSection = document.getElementById('collegeContainer').parentElement;
+
+        // Logic: CHED -> Show College Only. DepEd -> Show Senior High Only.
+        if (syllabusType === 'DepEd') {
+            seniorHighSection.classList.remove('hidden');
+            collegeSection.classList.add('hidden');
+            renderGroup('seniorHighContainer', seniorHigh);
+        } else {
+            // Default to CHED/College
+            seniorHighSection.classList.add('hidden');
+            collegeSection.classList.remove('hidden');
+            renderGroup('collegeContainer', college);
+        }
 
         // Update Header Counts
         const shSelectedCount = seniorHigh.filter(c => selectedCurriculums.has(c.id)).length;
@@ -1782,24 +2233,24 @@ Learning Management System`;
 
         const shToggle = document.getElementById('selectAllSeniorHigh');
         const coToggle = document.getElementById('selectAllCollege');
-        shToggle.checked = seniorHigh.length > 0 && seniorHigh.every(c => selectedCurriculums.has(c.id));
-        coToggle.checked = college.length > 0 && college.every(c => selectedCurriculums.has(c.id));
-        shToggle.onchange = (e) => {
-            if (e.target.checked) {
-                seniorHigh.forEach(c => selectedCurriculums.add(c.id));
-            } else {
-                seniorHigh.forEach(c => selectedCurriculums.delete(c.id));
-            }
-            renderCurriculumChecklist();
-        };
-        coToggle.onchange = (e) => {
-            if (e.target.checked) {
-                college.forEach(c => selectedCurriculums.add(c.id));
-            } else {
-                college.forEach(c => selectedCurriculums.delete(c.id));
-            }
-            renderCurriculumChecklist();
-        };
+        
+        if (shToggle) {
+             shToggle.checked = seniorHigh.length > 0 && seniorHigh.every(c => selectedCurriculums.has(c.id));
+             shToggle.onclick = (e) => { // Changed to onclick for better reliability than onchange in some cases
+                const isCheck = e.target.checked;
+                seniorHigh.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
+                renderCurriculumChecklist();
+            };
+        }
+        
+        if (coToggle) {
+            coToggle.checked = college.length > 0 && college.every(c => selectedCurriculums.has(c.id));
+             coToggle.onclick = (e) => {
+                const isCheck = e.target.checked;
+                college.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
+                renderCurriculumChecklist();
+            };
+        }
     };
 
     const updateCurriculumButtonText = () => {
@@ -1902,38 +2353,56 @@ function addDepEdRow(quarter) {
 function handleSyllabusUpload(input) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
+        const isChed = input.id === 'ched_syllabus_file';
+        
         // Update display name based on which input triggered this
-        if (input.id === 'ched_syllabus_file') {
+        if (isChed) {
             const displayElement = document.getElementById('ched_file_name_display');
-            if (displayElement) {
-                displayElement.textContent = file.name;
-            }
+            if (displayElement) displayElement.textContent = file.name;
         } else {
             const displayElement = document.getElementById('file_name_display');
-            if (displayElement) {
-                displayElement.textContent = file.name;
-            }
+            if (displayElement) displayElement.textContent = file.name;
         }
 
+        // DepEd Preview Logic
+        if (!isChed) {
+            const fileURL = URL.createObjectURL(file);
+            const pdfFrame = document.getElementById('pdf-frame');
+            const imagePreview = document.getElementById('image-preview');
+            const placeholder = document.getElementById('pdf-placeholder');
+            
+            if (file.type === 'application/pdf') {
+                pdfFrame.src = fileURL;
+                pdfFrame.classList.remove('hidden');
+                imagePreview.classList.add('hidden');
+                placeholder.classList.add('hidden');
+            } else if (file.type.startsWith('image/')) {
+                imagePreview.src = fileURL;
+                imagePreview.classList.remove('hidden');
+                pdfFrame.classList.add('hidden');
+                placeholder.classList.add('hidden');
+            }
+            
+            // For DepEd, we stop here (no extraction), just preview and file upload
+            return;
+        }
+
+        // CHED Extraction Logic
         const formData = new FormData();
         formData.append('syllabus_file', file);
         formData.append('_token', document.querySelector('input[name="_token"]').value);
 
         // Show loading state on the Import button
-        // The button is the previousElementSibling of the file input
         const btn = input.previousElementSibling;
         let originalText = '';
         if (btn) {
             originalText = btn.innerHTML;
-            // Determine spinner color based on button type
-            const spinnerColor = input.id === 'ched_syllabus_file' ? 'text-blue-600' : 'text-red-600';
+            const spinnerColor = 'text-blue-600';
             btn.innerHTML = `<svg class="animate-spin h-5 w-5 ${spinnerColor} mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...`;
             btn.disabled = true;
         }
 
-        // Determine API endpoint based on input ID or syllabus type
-        const isChed = input.id === 'ched_syllabus_file';
-        const endpoint = isChed ? '/api/extract-ched-syllabus' : '/api/extract-syllabus';
+        const endpoint = '/api/extract-ched-syllabus';
 
         fetch(endpoint, {
             method: 'POST',
@@ -1941,136 +2410,75 @@ function handleSyllabusUpload(input) {
         })
         .then(response => response.json())
         .then(data => {
-            // Debug: Log the full response
-            console.log('Extraction Response:', data);
-            console.log('Extraction Method:', data.extraction_method);
-            
             if (data.success) {
-                // Common fields
+                // CHED Specific Fields
+                if (data.data.course_code) document.getElementById('course_code').value = data.data.course_code;
                 if (data.data.course_title) document.getElementById('course_title').value = data.data.course_title;
+                if (data.data.credit_units) document.getElementById('credit_units').value = data.data.credit_units;
+                if (data.data.contact_hours) document.getElementById('contact_hours').value = data.data.contact_hours;
                 if (data.data.course_description) document.getElementById('course_description').value = data.data.course_description;
                 
-                if (isChed) {
-                    // CHED Specific Fields
-                    if (data.data.course_code) document.getElementById('course_code').value = data.data.course_code;
-                    if (data.data.credit_units) document.getElementById('credit_units').value = data.data.credit_units;
-                    if (data.data.contact_hours) document.getElementById('contact_hours').value = data.data.contact_hours;
-                    
-                    if (data.data.pilo_outcomes) document.getElementById('pilo_outcomes').value = data.data.pilo_outcomes;
-                    if (data.data.cilo_outcomes) document.getElementById('cilo_outcomes').value = data.data.cilo_outcomes;
-                    if (data.data.learning_outcomes) document.getElementById('learning_outcomes').value = data.data.learning_outcomes;
-                    
-                    if (data.data.basic_readings) document.getElementById('basic_readings').value = data.data.basic_readings;
-                    if (data.data.extended_readings) document.getElementById('extended_readings').value = data.data.extended_readings;
-                    if (data.data.course_assessment) document.getElementById('course_assessment').value = data.data.course_assessment;
-                    if (data.data.committee_members) document.getElementById('committee_members').value = data.data.committee_members;
-                    if (data.data.consultation_schedule) document.getElementById('consultation_schedule').value = data.data.consultation_schedule;
-                    
-                    if (data.data.prepared_by) document.getElementById('prepared_by').value = data.data.prepared_by;
-                    if (data.data.reviewed_by) document.getElementById('reviewed_by').value = data.data.reviewed_by;
-                    if (data.data.approved_by) document.getElementById('approved_by').value = data.data.approved_by;
+                if (data.data.pilo_outcomes) document.getElementById('pilo_outcomes').value = data.data.pilo_outcomes;
+                if (data.data.cilo_outcomes) document.getElementById('cilo_outcomes').value = data.data.cilo_outcomes;
+                if (data.data.learning_outcomes) document.getElementById('learning_outcomes').value = data.data.learning_outcomes;
+                
+                if (data.data.basic_readings) document.getElementById('basic_readings').value = data.data.basic_readings;
+                if (data.data.extended_readings) document.getElementById('extended_readings').value = data.data.extended_readings;
+                if (data.data.course_assessment) document.getElementById('course_assessment').value = data.data.course_assessment;
+                if (data.data.committee_members) document.getElementById('committee_members').value = data.data.committee_members;
+                if (data.data.consultation_schedule) document.getElementById('consultation_schedule').value = data.data.consultation_schedule;
+                
+                if (data.data.prepared_by) document.getElementById('prepared_by').value = data.data.prepared_by;
+                if (data.data.reviewed_by) document.getElementById('reviewed_by').value = data.data.reviewed_by;
+                if (data.data.approved_by) document.getElementById('approved_by').value = data.data.approved_by;
 
-                    // Mapping Grids
-                    if (data.data.program_mapping && data.data.program_mapping.length > 0) {
-                        const tbody = document.getElementById('program-mapping-table-body');
-                        tbody.innerHTML = ''; // Clear existing
-                        data.data.program_mapping.forEach(row => {
-                            const tr = createMappingTableRow(true);
-                            const inputs = tr.querySelectorAll('input');
-                            inputs[0].value = row.pilo || '';
-                            inputs[1].value = row.ctpss || '';
-                            inputs[2].value = row.ecc || '';
-                            inputs[3].value = row.epp || '';
-                            inputs[4].value = row.glc || '';
-                            tbody.appendChild(tr);
-                        });
-                    }
-
-                    if (data.data.course_mapping && data.data.course_mapping.length > 0) {
-                        const tbody = document.getElementById('course-mapping-table-body');
-                        tbody.innerHTML = ''; // Clear existing
-                        data.data.course_mapping.forEach(row => {
-                            const tr = createMappingTableRow(false);
-                            const inputs = tr.querySelectorAll('input');
-                            inputs[0].value = row.cilo || '';
-                            inputs[1].value = row.ctpss || '';
-                            inputs[2].value = row.ecc || '';
-                            inputs[3].value = row.epp || '';
-                            inputs[4].value = row.glc || '';
-                            tbody.appendChild(tr);
-                        });
-                    }
-
-                    // Weekly Plan
-                    if (data.data.weekly_plan) {
-                        for (const [week, lesson] of Object.entries(data.data.weekly_plan)) {
-                            // week is index (0, 1, 2...)
-                            if (document.getElementById(`week_${week}_content`)) {
-                                if (lesson.content) document.getElementById(`week_${week}_content`).value = lesson.content;
-                                if (lesson.silo) document.getElementById(`week_${week}_silo`).value = lesson.silo;
-                                if (lesson.at_onsite) document.getElementById(`week_${week}_at_onsite`).value = lesson.at_onsite;
-                                if (lesson.at_offsite) document.getElementById(`week_${week}_at_offsite`).value = lesson.at_offsite;
-                                if (lesson.tla_onsite) document.getElementById(`week_${week}_tla_onsite`).value = lesson.tla_onsite;
-                                if (lesson.tla_offsite) document.getElementById(`week_${week}_tla_offsite`).value = lesson.tla_offsite;
-                                if (lesson.ltsm) document.getElementById(`week_${week}_ltsm`).value = lesson.ltsm;
-                                if (lesson.output) document.getElementById(`week_${week}_output`).value = lesson.output;
-                            }
-                        }
-                    }
-
-                } else {
-                    // DepEd Specific Fields
-                    if (data.data.time_allotment) document.getElementById('time_allotment').value = data.data.time_allotment;
-                    if (data.data.schedule) document.getElementById('schedule').value = data.data.schedule;
-
-                    // Populate Quarter 1
-                    if (data.data.q_1_rows && data.data.q_1_rows.length > 0) {
-                        // Populate first row
-                        const firstRow = data.data.q_1_rows[0];
-                        if (firstRow.content) document.getElementById('q_1_content').value = firstRow.content;
-                        if (firstRow.content_standards) document.getElementById('q_1_content_standards').value = firstRow.content_standards;
-                        if (firstRow.learning_competencies) document.getElementById('q_1_learning_competencies').value = firstRow.learning_competencies;
-                        
-                        // Add additional rows
-                        for (let i = 1; i < data.data.q_1_rows.length; i++) {
-                            addDepEdRow(1);
-                            const row = data.data.q_1_rows[i];
-                            const container = document.getElementById('q_1_rows_container');
-                            const lastRow = container.lastElementChild;
-                            const textareas = lastRow.querySelectorAll('textarea');
-                            if (row.content) textareas[0].value = row.content;
-                            if (row.content_standards) textareas[1].value = row.content_standards;
-                            if (row.learning_competencies) textareas[2].value = row.learning_competencies;
-                        }
-                    }
-                    if (data.data.q_1_performance_standards) document.getElementById('q_1_performance_standards').value = data.data.q_1_performance_standards;
-                    if (data.data.q_1_performance_task) document.getElementById('q_1_performance_task').value = data.data.q_1_performance_task;
-
-                    // Populate Quarter 2
-                    if (data.data.q_2_rows && data.data.q_2_rows.length > 0) {
-                        // Populate first row
-                        const firstRow = data.data.q_2_rows[0];
-                        if (firstRow.content) document.getElementById('q_2_content').value = firstRow.content;
-                        if (firstRow.content_standards) document.getElementById('q_2_content_standards').value = firstRow.content_standards;
-                        if (firstRow.learning_competencies) document.getElementById('q_2_learning_competencies').value = firstRow.learning_competencies;
-                        
-                        // Add additional rows
-                        for (let i = 1; i < data.data.q_2_rows.length; i++) {
-                            addDepEdRow(2);
-                            const row = data.data.q_2_rows[i];
-                            const container = document.getElementById('q_2_rows_container');
-                            const lastRow = container.lastElementChild;
-                            const textareas = lastRow.querySelectorAll('textarea');
-                            if (row.content) textareas[0].value = row.content;
-                            if (row.content_standards) textareas[1].value = row.content_standards;
-                            if (row.learning_competencies) textareas[2].value = row.learning_competencies;
-                        }
-                    }
-                    if (data.data.q_2_performance_standards) document.getElementById('q_2_performance_standards').value = data.data.q_2_performance_standards;
-                    if (data.data.q_2_performance_task) document.getElementById('q_2_performance_task').value = data.data.q_2_performance_task;
+                // Mapping Grids
+                if (data.data.program_mapping && data.data.program_mapping.length > 0) {
+                    const tbody = document.getElementById('program-mapping-table-body');
+                    tbody.innerHTML = ''; 
+                    data.data.program_mapping.forEach(row => {
+                        const tr = createMappingTableRow(true);
+                        const inputs = tr.querySelectorAll('input');
+                        inputs[0].value = row.pilo || '';
+                        inputs[1].value = row.ctpss || '';
+                        inputs[2].value = row.ecc || '';
+                        inputs[3].value = row.epp || '';
+                        inputs[4].value = row.glc || '';
+                        tbody.appendChild(tr);
+                    });
                 }
 
-                // Show success modal instead of alert
+                if (data.data.course_mapping && data.data.course_mapping.length > 0) {
+                    const tbody = document.getElementById('course-mapping-table-body');
+                    tbody.innerHTML = '';
+                    data.data.course_mapping.forEach(row => {
+                        const tr = createMappingTableRow(false);
+                        const inputs = tr.querySelectorAll('input');
+                        inputs[0].value = row.cilo || '';
+                        inputs[1].value = row.ctpss || '';
+                        inputs[2].value = row.ecc || '';
+                        inputs[3].value = row.epp || '';
+                        inputs[4].value = row.glc || '';
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Weekly Plan
+                if (data.data.weekly_plan) {
+                    for (const [week, lesson] of Object.entries(data.data.weekly_plan)) {
+                        if (document.getElementById(`week_${week}_content`)) {
+                            if (lesson.content) document.getElementById(`week_${week}_content`).value = lesson.content;
+                            if (lesson.silo) document.getElementById(`week_${week}_silo`).value = lesson.silo;
+                            if (lesson.at_onsite) document.getElementById(`week_${week}_at_onsite`).value = lesson.at_onsite;
+                            if (lesson.at_offsite) document.getElementById(`week_${week}_at_offsite`).value = lesson.at_offsite;
+                            if (lesson.tla_onsite) document.getElementById(`week_${week}_tla_onsite`).value = lesson.tla_onsite;
+                            if (lesson.tla_offsite) document.getElementById(`week_${week}_tla_offsite`).value = lesson.tla_offsite;
+                            if (lesson.ltsm) document.getElementById(`week_${week}_ltsm`).value = lesson.ltsm;
+                            if (lesson.output) document.getElementById(`week_${week}_output`).value = lesson.output;
+                        }
+                    }
+                }
+
                 document.getElementById('extractionSuccessModal').classList.remove('hidden');
             } else {
                 alert('Failed to extract data: ' + (data.message || 'Unknown error'));
@@ -2081,7 +2489,7 @@ function handleSyllabusUpload(input) {
             alert('An error occurred while uploading the file. Please check the console for details.');
         })
         .finally(() => {
-            if (btn) {
+             if (btn) {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -2206,4 +2614,59 @@ const disableDirtyCheck = () => {
 
 
 </script>
+    {{-- Curriculum Selection Modal --}}
+    <div id="curriculumSelectionModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] flex flex-col overflow-hidden transform transition-all">
+            {{-- Header --}}
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+                <h3 class="text-xl font-bold text-gray-800">Select Curriculums</h3>
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <input type="text" id="curriculumSearchInput" placeholder="Search curriculums..." class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                         <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Body --}}
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
+                <div class="space-y-8"> 
+                    {{-- College --}}
+                    <div>
+                        <div class="flex items-center justify-between mb-3 px-1">
+                            <h4 id="collegeHeader" class="text-md font-bold text-gray-800 uppercase tracking-wide">College</h4>
+                            <label class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
+                                <input type="checkbox" id="selectAllCollege" class="rounded text-blue-600 focus:ring-blue-500">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                        <div id="collegeContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
+                            {{-- JS Populates This --}}
+                        </div>
+                    </div>
+
+                     {{-- Senior High --}}
+                    <div>
+                        <div class="flex items-center justify-between mb-3 px-1 border-t pt-6 border-gray-200">
+                            <h4 id="seniorHighHeader" class="text-md font-bold text-gray-800 uppercase tracking-wide">Senior High</h4>
+                            <label class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
+                                <input type="checkbox" id="selectAllSeniorHigh" class="rounded text-blue-600 focus:ring-blue-500">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                        <div id="seniorHighContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
+                            {{-- JS Populates This --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Footer --}}
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancelCurriculumSelection" class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-white hover:shadow-sm transition-all text-sm">Cancel</button>
+                <button id="confirmCurriculumSelection" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition-all text-sm">Confirm Selection</button>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -478,6 +478,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Determine card border, icon, and title colors based on approval status
         const approvalStatus = curriculum.approval_status || 'processing';
+        
+        // Check if expired (compare dates ignoring time)
+        const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+        
+        // Determine effective version (explicitly set to old, OR expired)
+        const effectiveVersion = (curriculum.version_status === 'old' || isExpired) ? 'old' : 'new';
+        
         let cardBorderClass = 'border-slate-200 hover:border-blue-500';
         let iconBgClass = 'bg-slate-100 group-hover:bg-blue-100';
         let iconColorClass = 'text-slate-500 group-hover:text-blue-600';
@@ -500,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.dataset.name = curriculum.curriculum_name.toLowerCase();
         card.dataset.code = curriculum.program_code.toLowerCase();
         card.dataset.yearLevel = curriculum.year_level;
-        card.dataset.version = curriculum.version_status || 'new';
+        card.dataset.version = effectiveVersion;
         card.dataset.approvalStatus = approvalStatus;
 
         const date = new Date(curriculum.created_at);
@@ -536,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Version status badge - Only show if approved
         let versionBadge = '';
         if (approvalStatus === 'approved') {
-            versionBadge = curriculum.version_status === 'old'
+            versionBadge = effectiveVersion === 'old'
                 ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
@@ -595,6 +602,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3 class="font-bold ${titleColorClass} transition-colors duration-300 truncate mb-1">${curriculum.curriculum_name}</h3>
                         <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
                             <span>${curriculum.program_code} • ${curriculum.academic_year}</span>
+                            ${curriculum.expiration_date ? `
+                                <span class="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    End Date: ${new Date(curriculum.expiration_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </span>
+                            ` : ''}
                         </div>
                         ${curriculum.memorandum ? `
                         <p class="text-xs text-slate-400 truncate" title="${curriculum.memorandum}">

@@ -65,6 +65,7 @@ class ComplianceLinkController extends Controller
                 'agency' => 'required|string|max:255',
                 'year' => 'required|string|max:255',
                 'is_category' => 'nullable|boolean',
+                'group' => 'nullable|string|max:255',
                 'title' => 'nullable|string|max:500',
                 'url' => 'nullable|string'
             ]);
@@ -81,7 +82,7 @@ class ComplianceLinkController extends Controller
             // Log activity
             if (auth()->user()) {
                 $type = $validated['is_category'] ? 'category' : 'link';
-                $name = $validated['is_category'] ? $validated['year'] : ($validated['title'] ?? 'Untitled');
+                $name = $validated['is_category'] ? $validated['year'] : ($validated['title'] ?? ($validated['group'] ?? 'Untitled'));
                 \App\Services\ActivityLogService::log(
                     'compliance_' . $type . '_create',
                     'Added compliance ' . $type . ' "' . $name . '" for ' . $validated['agency'],
@@ -116,6 +117,7 @@ class ComplianceLinkController extends Controller
         $link = ComplianceLink::findOrFail($id);
 
         $validated = $request->validate([
+            'group' => 'nullable|string|max:255',
             'title' => 'sometimes|required|string|max:255',
             'url' => 'sometimes|required|url'
         ]);
@@ -135,6 +137,28 @@ class ComplianceLinkController extends Controller
     public function destroy($id)
     {
         $link = ComplianceLink::findOrFail($id);
+        
+        // If this is a Group Title (placeholder), ungroup all links associated with it
+        if (is_null($link->title) && is_null($link->url) && !is_null($link->group)) {
+            ComplianceLink::where('agency', $link->agency)
+                ->where('year', $link->year)
+                ->where('group', $link->group)
+                ->where('id', '!=', $id)
+                ->update(['group' => null]);
+                
+            \App\Services\ActivityLogService::log(
+                'compliance_group_delete',
+                'Deleted group title "' . $link->group . '" and ungrouped associated links',
+                ['agency' => $link->agency, 'year' => $link->year, 'group' => $link->group]
+            );
+        } else {
+             \App\Services\ActivityLogService::log(
+                'compliance_link_delete',
+                'Deleted compliance link "' . ($link->title ?? 'Untitled') . '"',
+                ['agency' => $link->agency, 'year' => $link->year]
+            );
+        }
+
         $link->delete();
 
         return response()->json([

@@ -136,12 +136,7 @@
                     </select>
                 </div>
 
-                <button id="openMemorandumModal" class="w-full mb-3 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all flex items-center justify-center gap-2 font-medium hidden">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
-                    Memorandum
-                </button>
+
 
                 <div id="availableSubjects" class="flex-1 pr-2 -mr-2 space-y-3 pt-2.5">
                     <p class="text-gray-500 text-center mt-4">Select a curriculum to view subjects.</p>
@@ -209,163 +204,260 @@
         </div>
     </div>
     
- {{-- Subject Details Modal --}}
-<div id="subjectDetailsModal" class="fixed inset-0 left-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
-    <div class="flex items-center justify-center min-h-screen p-2">
-        <div class="relative bg-white w-[98vw] h-[98vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
-            
-            {{-- Modal Header (Sticky) --}}
-            <div class="flex justify-between items-center p-5 border-b border-gray-200 sticky top-0 bg-white z-10 rounded-t-2xl">
-                <h2 id="detailsSubjectName" class="text-2xl font-bold text-gray-800"></h2>
-                <button id="closeDetailsModalButtonTop" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+ {{-- CHED Subject Details Modal --}}
+<div id="chedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="ched-modal-details-panel">
+            <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                 <div>
+                    <h2 id="chedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (CHED)</h2>
+                 </div>
+                <button id="closeChedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             
-            {{-- Modal Content Scrollable Area (Your existing content goes here) --}}
-            <div class="p-6 flex-1 overflow-y-auto">
+            <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                <!-- Section 1: Course Information -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        Course Information
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
 
-                {{-- 1. Course Information --}}
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Course Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 bg-gray-50 p-4 rounded-lg">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Course Title</p>
-                        <p id="detailsCourseTitle" class="text-base font-semibold text-gray-800"></p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Course Code</p>
-                        <p id="detailsSubjectCode" class="text-base font-semibold text-gray-800"></p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Course Type</p>
-                        <p id="detailsSubjectType" class="text-base font-semibold text-gray-800"></p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Credit Units</p>
-                        <p id="detailsSubjectUnit" class="text-base font-semibold text-gray-800"></p>
-                    </div>
-                     <div>
-                        <p class="text-sm font-medium text-gray-500">Contact Hours</p>
-                        <p id="detailsContactHours" class="text-base font-semibold text-gray-800">N/A</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Credit Prerequisites</p>
-                        <p id="detailsPrerequisites" class="text-base font-semibold text-gray-800">N/A</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Pre-requisite to</p>
-                        <p id="detailsPrereqTo" class="text-base font-semibold text-gray-800">N/A</p>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Memorandum Year</p>
-                        <p id="detailsMemorandumYear" class="text-base font-semibold text-gray-800">N/A</p>
-                    </div>
-                    <div class="md:col-span-3">
-                        <p class="text-sm font-medium text-gray-500">Official Memorandum</p>
-                        <div id="detailsMemorandum" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">N/A</div>
-                    </div>
-                    <div class="md:col-span-4">
-                        <p class="text-sm font-medium text-gray-500">Course Description</p>
-                        <div id="detailsCourseDescription" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                </div>
-                
-                {{-- 2. Mapping Grids --}}
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Mapping Grids</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                         <p class="text-sm font-medium text-gray-500">PROGRAM MAPPING GRID</p>
-                        <div id="detailsProgramMapping" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">Mapping Grid data is stored in the Course Builder.</div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">COURSE MAPPING GRID</p>
-                        <div id="detailsCourseMapping" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">Mapping Grid data is stored in the Course Builder.</div>
+                            <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+                            <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                        </div>
                     </div>
                 </div>
 
-                {{-- 3. Learning Outcomes --}}
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Learning Outcomes</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                         <p class="text-sm font-medium text-gray-500">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</p>
-                        <div id="detailsPILO" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Course Intended Learning Outcomes (CILO)</p>
-                        <div id="detailsCILO" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div class="md:col-span-2">
-                         <p class="text-sm font-medium text-gray-500">Learning Outcomes</p>
-                        <div id="detailsLearningOutcomes" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                </div>
-
-                {{-- 4. Weekly Plan (Lessons) --}}
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Weekly Plan (Weeks 0-18)</h3>
-                <div class="space-y-3" id="detailsLessonsContainer">
-                    <p class="text-sm text-gray-500 mt-2">Loading weekly plan...</p>
-                </div>
-
-                {{-- 5. Course Requirements and Policies --}}
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pt-8 pb-2 border-b">Course Requirements and Policies</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Basic Readings / Textbooks</p>
-                        <div id="detailsBasicReadings" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Extended Readings / References</p>
-                        <div id="detailsExtendedReadings" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div class="md:col-span-2">
-                        <p class="text-sm font-medium text-gray-500">Course Assessment</p>
-                        <div id="detailsCourseAssessment" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                </div>
-                
-                {{-- 6. Committee and Approval --}}
-                 <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Committee and Approval</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                     <div class="md:col-span-3">
-                        <p class="text-sm font-medium text-gray-500">Committee Members</p>
-                        <div id="detailsCommitteeMembers" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div class="md:col-span-3">
-                        <p class="text-sm font-medium text-gray-500">Consultation Schedule</p>
-                        <div id="detailsConsultationSchedule" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">N/A</div>
-                    </div>
-                    <div>
-                         <p class="text-sm font-medium text-gray-500">Prepared By</p>
-                        <div id="detailsPreparedBy" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">N/A</div>
-                    </div>
-                     <div>
-                         <p class="text-sm font-medium text-gray-500">Reviewed By</p>
-                        <div id="detailsReviewedBy" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">N/A</div>
-                    </div>
-                     <div>
-                         <p class="text-sm font-medium text-gray-500">Approved By</p>
-                        <div id="detailsApprovedBy" class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">N/A</div>
+                <!-- Section 2: Mapping Grids -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Mapping Grids
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">PROGRAM MAPPING GRID</h3>
+                            <div id="chedProgramMapping"></div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                             <h3 class="text-lg font-semibold text-gray-700 mb-4">COURSE MAPPING GRID</h3>
+                            <div id="chedCourseMapping"></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Section 3: Learning Outcomes -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        Learning Outcomes
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-8">
+                         <div><label class="block text-lg font-semibold text-gray-700 mb-3">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</label><div id="chedPILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                        <div><label class="block text-lg font-semibold text-gray-700 mb-3">Course Intended Learning Outcomes (CILO)</label><div id="chedCILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                        <div><label class="block text-lg font-semibold text-gray-700 mb-3">Learning Outcomes</label><div id="chedLearningOutcomes" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Weekly Plan -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Weekly Plan (Weeks 0-18)
+                    </h2>
+                    <div id="chedLessonsContainer" class="space-y-4">
+                        <p class="text-gray-500 italic p-4">Loading weekly plan...</p>
+                    </div>
+                </div>
+
+                <!-- Section 5: Course Requirements -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
+                        Course Requirements and Policies
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Basic Readings / Textbooks</label><div id="chedBasicReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Extended Readings / References</label><div id="chedExtendedReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                        </div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Assessment</label><div id="chedCourseAssessment" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Approval -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        Committee and Approval
+                    </h2>
+                     <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                        <div class="grid grid-cols-1 gap-8 mb-8">
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Committee Members</label><div id="chedCommitteeMembers" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Consultation Schedule</label><div id="chedConsultationSchedule" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                        </div>
+                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Prepared By</label><div id="chedPreparedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Reviewed By</label><div id="chedReviewedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Approved By</label><div id="chedApprovedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            {{-- Modal Footer (Sticky & Modified) --}}
-            <div class="flex justify-between items-center p-5 mt-auto border-t border-gray-200 bg-gray-50 rounded-b-2xl sticky bottom-0 z-10">
+             <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
                 <div class="text-sm text-gray-500">
                     <span class="font-semibold">Created:</span>
-                    <span id="detailsCreatedAt"></span>
+                    <span id="chedDetailsCreatedAt"></span>
                 </div>
-                <div class="flex items-center gap-4">
-                    <button id="importSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-sm flex items-center gap-2" data-subject-data="">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <div>
+                     <button id="exportChedPdfButton" class="px-6 py-2.5 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-lg hover:shadow-xl flex items-center gap-2 transform active:scale-95 duration-150">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Export to PDF
                     </button>
-                    <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm flex items-center gap-2" data-subject-data="">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                        Revise Subject
-                    </button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ {{-- DepEd Subject Details Modal --}}
+<div id="depedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="deped-modal-details-panel">
+            <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                 <div>
+                    <h2 id="depedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (DepEd)</h2>
+                 </div>
+                <button id="closeDepedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                <!-- DepEd Section 1: Course Information -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        Course Information
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="depedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Document Category</label><div id="depedMemorandumCategory" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Title</label><div id="depedTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+
+                            <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="depedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+
+                            <div id="depedTimeAllotmentContainer"><label class="block text-sm font-medium text-gray-700 mb-2">Time Allotment</label><div id="depedTimeAllotment" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div id="depedScheduleContainer" class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Schedule</label><div id="depedSchedule" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            
+                            <div id="depedCourseDescriptionContainer" class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="depedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Syllabus Preview Section -->
+                <div id="depedSyllabusSection" class="mb-10 hidden">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        Syllabus Document
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                        <p id="depedSyllabusFileName" class="text-sm font-medium text-gray-700 mb-4 bg-gray-50 p-2 rounded border border-gray-200 inline-block"></p>
+                        <div id="depedSyllabusPreview" class="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden relative bg-gray-100 flex items-center justify-center">
+                             <iframe id="depedPdfFrame" class="w-full h-full hidden" src=""></iframe>
+                             <img id="depedImagePreview" class="max-w-full max-h-full object-contain hidden" src="" alt="Syllabus Preview">
+                             <p id="depedNoPreview" class="text-gray-400">No preview available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DepEd Section 2: Curriculum Guide -->
+                <div id="depedCurriculumGuideSection" class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Curriculum Guide
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                             <h3 class="text-lg font-semibold text-gray-700 mb-4">QUARTER 1</h3>
+                             
+                             <!-- Q1 Table -->
+                             <div class="overflow-x-auto border rounded-md mb-6">
+                                <table class="min-w-full divide-y divide-gray-200 text-xs">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[30%]">Content</th>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[35%]">Content Standards</th>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[35%]">Learning Competencies</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="depedDetailsQ1Rows" class="bg-white divide-y divide-gray-200">
+                                        <!-- Rows injected via JS -->
+                                    </tbody>
+                                </table>
+                             </div>
+
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                <div><label class="block text-sm font-semibold text-gray-600 mb-2">Performance Standards</label><div id="depedDetailsQ1PerfStandards" class="p-3 bg-gray-50 border rounded-md min-h-[80px] text-sm whitespace-pre-wrap"></div></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 mb-2">Suggested Performance Task</label><div id="depedDetailsQ1PerfTasks" class="p-3 bg-gray-50 border rounded-md min-h-[80px] text-sm whitespace-pre-wrap"></div></div>
+                             </div>
+                        </div>
+
+                        <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                             <h3 class="text-lg font-semibold text-gray-700 mb-4">QUARTER 2</h3>
+                             
+                             <!-- Q2 Table -->
+                             <div class="overflow-x-auto border rounded-md mb-6">
+                                <table class="min-w-full divide-y divide-gray-200 text-xs">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[30%]">Content</th>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[35%]">Content Standards</th>
+                                            <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-[35%]">Learning Competencies</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="depedDetailsQ2Rows" class="bg-white divide-y divide-gray-200">
+                                        <!-- Rows injected via JS -->
+                                    </tbody>
+                                </table>
+                             </div>
+
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                <div><label class="block text-sm font-semibold text-gray-600 mb-2">Performance Standards</label><div id="depedDetailsQ2PerfStandards" class="p-3 bg-gray-50 border rounded-md min-h-[80px] text-sm whitespace-pre-wrap"></div></div>
+                                <div><label class="block text-sm font-semibold text-gray-600 mb-2">Suggested Performance Task</label><div id="depedDetailsQ2PerfTasks" class="p-3 bg-gray-50 border rounded-md min-h-[80px] text-sm whitespace-pre-wrap"></div></div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
+                <div class="text-sm text-gray-500">
+                    <span class="font-semibold">Created:</span>
+                    <span id="depedDetailsCreatedAt"></span>
+                </div>
+
             </div>
         </div>
     </div>
@@ -545,67 +637,6 @@
         </div>
     </div>
 
-    {{-- Subject Version Tracker Modal --}}
-    <div id="subjectVersionTrackerModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out" id="version-tracker-modal-panel">
-                <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                    <div>
-                        <h2 id="versionTrackerModalTitle" class="text-2xl font-bold text-gray-800">Subject Version Tracker</h2>
-                        <p id="versionTrackerModalSubtitle" class="text-sm text-gray-500 mt-1">Compare old and new versions</p>
-                    </div>
-                    <button id="closeVersionTrackerModalBtn" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="p-6">
-                    <!-- Loading State -->
-                    <div id="versionTrackerLoading" class="text-center py-12 hidden">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                        <p class="text-gray-500">Loading version history...</p>
-                    </div>
-                    
-                    <!-- Version Comparison -->
-                    <div id="versionTrackerContent" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Current Version Card -->
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-800">Current Version</h3>
-                                <span class="px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">CURRENT</span>
-                            </div>
-                            <div id="newVersionCard" class="cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                                <!-- Current version subject card will be populated here -->
-                            </div>
-                        </div>
-                        
-                        <!-- Version History List -->
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-800">Version History</h3>
-                                <span id="versionCount" class="px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">0 versions</span>
-                            </div>
-                            <div id="versionHistoryList" class="space-y-3 max-h-96 overflow-y-auto">
-                                <!-- Version history will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- No Previous Version State -->
-                    <div id="noOldVersion" class="text-center py-12 hidden">
-                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Previous Version</h3>
-                        <p class="text-gray-500">This subject hasn't been modified yet.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Delete modals removed --}}
 
     {{-- Add Subjects Modal --}}
@@ -754,24 +785,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         // --- MODAL ELEMENTS ---
         const subjectDetailsModal = document.getElementById('subjectDetailsModal');
-        const closeDetailsModalButtonTop = document.getElementById('closeDetailsModalButtonTop');
         const modalDetailsPanel = document.getElementById('modal-details-panel');
-        const editSubjectDetailsButton = document.getElementById('editSubjectDetailsButton');
-        const importSubjectDetailsButton = document.getElementById('importSubjectDetailsButton');
         const editConfirmationModal = document.getElementById('editConfirmationModal');
-
-        // Version Tracker Modal Elements
-        const subjectVersionTrackerModal = document.getElementById('subjectVersionTrackerModal');
-        const closeVersionTrackerModalBtn = document.getElementById('closeVersionTrackerModalBtn');
-        const versionTrackerModalPanel = document.getElementById('version-tracker-modal-panel');
-        const versionTrackerLoading = document.getElementById('versionTrackerLoading');
-        const versionTrackerContent = document.getElementById('versionTrackerContent');
-        const newVersionCard = document.getElementById('newVersionCard');
-        const versionHistoryList = document.getElementById('versionHistoryList');
-        const versionCount = document.getElementById('versionCount');
-        const noOldVersion = document.getElementById('noOldVersion');
-        const versionTrackerModalTitle = document.getElementById('versionTrackerModalTitle');
-        const versionTrackerModalSubtitle = document.getElementById('versionTrackerModalSubtitle');
 
         // Detailed Content Elements
         const detailsCourseTitle = document.getElementById('detailsCourseTitle');
@@ -798,8 +813,7 @@
         // Add Subjects Modal Elements
         const addSubjectsModal = document.getElementById('addSubjectsModal');
         const addSubjectsModalPanel = document.getElementById('add-subjects-modal-panel');
-        const openMemorandumModalBtn = document.getElementById('openMemorandumModal');
-        const openAddSubjectsModalBtn = openMemorandumModalBtn; // Alias for compatibility with existing code if needed, but better to update usages.
+
         const closeAddSubjectsModalBtn = document.getElementById('closeAddSubjectsModal');
         const cancelAddSubjectsBtn = document.getElementById('cancelAddSubjects');
         const confirmAddSubjectsBtn = document.getElementById('confirmAddSubjects');
@@ -867,403 +881,310 @@
             return tableHtml;
         };
 
-        const showDetailsModal = (data, showEditButton = true) => {
-            const setText = (element, value) => {
-                if (element) {
-                    element.textContent = value || 'N/A';
-                }
-            };
+        // Helper to set text content with fallback
+        const setText = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = (value === null || value === undefined || value === '') ? 'N/A' : value;
+            }
+        };
 
-            // Set text content for all details
-            setText(document.getElementById('detailsSubjectName'), `${data.subject_name} (${data.subject_code})`);
-            setText(detailsCourseTitle, data.subject_name);
-            setText(document.getElementById('detailsSubjectCode'), data.subject_code);
-            setText(document.getElementById('detailsSubjectType'), data.subject_type);
-            setText(document.getElementById('detailsSubjectUnit'), data.subject_unit);
-            setText(detailsContactHours, data.contact_hours);
-            setText(detailsPrerequisites, data.prerequisites);
-            setText(detailsPrereqTo, data.pre_requisite_to);
-            setText(detailsCourseDescription, data.course_description);
-            setText(detailsPILO, data.pilo_outcomes);
-            setText(detailsCILO, data.cilo_outcomes);
-            setText(detailsLearningOutcomes, data.learning_outcomes);
-            setText(detailsBasicReadings, data.basic_readings);
-            setText(detailsExtendedReadings, data.extended_readings);
-            setText(detailsCourseAssessment, data.course_assessment);
-            setText(detailsCommitteeMembers, data.committee_members);
-            setText(detailsConsultationSchedule, data.consultation_schedule);
-            setText(detailsPreparedBy, data.prepared_by);
-            setText(detailsReviewedBy, data.reviewed_by);
-            setText(detailsApprovedBy, data.approved_by);
-            setText(document.getElementById('detailsMemorandumYear'), data.memorandum_year);
-            setText(document.getElementById('detailsMemorandum'), data.memorandum);
+        // Populate DepEd Modal
+        const populateDepEdModal = (data) => {
+            console.log('DepEd Modal Data:', data);
+            setText('depedCourseTitle', data.subject_name);
+            setText('depedSubjectCode', data.subject_code);
+            setText('depedSubjectType', data.subject_type);
+            setText('depedMemorandumCategory', data.memorandum_category);
+            setText('depedTitle', data.memorandum);
+            setText('depedMemorandum', data.memorandum);
             
-            // Format and set the creation date
-            const createdAtDate = new Date(data.created_at);
-            const formattedDate = createdAtDate.toLocaleString('en-US', {
-                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-            });
-            setText(detailsCreatedAt, formattedDate);
+            // Hide Obsolete Sections/Fields for DepEd as requested
+            const hideEl = (id) => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); };
+            const showEl = (id) => { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); };
+            
+            hideEl('depedTimeAllotmentContainer');
+            hideEl('depedScheduleContainer');
+            hideEl('depedCourseDescriptionContainer');
+            hideEl('depedCurriculumGuideSection');
 
-            // Store subject data on footer buttons
-            const subjectDataString = JSON.stringify(data);
-            editSubjectDetailsButton.dataset.subjectData = subjectDataString;
-            importSubjectDetailsButton.dataset.subjectData = subjectDataString;
+            // Handle Syllabus Preview - Always show section for DepEd
+            const syllabusSection = document.getElementById('depedSyllabusSection');
+            const pdfFrame = document.getElementById('depedPdfFrame');
+            const imagePreview = document.getElementById('depedImagePreview');
+            const noPreview = document.getElementById('depedNoPreview');
+            const fileNameDisplay = document.getElementById('depedSyllabusFileName');
             
-            // Show/hide edit button based on parameter
-            if (showEditButton) {
-                editSubjectDetailsButton.classList.remove('hidden');
-            } else {
-                editSubjectDetailsButton.classList.add('hidden');
+            if (syllabusSection) {
+                 syllabusSection.classList.remove('hidden'); // Always show section
+                 
+                 // Reset views
+                 if(pdfFrame) { pdfFrame.classList.add('hidden'); pdfFrame.src = ''; }
+                 if(imagePreview) { imagePreview.classList.add('hidden'); imagePreview.src = ''; }
+                 if(noPreview) noPreview.classList.add('hidden');
+
+                 if (data.syllabus_path) {
+                     const path = data.syllabus_path;
+                     const fileName = path.split('/').pop();
+                     const ext = fileName.split('.').pop().toLowerCase();
+                     
+                     if (fileNameDisplay) {
+                         fileNameDisplay.textContent = fileName;
+                         fileNameDisplay.classList.remove('hidden');
+                     }
+                     
+                     if (ext === 'pdf') {
+                        if (pdfFrame) {
+                            pdfFrame.src = path + '#toolbar=0&navpanes=0';
+                            pdfFrame.classList.remove('hidden');
+                        }
+                     } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                         if (imagePreview) {
+                             imagePreview.src = path;
+                             imagePreview.classList.remove('hidden');
+                         }
+                     } else {
+                         if(noPreview) {
+                             noPreview.textContent = 'Preview not available for this file type.';
+                             noPreview.classList.remove('hidden');
+                         }
+                     }
+                 } else {
+                     // No file uploaded
+                     if (fileNameDisplay) fileNameDisplay.classList.add('hidden');
+                     if (noPreview) {
+                         noPreview.textContent = 'No syllabus document uploaded.';
+                         noPreview.classList.remove('hidden');
+                     }
+                 }
             }
 
-            // Render mapping grids
-            detailsProgramMapping.innerHTML = createMappingGridHtml(data.program_mapping_grid, 'PILO');
-            detailsCourseMapping.innerHTML = createMappingGridHtml(data.course_mapping_grid, 'CILO');
+            // Date formatting
+            const createdAtDate = new Date(data.created_at);
+            setText('depedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            }));
 
-            // Render lessons
-            detailsLessonsContainer.innerHTML = '';
-            if (data.lessons && typeof data.lessons === 'object' && Object.keys(data.lessons).length > 0) {
-                Object.keys(data.lessons).sort((a, b) => parseInt(a.replace('Week ', '')) - parseInt(b.replace('Week ', ''))).forEach(week => {
-                    const lessonString = data.lessons[week];
-                    const lessonData = {};
-                    const parts = lessonString.split(',, ');
-                    parts.forEach(part => {
-                        if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\n', '');
-                        if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\n', '');
-                        if (part.startsWith('Assessment:')) {
-                            const match = part.match(/Assessment: ONSITE:\s*(.*)OFFSITE:\s*(.*)/s);
-                            if (match) { lessonData.at_onsite = match[1]; lessonData.at_offsite = match[2]; }
-                        }
-                        if (part.startsWith('Activities:')) {
-                            const match = part.match(/Activities: ON-SITE:\s*(.*)OFF-SITE:\s*(.*)/s);
-                            if (match) { lessonData.tla_onsite = match[1]; lessonData.tla_offsite = match[2]; }
-                        }
-                        if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\n', '');
-                        if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\n', '');
-                    });
+            // We don't populate the grids since they are hidden now, but we leave the logic in case we revert, 
+            // or just comment it out to save resources. I'll leave basic populators but they are hidden.
+            
+            // setText('depedDetailsQ1PerfStandards', data.q_1_performance_standards);
+            // ... (rest omitted/irrelevant if hidden)
 
-                    const isExamWeek = ['Week 6', 'Week 12', 'Week 18'].includes(week);
-                    let weekHTML = '';
+            const exportBtn = document.getElementById('exportDepedPdfButton');
+            if(exportBtn) exportBtn.dataset.subjectData = JSON.stringify(data);
 
-                    if (isExamWeek) {
-                        weekHTML = `
-                        <div class="border border-gray-200 rounded-lg overflow-hidden">
-                            <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
-                                <span class="font-semibold text-gray-700">${week} - ${lessonData.content || 'Exam'}</span>
-                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div class="p-5 border-t border-gray-200 bg-white hidden week-content">
-                                <div class="text-center py-4">
-                                    <p class="text-xl font-bold text-gray-600">${lessonData.content || 'Exam'}</p>
-                                    <p class="text-sm text-gray-500 mt-2">No additional details required for this week.</p>
-                                </div>
-                            </div>
-                        </div>`;
-                    } else {
-                        weekHTML = `
-                        <div class="border border-gray-200 rounded-lg overflow-hidden">
-                            <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
-                                <span class="font-semibold text-gray-700">${week}</span>
-                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Content</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.content || ''}</div></div>
-                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Student Intended Learning Outcomes</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.silo || ''}</div></div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 mb-2">Assessment Tasks (ATs)</label>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-md bg-gray-50">
-                                        <div><label class="block text-xs font-bold text-gray-500 mb-1">ONSITE</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.at_onsite || ''}</div></div>
-                                        <div><label class="block text-xs font-bold text-gray-500 mb-1">OFFSITE</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.at_offsite || ''}</div></div>
+            const modal = document.getElementById('depedSubjectDetailsModal');
+            const panel = document.getElementById('deped-modal-details-panel');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                panel.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        };
+
+        // Populate CHED Modal
+        const populateChedModal = (data) => {
+            setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
+            setText('chedCourseTitle', data.subject_name);
+            setText('chedSubjectCode', data.subject_code);
+            setText('chedSubjectType', data.subject_type);
+            setText('chedSubjectUnit', data.subject_unit);
+            setText('chedContactHours', data.contact_hours);
+            setText('chedMemorandumYear', data.memorandum_year);
+            setText('chedPrerequisites', data.prerequisites);
+            setText('chedPrereqTo', data.pre_requisite_to);
+            setText('chedMemorandum', data.memorandum);
+            setText('chedCourseDescription', data.course_description);
+            
+            // Learning Outcomes
+            setText('chedPILO', data.pilo_outcomes);
+            setText('chedCILO', data.cilo_outcomes);
+            setText('chedLearningOutcomes', data.learning_outcomes);
+            
+            // Requirements & Policies
+            setText('chedBasicReadings', data.basic_readings);
+            setText('chedExtendedReadings', data.extended_readings);
+            setText('chedCourseAssessment', data.course_assessment);
+            
+            // Committee & Approval
+            setText('chedCommitteeMembers', data.committee_members);
+            setText('chedConsultationSchedule', data.consultation_schedule);
+            setText('chedPreparedBy', data.prepared_by);
+            setText('chedReviewedBy', data.reviewed_by);
+            setText('chedApprovedBy', data.approved_by);
+
+            const createdAtDate = new Date(data.created_at);
+            setText('chedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            }));
+
+            // Mapping Grids
+            const progGrid = document.getElementById('chedProgramMapping');
+            const courseGrid = document.getElementById('chedCourseMapping');
+            if(progGrid) progGrid.innerHTML = createMappingGridHtml(data.program_mapping_grid, 'PILO');
+            if(courseGrid) courseGrid.innerHTML = createMappingGridHtml(data.course_mapping_grid, 'CILO');
+
+            // Weekly Plan / Lessons
+            const lessonsContainer = document.getElementById('chedLessonsContainer');
+            if (lessonsContainer) {
+                lessonsContainer.innerHTML = '';
+                if (data.lessons && typeof data.lessons === 'object' && Object.keys(data.lessons).length > 0) {
+                    Object.keys(data.lessons).sort((a, b) => {
+                        const weekA = parseInt(a.replace(/\D/g, '')) || 0;
+                        const weekB = parseInt(b.replace(/\D/g, '')) || 0;
+                        return weekA - weekB;
+                    }).forEach(week => {
+                        const lessonString = data.lessons[week];
+                        const lessonData = {};
+                        // Simple parser for lesson string format "Key: Value,, Key: Value"
+                        const parts = lessonString.split(',, ');
+                        parts.forEach(part => {
+                            if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\n', '');
+                            if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\n', '');
+                            if (part.startsWith('Assessment:')) {
+                                const match = part.match(/Assessment: ONSITE:\s*([\s\S]*?)OFFSITE:\s*([\s\S]*)/);
+                                if (match) { 
+                                    lessonData.at_onsite = match[1].trim(); 
+                                    lessonData.at_offsite = match[2].trim(); 
+                                } else {
+                                     // Fallback if regex fails (e.g. simple string)
+                                     lessonData.at_onsite = part.replace('Assessment:', '');
+                                }
+                            }
+                            if (part.startsWith('Activities:')) {
+                                 const match = part.match(/Activities: ON-SITE:\s*([\s\S]*?)OFF-SITE:\s*([\s\S]*)/);
+                                 if (match) {
+                                     lessonData.tla_onsite = match[1].trim();
+                                     lessonData.tla_offsite = match[2].trim();
+                                 } else {
+                                     lessonData.tla_onsite = part.replace('Activities:', '');
+                                 }
+                            }
+                            if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\n', '');
+                            if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\n', '');
+                        });
+
+                        const weekNum = parseInt(week.replace(/\D/g, '')) || 0;
+                        const isExamWeek = [6, 12, 18].includes(weekNum);
+                        let weekHTML = '';
+
+                        if (isExamWeek) {
+                            weekHTML = `
+                            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                <button type="button" class="w-full flex justify-between items-center p-4 bg-purple-50 hover:bg-purple-100 transition-colors week-toggle">
+                                    <span class="font-bold text-purple-700">${week} - ${lessonData.content || 'Exam'}</span>
+                                    <svg class="w-5 h-5 text-purple-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="p-5 border-t border-gray-200 bg-white hidden week-content">
+                                    <div class="text-center py-4">
+                                        <p class="text-xl font-bold text-gray-600">${lessonData.content || 'Exam'}</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-600 mb-2">Suggested Teaching/Learning Activities (TLAs)</label>
-                                    <div class="p-4 border rounded-md bg-gray-50">
-                                        <p class="text-xs font-bold text-gray-500 mb-2">Blended Learning Delivery Modality (BLDM)</p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div><label class="block text-xs font-bold text-gray-500 mb-1">Face to Face (On-Site)</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.tla_onsite || ''}</div></div>
-                                            <div><label class="block text-xs font-bold text-gray-500 mb-1">Online (Off-Site)</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.tla_offsite || ''}</div></div>
+                            </div>`;
+                        } else {
+                            weekHTML = `
+                            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
+                                    <span class="font-semibold text-gray-700">${week}</span>
+                                    <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">Content</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.content || 'N/A'}</div></div>
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">Student Intended Learning Outcomes</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.silo || 'N/A'}</div></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">Assessment Tasks (ATs)</label>
+                                            <div class="space-y-2">
+                                                <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.at_onsite || 'N/A'}</div>
+                                                <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.at_offsite || 'N/A'}</div>
+                                            </div>
+                                        </div>
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">Teaching/Learning Activities (TLAs)</label>
+                                            <div class="space-y-2">
+                                                <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.tla_onsite || 'N/A'}</div>
+                                                <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.tla_offsite || 'N/A'}</div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">LTSM</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.ltsm || 'N/A'}</div></div>
+                                        <div><label class="block text-sm font-semibold text-gray-600 mb-2">Output Materials</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.output || 'N/A'}</div></div>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Learning and Teaching Support Materials (LTSM)</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.ltsm || ''}</div></div>
-                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Output Materials</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.output || ''}</div></div>
-                                </div>
-                            </div>
-                        </div>`;
-                    }
-                    detailsLessonsContainer.innerHTML += weekHTML;
-                });
-            } else {
-                detailsLessonsContainer.innerHTML = '<p class="text-sm text-gray-500 mt-2">No lessons recorded for this subject.</p>';
-            }
-            
-            document.querySelectorAll('.week-toggle').forEach(button => {
-                button.addEventListener('click', () => {
-                    const content = button.nextElementSibling;
-                    content.classList.toggle('hidden');
-                    button.querySelector('svg').classList.toggle('rotate-180');
-                });
-            });
-
-            subjectDetailsModal.classList.remove('hidden');
-            setTimeout(() => {
-                subjectDetailsModal.classList.remove('opacity-0');
-                modalDetailsPanel.classList.remove('opacity-0', 'scale-95');
-            }, 10);
-        };
-
-        // --- VERSION TRACKER MODAL FUNCTIONS ---
-        
-        const showVersionTrackerModal = async (subjectData) => {
-            // Set modal title
-            versionTrackerModalTitle.textContent = `${subjectData.subject_name} Version History`;
-            versionTrackerModalSubtitle.textContent = `${subjectData.subject_code} - Compare versions`;
-            
-            // Show modal with loading state
-            subjectVersionTrackerModal.classList.remove('hidden');
-            setTimeout(() => {
-                subjectVersionTrackerModal.classList.remove('opacity-0');
-                versionTrackerModalPanel.classList.remove('opacity-0', 'scale-95');
-            }, 10);
-            
-            // Show loading state
-            versionTrackerLoading.classList.remove('hidden');
-            versionTrackerContent.classList.add('hidden');
-            noOldVersion.classList.add('hidden');
-            
-            try {
-                // Fetch subject version history
-                const response = await fetch(`/api/subjects/${subjectData.id}/versions`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch version history');
-                }
-                
-                const versionData = await response.json();
-                
-                // Hide loading state
-                versionTrackerLoading.classList.add('hidden');
-                
-                // Always show the current version
-                versionTrackerContent.classList.remove('hidden');
-                
-                // Create current version card (always available)
-                const newCard = createVersionCard(versionData.currentVersion, 'current');
-                newVersionCard.innerHTML = '';
-                newVersionCard.appendChild(newCard);
-                
-                // Add click handler for current version
-                newCard.addEventListener('click', () => {
-                    hideVersionTrackerModal();
-                    showDetailsModal(versionData.currentVersion, true); // true = show edit button
-                });
-                
-                // Update version count
-                versionCount.textContent = `${versionData.totalVersions} version${versionData.totalVersions !== 1 ? 's' : ''}`;
-                
-                if (versionData.hasOldVersion && versionData.previousVersions.length > 0) {
-                    // Clear version history list
-                    versionHistoryList.innerHTML = '';
-                    
-                    // Create version history items
-                    versionData.previousVersions.forEach((version, index) => {
-                        const versionItem = createVersionHistoryItem(version, index + 1);
-                        versionHistoryList.appendChild(versionItem);
+                            </div>`;
+                        }
+                        lessonsContainer.innerHTML += weekHTML;
                     });
+                    
+                    lessonsContainer.querySelectorAll('.week-toggle').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const content = button.nextElementSibling;
+                            content.classList.toggle('hidden');
+                            button.querySelector('svg').classList.toggle('rotate-180');
+                        });
+                    });
+
                 } else {
-                    // Show no versions message
-                    versionHistoryList.innerHTML = `
-                        <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
-                            <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <p class="text-sm text-gray-500">No previous versions available</p>
-                            <p class="text-xs text-gray-400 mt-1">This is the original version</p>
-                        </div>
-                    `;
+                    lessonsContainer.innerHTML = '<p class="text-sm text-gray-500 mt-2 italic text-center py-4">No lessons recorded for this subject.</p>';
                 }
-                
-            } catch (error) {
-                console.error('Error fetching version history:', error);
-                versionTrackerLoading.classList.add('hidden');
-                
-                // Still show current version even if API fails
-                versionTrackerContent.classList.remove('hidden');
-                
-                // Create current version card from the original subject data
-                const newCard = createVersionCard(subjectData, 'current');
-                newVersionCard.innerHTML = '';
-                newVersionCard.appendChild(newCard);
-                
-                // Add click handler for current version
-                newCard.addEventListener('click', () => {
-                    hideVersionTrackerModal();
-                    showDetailsModal(subjectData, true); // true = show edit button
-                });
-                
-                // Update version count to show error
-                versionCount.textContent = 'Error loading';
-                versionCount.className = 'px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full';
-                
-                // Show error message in version history area
-                versionHistoryList.innerHTML = `
-                    <div class="text-center py-8 border-2 border-dashed border-red-300 rounded-xl bg-red-50">
-                        <svg class="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                        <p class="text-sm text-red-600">Error loading version history</p>
-                        <p class="text-xs text-red-400 mt-1">Could not fetch previous versions</p>
-                    </div>
-                `;
             }
-        };
-        
-        const hideVersionTrackerModal = () => {
-            subjectVersionTrackerModal.classList.add('opacity-0');
-            versionTrackerModalPanel.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => subjectVersionTrackerModal.classList.add('hidden'), 300);
-        };
-        
-        const createVersionCard = (subjectData, version) => {
-            const isCurrent = version === 'current' || version === 'new';
-            const card = document.createElement('div');
-            card.className = `bg-white border-2 ${isCurrent ? 'border-green-200 hover:border-green-300' : 'border-gray-200 hover:border-gray-300'} rounded-xl p-4 transition-all duration-200 hover:shadow-md`;
-            
-            // Determine subject type styling
-            let iconBgClass = 'bg-gray-100';
-            let iconTextClass = 'text-gray-600';
-            
-            const subjectType = subjectData.subject_type.toLowerCase();
-            if (subjectType.includes('major')) {
-                iconBgClass = 'bg-blue-100';
-                iconTextClass = 'text-blue-600';
-            } else if (subjectType.includes('minor')) {
-                iconBgClass = 'bg-purple-100';
-                iconTextClass = 'text-purple-600';
-            } else if (subjectType.includes('elective')) {
-                iconBgClass = 'bg-red-100';
-                iconTextClass = 'text-red-600';
-            } else {
-                iconBgClass = 'bg-orange-100';
-                iconTextClass = 'text-orange-600';
-            }
-            
-            card.innerHTML = `
-                <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0 w-12 h-12 ${iconBgClass} rounded-lg flex items-center justify-center">
-                        <svg class="h-6 w-6 ${iconTextClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.494h18"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-gray-900 truncate">${subjectData.subject_name}</h4>
-                        <p class="text-xs text-gray-500">${subjectData.subject_code}</p>
-                        <div class="flex items-center mt-1 space-x-2">
-                            <span class="text-xs px-2 py-1 rounded-full ${isCurrent ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">${subjectData.subject_type}</span>
-                            <span class="text-xs text-gray-400">${subjectData.units} units</span>
-                        </div>
-                        ${subjectData.updated_at ? `<p class="text-xs text-gray-400 mt-1">Updated: ${new Date(subjectData.updated_at).toLocaleDateString()}</p>` : ''}
-                    </div>
-                </div>
-            `;
-            
-            return card;
+
+            const exportBtn = document.getElementById('exportChedPdfButton');
+            if(exportBtn) exportBtn.dataset.subjectData = JSON.stringify(data);
+
+            const modal = document.getElementById('chedSubjectDetailsModal');
+            const panel = document.getElementById('ched-modal-details-panel');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                panel.classList.remove('opacity-0', 'scale-95');
+            }, 10);
         };
 
-        const createVersionHistoryItem = (versionData, displayNumber) => {
-            const item = document.createElement('div');
-            item.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-blue-300';
-            
-            // Format date
-            const versionDate = new Date(versionData.created_at);
-            const formattedDate = versionDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            item.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">
-                                v${versionData.version_number}
-                            </span>
-                            <div class="flex-1 min-w-0">
-                                <h5 class="text-sm font-medium text-gray-900 truncate">${versionData.subject_name}</h5>
-                                <p class="text-xs text-gray-500">${versionData.subject_code}</p>
-                            </div>
-                        </div>
-                        <div class="mt-2 flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <span class="text-xs text-gray-400">${formattedDate}</span>
-                                ${versionData.change_reason ? `<span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">${versionData.change_reason}</span>` : ''}
-                            </div>
-                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">${versionData.subject_type}</span>
-                        </div>
-                    </div>
-                    <div class="ml-3 flex-shrink-0">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                </div>
-            `;
-            
-            // Add click handler
-            item.addEventListener('click', () => {
-                hideVersionTrackerModal();
-                showDetailsModal(versionData, false); // false = no edit button for old versions
-            });
-            
-            return item;
+        const showDetailsModal = (data, showEditButton = true) => {
+            if (data.syllabus_type === 'DepEd') {
+                populateDepEdModal(data);
+            } else {
+                populateChedModal(data);
+            }
         };
 
         // --- CORE EVENT LISTENERS ---
-        closeDetailsModalButtonTop.addEventListener('click', hideDetailsModal);
-        subjectDetailsModal.addEventListener('click', (e) => { if (e.target.id === 'subjectDetailsModal') hideDetailsModal(); });
-        
-        // Version Tracker Modal Event Listeners
-        closeVersionTrackerModalBtn.addEventListener('click', hideVersionTrackerModal);
-        subjectVersionTrackerModal.addEventListener('click', (e) => { if (e.target.id === 'subjectVersionTrackerModal') hideVersionTrackerModal(); });
-        
-        // --- EDIT SUBJECT BUTTON FUNCTIONALITY ---
-        editSubjectDetailsButton.addEventListener('click', () => {
-            const subjectDataString = editSubjectDetailsButton.dataset.subjectData;
-            if (subjectDataString) {
-                try {
-                    const subjectData = JSON.parse(subjectDataString);
-                    window.location.href = `/course-builder?subject_id=${subjectData.id}`;
-                } catch (e) {
-                    console.error('Failed to parse subject data for editing:', e);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Could not open subject for editing due to a data error.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#EF4444'
-                    });
-                }
-            } else {
-                console.error('No subject data found on the edit button.');
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'An error occurred. Subject data is missing.',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#EF4444'
-                });
-            }
-        });
+        // --- CORE EVENT LISTENERS ---
+        // Close buttons for new modals
+        const hideChedModal = () => {
+            const modal = document.getElementById('chedSubjectDetailsModal');
+            const panel = document.getElementById('ched-modal-details-panel');
+            panel.classList.add('opacity-0', 'scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+        const hideDepEdModal = () => {
+            const modal = document.getElementById('depedSubjectDetailsModal');
+            const panel = document.getElementById('deped-modal-details-panel');
+            panel.classList.add('opacity-0', 'scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
 
+        const closeChedBtn = document.getElementById('closeChedDetailsModal');
+        if(closeChedBtn) closeChedBtn.addEventListener('click', hideChedModal);
+        const chedModal = document.getElementById('chedSubjectDetailsModal');
+        if(chedModal) chedModal.addEventListener('click', (e) => { if (e.target.id === 'chedSubjectDetailsModal') hideChedModal(); });
+
+        const closeDepEdBtn = document.getElementById('closeDepedDetailsModal');
+        if(closeDepEdBtn) closeDepEdBtn.addEventListener('click', hideDepEdModal);
+        const depedModal = document.getElementById('depedSubjectDetailsModal');
+        if(depedModal) depedModal.addEventListener('click', (e) => { if (e.target.id === 'depedSubjectDetailsModal') hideDepEdModal(); });
+
+        
         const addDoubleClickEvents = (item) => {
-            item.addEventListener('dblclick', () => showVersionTrackerModal(JSON.parse(item.dataset.subjectData)));
+            item.addEventListener('dblclick', () => {
+                const subjectData = JSON.parse(item.dataset.subjectData);
+                showDetailsModal(subjectData, false); // false = edit button is hidden (and actually removed now)
+            });
         };
 
         const addDraggableEvents = (item) => {
@@ -2271,16 +2192,37 @@ const updateAllTotals = () => {
             hideImportConfirmationModal();
         });
 
-        importSubjectDetailsButton.addEventListener('click', () => {
-            subjectToImport = JSON.parse(importSubjectDetailsButton.dataset.subjectData);
+        const handleExportClick = (dataset) => {
+            if (!dataset.subjectData) return;
+            subjectToImport = JSON.parse(dataset.subjectData);
             const importConfirmationModal = document.getElementById('importConfirmationModal');
+            document.getElementById('import-modal-panel').classList.remove('opacity-0', 'scale-95');
             importConfirmationModal.classList.remove('hidden');
             setTimeout(() => {
                 importConfirmationModal.classList.remove('opacity-0');
-                document.getElementById('import-modal-panel').classList.remove('opacity-0', 'scale-95');
             }, 10);
-            hideDetailsModal(); 
-        });
+            
+            // Close either modal
+            [document.getElementById('chedSubjectDetailsModal'), document.getElementById('depedSubjectDetailsModal')].forEach(modal => {
+                if(modal && !modal.classList.contains('hidden')) {
+                     const panelId = modal.id === 'chedSubjectDetailsModal' ? 'ched-modal-details-panel' : 'deped-modal-details-panel';
+                     const panel = document.getElementById(panelId);
+                     if (panel) panel.classList.add('opacity-0', 'scale-95');
+                     modal.classList.add('opacity-0');
+                     setTimeout(() => modal.classList.add('hidden'), 300);
+                }
+            });
+        };
+
+        const exportChedPdfButton = document.getElementById('exportChedPdfButton');
+        if (exportChedPdfButton) {
+            exportChedPdfButton.addEventListener('click', () => handleExportClick(exportChedPdfButton.dataset));
+        }
+
+        const exportDepedPdfButton = document.getElementById('exportDepedPdfButton');
+        if (exportDepedPdfButton) {
+            exportDepedPdfButton.addEventListener('click', () => handleExportClick(exportDepedPdfButton.dataset));
+        }
 
         document.getElementById('saveCurriculumButton').addEventListener('click', () => {
             if (!curriculumSelector.value) {
@@ -2293,7 +2235,6 @@ const updateAllTotals = () => {
                 });
                 return;
             }
-            
             // Show traditional modal for save confirmation
             document.getElementById('saveMappingModal').classList.remove('hidden');
         });
@@ -3106,7 +3047,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     // Update hidden select for compatibility
                     curriculumSelector.innerHTML = '<option value="">Select a Curriculum</option>';
                     newCurriculums.forEach(curriculum => {
-                        const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name} (${curriculum.academic_year})`;
+                        const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` (${curriculum.academic_year})`;
+                        const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name}${academicYearText}`;
                         const option = new Option(optionText, curriculum.id);
                         option.dataset.yearLevel = curriculum.year_level;
                         option.dataset.academicYear = curriculum.academic_year;
@@ -3142,7 +3084,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             console.log('✅ Creating', filteredCurriculums.length, 'dropdown options');
             
             filteredCurriculums.forEach(curriculum => {
-                const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name} (${curriculum.academic_year})`;
+                const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` (${curriculum.academic_year})`;
+                const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name}${academicYearText}`;
                 console.log('  ➕ Adding option:', optionText);
                 const option = document.createElement('div');
                 option.className = 'px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0';
@@ -3174,7 +3117,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                 // Find curriculum by ID
                 const curriculum = allCurriculums.find(c => c.id == curriculumId);
                 if (curriculum) {
-                    const text = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name} (${curriculum.academic_year})`;
+                    const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` (${curriculum.academic_year})`;
+                    const text = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name}${academicYearText}`;
                     dropdownText.textContent = text;
                     dropdownText.className = 'text-gray-800';
                 }
@@ -3192,7 +3136,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         function filterCurriculums(searchTerm) {
             const term = searchTerm.toLowerCase();
             filteredCurriculums = allCurriculums.filter(curriculum => {
-                const searchText = `${curriculum.year_level} ${curriculum.program_code} ${curriculum.curriculum_name} ${curriculum.academic_year}`.toLowerCase();
+                const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` ${curriculum.academic_year}`;
+                const searchText = `${curriculum.year_level} ${curriculum.program_code} ${curriculum.curriculum_name}${academicYearText}`.toLowerCase();
                 return searchText.includes(term);
             });
             populateCurriculumOptions();
@@ -3370,8 +3315,29 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         });
 
 
-        // --- ADD SUBJECTS MODAL FUNCTIONALITY ---
-        
+        // Global map to store Memorandum -> Group mapping
+        let complianceLinksMap = new Map();
+
+        const fetchComplianceLinks = async () => {
+             try {
+                 const response = await fetch('/api/compliance-links?agency=DepEd');
+                 if (!response.ok) return;
+                 const links = await response.json();
+                 
+                 complianceLinksMap.clear();
+                 links.forEach(link => {
+                     // Map the Official Title (link.title) to its Group (link.group)
+                     // If link.title matches subject.memorandum, we use link.group as the Display Name
+                     if (link.title && link.group) {
+                         complianceLinksMap.set(link.title, link.group);
+                     }
+                 });
+                 console.log('📋 Compliance Links Map Loaded:', complianceLinksMap.size, 'entries');
+             } catch (error) {
+                 console.error('Error loading compliance links:', error);
+             }
+        };
+
         // Function to show Add Subjects Modal
         const showAddSubjectsModal = () => {
             // Get max units from selected curriculum
@@ -3404,17 +3370,16 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             searchInput.value = '';
             searchInput.placeholder = 'Search memorandums...';
 
-            // NEW: Reset selected memorandums
+            // RESET selected memorandums
             selectedMemorandums.clear();
             
-            // NEW: Update button text
+            // Update button text
             const confirmBtn = document.getElementById('confirmAddSubjects');
             if (confirmBtn) {
                 confirmBtn.textContent = 'Confirm';
             }
 
             // Determine Memorandum Category Filter based on Curriculum Format
-            // CHED Format is for College (Default), DepEd Format is for Senior High
             const yearLevel = selectedOption.dataset.yearLevel;
             const isSeniorHigh = yearLevel === 'Senior High';
             const requiredCategory = isSeniorHigh ? 'DepEd' : 'CHED';
@@ -3422,211 +3387,278 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             console.log(`📋 Fetching all system subjects... Filter: ${requiredCategory}`);
             
             // Fetch ALL subjects from the system to show in memorandum modal
-            fetch('/api/subjects')
-                .then(response => response.json())
-                .then(subjects => {
-                    console.log('📋 All System Subjects:', subjects);
-                    
-                    allSystemSubjects = subjects;
-                    renderMemorandums(subjects, requiredCategory);
-                    
-                    // Show modal with animation
-                    addSubjectsModal.classList.remove('hidden');
-                    setTimeout(() => {
-                        addSubjectsModal.classList.remove('opacity-0');
-                        addSubjectsModalPanel.classList.remove('opacity-0', 'scale-95');
-                    }, 10);
-                })
-                .catch(error => {
-                    console.error('Error loading subjects:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to load subjects. Please try again.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#EF4444'
-                    });
+            // AND fetch compliance links for mapping
+            Promise.all([
+                fetch('/api/subjects').then(r => r.json()),
+                isSeniorHigh ? fetchComplianceLinks() : Promise.resolve() 
+            ])
+            .then(([subjects, _]) => {
+                console.log('📋 All System Subjects:', subjects);
+                allSystemSubjects = subjects;
+                renderMemorandums(subjects, requiredCategory);
+                
+                // Show modal with animation
+                addSubjectsModal.classList.remove('hidden');
+                setTimeout(() => {
+                    addSubjectsModal.classList.remove('opacity-0');
+                    addSubjectsModalPanel.classList.remove('opacity-0', 'scale-95');
+                }, 10);
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to load subjects. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#EF4444'
                 });
+            });
         };
 
         const selectedMemorandums = new Set();
         const confirmedMemorandums = new Set(); // Track which memorandums have been confirmed
 
         // Function to render Memorandums
-        const renderMemorandums = (subjects, requiredCategory = null) => {
+        const renderMemorandums = (subjects, requiredCategory = null, parentCategory = null) => {
             const memoContainer = document.getElementById('memorandumListView');
+            
+            // Force vertical column layout
+            memoContainer.className = 'flex flex-col gap-3';
             memoContainer.innerHTML = '';
-
-            console.log('🔍 Rendering memorandums for subjects:', subjects);
             
             // Check if we're in locked mode (memorandums have been confirmed)
             const isLockedMode = confirmedMemorandums.size > 0;
 
-            const memorandums = {};
-            
-            // Group subjects by memorandum
-            subjects.forEach(subject => {
-                const memoName = subject.memorandum || 'No Memorandum';
-                if (!memorandums[memoName]) {
-                    memorandums[memoName] = {
-                        name: memoName,
-                        year: subject.memorandum_year || 'N/A',
-                        category: subject.memorandum_category || 'N/A',
-                        count: 0,
-                        subjects: []
-                    };
-                }
-                memorandums[memoName].count++;
-                memorandums[memoName].subjects.push(subject);
-            });
+            // Logic for navigating levels (Category -> Title -> Subjects)
+            // If parentCategory is provided, we are viewing the "Titles" (Memorandums) under that Category
+            // If parentCategory is NULL, we are viewing top-level Categories (for DepEd) or Memorandums (for CHED)
 
-            // If no memorandums (e.g. all null), handle gracefully
-            if (Object.keys(memorandums).length === 0) {
-                 memoContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No memorandums found.</p>';
-                 return;
-            }
+            let itemsToRender = [];
+            const isDepEd = requiredCategory && requiredCategory.toUpperCase() === 'DEPED';
 
-            // Create cards for each memorandum
-            const filteredMemos = Object.values(memorandums)
-                .filter(memo => {
-                    // Filter by required category if specified
-                    if (!requiredCategory) return true;
-                    
-                    // Get the category, trim whitespace
-                    const memoCat = (memo.category || '').trim();
-                    
-                    // If no category is set, don't show it when filtering is active
-                    if (!memoCat || memoCat === 'N/A') return false;
-                    
-                    // Define DepEd categories
-                    const depedCategories = [
-                        'Shape Paper',
-                        'Curriculum Guides (Core)',
-                        'Curriculum Guides (Academic)',
-                        'Curriculum Guides (TechPro)'
-                    ];
-                    
-                    // Check based on required category
-                    if (requiredCategory.toUpperCase() === 'DEPED') {
-                        // For DepEd, check if category is in the DepEd categories list
-                        return depedCategories.includes(memoCat);
-                    } else if (requiredCategory.toUpperCase() === 'CHED') {
-                        // For CHED, check if it's NOT a DepEd category (and not empty)
-                        return !depedCategories.includes(memoCat);
+            if (isDepEd && !parentCategory) {
+                // LEVEL 1: Show Categories (e.g. Core, Academic, TechPro, Shape Paper)
+                const categories = new Set();
+                subjects.forEach(s => {
+                    if (s.memorandum_category) {
+                         const validCategories = ['Shape Paper', 'Curriculum Guides (Core)', 'Curriculum Guides (Academic)', 'Curriculum Guides (TechPro)'];
+                         const cat = s.memorandum_category.trim();
+                         if (validCategories.includes(cat)) {
+                             categories.add(cat);
+                         }
                     }
-                    
-                    return false;
                 });
 
-            if (filteredMemos.length === 0) {
-                 memoContainer.innerHTML = `<p class="text-gray-500 text-center py-8">No ${requiredCategory} memorandums found.</p>`;
+                itemsToRender = Array.from(categories).map(cat => {
+                     const isFolder = ['Curriculum Guides (Academic)', 'Curriculum Guides (TechPro)'].includes(cat);
+                     const catSubjects = subjects.filter(s => s.memorandum_category === cat);
+                     
+                     return {
+                          name: cat,
+                          displayName: cat, 
+                          type: isFolder ? 'folder' : 'memorandum',
+                          count: catSubjects.length,
+                          subjects: catSubjects,
+                          category: cat
+                     };
+                });
+            } else if (isDepEd && parentCategory) {
+                // LEVEL 2: We are inside a Category (Academic or TechPro)
+                // We need to group subjects by their "Title / Group" which we resolve via complianceLinksMap
+                
+                const isGroupedCategory = ['Curriculum Guides (Academic)', 'Curriculum Guides (TechPro)'].includes(parentCategory);
+
+                if (isGroupedCategory) {
+                     const memorandums = {};
+                     
+                     subjects.forEach(subject => {
+                        if (subject.memorandum_category === parentCategory) {
+                             const officialMemo = subject.memorandum || 'No Group';
+                             
+                             // Resolve the Group Title using the map
+                             // Fallback to officialMemo if no mapping found (or regex parsing if preferred)
+                             let groupTitle = complianceLinksMap.get(officialMemo);
+                             
+                             if (!groupTitle) {
+                                 // Fallback: If not found in map, try to be smart or just use the memo
+                                 // The user explicitly asked to use the "Right Title/Group"
+                                 // If the mapping is missing, it might mean the subject data is old or mismatched.
+                                 // We will fallback to the simple regex parser for safety, 
+                                 // but prioritize the mapped value.
+                                 let displayName = officialMemo;
+                                 if (displayName.includes('•')) displayName = displayName.split('•').pop().trim();
+                                 const parenIndex = displayName.indexOf('(');
+                                 if (parenIndex > 0) displayName = displayName.substring(0, parenIndex).trim();
+                                 groupTitle = displayName;
+                             }
+
+                             // We Group BY this Resolved Title
+                             if (!memorandums[groupTitle]) {
+                                 memorandums[groupTitle] = {
+                                     name: groupTitle, // We use the GROUP TITLE as the key/name now
+                                     displayName: groupTitle,
+                                     type: 'memorandum', 
+                                     count: 0,
+                                     subjects: []
+                                 };
+                             }
+                             memorandums[groupTitle].count++;
+                             memorandums[groupTitle].subjects.push(subject);
+                        }
+                     });
+                     itemsToRender = Object.values(memorandums);
+                } else {
+                     return; 
+                }
+            } else {
+                // CHED or Default: Show Memorandums directly
+                const memorandums = {};
+                subjects.forEach(subject => {
+                    const memoName = subject.memorandum || 'No Memorandum';
+                    const memoCat = (subject.memorandum_category || '').trim();
+                    const depedCategories = ['Shape Paper', 'Curriculum Guides (Core)', 'Curriculum Guides (Academic)', 'Curriculum Guides (TechPro)'];
+                    
+                    let include = true;
+                    if (requiredCategory && requiredCategory.toUpperCase() === 'CHED') {
+                        if (memoCat && memoCat !== 'N/A' && depedCategories.includes(memoCat)) {
+                            include = false;
+                        }
+                    }
+
+                    if (include) {
+                        if (!memorandums[memoName]) {
+                            memorandums[memoName] = {
+                                name: memoName,
+                                displayName: memoName,
+                                type: 'memorandum',
+                                year: subject.memorandum_year || 'N/A',
+                                count: 0,
+                                subjects: []
+                            };
+                        }
+                        memorandums[memoName].count++;
+                        memorandums[memoName].subjects.push(subject);
+                    }
+                });
+                itemsToRender = Object.values(memorandums);
+            }
+            // -------------------------------------------------
+
+            if (itemsToRender.length === 0) {
+                 memoContainer.innerHTML = `<p class="text-gray-500 text-center py-8">No records found.</p>`;
                  return;
             }
 
-            filteredMemos.sort((a, b) => a.name.localeCompare(b.name))
-                .forEach(memo => {
+            // Sort: Folders first, then files? Or alphabetical? Let's do alphabetical.
+            itemsToRender.sort((a, b) => a.displayName.localeCompare(b.displayName));
+            
+            // Add "Back" button if parentCategory exists
+            if (parentCategory) {
+                const backDiv = document.createElement('div');
+                backDiv.className = 'mb-2';
+                backDiv.innerHTML = `
+                    <button class="flex items-center text-blue-600 hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Back to Categories
+                    </button>
+                `;
+                backDiv.querySelector('button').addEventListener('click', () => {
+                    renderMemorandums(subjects, requiredCategory, null);
+                });
+                memoContainer.appendChild(backDiv);
+            }
+
+            itemsToRender.forEach(item => {
                 const card = document.createElement('div');
+                const displayName = item.displayName || item.name; // Use Display Name only
                 
-                const isNoMemo = memo.name === 'No Memorandum';
-                const iconColor = isNoMemo ? 'text-gray-400' : 'text-blue-500';
-                const bgColor = isNoMemo ? 'bg-gray-100' : 'bg-blue-100';
-                const isSelected = selectedMemorandums.has(memo.name);
+                const isFolder = item.type === 'folder';
+                const isSelected = !isFolder && selectedMemorandums.has(item.name); // Only checking by name might be risky if duplicated, but okay for now
                 
-                // Check if this memorandum is locked (not in confirmed list when in locked mode)
-                const isLocked = isLockedMode && !confirmedMemorandums.has(memo.name);
-                
-                // Base card classes
+                // Styling
+                let icon = '';
+                let bgColor = 'bg-blue-100';
+                let iconColor = 'text-blue-500';
+
+                if (isFolder) {
+                    // Folder Icon
+                    icon = `<svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
+                    bgColor = 'bg-yellow-100';
+                    iconColor = 'text-yellow-600';
+                } else {
+                    // Document Icon
+                    icon = `<svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`;
+                }
+
+                // Check if locked
+                const isLocked = !isFolder && isLockedMode && !confirmedMemorandums.has(item.name);
+
                 let cardClasses = 'p-4 border border-gray-200 rounded-lg transition-colors flex justify-between items-center';
-                
                 if (isLocked) {
-                    // Locked state: gray, not clickable
                     cardClasses += ' bg-gray-50 opacity-50 cursor-not-allowed';
                 } else {
-                    // Unlocked state: interactive
-                    cardClasses += ' hover:bg-blue-50 cursor-pointer group';
+                    cardClasses += ' hover:bg-gray-50 cursor-pointer group';
                 }
-                
                 card.className = cardClasses;
 
                 card.innerHTML = `
                     <div class="flex items-center gap-4">
-                        ${!isLockedMode ? `
+                        ${(!isFolder && !isLockedMode) ? `
                         <div class="flex items-center h-5" onclick="event.stopPropagation()">
                             <input type="checkbox" class="memorandum-checkbox w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" ${isSelected ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
                         </div>
                         ` : ''}
                         <div class="w-12 h-12 ${bgColor} rounded-lg flex items-center justify-center ${isLocked ? 'opacity-50' : ''}">
-                           <svg class="w-6 h-6 ${iconColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                           ${icon}
                         </div>
                         <div>
-                            <h3 class="font-semibold ${isLocked ? 'text-gray-400' : 'text-gray-800 group-hover:text-blue-700'}">${memo.name}</h3>
-                            <p class="text-sm ${isLocked ? 'text-gray-400' : 'text-gray-500'}">${memo.subjects.length} Subjects ${!isNoMemo ? `• ${memo.year}` : ''}</p>
+                            <h3 class="font-semibold ${isLocked ? 'text-gray-400' : 'text-gray-800 group-hover:text-blue-700'}">${displayName}</h3>
+                            <p class="text-sm ${isLocked ? 'text-gray-400' : 'text-gray-500'}">${item.count} ${item.count === 1 ? 'Item' : 'Items'} ${item.year ? `• ${item.year}` : ''}</p>
                         </div>
                     </div>
-                    <div class="text-gray-400 group-hover:text-blue-500 flex items-center">
-                        ${isLocked ? `
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                        ` : ''}
+                    ${isFolder ? `
+                    <div class="text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </div>
+                    ` : ''}
                 `;
-                
-                if (!isLocked && !isLockedMode) {
+
+                if (isFolder) {
+                    card.addEventListener('click', () => {
+                        // Drill down
+                        renderMemorandums(subjects, requiredCategory, item.name);
+                    });
+                } else if (!isLocked && !isLockedMode) {
                     const checkbox = card.querySelector('.memorandum-checkbox');
                     
-                    // Add change handler for checkbox
                     checkbox.addEventListener('change', (e) => {
                         if (e.target.checked) {
-                            selectedMemorandums.add(memo.name);
+                            selectedMemorandums.add(item.name);
                         } else {
-                            selectedMemorandums.delete(memo.name);
+                            selectedMemorandums.delete(item.name);
                         }
                         updateSelectedMemoInfo();
                     });
 
-                    // Add click handler for card to toggle checkbox
                     card.addEventListener('click', (e) => {
-                        if (e.ctrlKey || e.metaKey || e.button === 2) {
-                            // Ctrl+Click or Cmd+Click or Right-click: Show details modal
-                            e.preventDefault();
-                            showMemorandumDetailsModal(memo);
-                        } else {
-                            // Normal click: Toggle checkbox
-                            checkbox.checked = !checkbox.checked;
-                            checkbox.dispatchEvent(new Event('change'));
+                        if (e.target !== checkbox) {
+                             checkbox.checked = !checkbox.checked;
+                             checkbox.dispatchEvent(new Event('change'));
                         }
                     });
                     
-                    // Add context menu handler
+                    // Context Menu for Details
                     card.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
-                        showMemorandumDetailsModal(memo);
-                    });
-                    
-                    // Add info icon for viewing details
-                    const infoIcon = document.createElement('button');
-                    infoIcon.className = 'ml-2 p-1 rounded-full hover:bg-blue-100 transition-colors';
-                    infoIcon.innerHTML = `
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    `;
-                    infoIcon.title = 'View memorandum details';
-                    infoIcon.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showMemorandumDetailsModal(memo);
-                    });
-                    
-                    const rightSection = card.querySelector('.text-gray-400');
-                    rightSection.appendChild(infoIcon);
-                } else if (!isLocked && isLockedMode) {
-                    // In locked mode but this memo is unlocked - allow viewing subjects
-                    card.addEventListener('click', () => {
-                        // Directly show subjects for this memorandum
-                        selectedMemorandums.clear();
-                        selectedMemorandums.add(memo.name);
-                        applyMemorandumFilter();
+                        // For "Core" logic where the category is the wrapper, we construct a fake 'memo' object to show details
+                        // or just show summary of first subject?
+                        // Let's reuse existing modal but caution about structure
+                        showMemorandumDetailsModal({
+                            name: item.name,
+                            subjects: item.subjects,
+                            year: item.subjects[0]?.memorandum_year || 'N/A' 
+                        });
                     });
                 }
                 
@@ -3634,16 +3666,6 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             });
             
             updateSelectedMemoInfo();
-            
-            // Hide/show confirm button based on locked mode
-            const confirmBtn = document.getElementById('confirmAddSubjects');
-            if (confirmBtn) {
-                if (isLockedMode) {
-                    confirmBtn.style.display = 'none';
-                } else {
-                    confirmBtn.style.display = 'block';
-                }
-            }
         };
 
         const updateSelectedMemoInfo = () => {
@@ -3664,13 +3686,9 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
              const selectedMemos = Array.from(selectedMemorandums);
              
              if (selectedMemos.length === 0) {
-                 // If nothing selected, show all? Or warn?
-                 // Let's assume we show all if nothing selected, or warn. 
-                 // User request implies using 2 or more.
-                 // Let's warn if empty.
                  Swal.fire({
                     title: 'No Selection',
-                    text: 'Please select at least one memorandum to display subjects.',
+                    text: 'Please select at least one memorandum/title to display subjects.',
                     icon: 'warning',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#F59E0B'
@@ -3682,10 +3700,37 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             confirmedMemorandums.clear();
             selectedMemorandums.forEach(memo => confirmedMemorandums.add(memo));
 
-            // Filter the available subjects sidebar
-            const filteredSubjects = allSystemSubjects.filter(s => {
-                 const sMemo = s.memorandum || 'No Memorandum';
-                 return selectedMemorandums.has(sMemo);
+            // FILTER LOGIC UPDATE:
+            // selectedMemorandums now contains "Group Titles" (e.g., "ARTS...") or "Category Names" (e.g., "Shape Paper") 
+            // or "Raw Memorandums" (CHED).
+            // We need to match subjects to these keys.
+
+            const filteredSubjects = allSystemSubjects.filter(subject => {
+                 const sMemo = subject.memorandum || 'No Memorandum';
+                 const sCategory = (subject.memorandum_category || '').trim();
+                 
+                 // 1. Check direct match (CHED or Legacy)
+                 if (selectedMemorandums.has(sMemo)) return true;
+
+                 // 2. Check Category match (DepEd Level 1 items)
+                 if (selectedMemorandums.has(sCategory)) return true;
+
+                 // 3. Check Group Title match (DepEd Level 2 items)
+                 // We need to resolve the subject's memo to its Group Title using the map
+                 let groupTitle = complianceLinksMap.get(sMemo);
+                 
+                 // Fallback parsing if map failed (matching render logic)
+                 if (!groupTitle && ['Curriculum Guides (Academic)', 'Curriculum Guides (TechPro)'].includes(sCategory)) {
+                     let displayName = sMemo;
+                     if (displayName.includes('•')) displayName = displayName.split('•').pop().trim();
+                     const parenIndex = displayName.indexOf('(');
+                     if (parenIndex > 0) displayName = displayName.substring(0, parenIndex).trim();
+                     groupTitle = displayName;
+                 }
+
+                 if (groupTitle && selectedMemorandums.has(groupTitle)) return true;
+
+                 return false;
             });
 
             // Update the sidebar view
@@ -3697,7 +3742,7 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             // Show confirmation toast
             Swal.fire({
                 title: 'Filtered!',
-                text: `Showing subjects from ${selectedMemos.length} memorandum(s).`,
+                text: `Showing ${filteredSubjects.length} subject(s) from selection.`,
                 icon: 'success',
                 toast: true,
                 position: 'top-end',
@@ -3935,7 +3980,7 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         };
         
         // Event listeners for Add Subjects Modal
-        openAddSubjectsModalBtn.addEventListener('click', showAddSubjectsModal);
+
         closeAddSubjectsModalBtn.addEventListener('click', hideAddSubjectsModal);
         cancelAddSubjectsBtn.addEventListener('click', hideAddSubjectsModal);
         
@@ -4048,7 +4093,6 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         const memorandumDetailsModal = document.getElementById('memorandumDetailsModal');
         const memorandumDetailsPanel = document.getElementById('memorandum-details-panel');
         const closeMemorandumDetailsModal = document.getElementById('closeMemorandumDetailsModal');
-        const closeMemorandumDetailsModalBtn = document.getElementById('closeMemorandumDetailsModalBtn');
         
         const showMemorandumDetailsModal = (memoData) => {
             // Populate memorandum information
@@ -4122,7 +4166,6 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
         };
         
         closeMemorandumDetailsModal.addEventListener('click', hideMemorandumDetailsModal);
-        closeMemorandumDetailsModalBtn.addEventListener('click', hideMemorandumDetailsModal);
         
         // Close modal when clicking outside
         memorandumDetailsModal.addEventListener('click', (e) => {

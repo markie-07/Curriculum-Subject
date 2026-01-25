@@ -18,14 +18,38 @@ class SubjectController extends Controller
             'id',
             'subject_name',
             'subject_code',
-            'subject_type',
+
+            'subject_type', // Ensure this line exists
+            'syllabus_type',
             'subject_unit',
             'contact_hours',
             'course_description',
             'memorandum',
             'memorandum_year',
             'memorandum_category',
-            'created_at'
+            'q_1_performance_standards',
+            'q_1_performance_tasks',
+            'q_2_performance_standards',
+            'q_2_performance_tasks',
+            'deped_data',
+            'time_allotment',
+            'schedule',
+            'syllabus_path',
+            'created_at',
+            'program_mapping_grid',
+            'course_mapping_grid',
+            'lessons',
+            'pilo_outcomes',
+            'cilo_outcomes',
+            'learning_outcomes',
+            'basic_readings',
+            'extended_readings',
+            'course_assessment',
+            'committee_members',
+            'consultation_schedule',
+            'prepared_by',
+            'reviewed_by',
+            'approved_by'
         ])
         ->orderBy('subject_name')
         ->get();
@@ -40,6 +64,7 @@ class SubjectController extends Controller
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code',
             'subject_unit' => 'nullable|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
             'contact_hours' => 'nullable|integer',
             'course_description' => 'nullable|string',
@@ -61,12 +86,29 @@ class SubjectController extends Controller
             'memorandum' => 'nullable|string',
             'memorandum_year' => 'nullable|string',
             'memorandum_category' => 'nullable|string',
+            'q_1_performance_standards' => 'nullable|string',
+            'q_1_performance_tasks' => 'nullable|string',
+            'q_2_performance_standards' => 'nullable|string',
+            'q_2_performance_tasks' => 'nullable|string',
+            'deped_data' => 'nullable|array',
+            'time_allotment' => 'nullable|string',
+            'schedule' => 'nullable|string',
+            'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
+
+        $syllabusPath = null;
+        if ($request->hasFile('syllabus_path')) {
+            $file = $request->file('syllabus_path');
+            // Store in 'public/syllabi' folder. Ensure 'php artisan storage:link' is run.
+            $path = $file->store('syllabi', 'public'); 
+            $syllabusPath = '/storage/' . $path;
+        }
 
         $subject = Subject::create([
             'subject_name' => $validated['course_title'],
             'subject_code' => $validated['subject_code'],
             'subject_type' => $validated['subject_type'],
+            'syllabus_type' => $validated['syllabus_type'] ?? 'CHED',
             'subject_unit' => $validated['subject_unit'] ?? 0,
             'lessons' => $validated['lessons'] ?? null,
             'contact_hours' => $validated['contact_hours'] ?? null,
@@ -87,6 +129,14 @@ class SubjectController extends Controller
             'memorandum' => $validated['memorandum'] ?? null,
             'memorandum_year' => $validated['memorandum_year'] ?? null,
             'memorandum_category' => $validated['memorandum_category'] ?? null,
+            'q_1_performance_standards' => $validated['q_1_performance_standards'] ?? null,
+            'q_1_performance_tasks' => $validated['q_1_performance_tasks'] ?? null,
+            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
+            'q_2_performance_tasks' => $validated['q_2_performance_tasks'] ?? null,
+            'deped_data' => $validated['deped_data'] ?? null,
+            'time_allotment' => $validated['time_allotment'] ?? null,
+            'schedule' => $validated['schedule'] ?? null,
+            'syllabus_path' => $syllabusPath,
         ]);
 
         // Attach subject to selected curriculums if provided
@@ -109,7 +159,8 @@ class SubjectController extends Controller
                 [
                     'subject_id' => $subject->id, 
                     'subject_code' => $subject->subject_code,
-                    'subject_type' => $subject->subject_type
+                    'subject_type' => $subject->subject_type,
+                    'syllabus_type' => $subject->syllabus_type
                 ]
             );
             auth()->user()->updateLastActivity();
@@ -151,6 +202,7 @@ class SubjectController extends Controller
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code,' . $subject->id,
             'subject_unit' => 'nullable|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
             'contact_hours' => 'nullable|integer',
             'course_description' => 'nullable|string',
@@ -172,12 +224,22 @@ class SubjectController extends Controller
             'memorandum' => 'nullable|string',
             'memorandum_year' => 'nullable|string',
             'memorandum_category' => 'nullable|string',
+            'q_1_performance_standards' => 'nullable|string',
+            'q_1_performance_tasks' => 'nullable|string',
+            'q_2_performance_standards' => 'nullable|string',
+            'q_2_performance_tasks' => 'nullable|string',
+            'deped_data' => 'nullable|array',
+            'time_allotment' => 'nullable|string',
+            'schedule' => 'nullable|string',
+            'schedule' => 'nullable|string',
+            'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         $updateData = [
             'subject_name' => $validated['course_title'],
             'subject_code' => $validated['subject_code'],
             'subject_type' => $validated['subject_type'],
+            'syllabus_type' => $validated['syllabus_type'] ?? 'CHED',
             'subject_unit' => $validated['subject_unit'] ?? 0,
             'lessons' => $validated['lessons'] ?? null,
             'contact_hours' => $validated['contact_hours'] ?? null,
@@ -197,8 +259,24 @@ class SubjectController extends Controller
             'approved_by' => $validated['approved_by'] ?? null,
             'memorandum' => $validated['memorandum'] ?? null,
             'memorandum_year' => $validated['memorandum_year'] ?? null,
+            'memorandum_year' => $validated['memorandum_year'] ?? null,
             'memorandum_category' => $validated['memorandum_category'] ?? null,
+            'q_1_performance_standards' => $validated['q_1_performance_standards'] ?? null,
+            'q_1_performance_tasks' => $validated['q_1_performance_tasks'] ?? null,
+            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
+            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
+            'q_2_performance_tasks' => $validated['q_2_performance_tasks'] ?? null,
+            'deped_data' => $validated['deped_data'] ?? null,
+            'time_allotment' => $validated['time_allotment'] ?? null,
+            'schedule' => $validated['schedule'] ?? null,
         ];
+
+        if ($request->hasFile('syllabus_path')) {
+            $file = $request->file('syllabus_path');
+             // Store in 'public/syllabi' folder. Ensure 'php artisan storage:link' is run.
+            $path = $file->store('syllabi', 'public');
+            $updateData['syllabus_path'] = '/storage/' . $path;
+        }
 
         // Use database transaction to ensure data consistency
         DB::transaction(function () use ($subject, $updateData, $request, $validated) {

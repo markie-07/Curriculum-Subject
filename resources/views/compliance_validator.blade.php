@@ -76,82 +76,101 @@
                         {{-- DepEd Links Section --}}
                         <div id="deped-links" class="hidden space-y-3">
                             {{-- Accordion for Shape Paper --}}
-                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                            <div class="deped-accordion border border-gray-200 rounded-lg" data-year="Shape Paper" data-agency="DepEd">
                                 <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
                                     <span class="font-semibold text-gray-700">Shape Paper</span>
                                     <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white">
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/The-Strengthened-Senior-High-School-Program-Shaping-Paper.pdf" target="_blank" class="block text-blue-600 hover:underline">The Strengthened Senior High School Program Shaping Paper</a>
+                                    <div class="mb-3 flex justify-end gap-2">
+                                        <button type="button" class="add-title-btn px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2" data-year="Shape Paper" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                            Add Title
+                                        </button>
+                                        <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="Shape Paper" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Add Link
+                                        </button>
+                                    </div>
+                                    <div class="custom-links-container space-y-2 mb-4" data-year="Shape Paper" data-agency="DepEd"></div>
+
                                 </div>
                             </div>
 
                             {{-- Accordion for Curriculum Guides (Core) --}}
-                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                            <div class="deped-accordion border border-gray-200 rounded-lg" data-year="Curriculum Guides (Core)" data-agency="DepEd">
                                 <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
                                     <span class="font-semibold text-gray-700">Curriculum Guides (Core)</span>
                                     <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Effective-Communication.pdf" target="_blank" class="block text-blue-600 hover:underline">Effective Communication</a>
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Mathematics.pdf" target="_blank" class="block text-blue-600 hover:underline">General Mathematics</a>
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Science.pdf" target="_blank" class="block text-blue-600 hover:underline">General Science</a>
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Life-and-Career-Skills.pdf" target="_blank" class="block text-blue-600 hover:underline">Life and Career Skills</a>
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Mabisang-Komunikasyon.pdf" target="_blank" class="block text-blue-600 hover:underline">Mabisang Komunikasyon</a>
-                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Pag-aaral-ng-Kasaysayan-at-Lipunang-Pilipino.pdf" target="_blank" class="block text-blue-600 hover:underline">Pag-aaral ng Kasaysayan at Lipunang Pilipino</a>
+                                    <div class="mb-3 flex justify-end gap-2">
+                                        <button type="button" class="add-title-btn px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2" data-year="Curriculum Guides (Core)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                            Add Title
+                                        </button>
+                                        <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="Curriculum Guides (Core)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Add Link
+                                        </button>
+                                    </div>
+                                    <div class="custom-links-container space-y-2 mb-4" data-year="Curriculum Guides (Core)" data-agency="DepEd"></div>
+
                                 </div>
                             </div>
 
                             {{-- Accordion for Curriculum Guides (Academic) --}}
-                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                            <div class="deped-accordion border border-gray-200 rounded-lg" data-year="Curriculum Guides (Academic)" data-agency="DepEd">
                                 <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
                                     <span class="font-semibold text-gray-700">Curriculum Guides (Academic)</span>
                                     <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-4">
-                                    <div class="space-y-2">
-                                        <h4 class="font-bold text-gray-600">ARTS, SOCIAL SCIENCE, AND HUMANITIES</h4>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Arts-1-Creative-Industries-Visual-Art-Literary-Art-Media-Art-Applied-Art-and-Traditional-Art.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Arts-2-Creative-Industries-II-%E2%80%93-Performing-Arts.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Arts 2 (Creative Industries II – Performing Arts)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Social-Science-1-Introduction-to-Social-Sciences.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Social Science 1 (Introduction to Social Sciences)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Humanities-1-Creative-Writing.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Humanities 1 (Creative Writing)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Humanities-2-Introduction-to-World-Religions-and-Belief-Systems.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Humanities 2 (Introduction to World Religions and Belief Systems)</a>
+                                    <!-- Action Buttons -->
+                                    <div class="mb-3 flex justify-end gap-2">
+                                        <button type="button" class="add-title-btn px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2" data-year="Curriculum Guides (Academic)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                            Add Title
+                                        </button>
+                                        <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="Curriculum Guides (Academic)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Add Link
+                                        </button>
                                     </div>
-                                    <div class="space-y-2">
-                                        <h4 class="font-bold text-gray-600">ENGINEERING AND TECHNOLOGY</h4>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-1-Calculus.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 1 (Calculus)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-2-Fundamentals-of-Programming.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 2 (Fundamentals of Programming)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-3-Basic-Electricity-and-Electronics.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 3 (Basic Electricity and Electronics)</a>
-                                    </div>
-                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-gray-600">BUSINESS, ECONOMICS, AND MANAGEMENT</h4>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Business-1-Business-Enterprise-Simulation.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Business 1 (Business Enterprise Simulation)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Economics-1-Introduction-to-Economics.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Economics 1 (Introduction to Economics)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Management-1-Fundamentals-of-Accountancy-Business-and-Management.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Management 1 (Fundamentals of Accountancy, Business, and Management)</a>
-                                    </div>
-                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-gray-600">HEALTH AND MEDICAL SCIENCES</h4>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Health-Science-1-Introduction-to-Health-Science.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Health Science 1 (Introduction to Health Science)</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Health-Science-2-Basic-Human-Anatomy-and-Physiology.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Health Science 2 (Basic Human Anatomy and Physiology)</a>
-                                    </div>
+                                    
+                                    <!-- Dynamic Links Container -->
+                                    <div class="custom-links-container space-y-2" data-year="Curriculum Guides (Academic)" data-agency="DepEd"></div>
+
                                 </div>
                             </div>
 
                              {{-- Accordion for Curriculum Guides (TechPro) --}}
-                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                            <div class="deped-accordion border border-gray-200 rounded-lg" data-year="Curriculum Guides (TechPro)" data-agency="DepEd">
                                 <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
                                     <span class="font-semibold text-gray-700">Curriculum Guides (TechPro)</span>
                                     <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-4">
-                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-gray-600">INFORMATION AND COMMUNICATIONS TECHNOLOGY</h4>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Digital-Tools-and-Productivity-Applications.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Digital Tools and Productivity Applications</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Multimedia-Development-and-Design.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Multimedia Development and Design</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Systems-and-Network-Administration.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Computer Systems and Network Administration</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Web-Development.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Web Development</a>
-                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Programming.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Computer Programming</a>
+                                    <div class="mb-3 flex justify-end gap-2">
+                                        <button type="button" class="add-title-btn px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2" data-year="Curriculum Guides (TechPro)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                            Add Title
+                                        </button>
+                                        <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="Curriculum Guides (TechPro)" data-agency="DepEd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Add Link
+                                        </button>
                                     </div>
+                                    <div class="custom-links-container space-y-2 mb-4" data-year="Curriculum Guides (TechPro)" data-agency="DepEd"></div>
+
                                 </div>
                             </div>
                         </div>
@@ -177,6 +196,21 @@
 
             <form id="addLinkForm" class="space-y-4">
                 @csrf
+                
+                {{-- Group Selection (Dynamic) --}}
+                <div id="linkGroupContainer" class="hidden">
+                    <label for="linkGroup" class="block text-sm font-medium text-slate-700 mb-2">Title / Group (Optional)</label>
+                    <div class="relative">
+                        <select id="linkGroup" name="group" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                            <option value="">No Group</option>
+                            {{-- Options populated by JS --}}
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <label for="linkTitle" class="block text-sm font-medium text-slate-700 mb-2">Link Title</label>
                     <input type="text" id="linkTitle" name="title" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., CMO No. 123, Series of 2024" required>
@@ -199,6 +233,41 @@
             </form>
         </div>
     </div>
+
+    {{-- Add Title (Group) Modal --}}
+    <div id="addTitleModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden opacity-0">
+        <div id="add-title-modal-panel" class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out">
+            <button id="closeAddTitleModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Add Title</h2>
+                <p class="text-sm text-slate-500 mt-1">Create a new group title for links</p>
+            </div>
+
+            <form id="addTitleForm" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="titleName" class="block text-sm font-medium text-slate-700 mb-2">Title Name</label>
+                    <input type="text" id="titleName" name="group" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., SCIENCE, TECHNOLOGY..." required>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" id="cancelAddTitleButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Create Title</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+ </main>
 
     {{-- External Link Confirmation Modal --}}
     <div id="externalLinkModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden opacity-0">
@@ -334,12 +403,16 @@
     let editingLinkId = null;
     let isLoadingAll = false;
 
+    window.agencyLinks = {};
+
     // --- Data Management ---
     const fetchAllLinksForAgency = async (agency) => {
         try {
             const response = await fetch(`${API_BASE_URL}?agency=${agency}`);
             const data = await response.json();
-            return Array.isArray(data) ? data : [];
+            const links = Array.isArray(data) ? data : [];
+            window.agencyLinks[agency] = links;
+            return links;
         } catch (error) {
             console.error(`Error fetching links for ${agency}:`, error);
             return [];
@@ -373,18 +446,89 @@
         if (!container) return;
 
         container.innerHTML = '';
-        links.forEach(link => {
-            const linkDiv = document.createElement('div');
-            linkDiv.className = 'custom-link-item flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 transition-colors duration-200';
-            linkDiv.innerHTML = `
-                <a href="${link.url}" target="_blank" class="flex-grow text-blue-600 hover:underline text-sm md:text-base">${link.title}</a>
-            `;
+        
+        // Group by 'group' field
+        const linksByGroup = links.reduce((acc, link) => {
+            const groupName = link.group || 'Untitled';
+            if (!acc[groupName]) acc[groupName] = [];
+            acc[groupName].push(link);
+            return acc;
+        }, {});
+        
+        // Separate 'Untitled' (no group) from named groups
+        const untitledLinks = linksByGroup['Untitled'] || [];
+        delete linksByGroup['Untitled'];
+        
+        // Render Named Groups first
+        Object.keys(linksByGroup).sort().forEach(groupName => {
+            const groupLinks = linksByGroup[groupName];
+            
+            // Find if there's a placeholder record (defined title)
+            const placeholder = groupLinks.find(l => !l.title && !l.url);
+            const placeholderId = placeholder ? placeholder.id : null;
 
-            container.appendChild(linkDiv);
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'group-container space-y-2 mb-4';
+            
+            // Header
+            const header = document.createElement('h4');
+            header.className = 'font-bold text-gray-600 pl-1 flex items-center gap-2';
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = groupName;
+            header.appendChild(titleSpan);
+
+
+
+            groupDiv.appendChild(header);
+            
+            // Render links in this group
+            groupLinks.forEach(link => {
+                if (!link.title || !link.url) return; // Skip the placeholder itself
+                const linkDiv = createLinkItem(link);
+                groupDiv.appendChild(linkDiv);
+            });
+            
+            container.appendChild(groupDiv);
         });
+        
+        // Render Ungrouped Links
+        if (untitledLinks.length > 0) {
+            const ungroupedDiv = document.createElement('div');
+            ungroupedDiv.className = 'space-y-2 pt-2';
+            untitledLinks.forEach(link => {
+                // If it's a placeholder group header (title/url null) but ended up here, skip
+                if (!link.title && !link.url) {
+                    // This creates a header for a group that somehow lost its name or is untitled but is a placeholder?
+                    // Should be rare, but handle it:
+                     const header = document.createElement('h4');
+                     header.className = 'font-bold text-gray-400 pl-1 mt-2 text-sm italic';
+                     header.textContent = link.group || 'Untitled Group';
+
+                     
+                     container.appendChild(header);
+                    return;
+                }
+                
+                const linkDiv = createLinkItem(link);
+                ungroupedDiv.appendChild(linkDiv);
+            });
+            container.appendChild(ungroupedDiv);
+        }
+        
         container.dataset.loaded = 'true';
     };
 
+    const createLinkItem = (link) => {
+
+        const linkDiv = document.createElement('div');
+        linkDiv.className = 'custom-link-item flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 transition-colors duration-200';
+        linkDiv.innerHTML = `
+            <a href="${link.url}" target="_blank" class="flex-grow text-blue-600 hover:underline text-sm md:text-base pl-2 border-l-2 border-transparent hover:border-blue-400 h-full flex items-center">${link.title}</a>
+        `;
+        return linkDiv;
+    };
+    
     const deleteCustomLink = async (year, agency, linkId) => {
         try {
             const response = await fetch(`${API_BASE_URL}/${linkId}`, {
@@ -400,6 +544,9 @@
             console.error('Error deleting link:', error);
         }
     };
+    
+    // Expose delete function globally so onclick works (Must be after definition)
+    window.deleteCustomLink = deleteCustomLink;
 
     // --- Modal Logic ---
     const showExternalLinkModal = (link, title) => {
@@ -422,16 +569,63 @@
         currentYear = year;
         currentAgency = agency;
         
+        // Populate Group Select
+        const groupSelect = document.getElementById('linkGroup');
+        const groupContainer = document.getElementById('linkGroupContainer');
+        groupSelect.innerHTML = '<option value="">No Group</option>';
+
+        if (agency === 'DepEd') {
+            groupContainer.classList.remove('hidden');
+            
+            // Hardcoded Standard Groups for DepEd
+            const standardGroups = {
+                'Curriculum Guides (Academic)': [
+                    'ARTS, SOCIAL SCIENCE, AND HUMANITIES',
+                    'BUSINESS AND ENTREPRENEURSHIP',
+                    'SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS',
+                    'SPORTS, HEALTH, AND WELLNESS'
+                ],
+                'Curriculum Guides (TechPro)': [
+                    'INFORMATION AND COMMUNICATIONS TECHNOLOGY',
+                    'HOME ECONOMICS',
+                    'INDUSTRIAL ARTS',
+                    'AGRI-FISHERY ARTS'
+                ]
+            };
+
+            // Find existing groups for this year (from DB)
+            const allLinks = window.agencyLinks[agency] || [];
+            const yearLinks = allLinks.filter(l => l.year === year);
+            const dynamicGroups = [...new Set(yearLinks.map(l => l.group).filter(g => g))];
+            
+            // Combine with standard groups if applicable
+            let allGroups = [...dynamicGroups];
+            if (standardGroups[year]) {
+                allGroups = [...new Set([...allGroups, ...standardGroups[year]])];
+            }
+            
+            allGroups.sort().forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                groupSelect.appendChild(opt);
+            });
+        } else {
+            groupContainer.classList.add('hidden');
+        }
+
         if (existingLink) {
             editingLinkId = existingLink.id;
             addLinkModalTitle.textContent = 'Edit Custom Link';
             linkTitleInput.value = existingLink.title;
             linkUrlInput.value = existingLink.url;
+            if (existingLink.group) groupSelect.value = existingLink.group;
         } else {
             editingLinkId = null;
             addLinkModalTitle.textContent = 'Add Custom Link';
             linkTitleInput.value = '';
             linkUrlInput.value = '';
+            groupSelect.value = '';
         }
 
         addLinkModal.classList.remove('hidden');
@@ -449,6 +643,46 @@
             addLinkForm.reset();
         }, 300);
     };
+    
+    // Add Title Modal Logic
+    const addTitleModal = document.getElementById('addTitleModal');
+    const addTitleModalPanel = document.getElementById('add-title-modal-panel');
+    const addTitleForm = document.getElementById('addTitleForm');
+    const titleNameInput = document.getElementById('titleName');
+    const closeAddTitleModalButton = document.getElementById('closeAddTitleModalButton');
+    const cancelAddTitleButton = document.getElementById('cancelAddTitleButton');
+
+
+
+    const showAddTitleModal = (year, agency) => {
+        currentYear = year;
+        currentAgency = agency;
+        titleNameInput.value = '';
+        
+        addTitleModal.classList.remove('hidden');
+        setTimeout(() => {
+            addTitleModal.classList.remove('opacity-0');
+            addTitleModalPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+
+    const hideAddTitleModal = () => {
+        addTitleModal.classList.add('opacity-0');
+        addTitleModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            addTitleModal.classList.add('hidden');
+            addTitleForm.reset();
+        }, 300);
+    };
+
+    // Add Title Modal Event Listeners (Must be after hideAddTitleModal is defined)
+    if (closeAddTitleModalButton) closeAddTitleModalButton.addEventListener('click', hideAddTitleModal);
+    if (cancelAddTitleButton) cancelAddTitleButton.addEventListener('click', hideAddTitleModal);
+    if (addTitleModal) {
+        addTitleModal.addEventListener('click', (e) => {
+            if (e.target === addTitleModal) hideAddTitleModal();
+        });
+    }
 
     const showAddYearModal = () => {
         const currentAgency = selectedAgencySpan.textContent.trim();
@@ -495,8 +729,14 @@
                 <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
-                <!-- Add Link Button -->
-                <div class="mb-3 flex justify-end">
+                <!-- Action Buttons -->
+                <div class="mb-3 flex justify-end gap-2">
+                    ${agency === 'DepEd' ? `
+                    <button type="button" class="add-title-btn px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2" data-year="${year}" data-agency="${agency}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                        Add Title
+                    </button>
+                    ` : ''}
                     <button type="button" class="add-link-btn px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" data-year="${year}" data-agency="${agency}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -661,10 +901,11 @@
     });
 
     // Toggle dropdown menu
-    agencyButton.addEventListener('click', () => {
+    agencyButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Stop propagation to prevent immediate close by window listener
         const isHidden = agencyMenu.classList.contains('hidden');
-        agencyMenu.classList.toggle('hidden', !isHidden);
-        agencyButton.setAttribute('aria-expanded', isHidden);
+        agencyMenu.classList.toggle('hidden');
+        agencyButton.setAttribute('aria-expanded', !isHidden);
     });
 
     // Close dropdown when clicking outside
@@ -750,11 +991,20 @@
         });
     }
 
-    // Add Link clicks
+    // Action Buttons Delegation (Add Link & Add Title)
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.add-link-btn');
-        if (btn) {
-            showAddLinkModal(btn.dataset.year, btn.dataset.agency);
+        const linkBtn = e.target.closest('.add-link-btn');
+        if (linkBtn) {
+            e.stopPropagation();
+            showAddLinkModal(linkBtn.dataset.year, linkBtn.dataset.agency);
+            return;
+        }
+
+        const titleBtn = e.target.closest('.add-title-btn');
+        if (titleBtn) {
+            e.stopPropagation();
+            showAddTitleModal(titleBtn.dataset.year, titleBtn.dataset.agency);
+            return;
         }
     });
 
@@ -767,14 +1017,61 @@
         }
     });
 
-    // Form Submit
+    // Add Title Form Submit
+    if (addTitleForm) {
+        addTitleForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const group = titleNameInput.value.trim();
+            if (!group) return;
+
+            const payload = {
+                agency: currentAgency,
+                year: currentYear,
+                group: group,
+                title: null, 
+                url: null,
+                is_category: false
+            };
+
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    hideAddTitleModal();
+                    const links = await fetchAllLinksForAgency(currentAgency);
+                    distributeLinks(links, currentAgency);
+                } else {
+                    alert('Failed to add title');
+                }
+            } catch (error) {
+                console.error('Error adding title:', error);
+            }
+        });
+    }
+
+    // Add Link Form Submit
     addLinkForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const title = linkTitleInput.value.trim();
         const url = linkUrlInput.value.trim();
+        const groupSelect = document.getElementById('linkGroup');
+        const group = groupSelect ? groupSelect.value : null;
+
         if (!title || !url) return;
 
-        const data = { agency: currentAgency, year: currentYear, title, url };
+        const data = { 
+            agency: currentAgency, 
+            year: currentYear, 
+            title, 
+            url,
+            group: group || null,
+            is_category: false
+        };
+
         try {
             const api_url = editingLinkId ? `${API_BASE_URL}/${editingLinkId}` : API_BASE_URL;
             const method = editingLinkId ? 'PUT' : 'POST';

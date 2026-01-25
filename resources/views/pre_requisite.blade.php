@@ -39,11 +39,15 @@
                         </div>
                         <ul id="curriculum-options-list" class="max-h-60 overflow-y-auto">
                             @foreach($curriculums as $curriculum)
-                                @if($curriculum->version_status != 'old')
-                                    <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $curriculum->curriculum }} ({{ $curriculum->program_code }}) - {{ $curriculum->academic_year }}">
-                                        {{ $curriculum->curriculum }} ({{ $curriculum->program_code }}) - {{ $curriculum->academic_year }}
-                                    </li>
-                                @endif
+                                @php
+                                    $displayText = $curriculum->curriculum . ' (' . $curriculum->program_code . ')';
+                                    if ($curriculum->year_level !== 'Senior High') {
+                                        $displayText .= ' - ' . $curriculum->academic_year;
+                                    }
+                                @endphp
+                                <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
+                                    {{ $displayText }}
+                                </li>
                             @endforeach
                         </ul>
                     </div>
@@ -106,9 +110,15 @@
                             </div>
                             <ul id="modal-curriculum-options-list" class="max-h-60 overflow-y-auto">
                                 @foreach($curriculums as $curriculum)
-                                    @if($curriculum->version_status != 'old')
-                                        <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $curriculum->curriculum }} ({{ $curriculum->program_code }}) - {{ $curriculum->academic_year }}">
-                                            {{ $curriculum->curriculum }} ({{ $curriculum->program_code }}) - {{ $curriculum->academic_year }}
+                                    @if(in_array(strtolower($curriculum->approval_status), ['processing', 'rejected', 'returned']) && $curriculum->version_status !== 'old')
+                                        @php
+                                            $displayText = $curriculum->curriculum . ' (' . $curriculum->program_code . ')';
+                                            if ($curriculum->year_level !== 'Senior High') {
+                                                $displayText .= ' - ' . $curriculum->academic_year;
+                                            }
+                                        @endphp
+                                        <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
+                                            {{ $displayText }}
                                         </li>
                                     @endif
                                 @endforeach

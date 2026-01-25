@@ -163,13 +163,25 @@
                                 </div>
                             </div>
                             <div>
+                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
+                                 <div class="relative">
+                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5-1.5V3" /></svg>
+                                    <select id="yearLevel" name="yearLevel" class="w-full appearance-none pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                        <option value="" disabled selected>Select Level</option>
+                                        <option value="Senior High">Senior High</option>
+                                        <option value="College">College</option>
+                                    </select>
+                                    <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
+                                </div>
+                            </div>
+                            <div id="academicYearContainer">
                                 <label for="academicYear" class="block text-sm font-medium text-slate-700 mb-1">Academic Year</label>
                                 <div class="relative">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
                                     <input type="text" id="academicYear" name="academicYear" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
                                 </div>
                             </div>
-                            <div>
+                            <div id="expirationDateContainer">
                                 <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date</label>
                                 <div class="relative">
                                     <div class="relative group">
@@ -236,18 +248,7 @@
                                 </div>
                                 <p class="text-xs text-slate-500 mt-1">When this date is reached, the curriculum will automatically become "old" and you'll need to create a new one.</p>
                             </div>
-                            <div>
-                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
-                                 <div class="relative">
-                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5-1.5V3" /></svg>
-                                    <select id="yearLevel" name="yearLevel" class="w-full appearance-none pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
-                                        <option value="" disabled selected>Select Level</option>
-                                        <option value="Senior High">Senior High</option>
-                                        <option value="College">College</option>
-                                    </select>
-                                    <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
-                                </div>
-                            </div>
+
                             
                             <div>
                                 <label for="compliance" class="block text-sm font-medium text-slate-700 mb-1">Choose Compliance</label>
@@ -800,42 +801,6 @@
 
             // Memorandum data organized by year - fetched from compliance validator structure
             // DepEd memorandum categories (kept static as they are not year-based)
-            const depedCategories = {
-                'Shape Paper': [
-                    'The Strengthened Senior High School Program Shaping Paper'
-                ],
-                'Curriculum Guides (Core)': [
-                    'Effective Communication - Core Subject Guide',
-                    'General Mathematics - Core Subject Guide',
-                    'General Science - Core Subject Guide',
-                    'Life and Career Skills - Core Subject Guide',
-                    'Mabisang Komunikasyon - Core Subject Guide',
-                    'Pag-aaral ng Kasaysayan at Lipunang Pilipino - Core Subject Guide'
-                ],
-                'Curriculum Guides (Academic)': [
-                    'Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)',
-                    'Arts 2 (Creative Industries II – Performing Arts)',
-                    'Social Science 1 (Introduction to Social Sciences)',
-                    'Humanities 1 (Creative Writing)',
-                    'Humanities 2 (Introduction to World Religions and Belief Systems)',
-                    'Engineering 1 (Calculus)',
-                    'Engineering 2 (Fundamentals of Programming)',
-                    'Engineering 3 (Basic Electricity and Electronics)',
-                    'Business 1 (Business Enterprise Simulation)',
-                    'Economics 1 (Introduction to Economics)',
-                    'Management 1 (Fundamentals of Accountancy, Business, and Management)',
-                    'Health Science 1 (Introduction to Health Science)',
-                    'Health Science 2 (Basic Human Anatomy and Physiology)'
-                ],
-                'Curriculum Guides (TechPro)': [
-                    'Digital Tools and Productivity Applications',
-                    'Multimedia Development and Design',
-                    'Computer Systems and Network Administration',
-                    'Web Development',
-                    'Computer Programming'
-                ]
-            };
-            
             // Function to populate CHED years (matching compliance_validator range)
             const populateCHEDYears = () => {
                 const currentValue = memorandumYearSelect.value;
@@ -855,13 +820,30 @@
             // Function to fetch memorandums based on compliance, year, or category
             const fetchMemorandumData = async (compliance, yearOrCategory = null) => {
                 try {
-                    if (compliance === 'CHED' && yearOrCategory) {
-                        const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${yearOrCategory}`);
-                        if (!response.ok) throw new Error('API request failed');
-                        const data = await response.json();
+                    if (!yearOrCategory) return [];
+
+                    const response = await fetch(`/api/compliance-links?agency=${compliance}&year=${encodeURIComponent(yearOrCategory)}`);
+                    if (!response.ok) throw new Error('API request failed');
+                    const data = await response.json();
+
+                    if (compliance === 'CHED') {
                         return data.map(link => link.title);
-                    } else if (compliance === 'DepEd' && yearOrCategory) {
-                        return depedCategories[yearOrCategory] || [];
+                    } else if (compliance === 'DepEd') {
+                        // Extract Unique Groups (Titles)
+                        // Groups come from two sources:
+                        // 1. The 'group' column of normal links (e.g. link.group = 'ARTS...')
+                        // 2. The 'title' column of Category records (e.g. link.title = 'ARTS...', link.is_category = 1)
+                        const groups = [...new Set([
+                            ...data.map(link => link.group).filter(g => g),
+                            ...data.filter(link => link.is_category == 1 || link.is_category === true).map(link => link.title)
+                        ])];
+                        
+                        if (groups.length > 0) {
+                            return groups.sort();
+                        } else {
+                            // If no groups, return titles of actual links (e.g. Core, Shape Paper)
+                            return data.map(link => link.title);
+                        }
                     }
                     return [];
                 } catch (error) {
@@ -1212,9 +1194,18 @@
                 }
                 
                 const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
+                const academicYearContainer = document.getElementById('academicYearContainer');
+                const academicYearInput = document.getElementById('academicYear');
+                const expirationDateContainer = document.getElementById('expirationDateContainer');
+
                 if (selectedLevel === 'Senior High') {
                     // Hide units section for Senior High (they don't use units)
                     unitsContainer.classList.add('hidden');
+                    // Hide Academic Year for Senior High
+                    if(academicYearContainer) academicYearContainer.classList.add('hidden');
+                    if(academicYearInput) academicYearInput.removeAttribute('required');
+                    // Hide Expiration Date for Senior High
+                    if(expirationDateContainer) expirationDateContainer.classList.add('hidden');
                 } else {
                     semesterUnitsLabel.textContent = 'Semester Units';
                     if (selectedLevel) {
@@ -1222,6 +1213,11 @@
                     } else {
                         unitsContainer.classList.add('hidden');
                     }
+                    // Show Academic Year for others
+                    if(academicYearContainer) academicYearContainer.classList.remove('hidden');
+                    if(academicYearInput) academicYearInput.setAttribute('required', 'required');
+                    // Show Expiration Date
+                    if(expirationDateContainer) expirationDateContainer.classList.remove('hidden');
                 }
             });
             
@@ -1298,6 +1294,13 @@
                 
                 // Determine card border, icon, and title colors based on approval status
                 const approvalStatus = curriculum.approval_status || 'processing';
+                
+                // Check if expired (compare dates ignoring time)
+                const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
+                
+                // Determine effective version (explicitly set to old, OR expired)
+                const effectiveVersion = (curriculum.version_status === 'old' || isExpired) ? 'old' : 'new';
+
                 let cardBorderClass = 'border-slate-200 hover:border-blue-500';
                 let iconBgClass = 'bg-slate-100 group-hover:bg-blue-100';
                 let iconColorClass = 'text-slate-500 group-hover:text-blue-600';
@@ -1319,7 +1322,7 @@
                 card.dataset.name = curriculum.curriculum_name.toLowerCase();
                 card.dataset.code = curriculum.program_code.toLowerCase();
                 card.dataset.id = curriculum.id;
-                card.dataset.version = curriculum.version_status || 'new';
+                card.dataset.version = effectiveVersion;
                 card.dataset.approvalStatus = approvalStatus;
 
                 const date = new Date(curriculum.created_at);
@@ -1364,10 +1367,7 @@
                 // Version status badge - Only show if approved
                 let versionBadge = '';
                 if (approvalStatus === 'approved') {
-                    // Check if expired (compare dates ignoring time)
-                    const isExpired = curriculum.expiration_date && new Date(curriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
-                    
-                    versionBadge = curriculum.version_status === 'old'
+                    versionBadge = effectiveVersion === 'old'
                         ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
@@ -1464,7 +1464,7 @@
                             <div class="flex-grow min-w-0 w-full sm:pr-2">
                                 <h3 class="font-bold ${titleColorClass} transition-colors duration-300 truncate mb-1">${curriculum.curriculum_name}</h3>
                                 <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
-                                    <span>${curriculum.program_code} • ${curriculum.academic_year}</span>
+                                    <span>${curriculum.program_code}${curriculum.year_level === 'Senior High' ? '' : ` • ${curriculum.academic_year}`}</span>
                                     ${curriculum.expiration_date ? `
                                         <span class="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1632,7 +1632,23 @@
                         // Hide units container for Senior High, show for College
                         if (curriculum.year_level === 'Senior High') {
                             unitsContainer.classList.add('hidden');
+                             // Hide Academic Year for Senior High
+                            const academicYearContainer = document.getElementById('academicYearContainer');
+                            const academicYearInput = document.getElementById('academicYear');
+                            if(academicYearContainer) academicYearContainer.classList.add('hidden');
+                            if(academicYearInput) academicYearInput.removeAttribute('required');
+                             // Hide Expiration Date for Senior High
+                            const expirationDateContainer = document.getElementById('expirationDateContainer');
+                            if(expirationDateContainer) expirationDateContainer.classList.add('hidden');
                         } else {
+                            // Show Academic Year
+                            const academicYearContainer = document.getElementById('academicYearContainer');
+                            const academicYearInput = document.getElementById('academicYear');
+                            const expirationDateContainer = document.getElementById('expirationDateContainer');
+                            if(academicYearContainer) academicYearContainer.classList.remove('hidden');
+                            if(academicYearInput) academicYearInput.setAttribute('required', 'required');
+                            // Show Expiration Date
+                            if(expirationDateContainer) expirationDateContainer.classList.remove('hidden');
                             unitsContainer.classList.remove('hidden'); // Ensure units container is visible
                             
                             const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
@@ -1663,6 +1679,14 @@
                     yearContainer.classList.add('hidden');
                     categoryContainer.classList.add('hidden');
                     unitsContainer.classList.add('hidden');
+
+                    // Reset Academic Year visibility
+                    const academicYearContainer = document.getElementById('academicYearContainer');
+                    const academicYearInput = document.getElementById('academicYear');
+                    const expirationDateContainer = document.getElementById('expirationDateContainer');
+                    if(academicYearContainer) academicYearContainer.classList.remove('hidden');
+                    if(academicYearInput) academicYearInput.setAttribute('required', 'required');
+                    if(expirationDateContainer) expirationDateContainer.classList.remove('hidden');
                     memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
                     memorandumYearSelect.value = '';
                     memorandumCategorySelect.value = '';
@@ -1711,7 +1735,7 @@
                     const payload = {
                         curriculum: formData.get('curriculum'),
                         programCode: formData.get('programCode'),
-                        academicYear: formData.get('academicYear'),
+                        academicYear: (formData.get('yearLevel') === 'Senior High' && !formData.get('academicYear')) ? 'N/A' : formData.get('academicYear'),
                         expirationDate: formData.get('expirationDate'),
                         yearLevel: formData.get('yearLevel'),
                         compliance: formData.get('compliance'),
