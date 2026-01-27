@@ -127,9 +127,6 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     // Curriculum Export Tool - Accessible to all authenticated users (employees, admin, super admin)
     Route::get('/curriculum_export_tool', [CurriculumExportToolController::class, 'index'])->name('curriculum_export_tool');
     Route::post('/curriculum_export_tool', [CurriculumExportToolController::class, 'store'])->name('curriculum_export_tool.store');
-    Route::get('/api/curriculum/{id}/subjects', [CurriculumExportToolController::class, 'getCurriculumSubjects'])->name('curriculum.subjects');
-    Route::get('/subjects/{subjectId}/export-pdf', [SubjectExportController::class, 'exportPdf'])->name('subjects.export-pdf');
-    Route::get('/curriculum/{id}/export-pdf', [CurriculumExportToolController::class, 'exportPdf'])->name('curriculum.export-pdf');
 
     // Admin-only routes
     Route::middleware('admin')->group(function () {
@@ -138,7 +135,8 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
                 \App\Services\ActivityLogService::logPageView('Course Builder');
                 auth()->user()->updateLastActivity();
             }
-            return view('curriculum_builder');
+            $programs = \App\Models\Program::all();
+            return view('curriculum_builder', compact('programs'));
         })->name('curriculum_builder');
 
         Route::get('/official_curriculum', function () {
@@ -178,7 +176,6 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             return view('equivalency_tool', compact('subjects', 'equivalencies'));
         })->name('equivalency_tool');
 
-
         // CHED Compliance Validator
         Route::get('/compliance-validator', function () {
             if (auth()->user()) {
@@ -204,17 +201,6 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             return view('course_builder');
         })->name('course_builder');
 
-        Route::post('/api/extract-syllabus', [ExtractSyllabusController::class, 'extract'])->name('syllabus.extract');
-        Route::post('/api/extract-ched-syllabus', [\App\Http\Controllers\ExtractChedSyllabusController::class, 'extract'])->name('syllabus.extract.ched');
-
-        // Curriculum History API Routes
-        Route::prefix('api/curriculum-history')->group(function () {
-            Route::get('/{curriculumId}/versions', [CurriculumHistoryController::class, 'getVersions']);
-            Route::get('/{curriculumId}/versions/{versionId}', [CurriculumHistoryController::class, 'getVersionDetails']);
-            Route::post('/{curriculumId}/snapshot', [CurriculumHistoryController::class, 'createSnapshot']);
-            Route::get('/{curriculumId}/compare/{version1Id}/{version2Id}', [CurriculumHistoryController::class, 'compareVersions']);
-        });
-
         // Employee Management Routes (Admin and Super Admin only)
         Route::resource('employees', EmployeeController::class)->except(['show']);
         
@@ -225,7 +211,23 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::get('/employee-activities/export', [EmployeeController::class, 'exportActivities'])->name('employees.export-activities');
     });
 
-    // API Routes moved from api.php to share session/auth state
+    // Serve syllabus files with proper headers to avoid 403 errors
+    Route::get('/view-syllabus/{path}', function ($path) {
+        $filePath = storage_path('app/public/' . $path);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+        
+        $mimeType = mime_content_type($filePath);
+        
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
+        ]);
+    })->where('path', '.*')->name('view.syllabus');
+
+    // API Routes - Accessible to all authenticated users with session support
     Route::prefix('api')->group(function () {
         // --- Curriculum Routes ---
         Route::get('/curriculums', [CurriculumController::class, 'index']);
@@ -241,6 +243,8 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::post('/curriculums/{id}/approve', [CurriculumController::class, 'approve']);
         Route::post('/curriculums/{id}/reject', [CurriculumController::class, 'reject']);
         Route::post('/curriculums/{id}/restore', [CurriculumController::class, 'restore']);
+        Route::get('/curriculum/{id}/subjects', [CurriculumExportToolController::class, 'getCurriculumSubjects']);
+        Route::get('/curriculum/{id}/export-pdf', [CurriculumExportToolController::class, 'exportPdf']);
 
         // --- Subject Routes ---
         Route::get('/subjects', [SubjectController::class, 'index']);
@@ -249,8 +253,10 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::get('/subjects/{id}/versions', [SubjectController::class, 'getVersionHistory']);
         Route::put('/subjects/{id}', [SubjectController::class, 'update']);
         Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy']);
+        Route::get('/subjects/{subjectId}/export-pdf', [SubjectExportController::class, 'exportPdf']);
 
         // --- Prerequisite Routes ---
+        Route::get('/gen-ed-prerequisites/{type}', [PrerequisiteController::class, 'fetchGeneralData']);
         Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
         Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
@@ -284,6 +290,19 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         // --- Dashboard Routes ---
         Route::get('/dashboard/export-data', [DashboardController::class, 'getExportData']);
         Route::get('/dashboard/recent-activities', [DashboardController::class, 'getRecentActivitiesFiltered']);
+        Route::get('/dashboard/module-usage', [DashboardController::class, 'getModuleUsageData']);
+
+        // --- Curriculum History Routes ---
+        Route::prefix('curriculum-history')->group(function () {
+            Route::get('/{curriculumId}/versions', [CurriculumHistoryController::class, 'getVersions']);
+            Route::get('/{curriculumId}/versions/{versionId}', [CurriculumHistoryController::class, 'getVersionDetails']);
+            Route::post('/{curriculumId}/snapshot', [CurriculumHistoryController::class, 'createSnapshot']);
+            Route::get('/{curriculumId}/compare/{version1Id}/{version2Id}', [CurriculumHistoryController::class, 'compareVersions']);
+        });
+
+        // --- Syllabus Extraction Routes ---
+        Route::post('/extract-syllabus', [ExtractSyllabusController::class, 'extract']);
+        Route::post('/extract-ched-syllabus', [\App\Http\Controllers\ExtractChedSyllabusController::class, 'extract']);
 
         // --- Description Similarity Check ---
         Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);

@@ -924,28 +924,72 @@
                  if(noPreview) noPreview.classList.add('hidden');
 
                  if (data.syllabus_path) {
-                     const path = data.syllabus_path;
+                     let path = data.syllabus_path;
+                     
+                     // Clean up the path - remove /storage/ prefix if it exists
+                     path = path.replace(/^\/storage\//, '').replace(/^storage\//, '');
+                     
+                     // Construct URLs
+                     const baseUrl = window.location.origin;
+                     const viewUrl = `${baseUrl}/view-syllabus/${path}`; // Use the new route
+                     const downloadUrl = `${baseUrl}/storage/${path}`; // Direct download link
+                     
                      const fileName = path.split('/').pop();
                      const ext = fileName.split('.').pop().toLowerCase();
                      
                      if (fileNameDisplay) {
-                         fileNameDisplay.textContent = fileName;
+                         fileNameDisplay.innerHTML = `
+                             <span class="font-medium">${fileName}</span>
+                             <a href="${downloadUrl}" target="_blank" download class="ml-2 text-blue-600 hover:text-blue-800 text-xs underline">
+                                 Download
+                             </a>
+                         `;
                          fileNameDisplay.classList.remove('hidden');
                      }
                      
                      if (ext === 'pdf') {
                         if (pdfFrame) {
-                            pdfFrame.src = path + '#toolbar=0&navpanes=0';
+                            // Use the view-syllabus route which serves with proper headers
+                            pdfFrame.src = viewUrl + '#toolbar=0&navpanes=0&scrollbar=0';
                             pdfFrame.classList.remove('hidden');
+                            
+                            // Add error handler for loading issues
+                            pdfFrame.onerror = function() {
+                                pdfFrame.classList.add('hidden');
+                                if(noPreview) {
+                                    noPreview.innerHTML = `
+                                        <div class="text-center">
+                                            <p class="text-gray-600 mb-3">Unable to preview PDF in browser.</p>
+                                            <a href="${viewUrl}" target="_blank" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                </svg>
+                                                Open PDF in New Tab
+                                            </a>
+                                        </div>
+                                    `;
+                                    noPreview.classList.remove('hidden');
+                                }
+                            };
                         }
                      } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
                          if (imagePreview) {
-                             imagePreview.src = path;
+                             imagePreview.src = viewUrl; // Use view route for images too
                              imagePreview.classList.remove('hidden');
                          }
                      } else {
                          if(noPreview) {
-                             noPreview.textContent = 'Preview not available for this file type.';
+                             noPreview.innerHTML = `
+                                 <div class="text-center">
+                                     <p class="text-gray-600 mb-3">Preview not available for this file type.</p>
+                                     <a href="${downloadUrl}" target="_blank" download class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                         <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                         </svg>
+                                         Download File
+                                     </a>
+                                 </div>
+                             `;
                              noPreview.classList.remove('hidden');
                          }
                      }

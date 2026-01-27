@@ -2136,49 +2136,91 @@ Learning Management System`;
         const term = (document.getElementById('curriculumSearchInput')?.value || '').toLowerCase();
         const syllabusType = document.getElementById('syllabus_type').value || 'CHED';
         
+        // Grouping Helper
+        const groupCurriculums = (list) => {
+            const groups = {};
+            list.forEach(c => {
+                // Key by Program Code (if exists) or Name
+                const key = c.program_code || c.curriculum_name;
+                if (!groups[key]) {
+                    groups[key] = {
+                        name: c.curriculum_name, // Name of the first/latest
+                        program_code: c.program_code,
+                        ids: [],
+                        statuses: new Set(),
+                        original: c
+                    };
+                }
+                groups[key].ids.push(c.id);
+                groups[key].statuses.add(c.approval_status);
+            });
+            return Object.values(groups);
+        };
+
         const filterMatch = (c) => {
             const s = `${c.curriculum_name} ${c.program_code} ${c.academic_year}`.toLowerCase();
             return term === '' || s.includes(term);
         };
 
-        const seniorHigh = allCurriculums.filter(c => c.year_level === 'Senior High' && filterMatch(c));
-        const college = allCurriculums.filter(c => c.year_level !== 'Senior High' && filterMatch(c));
+        // 1. Filter by Level and Search Term
+        const seniorHighRaw = allCurriculums.filter(c => c.year_level === 'Senior High' && filterMatch(c));
+        const collegeRaw = allCurriculums.filter(c => c.year_level !== 'Senior High' && filterMatch(c));
 
-        const renderGroup = (containerId, list) => {
+        // 2. Group them
+        const seniorHighGroups = groupCurriculums(seniorHighRaw);
+        const collegeGroups = groupCurriculums(collegeRaw);
+
+        const renderGroupList = (containerId, groups) => {
             const container = document.getElementById(containerId);
+            if (!container) return;
+            
             container.innerHTML = '';
             
-            if (list.length === 0) {
+            if (groups.length === 0) {
                  container.innerHTML = '<p class="text-sm text-gray-400 italic py-2 col-span-2 text-center">No curriculums found.</p>';
                  return;
             }
 
-            list.forEach(curriculum => {
-                const isSelected = selectedCurriculums.has(curriculum.id);
-                // Determine status color
+            groups.forEach(group => {
+                // Check if ALL IDs in this group are selected
+                const isSelected = group.ids.length > 0 && group.ids.every(id => selectedCurriculums.has(id));
+                
+                // Display text: Use Program Code if available for cleaner look, e.g. "Bachelor... (BLIS)"
+                let displayName = group.name;
+                if (group.program_code && !displayName.includes(group.program_code)) {
+                     displayName += ` (${group.program_code})`;
+                }
+                
+                // Determine status color (use 'Processing' if any are processing, else 'New')
+                const statusStr = Array.from(group.statuses).join(', ').toLowerCase();
+                let statusLabel = 'New';
                 let statusColor = 'text-gray-500 bg-gray-100';
-                const status = (curriculum.approval_status || '').toLowerCase();
-                if (status === 'rejected' || status === 'returned') {
+                
+                if (statusStr.includes('rejected') || statusStr.includes('returned')) {
+                    statusLabel = 'Action Needed';
                     statusColor = 'text-red-700 bg-red-100';
-                } else if (status === 'processing') {
+                } else if (statusStr.includes('processing')) {
+                    statusLabel = 'Processing';
                     statusColor = 'text-yellow-700 bg-yellow-100';
-                } else if (status === 'approved') {
-                    statusColor = 'text-green-700 bg-green-100';
                 }
 
                 const card = document.createElement('div');
                 card.className = `border rounded-lg p-3 cursor-pointer transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`;
+                
+                // Store IDs as comma-separated string
+                const idsStr = group.ids.join(',');
+
                 card.innerHTML = `
                     <div class="flex items-start space-x-3">
-                        <input type="checkbox" class="curriculum-checkbox mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0" data-curriculum-id="${curriculum.id}" ${isSelected ? 'checked' : ''}>
+                        <input type="checkbox" class="curriculum-checkbox mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0" data-curriculum-ids="${idsStr}" ${isSelected ? 'checked' : ''}>
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900 text-sm truncate pr-2" title="${curriculum.curriculum_name}">${curriculum.curriculum_name}</h4>
+                                <h4 class="font-medium text-gray-900 text-sm truncate pr-2" title="${displayName}">${displayName}</h4>
                                 <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${statusColor} flex-shrink-0">
-                                    ${curriculum.approval_status || 'New'}
+                                    ${statusLabel}
                                 </span>
                             </div>
-                            <p class="text-xs text-gray-600 mt-1">${curriculum.program_code} ${curriculum.year_level !== 'Senior High' ? '• ' + curriculum.academic_year : ''}</p>
+                            <p class="text-xs text-gray-600 mt-1">${group.program_code || ''} • ${group.ids.length} Version${group.ids.length > 1 ? 's' : ''}</p>
                         </div>
                     </div>`;
                 
@@ -2192,11 +2234,11 @@ Learning Management System`;
                 
                 const checkbox = card.querySelector('input[type="checkbox"]');
                 checkbox.addEventListener('change', (e) => {
-                    const curriculumId = parseInt(e.target.dataset.curriculumId);
+                    const ids = e.target.dataset.curriculumIds.split(',').map(Number);
                     if (e.target.checked) {
-                        selectedCurriculums.add(curriculumId);
+                        ids.forEach(id => selectedCurriculums.add(id));
                     } else {
-                        selectedCurriculums.delete(curriculumId);
+                        ids.forEach(id => selectedCurriculums.delete(id));
                     }
                     renderCurriculumChecklist();
                 });
@@ -2205,25 +2247,31 @@ Learning Management System`;
         };
 
         // DOM Elements for Sections
-        // FIXED: Use parentElement to target the wrapper div containing the Header and the Container
-        const seniorHighSection = document.getElementById('seniorHighContainer').parentElement;
-        const collegeSection = document.getElementById('collegeContainer').parentElement;
+        const seniorHighContainer = document.getElementById('seniorHighContainer');
+        const collegeContainer = document.getElementById('collegeContainer');
+        const seniorHighSection = seniorHighContainer?.parentElement;
+        const collegeSection = collegeContainer?.parentElement;
 
-        // Logic: CHED -> Show College Only. DepEd -> Show Senior High Only.
-        if (syllabusType === 'DepEd') {
-            seniorHighSection.classList.remove('hidden');
-            collegeSection.classList.add('hidden');
-            renderGroup('seniorHighContainer', seniorHigh);
-        } else {
-            // Default to CHED/College
-            seniorHighSection.classList.add('hidden');
-            collegeSection.classList.remove('hidden');
-            renderGroup('collegeContainer', college);
+        if (seniorHighSection && collegeSection) {
+            // Logic: CHED -> Show College Only. DepEd -> Show Senior High Only.
+            if (syllabusType === 'DepEd') {
+                seniorHighSection.classList.remove('hidden');
+                collegeSection.classList.add('hidden');
+                renderGroupList('seniorHighContainer', seniorHighGroups);
+            } else {
+                // Default to CHED/College
+                seniorHighSection.classList.add('hidden');
+                collegeSection.classList.remove('hidden');
+                renderGroupList('collegeContainer', collegeGroups);
+            }
+
         }
 
         // Update Header Counts
-        const shSelectedCount = seniorHigh.filter(c => selectedCurriculums.has(c.id)).length;
-        const coSelectedCount = college.filter(c => selectedCurriculums.has(c.id)).length;
+        // Count GROUPS fully selected? Or total Curriculums?
+        // Let's count Total Curriculums for accuracy
+        const shSelectedCount = seniorHighRaw.filter(c => selectedCurriculums.has(c.id)).length;
+        const coSelectedCount = collegeRaw.filter(c => selectedCurriculums.has(c.id)).length;
         
         const shHeader = document.getElementById('seniorHighHeader');
         if (shHeader) shHeader.textContent = `Senior High (${shSelectedCount} selected)`;
@@ -2235,19 +2283,19 @@ Learning Management System`;
         const coToggle = document.getElementById('selectAllCollege');
         
         if (shToggle) {
-             shToggle.checked = seniorHigh.length > 0 && seniorHigh.every(c => selectedCurriculums.has(c.id));
-             shToggle.onclick = (e) => { // Changed to onclick for better reliability than onchange in some cases
+             shToggle.checked = seniorHighRaw.length > 0 && seniorHighRaw.every(c => selectedCurriculums.has(c.id));
+             shToggle.onclick = (e) => {
                 const isCheck = e.target.checked;
-                seniorHigh.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
+                seniorHighRaw.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
                 renderCurriculumChecklist();
             };
         }
         
         if (coToggle) {
-            coToggle.checked = college.length > 0 && college.every(c => selectedCurriculums.has(c.id));
+            coToggle.checked = collegeRaw.length > 0 && collegeRaw.every(c => selectedCurriculums.has(c.id));
              coToggle.onclick = (e) => {
                 const isCheck = e.target.checked;
-                college.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
+                collegeRaw.forEach(c => isCheck ? selectedCurriculums.add(c.id) : selectedCurriculums.delete(c.id));
                 renderCurriculumChecklist();
             };
         }

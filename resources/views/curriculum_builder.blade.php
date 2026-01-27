@@ -117,16 +117,25 @@
                             <div>
                                 <div class="flex items-center justify-between mb-1">
                                     <label for="curriculum" class="block text-sm font-medium text-slate-700">Curriculum Name</label>
-                                    <button type="button" id="browseCurriculumsButton" class="group flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors" title="Browse existing curriculums">
-                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-                                        </svg>
-                                        <span>Browse</span>
-                                    </button>
                                 </div>
                                 <div class="relative">
-                                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-                                    <input type="text" id="curriculum" name="curriculum" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"  required>
+                                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
+                                    <select id="curriculum" name="curriculum" class="w-full appearance-none pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                        <option value="" disabled selected>Select Curriculum</option>
+                                        @if(isset($programs))
+                                            <optgroup label="College">
+                                                @foreach($programs->where('department', 'College') as $program)
+                                                    <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->code }} - {{ $program->description }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                            <optgroup label="Senior High">
+                                                @foreach($programs->where('department', 'Senior High') as $program)
+                                                    <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->code }} - {{ $program->description }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                    </select>
+                                    <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
                                 </div>
                                 
                                 {{-- Duplicate Detection Alert --}}
@@ -156,18 +165,18 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="programCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code</label>
+                                <label for="programCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code <span class="text-xs text-slate-500">(Auto-filled)</span></label>
                                 <div class="relative">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.5A.75.75 0 014.5 3h15a.75.75 0 01.75.75v15a.75.75 0 01-.75.75h-15a.75.75 0 01-.75-.75v-15zM8.25 9a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5h-7.5zM8.25 12.75a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-4.5z" /></svg>
-                                    <input type="text" id="programCode" name="programCode" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                    <input type="text" id="programCode" name="programCode" placeholder="Select a curriculum first" class="w-full pl-10 pr-4 py-2.5 bg-gray-100 text-slate-600 border border-slate-300 rounded-lg shadow-sm cursor-not-allowed" required readonly>
                                 </div>
                             </div>
                             <div>
-                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
+                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level <span class="text-xs text-slate-500">(Auto-filled)</span></label>
                                  <div class="relative">
                                      <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5-1.5V3" /></svg>
-                                    <select id="yearLevel" name="yearLevel" class="w-full appearance-none pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
-                                        <option value="" disabled selected>Select Level</option>
+                                    <select id="yearLevel" name="yearLevel" class="w-full appearance-none pl-10 pr-10 py-2.5 bg-gray-100 text-slate-600 border border-slate-300 rounded-lg shadow-sm cursor-not-allowed pointer-events-none" required tabindex="-1">
+                                        <option value="" disabled selected>Select a curriculum first</option>
                                         <option value="Senior High">Senior High</option>
                                         <option value="College">College</option>
                                     </select>
@@ -539,10 +548,6 @@
             const duplicateAlert = document.getElementById('duplicateAlert');
             const duplicateList = document.getElementById('duplicateList');
 
-            const browseCurriculumsButton = document.getElementById('browseCurriculumsButton');
-            const browseCurriculumsDropdown = document.getElementById('browseCurriculumsDropdown');
-            const browseCurriculumsList = document.getElementById('browseCurriculumsList');
-            const browseSearchInput = document.getElementById('browseSearchInput');
             const duplicateMemorandumAlert = document.getElementById('duplicateMemorandumAlert');
 
             // Custom Calendar Picker elements
@@ -988,77 +993,38 @@
             
 
             
-            // Browse button functionality
-            const handleBrowseClick = () => {
-                if (browseCurriculumsDropdown.classList.contains('hidden')) {
-                    populateBrowseDropdown();
-                    browseCurriculumsDropdown.classList.remove('hidden');
-                    browseSearchInput.focus();
-                } else {
-                    browseCurriculumsDropdown.classList.add('hidden');
-                }
-            };
-            
-            // Populate browse dropdown with all curriculums
-            const populateBrowseDropdown = (searchTerm = '') => {
-                browseCurriculumsList.innerHTML = '';
+            // Update Program Code and Level when Curriculum is selected
+            curriculumInput.addEventListener('change', () => {
+                const selectedOption = curriculumInput.options[curriculumInput.selectedIndex];
+                if (!selectedOption || selectedOption.disabled) return;
                 
-                if (!window.curriculumsData || window.curriculumsData.length === 0) {
-                    browseCurriculumsList.innerHTML = '<p class="text-sm text-slate-500 p-2">No curriculums found</p>';
-                    return;
-                }
-                
-                // Get unique curriculum names
-                const uniqueNames = [...new Set(window.curriculumsData.map(c => c.curriculum_name))];
-                
-                // Filter by search term
-                const filteredNames = searchTerm 
-                    ? uniqueNames.filter(name => name.toLowerCase().includes(searchTerm.toLowerCase()))
-                    : uniqueNames;
-                
-                if (filteredNames.length === 0) {
-                    browseCurriculumsList.innerHTML = '<p class="text-sm text-slate-500 p-2">No matching curriculums</p>';
-                    return;
-                }
-                
-                filteredNames.forEach(name => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'w-full text-left px-3 py-2 text-sm hover:bg-blue-50 rounded transition-colors';
-                    button.textContent = name;
-                    
-                    button.addEventListener('click', () => {
-                        curriculumInput.value = name;
-                        browseCurriculumsDropdown.classList.add('hidden');
-                        
-                        // Reset create another mode
-                        createAnotherMode = false;
-                        
-                        // Trigger duplicate check
-                        checkDuplicateCurriculum();
-                    });
-                    
-                    browseCurriculumsList.appendChild(button);
-                });
-            };
-            
-            // Event listeners for duplicate detection and browse
-            curriculumInput.addEventListener('blur', checkDuplicateCurriculum);
+                const code = selectedOption.getAttribute('data-code');
+                const programCodeInput = document.getElementById('programCode');
+                const department = selectedOption.closest('optgroup')?.label;
+                const yearLevelSelect = document.getElementById('yearLevel');
 
-            browseCurriculumsButton.addEventListener('click', handleBrowseClick);
-            
-            // Browse search functionality
-            browseSearchInput.addEventListener('input', (e) => {
-                populateBrowseDropdown(e.target.value);
-            });
-            
-            // Close browse dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!browseCurriculumsDropdown.contains(e.target) && 
-                    !browseCurriculumsButton.contains(e.target)) {
-                    browseCurriculumsDropdown.classList.add('hidden');
+                if (code) {
+                    programCodeInput.value = code;
+                    programCodeInput.dispatchEvent(new Event('input'));
                 }
+
+                if (department) {
+                    yearLevelSelect.value = department;
+                    yearLevelSelect.dispatchEvent(new Event('change'));
+                }
+                
+                // Reset create another mode
+                createAnotherMode = false;
+
+                checkDuplicateCurriculum();
             });
+
+            // Event listeners for duplicate detection
+            // Removed browse functionality as it is replaced by the dropdown
+            
+            // Browse search functionality - REMOVED
+            
+            // Close browse dropdown when clicking outside - REMOVED
             
             // Function to check for duplicate memorandum
             const checkDuplicateMemorandum = () => {
@@ -1203,7 +1169,10 @@
                     unitsContainer.classList.add('hidden');
                     // Hide Academic Year for Senior High
                     if(academicYearContainer) academicYearContainer.classList.add('hidden');
-                    if(academicYearInput) academicYearInput.removeAttribute('required');
+                    if(academicYearInput) {
+                        academicYearInput.removeAttribute('required');
+                        academicYearInput.value = ''; // Clear the value to prevent validation errors
+                    }
                     // Hide Expiration Date for Senior High
                     if(expirationDateContainer) expirationDateContainer.classList.add('hidden');
                 } else {
@@ -1692,6 +1661,17 @@
                     memorandumCategorySelect.value = '';
                     semesterInputs.innerHTML = '';
                     totalUnitsDisplay.textContent = '0';
+                    
+                    // Ensure Program Code and Level are reset for new curriculum
+                    const programCodeInput = document.getElementById('programCode');
+                    const yearLevelSelect = document.getElementById('yearLevel');
+                    if (programCodeInput) {
+                        programCodeInput.value = '';
+                        programCodeInput.setAttribute('readonly', 'readonly');
+                    }
+                    if (yearLevelSelect) {
+                        yearLevelSelect.value = '';
+                    }
                 }
                 addCurriculumModal.classList.remove('hidden');
                 setTimeout(() => {

@@ -167,13 +167,7 @@
                 >
                     Curriculums
                 </button>
-                <button 
-                    id="view-memorandum-btn" 
-                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
-                    data-view="memorandum"
-                >
-                    Memorandums
-                </button>
+
                 <button 
                     id="view-subject-btn" 
                     class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
@@ -612,58 +606,32 @@ document.addEventListener('DOMContentLoaded', () => {
              console.log('Graded subjects found:', gradedSubjects);
              
              if (gradedSubjects.length > 0) {
-                 const subjectNames = gradedSubjects.map(s => s.subject_code).join(', ');
-                const confirmHtml = `
-                    <div class="text-center px-4 pt-2 pb-4">
-                        <div class="w-12 h-12 rounded-full bg-amber-100 p-2 flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Update Graded Subjects?</h3>
-                        <p class="text-sm text-gray-500 mb-4">The following subjects already have grades:</p>
-                        <div class="bg-gray-50 p-2 rounded-lg mb-4 text-sm font-medium text-gray-700 break-all border border-gray-100">
-                             ${subjectNames}
-                        </div>
-                        <p class="text-sm text-gray-500">Are you sure you want to update grades for these subjects?</p>
-                    </div>
-                `;
-
+                 // Alert: Cannot update graded subjects if active
                  Swal.fire({
-                     html: confirmHtml,
-                     width: '380px', // Matches max-w-sm roughly
-                     showCancelButton: true,
-                     confirmButtonColor: '#F59E0B',
-                     cancelButtonColor: '#F3F4F6', // gray-100
-                     confirmButtonText: 'Yes, update grades',
-                     cancelButtonText: 'Cancel',
-                     buttonsStyling: false,
+                     icon: 'error',
+                     title: 'Action Restricted',
+                     text: 'The curriculum is still in use or active. You cannot update the subject grade unless the curriculum has reached the end date.',
+                     confirmButtonText: 'OK',
+                     confirmButtonColor: '#EF4444',
                      customClass: {
-                         popup: 'rounded-2xl p-0 overflow-hidden',
-                         actions: 'gap-3 mb-6',
-                         confirmButton: 'w-full px-6 py-2.5 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 focus:outline-none transition-colors shadow-sm',
-                         cancelButton: 'w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none transition-colors'
+                         popup: 'rounded-2xl',
+                         confirmButton: 'px-6 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none transition-colors shadow-sm'
                      }
-                 }).then((result) => {
-                     if (result.isConfirmed) {
-                         updateSelectedSubjectsList();
-                         hideModal('select-subjects-modal');
-                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                         hideModal('select-subjects-modal');
-                         
-                         // Reset Memorandum Selection since user cancelled
-                         selectedMemorandum = null;
-                         memorandumBtnText.textContent = 'Select Memorandum';
-                         memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
-                         
-                         // Reset Selected Subjects
-                         selectedSubjects = [];
-                         updateSelectedSubjectsList();
-
-                         // Clear Grade Components explicitly and update UI state
-                         accordionContainer.innerHTML = '';
-                         checkGradingEligibility();
+                 }).then(() => {
+                     // Reset everything to enforce lock
+                     hideModal('select-subjects-modal');
+                     
+                     selectedMemorandum = null;
+                     if (typeof memorandumBtnText !== 'undefined') {
+                        memorandumBtnText.textContent = 'Select Memorandum';
+                        memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
                      }
+                     
+                     selectedSubjects = [];
+                     updateSelectedSubjectsList();
+                     
+                     if (typeof accordionContainer !== 'undefined') accordionContainer.innerHTML = '';
+                     checkGradingEligibility();
                  });
              } else {
                  console.log('No graded subjects, proceeding directly.');
@@ -1148,12 +1116,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const isSeniorHigh = /^Senior High|^SHS/i.test(level);
                 
+                // 1. Level Check
                 if (selectedLevel === 'Senior High') {
-                    return isSeniorHigh;
+                    if (!isSeniorHigh) return false;
                 } else {
                     // College = Not Senior High
-                    return !isSeniorHigh;
+                    if (isSeniorHigh) return false;
                 }
+                
+                // 2. Status Check: ONLY Processing
+                // "only the processing curriculum will display"
+                // "approve curriculum and old curriculum will not display"
+                const status = (c.approval_status || '').toLowerCase();
+                const version = (c.version_status || '').toLowerCase();
+                
+                // Strict check for 'processing'
+                if (status !== 'processing') return false;
+                
+                // Redundant safety check for 'old' (though processing usually isn't old)
+                if (version === 'old') return false;
+
+                // 3. Expiration Check
+                // "meet their end data" -> Must NOT be expired
+                if (c.expiration_date) {
+                    const expDate = new Date(c.expiration_date);
+                    const now = new Date();
+                    // Reset time part to ensure we only look at the date for fairness (optional, but safer)
+                    // If expiration is end of day? Usually backend stores date or datetime.
+                    // Assuming simpler check: if NOW > expDate, it's expired.
+                    if (now > expDate) return false; 
+                }
+                
+                // 4. Date Check: Remove invalid dates where Start > End
+                // (Sanity check for bad data like 2027-2026)
+                if (c.academic_year) {
+                     const parts = c.academic_year.split('-');
+                     if (parts.length === 2) {
+                         const start = parseInt(parts[0]);
+                         const end = parseInt(parts[1]);
+                         if (!isNaN(start) && !isNaN(end)) {
+                             // If Start Year is greater than End Year, it's invalid
+                             if (start > end) return false;
+                         }
+                     }
+                }
+                
+                return true;
             });
             
             return filtered.sort((a, b) => (a.curriculum_name || '').localeCompare(b.curriculum_name || ''));
@@ -1166,8 +1174,37 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const populateCurriculumList = (curriculums) => {
         memorandumList.innerHTML = '';
+
+        // Add General Education Option
+        const genEdDiv = document.createElement('div');
+        genEdDiv.className = 'p-3 hover:bg-green-50 rounded-lg cursor-pointer border border-transparent hover:border-green-200 transition-colors duration-150 mb-3 border-b border-gray-100 pb-3';
+        
+        const genEdTitle = selectedLevel === 'Senior High' ? 'General Education - Senior High' : 'General Education - College';
+        
+        genEdDiv.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800">${genEdTitle}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Manage all minor/general education subjects for ${selectedLevel}</p>
+                </div>
+            </div>
+        `;
+        
+        genEdDiv.addEventListener('click', () => {
+             handleGenEdSelection(selectedLevel);
+             hideModal('select-memorandum-modal');
+        });
+        
+        memorandumList.appendChild(genEdDiv);
+
         if (curriculums.length === 0) {
-            memorandumList.innerHTML = '<p class="text-gray-500 text-center py-4">No curriculums found for this level.</p>';
+            const msg = document.createElement('p');
+            msg.className = 'text-gray-500 text-center py-4';
+            msg.textContent = 'No specific curriculums found for this level.';
+            memorandumList.appendChild(msg);
             return;
         }
         
@@ -1197,6 +1234,17 @@ document.addEventListener('DOMContentLoaded', () => {
             memorandumList.appendChild(div);
         });
     };
+
+    const handleGenEdSelection = async (level) => {
+        const title = `General Education - ${level}`;
+        selectedMemorandum = { id: 'GEN_ED_' + level, curriculum_name: title, is_gen_ed: true };
+        
+        memorandumBtnText.textContent = title;
+        memorandumBtnText.classList.add('text-gray-900', 'font-bold');
+        
+        // Immediately trigger subject selection modal with flag
+        await openSubjectsModal(null, true); 
+    };
     
     const handleCurriculumSelection = async (curriculum) => {
         selectedMemorandum = curriculum; // We keep the variable name 'selectedMemorandum' internally to avoid massive diffs, or we can update it. Let's update usage.
@@ -1209,16 +1257,47 @@ document.addEventListener('DOMContentLoaded', () => {
         memorandumBtnText.classList.add('text-gray-900', 'font-bold');
         
         // Immediately trigger subject selection modal
-        await openSubjectsModal(curriculum);
+        await openSubjectsModal(curriculum, false);
     };
     
-    const openSubjectsModal = async (curriculum) => {
+    const openSubjectsModal = async (curriculum, isGenEd = false) => {
         showModal('select-subjects-modal');
         subjectsChecklist.innerHTML = '<p class="text-gray-500 text-center py-8">Loading subjects...</p>';
         confirmSelectSubjectsBtn.disabled = true;
         
-        const subjects = await fetchSubjectsByCurriculum(curriculum.id);
+        let subjects = [];
+        if (isGenEd) {
+             subjects = await fetchGenEdSubjects(selectedLevel);
+        } else {
+             subjects = await fetchSubjectsByCurriculum(curriculum.id);
+        }
         populateSubjectsChecklist(subjects);
+    };
+    
+    const fetchGenEdSubjects = async (level) => {
+        try {
+            // Fetch all subjects
+            // Note: If this list is huge, we should optimize backend. But for now we use the existing endpoint.
+            const allSubjects = await fetchAPI('subjects');
+            
+            return allSubjects.filter(s => {
+                 // Check if Minor
+                 const isMinor = (s.subject_type || '').toLowerCase() === 'minor';
+                 if (!isMinor) return false;
+                 
+                 // Check Level
+                 // Use Regex for robust match, OR check if syllabus_type is 'DepEd'
+                 const sLevel = (s.year_level || '').toString().trim();
+                 const sSyllabus = (s.syllabus_type || '').toLowerCase();
+                 const isSHS = /^(Senior High|SHS|Grade 11|Grade 12)/i.test(sLevel) || sSyllabus === 'deped';
+                 
+                 if (level === 'Senior High') return isSHS;
+                 return !isSHS; // College
+            });
+        } catch (error) {
+            console.error('Error fetching Gen Ed subjects:', error);
+            return [];
+        }
     };
     
     const fetchSubjectsByCurriculum = async (curriculumId) => {
@@ -1229,7 +1308,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // This is correct behavior for "Grade Setup" - you can only grade what is in the curriculum.
             
             const subjects = await fetchAPI(`curriculums/${curriculumId}/subjects`);
-            return subjects || [];
+            const loadedSubjects = subjects || [];
+            
+            // Filter: Only Major subjects should display for specific curriculums
+            // "on the curriculus only major subjects will display"
+            return loadedSubjects.filter(s => (s.subject_type || '').toLowerCase() === 'major');
         } catch (error) {
             console.error('Error fetching subjects:', error);
             return [];

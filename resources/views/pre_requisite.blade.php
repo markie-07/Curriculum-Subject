@@ -38,11 +38,18 @@
                             <input type="text" id="curriculum-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a curriculum...">
                         </div>
                         <ul id="curriculum-options-list" class="max-h-60 overflow-y-auto">
-                            @foreach($curriculums as $curriculum)
+                            @php
+                                // Group by Program Code (or Name) and take the latest to ensure unique display
+                                $uniqueMainCurriculums = $curriculums->sortByDesc('academic_year')->unique(function ($item) {
+                                    return $item->program_code ?: $item->curriculum;
+                                });
+                            @endphp
+
+                            @foreach($uniqueMainCurriculums as $curriculum)
                                 @php
-                                    $displayText = $curriculum->curriculum . ' (' . $curriculum->program_code . ')';
-                                    if ($curriculum->year_level !== 'Senior High') {
-                                        $displayText .= ' - ' . $curriculum->academic_year;
+                                    $displayText = $curriculum->curriculum;
+                                    if (!empty($curriculum->program_code)) {
+                                        $displayText .= ' (' . $curriculum->program_code . ')';
                                     }
                                 @endphp
                                 <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
@@ -97,49 +104,69 @@
                 <input type="hidden" id="modalCurriculumId" name="curriculum_id">
                 <input type="hidden" id="modalSubjectCode" name="subject_code">
                 
-                <div>
-                    <label for="modal-curriculum-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Select Curriculum</label>
-                    <div id="modal-custom-curriculum-selector" class="relative">
-                        <button type="button" id="modal-curriculum-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <span class="text-slate-500 truncate pr-2">-- Select a Curriculum --</span>
-                            <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div id="modal-curriculum-dropdown-panel" class="absolute z-30 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg hidden">
-                            <div class="p-2">
-                                <input type="text" id="modal-curriculum-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a curriculum...">
-                            </div>
-                            <ul id="modal-curriculum-options-list" class="max-h-60 overflow-y-auto">
-                                @foreach($curriculums as $curriculum)
-                                    @if(in_array(strtolower($curriculum->approval_status), ['processing', 'rejected', 'returned']) && $curriculum->version_status !== 'old')
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
+                    <div class="relative z-30">
+                        <label for="modal-curriculum-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Select Curriculum</label>
+                        <div id="modal-custom-curriculum-selector" class="relative">
+                            <button type="button" id="modal-curriculum-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
+                                <span class="text-slate-500 truncate pr-2">-- Select a Curriculum --</span>
+                                <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="modal-curriculum-dropdown-panel" class="absolute z-50 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
+                                <div class="p-2 bg-slate-50 border-b border-slate-100 rounded-t-lg">
+                                    <input type="text" id="modal-curriculum-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" placeholder="Search for a curriculum...">
+                                </div>
+                                <ul id="modal-curriculum-options-list" class="max-h-60 overflow-y-auto py-1">
+                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="gen-ed-college" data-name="General Education - College">
+                                        General Education - College
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 mb-1 transition-colors" data-value="gen-ed-shs" data-name="General Education - Senior High">
+                                        General Education - Senior High
+                                    </li>
+                                    @php
+                                        // Filter valid curriculums first matches status check logic
+                                        $validCurriculums = $curriculums->filter(function($c) {
+                                            $status = strtolower($c->approval_status);
+                                            return in_array($status, ['processing', 'rejected', 'returned']) && $c->version_status !== 'old';
+                                        });
+
+                                        // Group by Program Code (or Name) and take the latest
+                                        $uniqueCurriculums = $validCurriculums->sortByDesc('academic_year')->unique(function ($item) {
+                                            return $item->program_code ?: $item->curriculum;
+                                        });
+                                    @endphp
+
+                                    @foreach($uniqueCurriculums as $curriculum)
                                         @php
-                                            $displayText = $curriculum->curriculum . ' (' . $curriculum->program_code . ')';
-                                            if ($curriculum->year_level !== 'Senior High') {
-                                                $displayText .= ' - ' . $curriculum->academic_year;
+                                            // Create display text - we deliberately OMIT the year to show it as a "Program" group
+                                            $displayText = $curriculum->curriculum;
+                                            if (!empty($curriculum->program_code)) {
+                                                $displayText .= ' (' . $curriculum->program_code . ')';
                                             }
                                         @endphp
-                                        <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
+                                        <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
                                             {{ $displayText }}
                                         </li>
-                                    @endif
-                                @endforeach
-                            </ul>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div>
-                    <label for="modal-subject-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Subject</label>
-                    <div id="modal-custom-subject-selector" class="relative">
-                        <button type="button" id="modal-subject-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <span class="text-slate-500 truncate pr-2">Select a curriculum first</span>
-                            <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div id="modal-subject-dropdown-panel" class="absolute z-20 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg hidden">
-                            <div class="p-2">
-                                <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a subject...">
+                    
+                    <div class="relative z-20">
+                        <label for="modal-subject-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Subject</label>
+                        <div id="modal-custom-subject-selector" class="relative">
+                            <button type="button" id="modal-subject-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
+                                <span class="text-slate-500 truncate pr-2">Select a curriculum first</span>
+                                <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="modal-subject-dropdown-panel" class="absolute z-40 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
+                                <div class="p-2 bg-slate-50 border-b border-slate-100 rounded-t-lg">
+                                    <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" placeholder="Search for a subject...">
+                                </div>
+                                <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto py-1">
+                                </ul>
                             </div>
-                            <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto">
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -623,6 +650,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchSubjectsForModal(curriculumId) {
+        // Handle General Education special IDs
+        if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+            try {
+                const response = await fetch(`/api/gen-ed-prerequisites/${curriculumId}`);
+                if (!response.ok) {
+                    const errText = await response.text();
+                    try {
+                        const jsonErr = JSON.parse(errText);
+                        throw new Error(jsonErr.error || `Server Error: ${response.status}`);
+                    } catch (e) {
+                        throw new Error(`Server Error: ${response.status}`);
+                    }
+                }
+                
+                const data = await response.json();
+                allSubjectsForCurriculum = data.subjects || [];
+                populateSubjectDropdown(allSubjectsForCurriculum);
+            } catch (error) {
+                console.error('Error fetching subjects for modal:', error);
+                modalOptionsList.innerHTML = `<li class="px-4 py-2 text-red-500">Error: ${error.message}</li>`;
+            }
+            return;
+        }
+
         try {
             const response = await fetch(`/api/prerequisites/${curriculumId}`);
             if (!response.ok) throw new Error('Failed to fetch subjects.');
@@ -1029,7 +1080,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Don't enable save button just for selecting a subject
         // Save button will be enabled only after successfully saving prerequisites in modal
         
-        const response = await fetch(`/api/prerequisites/${curriculumId}`);
+        let url = `/api/prerequisites/${curriculumId}`;
+        if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+            url = `/api/gen-ed-prerequisites/${curriculumId}`;
+        }
+        
+        const response = await fetch(url);
         const data = await response.json();
         const existingPrerequisites = data.prerequisites[subjectCode] ? data.prerequisites[subjectCode].map(p => p.prerequisite_subject_code) : [];
         populatePrerequisiteButtons(subjectCode, existingPrerequisites);

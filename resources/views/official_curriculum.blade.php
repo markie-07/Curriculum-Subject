@@ -191,6 +191,194 @@
                 </div>
             </div>
         </div>
+
+        {{-- CHED Subject Details Modal --}}
+        <div id="chedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="ched-modal-details-panel">
+                    <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                         <div>
+                            <h2 id="chedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (CHED)</h2>
+                         </div>
+                        <button id="closeChedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                        <!-- Section 1: Course Information -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                Course Information
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Mapping Grids -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Mapping Grids
+                            </h2>
+                            <div class="space-y-6">
+                                <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">PROGRAM MAPPING GRID</h3>
+                                    <div id="chedProgramMapping"></div>
+                                </div>
+                                <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                     <h3 class="text-lg font-semibold text-gray-700 mb-4">COURSE MAPPING GRID</h3>
+                                    <div id="chedCourseMapping"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Learning Outcomes -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                Learning Outcomes
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-8">
+                                 <div><label class="block text-lg font-semibold text-gray-700 mb-3">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</label><div id="chedPILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                <div><label class="block text-lg font-semibold text-gray-700 mb-3">Course Intended Learning Outcomes (CILO)</label><div id="chedCILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                <div><label class="block text-lg font-semibold text-gray-700 mb-3">Learning Outcomes</label><div id="chedLearningOutcomes" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Weekly Plan -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                Weekly Plan (Weeks 0-18)
+                            </h2>
+                            <div id="chedLessonsContainer" class="space-y-4">
+                                <p class="text-gray-500 italic p-4">Loading weekly plan...</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Course Requirements -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
+                                Course Requirements and Policies
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Basic Readings / Textbooks</label><div id="chedBasicReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Extended Readings / References</label><div id="chedExtendedReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Assessment</label><div id="chedCourseAssessment" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Section 6: Approval -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Committee and Approval
+                            </h2>
+                             <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 gap-8 mb-8">
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Committee Members</label><div id="chedCommitteeMembers" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Consultation Schedule</label><div id="chedConsultationSchedule" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                                </div>
+                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Prepared By</label><div id="chedPreparedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Reviewed By</label><div id="chedReviewedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Approved By</label><div id="chedApprovedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
+                        <div class="text-sm text-gray-500">
+                            <span class="font-semibold">Created:</span>
+                            <span id="chedDetailsCreatedAt"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- DepEd Subject Details Modal --}}
+        <div id="depedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="deped-modal-details-panel">
+                    <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                         <div>
+                            <h2 id="depedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (DepEd)</h2>
+                         </div>
+                        <button id="closeDepedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                        <!-- DepEd Section 1: Course Information -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                Course Information
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="depedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Document Category</label><div id="depedMemorandumCategory" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Title</label><div id="depedTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="depedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Syllabus Preview Section -->
+                        <div id="depedSyllabusSection" class="mb-10 hidden">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                Syllabus Document
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <p id="depedSyllabusFileName" class="text-sm font-medium text-gray-700 mb-4 bg-gray-50 p-2 rounded border border-gray-200 inline-block"></p>
+                                <div id="depedSyllabusPreview" class="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden relative bg-gray-100 flex items-center justify-center">
+                                     <iframe id="depedPdfFrame" class="w-full h-full hidden" src=""></iframe>
+                                     <img id="depedImagePreview" class="max-w-full max-h-full object-contain hidden" src="" alt="Syllabus Preview">
+                                     <p id="depedNoPreview" class="text-gray-400">No preview available</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
+                        <div class="text-sm text-gray-500">
+                            <span class="font-semibold">Created:</span>
+                            <span id="depedDetailsCreatedAt"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -564,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             typeBadgeClass = 'text-white bg-orange-500 border-orange-500';
                         }
 
-                        html += `<div class="subject-card bg-white border-2 ${assignedClass} p-3 rounded-xl shadow-sm flex items-center gap-3 mb-2">
+                        html += `<div class="subject-card bg-white border-2 ${assignedClass} p-3 rounded-xl shadow-sm flex items-center gap-3 mb-2 cursor-pointer hover:shadow-lg transition-all" data-subject-id="${subject.id}">
                             <div class="flex-shrink-0 w-12 h-12 ${iconBgClass} rounded-lg flex items-center justify-center">
                                 <svg class="h-6 w-6 ${iconSvgClass}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -596,6 +784,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         modalCurriculumContent.innerHTML = html;
+        
+        // Add click event listeners to subject cards
+        const subjectCards = modalCurriculumContent.querySelectorAll('.subject-card');
+        subjectCards.forEach(card => {
+            card.addEventListener('click', async () => {
+                const subjectId = card.dataset.subjectId;
+                if (!subjectId) return;
+                
+                try {
+                    const response = await fetch(`/api/subjects/${subjectId}`);
+                    const subjectData = await response.json();
+                    showDetailsModal(subjectData);
+                } catch (error) {
+                    console.error('Error fetching subject details:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to load subject details.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#EF4444'
+                    });
+                }
+            });
+        });
     };
 
     // Card creation function
@@ -830,6 +1042,325 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     searchBar.addEventListener('input', filterCurriculums);
     versionFilter.addEventListener('change', filterCurriculums);
+
+    // --- SUBJECT DETAIL MODAL FUNCTIONS ---
+    
+    // Helper to set text content with fallback
+    const setText = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = (value === null || value === undefined || value === '') ? 'N/A' : value;
+        }
+    };
+
+    // Create mapping grid HTML
+    const createMappingGridHtml = (gridData, mainHeader) => {
+        if (!gridData || !Array.isArray(gridData) || gridData.length === 0) {
+            return '<p class="text-xs text-gray-500">No mapping grid data available.</p>';
+        }
+
+        const headers = [mainHeader, 'CTPSS', 'ECC', 'EPP', 'GLC'];
+        
+        let tableHtml = `<div class="overflow-x-auto border rounded-md">
+                            <table class="min-w-full divide-y divide-gray-200 text-xs">
+                                <thead class="bg-gray-50">
+                                    <tr>${headers.map(h => `<th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">`;
+        
+        gridData.forEach(row => {
+            const mainCellData = row[mainHeader.toLowerCase()] || '';
+            tableHtml += `<tr>
+                            <td class="px-3 py-2 whitespace-normal">${mainCellData}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.ctpss || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.ecc || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.epp || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.glc || ''}</td>
+                          </tr>`;
+        });
+
+        tableHtml += `</tbody></table></div>`;
+        return tableHtml;
+    };
+
+    // Populate DepEd Modal
+    const populateDepEdModal = (data) => {
+        console.log('DepEd Modal Data:', data);
+        setText('depedCourseTitle', data.subject_name);
+        setText('depedSubjectCode', data.subject_code);
+        setText('depedSubjectType', data.subject_type);
+        setText('depedMemorandumCategory', data.memorandum_category);
+        setText('depedTitle', data.memorandum);
+        setText('depedMemorandum', data.memorandum);
+        
+        // Handle Syllabus Preview
+        const syllabusSection = document.getElementById('depedSyllabusSection');
+        const pdfFrame = document.getElementById('depedPdfFrame');
+        const imagePreview = document.getElementById('depedImagePreview');
+        const noPreview = document.getElementById('depedNoPreview');
+        const fileNameDisplay = document.getElementById('depedSyllabusFileName');
+        
+        if (syllabusSection) {
+             syllabusSection.classList.remove('hidden');
+             
+             // Reset views
+             if(pdfFrame) { pdfFrame.classList.add('hidden'); pdfFrame.src = ''; }
+             if(imagePreview) { imagePreview.classList.add('hidden'); imagePreview.src = ''; }
+             if(noPreview) noPreview.classList.add('hidden');
+
+             if (data.syllabus_path) {
+                 let path = data.syllabus_path;
+                 
+                 // Clean up the path
+                 path = path.replace(/^\/storage\//, '').replace(/^storage\//, '');
+                 
+                 // Construct URLs
+                 const baseUrl = window.location.origin;
+                 const viewUrl = `${baseUrl}/view-syllabus/${path}`;
+                 const downloadUrl = `${baseUrl}/storage/${path}`;
+                 
+                 const fileName = path.split('/').pop();
+                 const ext = fileName.split('.').pop().toLowerCase();
+                 
+                 if (fileNameDisplay) {
+                     fileNameDisplay.innerHTML = `
+                         <span class="font-medium">${fileName}</span>
+                         <a href="${downloadUrl}" target="_blank" download class="ml-2 text-blue-600 hover:text-blue-800 text-xs underline">
+                             Download
+                         </a>
+                     `;
+                     fileNameDisplay.classList.remove('hidden');
+                 }
+                 
+                 if (ext === 'pdf') {
+                    if (pdfFrame) {
+                        pdfFrame.src = viewUrl + '#toolbar=0&navpanes=0&scrollbar=0';
+                        pdfFrame.classList.remove('hidden');
+                    }
+                 } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                     if (imagePreview) {
+                         imagePreview.src = viewUrl;
+                         imagePreview.classList.remove('hidden');
+                     }
+                 } else {
+                     if(noPreview) {
+                         noPreview.textContent = 'Preview not available for this file type.';
+                         noPreview.classList.remove('hidden');
+                     }
+                 }
+             } else {
+                 if (fileNameDisplay) fileNameDisplay.classList.add('hidden');
+                 if (noPreview) {
+                     noPreview.textContent = 'No syllabus document uploaded.';
+                     noPreview.classList.remove('hidden');
+                 }
+             }
+        }
+
+        const createdAtDate = new Date(data.created_at);
+        setText('depedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }));
+
+        const modal = document.getElementById('depedSubjectDetailsModal');
+        const panel = document.getElementById('deped-modal-details-panel');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+
+    // Populate CHED Modal
+    const populateChedModal = (data) => {
+        setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
+        setText('chedCourseTitle', data.subject_name);
+        setText('chedSubjectCode', data.subject_code);
+        setText('chedSubjectType', data.subject_type);
+        setText('chedSubjectUnit', data.subject_unit);
+        setText('chedContactHours', data.contact_hours);
+        setText('chedMemorandumYear', data.memorandum_year);
+        setText('chedPrerequisites', data.prerequisites);
+        setText('chedPrereqTo', data.pre_requisite_to);
+        setText('chedMemorandum', data.memorandum);
+        setText('chedCourseDescription', data.course_description);
+        
+        // Learning Outcomes
+        setText('chedPILO', data.pilo_outcomes);
+        setText('chedCILO', data.cilo_outcomes);
+        setText('chedLearningOutcomes', data.learning_outcomes);
+        
+        // Requirements & Policies
+        setText('chedBasicReadings', data.basic_readings);
+        setText('chedExtendedReadings', data.extended_readings);
+        setText('chedCourseAssessment', data.course_assessment);
+        
+        // Committee & Approval
+        setText('chedCommitteeMembers', data.committee_members);
+        setText('chedConsultationSchedule', data.consultation_schedule);
+        setText('chedPreparedBy', data.prepared_by);
+        setText('chedReviewedBy', data.reviewed_by);
+        setText('chedApprovedBy', data.approved_by);
+
+        const createdAtDate = new Date(data.created_at);
+        setText('chedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }));
+
+        // Mapping Grids
+        const progGrid = document.getElementById('chedProgramMapping');
+        const courseGrid = document.getElementById('chedCourseMapping');
+        if(progGrid) progGrid.innerHTML = createMappingGridHtml(data.program_mapping_grid, 'PILO');
+        if(courseGrid) courseGrid.innerHTML = createMappingGridHtml(data.course_mapping_grid, 'CILO');
+
+        // Weekly Plan / Lessons
+        const lessonsContainer = document.getElementById('chedLessonsContainer');
+        if (lessonsContainer) {
+            lessonsContainer.innerHTML = '';
+            if (data.lessons && typeof data.lessons === 'object' && Object.keys(data.lessons).length > 0) {
+                Object.keys(data.lessons).sort((a, b) => {
+                    const weekA = parseInt(a.replace(/\D/g, '')) || 0;
+                    const weekB = parseInt(b.replace(/\D/g, '')) || 0;
+                    return weekA - weekB;
+                }).forEach(week => {
+                    const lessonString = data.lessons[week];
+                    const lessonData = {};
+                    const parts = lessonString.split(',, ');
+                    parts.forEach(part => {
+                        if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\n', '');
+                        if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\n', '');
+                        if (part.startsWith('Assessment:')) {
+                            const match = part.match(/Assessment: ONSITE:\s*([\s\S]*?)OFFSITE:\s*([\s\S]*)/);
+                            if (match) { 
+                                lessonData.at_onsite = match[1].trim(); 
+                                lessonData.at_offsite = match[2].trim(); 
+                            } else {
+                                 lessonData.at_onsite = part.replace('Assessment:', '');
+                            }
+                        }
+                        if (part.startsWith('Activities:')) {
+                             const match = part.match(/Activities: ON-SITE:\s*([\s\S]*?)OFF-SITE:\s*([\s\S]*)/);
+                             if (match) {
+                                 lessonData.tla_onsite = match[1].trim();
+                                 lessonData.tla_offsite = match[2].trim();
+                             } else {
+                                 lessonData.tla_onsite = part.replace('Activities:', '');
+                             }
+                        }
+                        if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\n', '');
+                        if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\n', '');
+                    });
+
+                    const weekNum = parseInt(week.replace(/\D/g, '')) || 0;
+                    const isExamWeek = [6, 12, 18].includes(weekNum);
+                    let weekHTML = '';
+
+                    if (isExamWeek) {
+                        weekHTML = `
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <button type="button" class="w-full flex justify-between items-center p-4 bg-purple-50 hover:bg-purple-100 transition-colors week-toggle">
+                                <span class="font-bold text-purple-700">${week} - ${lessonData.content || 'Exam'}</span>
+                                <svg class="w-5 h-5 text-purple-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="p-5 border-t border-gray-200 bg-white hidden week-content">
+                                <div class="text-center py-4">
+                                    <p class="text-xl font-bold text-gray-600">${lessonData.content || 'Exam'}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    } else {
+                        weekHTML = `
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
+                                <span class="font-semibold text-gray-700">${week}</span>
+                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Content</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.content || 'N/A'}</div></div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Student Intended Learning Outcomes</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.silo || 'N/A'}</div></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Assessment Tasks (ATs)</label>
+                                        <div class="space-y-2">
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.at_onsite || 'N/A'}</div>
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.at_offsite || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Teaching/Learning Activities (TLAs)</label>
+                                        <div class="space-y-2">
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.tla_onsite || 'N/A'}</div>
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.tla_offsite || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">LTSM</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.ltsm || 'N/A'}</div></div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Output Materials</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.output || 'N/A'}</div></div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                    lessonsContainer.innerHTML += weekHTML;
+                });
+                
+                lessonsContainer.querySelectorAll('.week-toggle').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const content = button.nextElementSibling;
+                        content.classList.toggle('hidden');
+                        button.querySelector('svg').classList.toggle('rotate-180');
+                    });
+                });
+
+            } else {
+                lessonsContainer.innerHTML = '<p class="text-sm text-gray-500 mt-2 italic text-center py-4">No lessons recorded for this subject.</p>';
+            }
+        }
+
+        const modal = document.getElementById('chedSubjectDetailsModal');
+        const panel = document.getElementById('ched-modal-details-panel');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
+
+    const showDetailsModal = (data) => {
+        if (data.syllabus_type === 'DepEd') {
+            populateDepEdModal(data);
+        } else {
+            populateChedModal(data);
+        }
+    };
+
+    // Modal close functions
+    const hideChedModal = () => {
+        const modal = document.getElementById('chedSubjectDetailsModal');
+        const panel = document.getElementById('ched-modal-details-panel');
+        panel.classList.add('opacity-0', 'scale-95');
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    };
+    
+    const hideDepEdModal = () => {
+        const modal = document.getElementById('depedSubjectDetailsModal');
+        const panel = document.getElementById('deped-modal-details-panel');
+        panel.classList.add('opacity-0', 'scale-95');
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    };
+
+    // Modal event listeners
+    const closeChedBtn = document.getElementById('closeChedDetailsModal');
+    if(closeChedBtn) closeChedBtn.addEventListener('click', hideChedModal);
+    const chedModal = document.getElementById('chedSubjectDetailsModal');
+    if(chedModal) chedModal.addEventListener('click', (e) => { if (e.target.id === 'chedSubjectDetailsModal') hideChedModal(); });
+
+    const closeDepEdBtn = document.getElementById('closeDepedDetailsModal');
+    if(closeDepEdBtn) closeDepEdBtn.addEventListener('click', hideDepEdModal);
+    const depedModal = document.getElementById('depedSubjectDetailsModal');
+    if(depedModal) depedModal.addEventListener('click', (e) => { if (e.target.id === 'depedSubjectDetailsModal') hideDepEdModal(); });
 
     // Initial load
     fetchAndDisplayCurriculums();

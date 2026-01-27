@@ -54,92 +54,140 @@ class CurriculumController extends Controller
     }
 
     /**
-     * Stores a new curriculum.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'curriculum' => 'required|string|max:255',
-            'programCode' => 'required|string|max:255',
-            'academicYear' => 'required|string|max:255',
-            'expirationDate' => 'nullable|date|after_or_equal:today',
-            'yearLevel' => 'required|in:Senior High,College',
-            'compliance' => 'nullable|string|in:CHED,DepEd',
-            'memorandumYear' => 'nullable|string|max:4',
-            'memorandumCategory' => 'nullable|string|max:255',
-            'memorandum' => 'nullable|string',
-            'semesterUnits' => 'nullable|array',
-            'semesterUnits.*' => 'nullable|numeric|min:0',
-            'totalUnits' => 'nullable|numeric|min:0',
-        ]);
+ * Stores a new curriculum.
+ */
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'curriculum' => 'required|string|max:255',
+        'programCode' => 'required|string|max:255',
+        'academicYear' => 'required|string|max:255',
+        'expirationDate' => 'nullable|date|after_or_equal:today',
+        'yearLevel' => 'required|in:Senior High,College',
+        'compliance' => 'nullable|string|in:CHED,DepEd',
+        'memorandumYear' => 'nullable|string|max:4',
+        'memorandumCategory' => 'nullable|string|max:255',
+        'memorandum' => 'nullable|string',
+        'semesterUnits' => 'nullable|array',
+        'semesterUnits.*' => 'nullable|numeric|min:0',
+        'totalUnits' => 'nullable|numeric|min:0',
+    ]);
 
-        // Check for existing curricula with the same name, academic year, and year level
-        // This ensures each curriculum with a unique name+year combination is independent
-        /* 
-        DISABLED: User requested that only expiration date should trigger 'old' status.
-        $existingCurricula = Curriculum::where('curriculum', $validated['curriculum'])
-            ->where('academic_year', $validated['academicYear'])
-            ->where('year_level', $validated['yearLevel'])
+    // Check for existing curricula with the same name, academic year, and year level
+    // This ensures each curriculum with a unique name+year combination is independent
+    /* 
+    DISABLED: User requested that only expiration date should trigger 'old' status.
+    $existingCurricula = Curriculum::where('curriculum', $validated['curriculum'])
+        ->where('academic_year', $validated['academicYear'])
+        ->where('year_level', $validated['yearLevel'])
+        ->get();
+
+    // Mark existing curricula with the same name AND academic year as old version
+    if ($existingCurricula->isNotEmpty()) {
+        foreach ($existingCurricula as $existing) {
+            $existing->update(['version_status' => 'old']);
+        }
+    }
+    */
+
+    $curriculum = Curriculum::create([
+        'curriculum' => $validated['curriculum'],
+        'program_code' => $validated['programCode'],
+        'academic_year' => $validated['academicYear'],
+        'expiration_date' => $validated['expirationDate'] ?? null,
+        'year_level' => $validated['yearLevel'],
+        'compliance' => $validated['compliance'] ?? null,
+        'memorandum_year' => $validated['memorandumYear'] ?? null,
+        'memorandum_category' => $validated['memorandumCategory'] ?? null,
+        'memorandum' => $validated['memorandum'] ?? null,
+        'semester_units' => $validated['semesterUnits'] ?? null,
+        'total_units' => $validated['totalUnits'] ?? null,
+        'version_status' => 'new', // New curricula are marked as 'new'
+    ]);
+
+    // Auto-copy subject mappings from the most recent approved curriculum with the same name
+    $sourceCurriculum = Curriculum::where('curriculum', $validated['curriculum'])
+        ->where('approval_status', 'approved')
+        ->where('id', '!=', $curriculum->id) // Exclude the newly created curriculum
+        ->orderBy('created_at', 'desc')
+        ->first();
+
+    if ($sourceCurriculum) {
+        // Get all subject mappings from the source curriculum
+        $subjectMappings = DB::table('curriculum_subject')
+            ->where('curriculum_id', $sourceCurriculum->id)
             ->get();
 
-        // Mark existing curricula with the same name AND academic year as old version
-        if ($existingCurricula->isNotEmpty()) {
-            foreach ($existingCurricula as $existing) {
-                $existing->update(['version_status' => 'old']);
+        if ($subjectMappings->isNotEmpty()) {
+            // Prepare data for bulk insert
+            $mappingsToInsert = [];
+            foreach ($subjectMappings as $mapping) {
+                $mappingsToInsert[] = [
+                    'curriculum_id' => $curriculum->id,
+                    'subject_id' => $mapping->subject_id,
+                    'year' => $mapping->year,
+                    'semester' => $mapping->semester,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
+
+            // Bulk insert the mappings
+            DB::table('curriculum_subject')->insert($mappingsToInsert);
+
+            Log::info("Auto-copied {$subjectMappings->count()} subject mappings from curriculum ID {$sourceCurriculum->id} to new curriculum ID {$curriculum->id}");
         }
-        */
-
-        $curriculum = Curriculum::create([
-            'curriculum' => $validated['curriculum'],
-            'program_code' => $validated['programCode'],
-            'academic_year' => $validated['academicYear'],
-            'expiration_date' => $validated['expirationDate'] ?? null,
-            'year_level' => $validated['yearLevel'],
-            'compliance' => $validated['compliance'] ?? null,
-            'memorandum_year' => $validated['memorandumYear'] ?? null,
-            'memorandum_category' => $validated['memorandumCategory'] ?? null,
-            'memorandum' => $validated['memorandum'] ?? null,
-            'semester_units' => $validated['semesterUnits'] ?? null,
-            'total_units' => $validated['totalUnits'] ?? null,
-            'version_status' => 'new', // New curricula are marked as 'new'
-        ]);
-
-        // Create database notification for admins
-        if (Auth::check()) {
-            Notification::createForAdmins(
-                'success',
-                'New Curriculum Created',
-                'Curriculum "' . $curriculum->curriculum . '" has been created by ' . Auth::user()->name,
-                ['curriculum_id' => $curriculum->id, 'action' => 'created']
-            );
-
-            // Log activity
-            \App\Services\ActivityLogService::log(
-                'create_curriculum',
-                'Created curriculum "' . $curriculum->curriculum . '"',
-                ['curriculum_id' => $curriculum->id, 'program_code' => $curriculum->program_code]
-            );
-            Auth::user()->updateLastActivity();
-        }
-
-        session()->flash('success', 'Curriculum "' . $curriculum->curriculum . '" has been created successfully!');
-        
-        // Also trigger notification for AJAX requests
-        if (request()->wantsJson()) {
-            return response()->json([
-                'message' => 'Curriculum created successfully!', 
-                'curriculum' => $curriculum,
-                'notification' => [
-                    'type' => 'success',
-                    'title' => 'Curriculum Added!',
-                    'message' => 'Curriculum "' . $curriculum->curriculum . '" has been created successfully!'
-                ]
-            ], 201);
-        }
-        
-        return response()->json(['message' => 'Curriculum created successfully!', 'curriculum' => $curriculum], 201);
     }
+
+    // Create database notification for admins
+    if (Auth::check()) {
+        $notificationMessage = 'Curriculum "' . $curriculum->curriculum . '" has been created by ' . Auth::user()->name;
+        if ($sourceCurriculum && isset($subjectMappings) && $subjectMappings->isNotEmpty()) {
+            $notificationMessage .= ' with ' . $subjectMappings->count() . ' subjects auto-copied from ' . $sourceCurriculum->academic_year;
+        }
+
+        Notification::createForAdmins(
+            'success',
+            'New Curriculum Created',
+            $notificationMessage,
+            ['curriculum_id' => $curriculum->id, 'action' => 'created']
+        );
+
+        // Log activity
+        \App\Services\ActivityLogService::log(
+            'create_curriculum',
+            'Created curriculum "' . $curriculum->curriculum . '"',
+            ['curriculum_id' => $curriculum->id, 'program_code' => $curriculum->program_code]
+        );
+        Auth::user()->updateLastActivity();
+    }
+
+    session()->flash('success', 'Curriculum "' . $curriculum->curriculum . '" has been created successfully!');
+    
+    // Also trigger notification for AJAX requests
+    if (request()->wantsJson()) {
+        $responseMessage = 'Curriculum created successfully!';
+        $notificationMessage = 'Curriculum "' . $curriculum->curriculum . '" has been created successfully!';
+        
+        if ($sourceCurriculum && isset($subjectMappings) && $subjectMappings->isNotEmpty()) {
+            $responseMessage .= ' ' . $subjectMappings->count() . ' subjects were automatically copied from ' . $sourceCurriculum->academic_year . '.';
+            $notificationMessage .= ' ' . $subjectMappings->count() . ' subjects were automatically copied from the previous approved curriculum.';
+        }
+
+        return response()->json([
+            'message' => $responseMessage, 
+            'curriculum' => $curriculum,
+            'subjects_copied' => isset($subjectMappings) ? $subjectMappings->count() : 0,
+            'notification' => [
+                'type' => 'success',
+                'title' => 'Curriculum Added!',
+                'message' => $notificationMessage
+            ]
+        ], 201);
+    }
+    
+    return response()->json(['message' => 'Curriculum created successfully!', 'curriculum' => $curriculum], 201);
+}
 
     /**
      * Updates an existing curriculum.

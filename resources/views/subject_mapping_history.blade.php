@@ -165,30 +165,203 @@
             </div>
         </div>
 
-        {{-- [MODAL 2] Subject Details Modal --}}
-        <div id="subjectDetailsModal" class="fixed inset-0 z-[60] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
-            <div class="flex items-center justify-center min-h-screen p-2">
-                <div class="relative bg-white w-[98vw] h-[98vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-panel-details">
-                    <div class="flex justify-between items-center p-5 border-b border-gray-200 sticky top-0 bg-white z-10 rounded-t-2xl">
-                        <h2 id="detailsSubjectName" class="text-2xl font-bold text-gray-800"></h2>
-                        <button id="closeSubjectDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+        {{-- CHED Subject Details Modal --}}
+        <div id="chedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="ched-modal-details-panel">
+                    <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                        <div>
+                            <h2 id="chedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (CHED)</h2>
+                        </div>
+                        <button id="closeChedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
-                    <div id="subject-details-content" class="p-6 flex-1 overflow-y-auto">
-                        {{-- Subject details will be dynamically loaded here --}}
+                    
+                    <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                        <!-- Section 1: Course Information -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                Course Information
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Mapping Grids -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Mapping Grids
+                            </h2>
+                            <div class="space-y-6">
+                                <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">PROGRAM MAPPING GRID</h3>
+                                    <div id="chedProgramMapping"></div>
+                                </div>
+                                <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">COURSE MAPPING GRID</h3>
+                                    <div id="chedCourseMapping"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Learning Outcomes -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                Learning Outcomes
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-8">
+                                <div><label class="block text-lg font-semibold text-gray-700 mb-3">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</label><div id="chedPILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                <div><label class="block text-lg font-semibold text-gray-700 mb-3">Course Intended Learning Outcomes (CILO)</label><div id="chedCILO" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                <div><label class="block text-lg font-semibold text-gray-700 mb-3">Learning Outcomes</label><div id="chedLearningOutcomes" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Weekly Plan -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                Weekly Plan (Weeks 0-18)
+                            </h2>
+                            <div id="chedLessonsContainer" class="space-y-4">
+                                <p class="text-gray-500 italic p-4">Loading weekly plan...</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Course Requirements -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
+                                Course Requirements and Policies
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Basic Readings / Textbooks</label><div id="chedBasicReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Extended Readings / References</label><div id="chedExtendedReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Assessment</label><div id="chedCourseAssessment" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Section 6: Approval -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Committee and Approval
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 gap-8 mb-8">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Committee Members</label><div id="chedCommitteeMembers" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Consultation Schedule</label><div id="chedConsultationSchedule" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap"></div></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Prepared By</label><div id="chedPreparedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Reviewed By</label><div id="chedReviewedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Approved By</label><div id="chedApprovedBy" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center p-5 mt-auto border-t border-gray-200 bg-gray-50 rounded-b-2xl sticky bottom-0 z-10">
+                    
+                    <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
                         <div class="text-sm text-gray-500">
                             <span class="font-semibold">Created:</span>
-                            <span id="detailsCreatedAt"></span>
+                            <span id="chedDetailsCreatedAt"></span>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <button id="exportSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-sm flex items-center gap-2" data-subject-data="">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <div>
+                            <button id="exportChedPdfButton" class="px-6 py-2.5 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-lg hover:shadow-xl flex items-center gap-2 transform active:scale-95 duration-150">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                 Export to PDF
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- DepEd Subject Details Modal --}}
+        <div id="depedSubjectDetailsModal" class="fixed inset-0 z-[100] overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-7xl max-h-[95vh] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="deped-modal-details-panel">
+                    <div class="flex justify-between items-center px-10 py-6 border-b border-gray-200 bg-white z-10 rounded-t-2xl shrink-0">
+                        <div>
+                            <h2 id="depedSubjectName" class="text-3xl font-bold text-gray-800">Subject Details (DepEd)</h2>
+                        </div>
+                        <button id="closeDepedDetailsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="p-8 md:p-10 bg-gray-50 overflow-y-auto flex-1">
+                        <!-- DepEd Section 1: Course Information -->
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                Course Information
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="depedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Document Category</label><div id="depedMemorandumCategory" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Title</label><div id="depedTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+
+                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="depedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
+
+                                    <div id="depedTimeAllotmentContainer"><label class="block text-sm font-medium text-gray-700 mb-2">Time Allotment</label><div id="depedTimeAllotment" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div id="depedScheduleContainer" class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Schedule</label><div id="depedSchedule" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
+                                    <div id="depedCourseDescriptionContainer" class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="depedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Syllabus Preview Section -->
+                        <div id="depedSyllabusSection" class="mb-10">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                Syllabus Document
+                            </h2>
+                            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                                <p id="depedSyllabusFileName" class="text-sm font-medium text-gray-700 mb-4 bg-gray-50 p-2 rounded border border-gray-200 inline-block"></p>
+                                <div id="depedSyllabusPreview" class="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden relative bg-gray-100 flex items-center justify-center">
+                                    <iframe id="depedPdfFrame" class="w-full h-full hidden" src=""></iframe>
+                                    <img id="depedImagePreview" class="max-w-full max-h-full object-contain hidden" src="" alt="Syllabus Preview">
+                                    <p id="depedNoPreview" class="text-gray-400">No preview available</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-6 border-t border-gray-200 bg-white rounded-b-2xl shrink-0 z-10">
+                        <div class="text-sm text-gray-500">
+                            <span class="font-semibold">Created:</span>
+                            <span id="depedDetailsCreatedAt"></span>
+                        </div>
+                         
                     </div>
                 </div>
             </div>
@@ -309,13 +482,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalVersionBadge = document.getElementById('modal-version-badge');
     const modalSubjectsContent = document.getElementById('modal-subjects-content');
 
-    // Modal 2 (Subject Details)
-    const subjectDetailsModal = document.getElementById('subjectDetailsModal');
-    const subjectDetailsModalPanel = document.getElementById('modal-panel-details');
-    const closeSubjectDetailsModalBtn = document.getElementById('closeSubjectDetailsModal');
-    const subjectDetailsContent = document.getElementById('subject-details-content');
-    const exportSubjectDetailsButton = document.getElementById('exportSubjectDetailsButton');
-    const detailsCreatedAt = document.getElementById('detailsCreatedAt');
+    // --- Modal 2 (Subject Details) ---
+    // CHED Modal Elements
+    const chedModal = document.getElementById('chedSubjectDetailsModal');
+    const chedModalPanel = document.getElementById('ched-modal-details-panel');
+    const closeChedModalBtn = document.getElementById('closeChedDetailsModal');
+    
+    // DepEd Modal Elements
+    const depedModal = document.getElementById('depedSubjectDetailsModal');
+    const depedModalPanel = document.getElementById('deped-modal-details-panel');
+    const closeDepedModalBtn = document.getElementById('closeDepedDetailsModal');
 
     // External link modal elements
     const externalLinkModal = document.getElementById('externalLinkModal');
@@ -380,95 +556,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Modal 2 Functions ---
+    // Close Logic for CHED Modal
+    const hideChedModal = () => {
+        chedModal.classList.add('opacity-0');
+        chedModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => chedModal.classList.add('hidden'), 300);
+    };
+    if (closeChedModalBtn) closeChedModalBtn.addEventListener('click', hideChedModal);
+    chedModal.addEventListener('click', (e) => { if (e.target === chedModal) hideChedModal(); });
+
+    // Close Logic for DepEd Modal
+    const hideDepEdModal = () => {
+        depedModal.classList.add('opacity-0');
+        depedModalPanel.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => depedModal.classList.add('hidden'), 300);
+    };
+    if (closeDepedModalBtn) closeDepedModalBtn.addEventListener('click', hideDepEdModal);
+    depedModal.addEventListener('click', (e) => { if (e.target === depedModal) hideDepEdModal(); });
+
     const showSubjectDetailsModal = async (subject) => {
-        // Show modal with loading state
-        subjectDetailsModal.classList.remove('hidden');
-        setTimeout(() => {
-            subjectDetailsModal.classList.remove('opacity-0');
-            subjectDetailsModalPanel.classList.remove('opacity-0', 'scale-95');
-        }, 10);
-
-        // Show loading state
-        subjectDetailsContent.innerHTML = `
-            <div class="flex items-center justify-center py-12">
-                <div class="text-center">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p class="text-gray-500">Loading current subject data...</p>
-                </div>
-            </div>
-        `;
-
         try {
-            // Fetch current/live subject data from the subjects API
+            // Fetch live data
             const response = await fetch(`/api/subjects/${subject.id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch subject data');
+            if (!response.ok) throw new Error('Failed to fetch subject data');
+            const data = await response.json();
+            
+            const liveType = (data.syllabus_type || 'CHED').toUpperCase();
+            
+            if (liveType === 'DEPED') {
+                 populateDepEdModal(data); 
+            } else {
+                 populateChedModal(data); 
+            }
+        } catch (error) {
+            console.error('Error fetching live data:', error);
+            
+            // Fallback to historical data
+            // Infer type from available fields if syllabus_type is missing in snapshot
+            let isDepEd = false;
+            if (subject.memorandum_category || (subject.syllabus_type && subject.syllabus_type.toUpperCase() === 'DEPED')) {
+                isDepEd = true;
             }
             
-            const currentSubjectData = await response.json();
-            
-            // Populate modal with current data
-            populateDetailsModal(currentSubjectData);
-            
-        } catch (error) {
-            console.error('Error fetching current subject data:', error);
-            
-            // Fallback to historical data if current data fetch fails
-            subjectDetailsContent.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="text-yellow-600 mb-4">
-                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Unable to load current data</h3>
-                    <p class="text-sm text-gray-500 mb-4">Showing historical data instead. The current subject data may have been updated since this snapshot was created.</p>
-                    <button id="show-historical-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
-                        Show Historical Data
-                    </button>
-                </div>
-            `;
-            
-            // Add event listener for historical data button
-            setTimeout(() => {
-                const historicalBtn = document.getElementById('show-historical-btn');
-                if (historicalBtn) {
-                    historicalBtn.addEventListener('click', () => {
-                        populateDetailsModalWithHistoricalIndicator(subject);
-                    });
-                }
-            }, 100);
+            if (isDepEd) {
+                populateDepEdModal(subject, true);
+            } else {
+                populateChedModal(subject, true);
+            }
         }
     };
-
-    // Function to populate modal with historical data and indicator
-    const populateDetailsModalWithHistoricalIndicator = (subject) => {
-        populateDetailsModal(subject);
-        
-        // Add historical data indicator at the top
-        setTimeout(() => {
-            const indicator = document.createElement('div');
-            indicator.className = 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6';
-            indicator.innerHTML = `
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                    <span class="text-sm font-medium text-yellow-800">Showing Historical Data</span>
-                    <span class="text-xs text-yellow-600 ml-2">(This data may be outdated - current updates not reflected)</span>
-                </div>
-            `;
-            const content = subjectDetailsContent;
-            content.insertBefore(indicator, content.firstChild);
-        }, 50);
-    };
-    const hideSubjectDetailsModal = () => {
-        subjectDetailsModal.classList.add('opacity-0');
-        subjectDetailsModalPanel.classList.add('opacity-0', 'scale-95');
-        setTimeout(() => subjectDetailsModal.classList.add('hidden'), 300);
-    };
-    closeSubjectDetailsModalBtn.addEventListener('click', hideSubjectDetailsModal);
-    subjectDetailsModal.addEventListener('click', (e) => { if (e.target === subjectDetailsModal) hideSubjectDetailsModal(); });
 
     // Export button event listener moved to the second script block where modal functions are defined
 
@@ -953,135 +1089,269 @@ document.addEventListener('DOMContentLoaded', () => {
         return tag;
     };
 
-    // --- NEW: Comprehensive modal populator function ---
-    const populateDetailsModal = (subject) => {
-        const setText = (element, value) => {
-            if (element) element.textContent = value || 'N/A';
-        };
+    // --- Helper Functions ---
+    const setText = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = (value === null || value === undefined || value === '') ? 'N/A' : value;
+        }
+    };
 
-        const setHtml = (element, value) => {
-            if(element) element.innerHTML = value || 'N/A';
+    const createMappingGridHtml = (gridData, mainHeader) => {
+        if (!gridData || !Array.isArray(gridData) || gridData.length === 0) {
+            return '<p class="text-xs text-gray-500">No mapping grid data available.</p>';
         }
 
-        const createMappingGridHtml = (gridData, mainHeader) => {
-            if (!gridData || !Array.isArray(gridData) || gridData.length === 0) {
-                return '<p class="text-xs text-gray-500">No mapping grid data available.</p>';
-            }
-            const headers = [mainHeader, 'CTPSS', 'ECC', 'EPP', 'GLC'];
-            let tableHtml = `<div class="overflow-x-auto border rounded-md"><table class="min-w-full divide-y divide-gray-200 text-xs"><thead class="bg-gray-50"><tr>${headers.map(h => `<th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}</tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
-            gridData.forEach(row => {
-                const mainCellData = row[mainHeader.toLowerCase()] || '';
-                tableHtml += `<tr><td class="px-3 py-2 whitespace-normal">${mainCellData}</td><td class="px-3 py-2 text-center whitespace-nowrap">${row.ctpss || ''}</td><td class="px-3 py-2 text-center whitespace-nowrap">${row.ecc || ''}</td><td class="px-3 py-2 text-center whitespace-nowrap">${row.epp || ''}</td><td class="px-3 py-2 text-center whitespace-nowrap">${row.glc || ''}</td></tr>`;
-            });
-            tableHtml += `</tbody></table></div>`;
-            return tableHtml;
-        };
-
-        subjectDetailsContent.innerHTML = `
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span class="text-sm font-medium text-green-800">Showing Current Data</span>
-                    <span class="text-xs text-green-600 ml-2">(Last updated: ${subject.updated_at ? new Date(subject.updated_at).toLocaleString() : 'Unknown'})</span>
-                </div>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Course Information</h3>
-            <div id="details-course-info" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 bg-gray-50 p-4 rounded-lg"></div>
-            
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Mapping Grids</h3>
-            <div id="details-mapping-grids" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
-
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Learning Outcomes</h3>
-            <div id="details-learning-outcomes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
-
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Weekly Plan (Weeks 0-18)</h3>
-            <div class="space-y-3" id="details-lessons-container"></div>
-
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pt-8 pb-2 border-b">Course Requirements and Policies</h3>
-            <div id="details-requirements-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
-            
-            <h3 class="text-xl font-bold text-gray-800 mb-4 pt-4 pb-2 border-b">Committee and Approval</h3>
-            <div id="details-approval-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
-        `;
-
-        // Populate Course Information
-        document.getElementById('details-course-info').innerHTML = `
-            <div><p class="text-sm font-medium text-gray-500">Course Title</p><p class="text-base font-semibold text-gray-800">${subject.subject_name || 'N/A'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Course Code</p><p class="text-base font-semibold text-gray-800">${subject.subject_code || 'N/A'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Course Type</p><p class="text-base font-semibold text-gray-800">${subject.subject_type || 'N/A'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Credit Units</p><p class="text-base font-semibold text-gray-800">${subject.subject_unit || 'N/A'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Contact Hours</p><p class="text-base font-semibold text-gray-800">${subject.contact_hours || 'N/A'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Credit Prerequisites</p><p class="text-base font-semibold text-gray-800">${subject.prerequisites || 'None'}</p></div>
-            <div><p class="text-sm font-medium text-gray-500">Pre-requisite to</p><p class="text-base font-semibold text-gray-800">${subject.pre_requisite_to || 'None'}</p></div>
-            <div class="md:col-span-4"><p class="text-sm font-medium text-gray-500">Course Description</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.course_description || 'N/A'}</div></div>
-        `;
-
-        // Populate Mapping Grids
-        document.getElementById('details-mapping-grids').innerHTML = `
-            <div><p class="text-sm font-medium text-gray-500">PROGRAM MAPPING GRID</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">${createMappingGridHtml(subject.program_mapping_grid, 'PILO')}</div></div>
-            <div><p class="text-sm font-medium text-gray-500">COURSE MAPPING GRID</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">${createMappingGridHtml(subject.course_mapping_grid, 'CILO')}</div></div>
-        `;
-
-        // Populate Learning Outcomes
-        document.getElementById('details-learning-outcomes-grid').innerHTML = `
-            <div><p class="text-sm font-medium text-gray-500">PROGRAM INTENDED LEARNING OUTCOMES (PILO)</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.pilo_outcomes || 'N/A'}</div></div>
-            <div><p class="text-sm font-medium text-gray-500">Course Intended Learning Outcomes (CILO)</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.cilo_outcomes || 'N/A'}</div></div>
-            <div class="md:col-span-2"><p class="text-sm font-medium text-gray-500">Learning Outcomes</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.learning_outcomes || 'N/A'}</div></div>
-        `;
+        const headers = [mainHeader, 'CTPSS', 'ECC', 'EPP', 'GLC'];
         
-        // Populate Weekly Plan
-        const lessonsContainer = document.getElementById('details-lessons-container');
-        if (subject.lessons && typeof subject.lessons === 'object' && Object.keys(subject.lessons).length > 0) {
-            lessonsContainer.innerHTML = '';
-             Object.keys(subject.lessons).sort((a, b) => parseInt(a.replace('Week ', '')) - parseInt(b.replace('Week ', ''))).forEach(week => {
-                const lessonString = subject.lessons[week];
-                const lessonData = {};
-                const parts = lessonString.split(',, ');
-                parts.forEach(part => {
-                    if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\\n', '').replace('Detailed Lesson Content:', '');
-                    if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\\n', '').replace('Student Intended Learning Outcomes:', '');
-                    if (part.startsWith('Assessment:')) { const match = part.match(/ONSITE: (.*) OFFSITE: (.*)/s); if(match){ lessonData.at_onsite = match[1]; lessonData.at_offsite = match[2]; }}
-                    if (part.startsWith('Activities:')) { const match = part.match(/ON-SITE: (.*) OFF-SITE: (.*)/s); if(match){ lessonData.tla_onsite = match[1]; lessonData.tla_offsite = match[2]; }}
-                    if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\\n', '').replace('Learning and Teaching Support Materials:', '');
-                    if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\\n', '').replace('Output Materials:', '');
-                });
+        // Note: Tailwind classes should match
+        let tableHtml = `<div class="overflow-x-auto border rounded-md">
+                            <table class="min-w-full divide-y divide-gray-200 text-xs">
+                                <thead class="bg-gray-50">
+                                    <tr>${headers.map(h => `<th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">`;
+        
+        gridData.forEach(row => {
+            const mainCellData = row[mainHeader.toLowerCase()] || '';
+            tableHtml += `<tr>
+                            <td class="px-3 py-2 whitespace-normal">${mainCellData}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.ctpss || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.ecc || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.epp || ''}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">${row.glc || ''}</td>
+                          </tr>`;
+        });
 
-                const weekHTML = `<div class="border border-gray-200 rounded-lg overflow-hidden"><button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle"><span class="font-semibold text-gray-700">${week}</span><svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-semibold text-gray-600 mb-2">Content</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.content || ''}</div></div><div><label class="block text-sm font-semibold text-gray-600 mb-2">Student Intended Learning Outcomes</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.silo || ''}</div></div></div><div><label class="block text-sm font-semibold text-gray-600 mb-2">Assessment Tasks (ATs)</label><div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-md bg-gray-50"><div><label class="block text-xs font-bold text-gray-500 mb-1">ONSITE</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.at_onsite || ''}</div></div><div><label class="block text-xs font-bold text-gray-500 mb-1">OFFSITE</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.at_offsite || ''}</div></div></div></div><div><label class="block text-sm font-semibold text-gray-600 mb-2">Suggested Teaching/Learning Activities (TLAs)</label><div class="p-4 border rounded-md bg-gray-50"><p class="text-xs font-bold text-gray-500 mb-2">Blended Learning Delivery Modality (BLDM)</p><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-gray-500 mb-1">Face to Face (On-Site)</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.tla_onsite || ''}</div></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Online (Off-Site)</label><div class="p-2 bg-white border rounded-md min-h-[80px] text-sm whitespace-pre-wrap">${lessonData.tla_offsite || ''}</div></div></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block text-sm font-semibold text-gray-600 mb-2">Learning and Teaching Support Materials (LTSM)</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.ltsm || ''}</div></div><div><label class="block text-sm font-semibold text-gray-600 mb-2">Output Materials</label><div class="p-3 bg-gray-50 border rounded-md min-h-[100px] text-sm whitespace-pre-wrap">${lessonData.output || ''}</div></div></div></div></div>`;
-                lessonsContainer.innerHTML += weekHTML;
-            });
-             lessonsContainer.querySelectorAll('.week-toggle').forEach(button => {
-                button.addEventListener('click', () => {
-                    const content = button.nextElementSibling;
-                    content.classList.toggle('hidden');
-                    button.querySelector('svg').classList.toggle('rotate-180');
-                });
-            });
-        } else {
-            lessonsContainer.innerHTML = '<p class="text-sm text-gray-500 mt-2">No weekly plan recorded for this subject.</p>';
+        tableHtml += `</tbody></table></div>`;
+        return tableHtml;
+    };
+
+    // --- Populate Functions ---
+    const populateDepEdModal = (data, isHistorical = false) => {
+        console.log('Populating DepEd Modal', data);
+        setText('depedSubjectName', `${data.subject_name} (${data.subject_code})`);
+        
+        // Course Info
+        setText('depedCourseTitle', data.subject_name);
+        setText('depedSubjectCode', data.subject_code);
+        setText('depedSubjectType', data.subject_type);
+        setText('depedMemorandumCategory', data.memorandum_category);
+        setText('depedTitle', data.title || data.subject_name); 
+        setText('depedMemorandum', data.memorandum);
+        setText('depedTimeAllotment', data.time_allotment);
+        setText('depedSchedule', data.schedule);
+        const descEl = document.getElementById('depedCourseDescription');
+        if(descEl) descEl.innerHTML = data.course_description || 'N/A';
+
+        // Syllabus Document Logic
+        const syllabusSection = document.getElementById('depedSyllabusSection');
+        if (syllabusSection) {
+             const fileNameEl = document.getElementById('depedSyllabusFileName');
+             const pdfFrame = document.getElementById('depedPdfFrame');
+             const imgPreview = document.getElementById('depedImagePreview');
+             const noPreview = document.getElementById('depedNoPreview');
+             
+             // Reset UI
+             if (fileNameEl) fileNameEl.textContent = '';
+             if (pdfFrame) pdfFrame.classList.add('hidden');
+             if (imgPreview) imgPreview.classList.add('hidden');
+             if (noPreview) noPreview.classList.remove('hidden');
+
+             // Handle syllabus data
+             // Assuming 'syllabus' or 'syllabus_path' holds the filename/path
+             const syllabusPath = data.syllabus_path || data.syllabus || ''; 
+             
+             if (syllabusPath) {
+                 if (fileNameEl) fileNameEl.textContent = syllabusPath.split('/').pop();
+                 
+                 // Construct URL - path already includes /storage/ prefix from database
+                 const fileUrl = syllabusPath.startsWith('http') ? syllabusPath : 
+                                syllabusPath.startsWith('/storage/') ? syllabusPath : 
+                                `/storage/${syllabusPath}`;
+                 
+                 const lowerPath = syllabusPath.toLowerCase();
+                 const isPdf = lowerPath.endsWith('.pdf');
+                 const isImage = lowerPath.endsWith('.jpg') || lowerPath.endsWith('.jpeg') || lowerPath.endsWith('.png') || lowerPath.endsWith('.webp');
+
+                 if (isPdf && pdfFrame) {
+                     pdfFrame.src = fileUrl;
+                     pdfFrame.classList.remove('hidden');
+                     if (noPreview) noPreview.classList.add('hidden');
+                 } else if (isImage && imgPreview) {
+                     imgPreview.src = fileUrl;
+                     imgPreview.classList.remove('hidden');
+                     if (noPreview) noPreview.classList.add('hidden');
+                 } else {
+                     // File exists but not previewable here (e.g. docx)
+                     if (fileNameEl) fileNameEl.textContent += ' (Preview not available)';
+                 }
+             } else {
+                 if (fileNameEl) fileNameEl.textContent = 'No syllabus document available.';
+             }
+        }
+        
+        // Created Date
+        const createdAtDate = new Date(data.created_at || new Date());
+        setText('depedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }));
+
+        // Historical Indicator Logic
+        const content = document.querySelector('#deped-modal-details-panel .p-8');
+        if(content) {
+            const existing = content.querySelector('.historical-indicator');
+            if(existing) existing.remove();
+
+            if (isHistorical) {
+                 const indicator = document.createElement('div');
+                 indicator.className = 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 historical-indicator';
+                 indicator.innerHTML = `
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-yellow-800">Showing Historical Data</span>
+                        <span class="text-xs text-yellow-600 ml-2">(This data may be outdated - current updates not reflected)</span>
+                    </div>
+                `;
+                 content.insertBefore(indicator, content.firstChild);
+            }
         }
 
-        // Populate Requirements
-        document.getElementById('details-requirements-grid').innerHTML = `
-            <div><p class="text-sm font-medium text-gray-500">Basic Readings / Textbooks</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.basic_readings || 'N/A'}</div></div>
-            <div><p class="text-sm font-medium text-gray-500">Extended Readings / References</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.extended_readings || 'N/A'}</div></div>
-            <div class="md:col-span-2"><p class="text-sm font-medium text-gray-500">Course Assessment</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700 whitespace-pre-line">${subject.course_assessment || 'N/A'}</div></div>
-        `;
+        // Show Modal
+        depedModal.classList.remove('hidden');
+        setTimeout(() => {
+            depedModal.classList.remove('opacity-0');
+            depedModalPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
+    };
 
-        // Populate Approval
-        document.getElementById('details-approval-grid').innerHTML = `
-            <div><p class="text-sm font-medium text-gray-500">Prepared By</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">${subject.prepared_by || 'N/A'}</div></div>
-            <div><p class="text-sm font-medium text-gray-500">Reviewed By</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">${subject.reviewed_by || 'N/A'}</div></div>
-            <div><p class="text-sm font-medium text-gray-500">Approved By</p><div class="p-3 bg-white border rounded-lg min-h-[50px] text-sm text-gray-700">${subject.approved_by || 'N/A'}</div></div>
-        `;
 
-        // Populate Modal Header and Footer
-        setText(document.getElementById('detailsSubjectName'), `${subject.subject_name} (${subject.subject_code})`);
-        const createdAtDate = new Date(subject.created_at);
-        const formattedDate = createdAtDate.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        setText(detailsCreatedAt, formattedDate);
-        exportSubjectDetailsButton.dataset.subjectData = JSON.stringify(subject);
+
+    const populateChedModal = (data, isHistorical = false) => {
+        console.log('Populating CHED Modal', data);
+        
+        setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
+        setText('chedCourseTitle', data.subject_name);
+        setText('chedSubjectCode', data.subject_code);
+        setText('chedSubjectType', data.subject_type);
+        setText('chedSubjectUnit', data.subject_unit);
+        setText('chedContactHours', data.contact_hours);
+        setText('chedMemorandumYear', data.memorandum_year);
+        setText('chedPrerequisites', data.prerequisites);
+        setText('chedPrereqTo', data.pre_requisite_to);
+        setText('chedMemorandum', data.memorandum);
+        const descEl = document.getElementById('chedCourseDescription');
+        if(descEl) descEl.innerHTML = data.course_description || 'N/A';
+
+        // Learning Outcomes
+        const pilo = document.getElementById('chedPILO'); if(pilo) pilo.innerHTML = data.pilo_outcomes || 'N/A';
+        const cilo = document.getElementById('chedCILO'); if(cilo) cilo.innerHTML = data.cilo_outcomes || 'N/A';
+        const lo = document.getElementById('chedLearningOutcomes'); if(lo) lo.innerHTML = data.learning_outcomes || 'N/A';
+
+        // Requirements
+        const basic = document.getElementById('chedBasicReadings'); if(basic) basic.innerHTML = data.basic_readings || 'N/A';
+        const extended = document.getElementById('chedExtendedReadings'); if(extended) extended.innerHTML = data.extended_readings || 'N/A';
+        const assess = document.getElementById('chedCourseAssessment'); if(assess) assess.innerHTML = data.course_assessment || 'N/A';
+
+        // Committee
+        const comm = document.getElementById('chedCommitteeMembers'); if(comm) comm.innerHTML = data.committee_members || 'N/A';
+        const consult = document.getElementById('chedConsultationSchedule'); if(consult) consult.innerHTML = data.consultation_schedule || 'N/A';
+        setText('chedPreparedBy', data.prepared_by);
+        setText('chedReviewedBy', data.reviewed_by);
+        setText('chedApprovedBy', data.approved_by);
+
+        // Created Date
+        const createdAtDate = new Date(data.created_at || new Date());
+        setText('chedDetailsCreatedAt', createdAtDate.toLocaleString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }));
+
+        // Mapping Grids
+        const progGrid = document.getElementById('chedProgramMapping');
+        const courseGrid = document.getElementById('chedCourseMapping');
+        if(progGrid) progGrid.innerHTML = createMappingGridHtml(data.program_mapping_grid, 'PILO');
+        if(courseGrid) courseGrid.innerHTML = createMappingGridHtml(data.course_mapping_grid, 'CILO');
+
+        // Weekly Plan
+        const lessonsContainer = document.getElementById('chedLessonsContainer');
+        if (lessonsContainer) {
+            lessonsContainer.innerHTML = '';
+            if (data.lessons && typeof data.lessons === 'object' && Object.keys(data.lessons).length > 0) {
+                 Object.keys(data.lessons).sort((a, b) => {
+                    const wa = parseInt(a.replace(/\D/g, '')) || 0;
+                    const wb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return wa - wb;
+                }).forEach(week => {
+                    const lessonString = data.lessons[week];
+                    const lessonData = {};
+                    const parts = (typeof lessonString === 'string') ? lessonString.split(',, ') : [];
+                    parts.forEach(part => {
+                            if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\\n', '').replace('Detailed Lesson Content:', '');
+                            if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\\n', '').replace('Student Intended Learning Outcomes:', '');
+                            if (part.startsWith('Assessment:')) { const match = part.match(/ONSITE: (.*) OFFSITE: (.*)/s); if(match){ lessonData.at_onsite = match[1]; lessonData.at_offsite = match[2]; } else { lessonData.at_onsite = part.replace('Assessment:', ''); } }
+                            if (part.startsWith('Activities:')) { const match = part.match(/ON-SITE: (.*) OFF-SITE: (.*)/s); if(match){ lessonData.tla_onsite = match[1]; lessonData.tla_offsite = match[2]; } else { lessonData.tla_onsite = part.replace('Activities:', ''); } }
+                            if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\\n', '').replace('Learning and Teaching Support Materials:', '');
+                            if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\\n', '').replace('Output Materials:', '');
+                    });
+                     
+                    const weekHTML = `<div class="border border-gray-200 rounded-lg overflow-hidden mb-2">
+                        <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
+                            <span class="font-semibold text-gray-700">${week}</span>
+                            <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-4">
+                             <div class="grid grid-cols-1 gap-4">
+                                <div><label class="font-bold text-xs text-gray-500">Content</label><div class="text-sm p-2 bg-gray-50 rounded">${lessonData.lesson_content || lessonData.content || 'N/A'}</div></div>
+                                <div><label class="font-bold text-xs text-gray-500">SILO</label><div class="text-sm p-2 bg-gray-50 rounded">${lessonData.silo || 'N/A'}</div></div>
+                             </div>
+                        </div>
+                    </div>`; 
+                    lessonsContainer.innerHTML += weekHTML;
+                });
+                 lessonsContainer.querySelectorAll('.week-toggle').forEach(btn => {
+                     btn.addEventListener('click', () => {
+                         btn.nextElementSibling.classList.toggle('hidden');
+                         btn.querySelector('svg').classList.toggle('rotate-180');
+                     });
+                 });
+            } else {
+                 lessonsContainer.innerHTML = '<p class="text-gray-500 italic p-4">No weekly plan data.</p>';
+            }
+        }
+
+        // Historical Indicator Logic
+        const content = document.querySelector('#ched-modal-details-panel .p-8');
+        if(content) {
+            const existing = content.querySelector('.historical-indicator');
+            if(existing) existing.remove();
+
+            if (isHistorical) {
+                 const indicator = document.createElement('div');
+                 indicator.className = 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 historical-indicator';
+                 indicator.innerHTML = `
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-yellow-800">Showing Historical Data</span>
+                        <span class="text-xs text-yellow-600 ml-2">(This data may be outdated - current updates not reflected)</span>
+                    </div>
+                `;
+                 content.insertBefore(indicator, content.firstChild);
+            }
+        }
+
+        const exportBtn = document.getElementById('exportChedPdfButton');
+        if (exportBtn) exportBtn.dataset.subjectData = JSON.stringify(data);
+
+        // Show Modal
+        chedModal.classList.remove('hidden');
+         setTimeout(() => {
+            chedModal.classList.remove('opacity-0');
+            chedModalPanel.classList.remove('opacity-0', 'scale-95');
+        }, 10);
     };
 
     const renderVersionHistoryInModal = (versions, yearLevel) => {
