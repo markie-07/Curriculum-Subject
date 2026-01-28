@@ -1027,8 +1027,100 @@
             }, 10);
         };
 
+        // Fetch and display prerequisites for a subject
+        const fetchAndDisplayPrerequisites = async (subjectData) => {
+            const subjectCode = subjectData.subject_code;
+            const chedPrerequisitesEl = document.getElementById('chedPrerequisites');
+            const chedPrereqToEl = document.getElementById('chedPrereqTo');
+            
+            // Set loading state
+            if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-400 italic"\u003eLoading...\u003c/span\u003e';
+            if (chedPrereqToEl) chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-400 italic"\u003eLoading...\u003c/span\u003e';
+            
+            try {
+                // Get the current curriculum ID
+                let curriculumId = curriculumSelector.value;
+                
+                // Auto-detect context for Gen Ed subjects if no curriculum selected
+                if (!curriculumId) {
+                    const genEdTypes = ['Minor', 'General', 'Elective'];
+                    if (genEdTypes.includes(subjectData.subject_type)) {
+                        console.log('Auto-detecting General Education context for:', subjectCode);
+                        curriculumId = 'gen-ed-college';
+                    } else {
+                        if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
+                        if (chedPrereqToEl) chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
+                        return;
+                    }
+                }
+                
+                // Handle General Education special IDs
+                let apiUrl = `/api/prerequisites/${curriculumId}`;
+                if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+                    apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
+                }
+                
+                // Fetch prerequisite data for the curriculum
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Failed to fetch prerequisites');
+                
+                const data = await response.json();
+                const prerequisites = data.prerequisites || {};
+                const subjects = data.subjects || [];
+                
+                // Find prerequisites for this subject (Credit Prerequisites - Parents)
+                // prerequisites[subjectCode] is an array of objects like { subject_code: "Child", prerequisite_subject_code: "Parent" }
+                const subjectPrereqObjects = prerequisites[subjectCode] || [];
+                const subjectPrereqCodes = subjectPrereqObjects.map(p => p.prerequisite_subject_code);
+                const prereqSubjects = subjects.filter(s => subjectPrereqCodes.includes(s.subject_code));
+                
+                // Find subjects that have this subject as a prerequisite (Pre-requisite to - Children)
+                const prereqTo = [];
+                Object.keys(prerequisites).forEach(childCode => {
+                    // childCode requires the subjects listed in prerequisites[childCode]
+                    const parents = prerequisites[childCode].map(p => p.prerequisite_subject_code);
+                    if (parents.includes(subjectCode)) {
+                        const subject = subjects.find(s => s.subject_code === childCode);
+                        if (subject) prereqTo.push(subject);
+                    }
+                });
+                
+                // Display Credit Prerequisites
+                if (chedPrerequisitesEl) {
+                    if (prereqSubjects.length > 0) {
+                        const prereqHTML = prereqSubjects.map(s => 
+                            `\u003cspan class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-blue-200"\u003e
+                                ${s.subject_code} - ${s.subject_name}
+                            \u003c/span\u003e`
+                        ).join('');
+                        chedPrerequisitesEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${prereqHTML}\u003c/div\u003e`;
+                    } else {
+                        chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
+                    }
+                }
+                
+                // Display Pre-requisite to
+                if (chedPrereqToEl) {
+                    if (prereqTo.length > 0) {
+                        const prereqToHTML = prereqTo.map(s => 
+                            `\u003cspan class="inline-block bg-purple-50 text-purple-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-purple-200"\u003e
+                                ${s.subject_code} - ${s.subject_name}
+                            \u003c/span\u003e`
+                        ).join('');
+                        chedPrereqToEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${prereqToHTML}\u003c/div\u003e`;
+                    } else {
+                        chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching prerequisites:', error);
+                if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-red-500"\u003eError loading prerequisites\u003c/span\u003e';
+                if (chedPrereqToEl) chedPrereqToEl.innerHTML = '\u003cspan class="text-red-500"\u003eError loading data\u003c/span\u003e';
+            }
+        };
+
         // Populate CHED Modal
-        const populateChedModal = (data) => {
+        const populateChedModal = async (data) => {
             setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
             setText('chedCourseTitle', data.subject_name);
             setText('chedSubjectCode', data.subject_code);
@@ -1036,10 +1128,11 @@
             setText('chedSubjectUnit', data.subject_unit);
             setText('chedContactHours', data.contact_hours);
             setText('chedMemorandumYear', data.memorandum_year);
-            setText('chedPrerequisites', data.prerequisites);
-            setText('chedPrereqTo', data.pre_requisite_to);
             setText('chedMemorandum', data.memorandum);
             setText('chedCourseDescription', data.course_description);
+            
+            // Fetch and display prerequisites
+            await fetchAndDisplayPrerequisites(data);
             
             // Learning Outcomes
             setText('chedPILO', data.pilo_outcomes);
@@ -1187,11 +1280,11 @@
             }, 10);
         };
 
-        const showDetailsModal = (data, showEditButton = true) => {
+        const showDetailsModal = async (data, showEditButton = true) => {
             if (data.syllabus_type === 'DepEd') {
                 populateDepEdModal(data);
             } else {
-                populateChedModal(data);
+                await populateChedModal(data);
             }
         };
 
@@ -3090,6 +3183,10 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     
                     // Update hidden select for compatibility
                     curriculumSelector.innerHTML = '<option value="">Select a Curriculum</option>';
+                    
+                    // Add General Education Options
+                    // General Education Options removed
+
                     newCurriculums.forEach(curriculum => {
                         const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` (${curriculum.academic_year})`;
                         const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name}${academicYearText}`;
@@ -3126,6 +3223,9 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             }
             
             console.log('✅ Creating', filteredCurriculums.length, 'dropdown options');
+            
+            // Add General Education Options
+            // General Education Options removed
             
             filteredCurriculums.forEach(curriculum => {
                 const academicYearText = curriculum.year_level === 'Senior High' ? '' : ` (${curriculum.academic_year})`;
@@ -3213,8 +3313,43 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
 
         function fetchCurriculumData(id) {
             const selectedOption = curriculumSelector.querySelector(`option[value="${id}"]`);
-            if (!selectedOption || !selectedOption.dataset.yearLevel) {
+            if (!selectedOption || (!selectedOption.dataset.yearLevel && id !== 'gen-ed-college' && id !== 'gen-ed-shs')) {
                 curriculumOverview.innerHTML = '<p class="text-red-500 text-center mt-4">Could not determine year level. Please reload.</p>';
+                return;
+            }
+            
+            // Handle General Education View Special Case
+            if (id === 'gen-ed-college' || id === 'gen-ed-shs') {
+                const yearLevel = selectedOption.dataset.yearLevel || (id === 'gen-ed-college' ? 'College' : 'Senior High');
+                renderCurriculumOverview(yearLevel, []); // Empty grid
+                
+                // Fetch Gen Ed Data
+                console.log(`Fetching General Education data for ${id}...`);
+                fetch(`/api/gen-ed-prerequisites/${id}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        currentAvailableSubjects = data.subjects || [];
+                        currentMappedSubjects = []; 
+                        
+                        renderAvailableSubjects(currentAvailableSubjects, []);
+                        populateMappedSubjects([]);
+                        
+                        // Hide curriculum management buttons
+                        toggleEditMode(false);
+                        document.getElementById('editCurriculumButton').classList.add('hidden');
+                        document.getElementById('saveCurriculumButton').classList.add('hidden');
+                        
+                        // Hide Add Subjects button explicitly
+                        const memBtn = document.getElementById('openMemorandumModal');
+                        if(memBtn) memBtn.classList.add('hidden');
+                    })
+                    .catch(error => {
+                         console.error('Error fetching Gen Ed data:', error);
+                         availableSubjectsContainer.innerHTML = '<p class="text-red-500 text-center mt-4">Error loading subjects.</p>';
+                    });
                 return;
             }
 

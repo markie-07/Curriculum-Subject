@@ -155,14 +155,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
             return view('subject_mapping');
         })->name('subject_mapping');
 
-        Route::get('/pre_requisite', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Pre-requisite');
-                auth()->user()->updateLastActivity();
-            }
-            $curriculums = \App\Models\Curriculum::all();
-            return view('pre_requisite', compact('curriculums'));
-        })->name('pre_requisite');
+        Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])->name('pre_requisite');
 
         Route::get('/grade-setup', [GradeController::class, 'setup'])->name('grade_setup');
 

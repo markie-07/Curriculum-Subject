@@ -14,7 +14,22 @@ class PrerequisiteController extends Controller
      */
     public function index()
     {
-        $curriculums = Curriculum::orderBy('curriculum')->get();
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Pre-requisite');
+            auth()->user()->updateLastActivity();
+        }
+
+        // Filter out Senior High curriculums explicitly
+        $shsCodes = [
+            'ABM', 'GAS', 'HUMSS', 'STEM', 'STEM – PBM',
+            'HECF', 'HEHRS', 'HEHO', 'HETEM',
+            'ICT-HW', 'ICT-CP', 'ICT Animation', 'ICT CCS', 'ICT Visual Graphics'
+        ];
+
+        $curriculums = Curriculum::whereNotIn('program_code', $shsCodes)
+            ->orderBy('curriculum')
+            ->get();
+
         return view('pre_requisite', compact('curriculums'));
     }
 
@@ -33,9 +48,11 @@ class PrerequisiteController extends Controller
         // The subjects collection is now correctly sorted according to your mapping.
         $subjects = $curriculum->subjects;
 
+        // Group by the subject that HAS prerequisites (Child -> Parents)
+        // Returns objects like { "ChildCode": [ { subject_code: "ChildCode", prerequisite_subject_code: "ParentCode", ... } ] }
         $prerequisites = Prerequisite::where('curriculum_id', $curriculum->id)
             ->get()
-            ->groupBy('subject_code'); // Group by the subject that HAS prerequisites
+            ->groupBy('subject_code');
 
         return response()->json([
             'subjects' => $subjects,
@@ -52,8 +69,6 @@ class PrerequisiteController extends Controller
             \Illuminate\Support\Facades\Log::info('fetchGeneralData called', ['type' => $type]);
             
             $syllabusType = ($type === 'gen-ed-college') ? 'CHED' : 'DepEd';
-            // Assuming Minor, General, Elective fall under "General Education" context.
-            // Adjust the array as necessary based on exact business rules.
             $subjectTypes = ['Minor', 'General', 'Elective'];
     
             $subjects = Subject::whereIn('subject_type', $subjectTypes)
@@ -61,9 +76,9 @@ class PrerequisiteController extends Controller
                 ->orderBy('subject_name')
                 ->get();
     
-            // Fetch all prerequisites associated with these subjects.
-            // Since this is a "view all" mode, we aggregate prerequisites.
             $subjectCodes = $subjects->pluck('subject_code');
+            
+            // Fetch prerequisites where the child subject is in our list
             $prerequisites = Prerequisite::whereIn('subject_code', $subjectCodes)
                 ->get()
                 ->groupBy('subject_code');

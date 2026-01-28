@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     // --- Prerequisite Routes ---
 
     Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
+    Route::get('/gen-ed-prerequisites/{type}', [PrerequisiteController::class, 'fetchGeneralData']);
     Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
     // --- Grade Routes ---

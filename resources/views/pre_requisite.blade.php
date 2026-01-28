@@ -38,6 +38,11 @@
                             <input type="text" id="curriculum-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a curriculum...">
                         </div>
                         <ul id="curriculum-options-list" class="max-h-60 overflow-y-auto">
+                            {{-- General Education Options --}}
+                            <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="gen-ed-college" data-name="General Education - College">
+                                General Education - College
+                            </li>
+                            
                             @php
                                 // Group by Program Code (or Name) and take the latest to ensure unique display
                                 $uniqueMainCurriculums = $curriculums->sortByDesc('academic_year')->unique(function ($item) {
@@ -52,7 +57,7 @@
                                         $displayText .= ' (' . $curriculum->program_code . ')';
                                     }
                                 @endphp
-                                <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
+                                <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
                                     {{ $displayText }}
                                 </li>
                             @endforeach
@@ -119,9 +124,6 @@
                                 <ul id="modal-curriculum-options-list" class="max-h-60 overflow-y-auto py-1">
                                     <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="gen-ed-college" data-name="General Education - College">
                                         General Education - College
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 mb-1 transition-colors" data-value="gen-ed-shs" data-name="General Education - Senior High">
-                                        General Education - Senior High
                                     </li>
                                     @php
                                         // Filter valid curriculums first matches status check logic
@@ -625,11 +627,24 @@ document.addEventListener('DOMContentLoaded', () => {
         setPrerequisiteBtn.disabled = false;
 
         try {
-            const response = await fetch(`/api/prerequisites/${curriculumId}`);
+            // Handle General Education special IDs
+            let apiUrl = `/api/prerequisites/${curriculumId}`;
+            if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+                apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
+            }
+            
+            const response = await fetch(apiUrl);
             if (!response.ok) throw new Error('Failed to fetch data.');
             
             const data = await response.json();
-            renderPrerequisiteChain(data.prerequisites || {}, data.subjects || []);
+            
+            // Filter Regular Curriculums
+            let subjects = data.subjects || [];
+            if (curriculumId !== 'gen-ed-college' && curriculumId !== 'gen-ed-shs') {
+                subjects = subjects.filter(s => s.subject_type === 'Major');
+            }
+            
+            renderPrerequisiteChain(data.prerequisites || {}, subjects);
         } catch (error) {
             console.error('Error fetching prerequisite data:', error);
             prerequisiteChainContainer.innerHTML = '<p class="text-center text-red-500 py-8">Could not load prerequisite data.</p>';
@@ -638,11 +653,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchPrerequisiteDataAfterSave(curriculumId) {
         try {
-            const response = await fetch(`/api/prerequisites/${curriculumId}`);
+            // Handle General Education special IDs
+            let apiUrl = `/api/prerequisites/${curriculumId}`;
+            if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+                apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
+            }
+            
+            const response = await fetch(apiUrl);
             if (!response.ok) throw new Error('Failed to fetch data.');
             
             const data = await response.json();
-            renderPrerequisiteChain(data.prerequisites || {}, data.subjects || [], false); // Don't disable save button
+            
+            // Filter Regular Curriculums
+            let subjects = data.subjects || [];
+            if (curriculumId !== 'gen-ed-college' && curriculumId !== 'gen-ed-shs') {
+                subjects = subjects.filter(s => s.subject_type === 'Major');
+            }
+
+            renderPrerequisiteChain(data.prerequisites || {}, subjects, false); // Don't disable save button
         } catch (error) {
             console.error('Error fetching prerequisite data after save:', error);
             prerequisiteChainContainer.innerHTML = '<p class="text-center text-red-500 py-8">Could not load prerequisite data.</p>';
@@ -680,7 +708,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             allSubjectsForCurriculum = data.subjects || [];
-            populateSubjectDropdown(allSubjectsForCurriculum);
+            
+            // Filter dropdown to show only Major subjects
+            const dropdownSubjects = allSubjectsForCurriculum.filter(s => s.subject_type === 'Major');
+            populateSubjectDropdown(dropdownSubjects);
         } catch (error) {
             console.error('Error fetching subjects for modal:', error);
             modalOptionsList.innerHTML = '<li>Could not load subjects</li>';
@@ -1010,7 +1041,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Find chain starts (subjects with no prerequisites)
-        const chainStarts = subjects.filter(subject => !directPrereqMap[subject.subject_code]);
+        // Find chain starts (subjects with no prerequisites OR parent is filtered out)
+        const chainStarts = subjects.filter(subject => {
+            const parentCode = directPrereqMap[subject.subject_code];
+            return !parentCode || !subjectMap.has(parentCode);
+        });
         const processedSubjects = new Set();
 
         chainStarts.forEach(startSubject => {
