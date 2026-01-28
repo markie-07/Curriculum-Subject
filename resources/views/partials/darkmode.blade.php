@@ -738,4 +738,38 @@
     [data-theme="dark"] button {
         color: inherit !important;
     }
+    /* Colored backgrounds for stats cards and other elements (overrides light backgrounds) */
+    [data-theme="dark"] .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
+    [data-theme="dark"] .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.1) !important; }
+    [data-theme="dark"] .bg-green-50 { background-color: rgba(34, 197, 94, 0.1) !important; }
+    [data-theme="dark"] .bg-red-50 { background-color: rgba(239, 68, 68, 0.1) !important; }
+    [data-theme="dark"] .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.1) !important; }
+    [data-theme="dark"] .bg-purple-50 { background-color: rgba(168, 85, 247, 0.1) !important; }
+    [data-theme="dark"] .bg-pink-50 { background-color: rgba(236, 72, 153, 0.1) !important; }
+    [data-theme="dark"] .bg-teal-50 { background-color: rgba(20, 184, 166, 0.1) !important; }
+    [data-theme="dark"] .bg-cyan-50 { background-color: rgba(6, 182, 212, 0.1) !important; }
+    [data-theme="dark"] .bg-orange-50 { background-color: rgba(249, 115, 22, 0.1) !important; }
+    [data-theme="dark"] .bg-amber-50 { background-color: rgba(245, 158, 11, 0.1) !important; }
+    [data-theme="dark"] .bg-slate-50 { background-color: var(--bg-tertiary) !important; }
+    
+    /* Preserve colored text in dark mode (lighter shades for visibility) */
+    [data-theme="dark"] .text-blue-600 { color: #60a5fa !important; }
+    [data-theme="dark"] .text-indigo-600 { color: #818cf8 !important; }
+    [data-theme="dark"] .text-green-600 { color: #4ade80 !important; }
+    [data-theme="dark"] .text-red-600 { color: #f87171 !important; }
+    [data-theme="dark"] .text-yellow-600 { color: #facc15 !important; }
+    [data-theme="dark"] .text-purple-600 { color: #c084fc !important; }
+    [data-theme="dark"] .text-pink-600 { color: #f472b6 !important; }
+    [data-theme="dark"] .text-teal-600 { color: #2dd4bf !important; }
+    [data-theme="dark"] .text-cyan-600 { color: #22d3ee !important; }
+    [data-theme="dark"] .text-orange-600 { color: #fb923c !important; }
+    [data-theme="dark"] .text-amber-600 { color: #fbbf24 !important; }
+    
+    [data-theme="dark"] .text-blue-500 { color: #60a5fa !important; }
+    [data-theme="dark"] .text-indigo-500 { color: #818cf8 !important; }
+    [data-theme="dark"] .text-green-500 { color: #4ade80 !important; }
+    [data-theme="dark"] .text-purple-500 { color: #c084fc !important; }
+    [data-theme="dark"] .text-pink-500 { color: #f472b6 !important; }
+    [data-theme="dark"] .text-teal-500 { color: #2dd4bf !important; }
+    [data-theme="dark"] .text-cyan-500 { color: #22d3ee !important; }
 </style>

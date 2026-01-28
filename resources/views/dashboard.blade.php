@@ -296,11 +296,60 @@
                     {{-- Inline Date Filter --}}
                     <div class="flex items-center gap-2">
                         <div class="relative group w-full xl:w-auto">
-                            <input type="date" 
-                                   id="activity-date" 
-                                   value="{{ now()->format('Y-m-d') }}"
-                                   class="w-full xl:w-auto px-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-600 text-xs rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all cursor-pointer shadow-sm hover:border-blue-300"
-                                   placeholder="Filter">
+                            <!-- Display Input -->
+                            <div class="relative group">
+                                <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-colors group-focus-within:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>
+                                <input type="text" id="dash-activityDateDisplay" readonly placeholder="Filter Date" value="{{ now()->format('M j, Y') }}" class="cursor-pointer w-full xl:w-48 pl-10 pr-10 py-1.5 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-300 text-slate-600 text-xs font-medium">
+                                <input type="hidden" id="activity-date" value="{{ now()->format('Y-m-d') }}">
+                            </div>
+
+                            <!-- Custom Calendar Picker -->
+                            <div id="dash-customCalendar" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-72 z-50">
+                                <!-- Calendar Header -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <button type="button" id="dash-prevMonth" class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" id="dash-monthYearToggle" class="flex items-center gap-1 px-3 py-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                        <span class="font-semibold text-slate-800" id="dash-currentMonthYear"></span>
+                                        <svg class="w-4 h-4 text-slate-500 transition-transform" id="dash-toggleArrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" id="dash-nextMonth" class="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <!-- Month View -->
+                                <div id="dash-monthView">
+                                    <div class="grid grid-cols-7 gap-1 mb-2">
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Su</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Mo</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Tu</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">We</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Th</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Fr</div>
+                                        <div class="text-center text-xs font-medium text-slate-500 py-2">Sa</div>
+                                    </div>
+                                    <div id="dash-calendarDays" class="grid grid-cols-7 gap-1 mb-3"></div>
+                                </div>
+                                
+                                <!-- Year Picker View -->
+                                <div id="dash-yearView" class="hidden">
+                                    <div class="grid grid-cols-4 gap-2 mb-3" id="dash-yearGrid"></div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+                                    <button type="button" id="dash-clearDateBtn" class="text-xs text-slate-500 hover:text-red-600 font-medium transition-colors">Clear</button>
+                                    <button type="button" id="dash-todayBtn" class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors">Today</button>
+                                </div>
+                            </div>
                         </div>
                         <button id="clear-filter-btn" 
                                 class="hidden p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100" 
@@ -342,11 +391,299 @@
     </div>
 </div>
 
+<style>
+    /* Custom Calendar Picker Styling */
+    #dash-activityDateDisplay {
+        color: #475569;
+        font-size: 0.875rem;
+    }
+    
+    #dash-activityDateDisplay:not(:placeholder-shown) {
+        background-color: #eff6ff;
+        border-color: #3b82f6;
+        font-weight: 500;
+        color: #1e40af;
+    }
+    
+    /* Calendar day buttons */
+    .calendar-day {
+        width: 100%;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-size: 0.75rem; /* Slightly smaller for dashboard usage */
+        font-weight: 500;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        color: #1e293b;
+    }
+    
+    .calendar-day:hover:not(.other-month):not(.selected) {
+        background-color: #f1f5f9;
+    }
+    
+    .calendar-day.other-month {
+        color: #cbd5e1;
+        cursor: default;
+    }
+    
+    .calendar-day.today {
+        border: 2px solid #3b82f6;
+        font-weight: 600;
+    }
+    
+    .calendar-day.selected {
+        background-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .calendar-day.selected:hover {
+        background-color: #2563eb;
+    }
+    
+    /* Calendar animation */
+    @keyframes calendarSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    #dash-customCalendar:not(.hidden) {
+        animation: calendarSlideIn 0.2s ease;
+    }
+    
+    /* Year picker buttons */
+    .year-button {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        color: #1e293b;
+        text-align: center;
+    }
+    
+    .year-button:hover:not(.current-year) {
+        background-color: #f1f5f9;
+    }
+    
+    .year-button.current-year {
+        background-color: #dbeafe;
+        color: #1e40af;
+        font-weight: 600;
+    }
+    
+    .year-button.selected-year {
+        background-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .year-button.selected-year:hover {
+        background-color: #2563eb;
+    }
+    
+    /* Toggle arrow rotation */
+    #dash-toggleArrow.rotated {
+        transform: rotate(180deg);
+    }
+</style>
+
 {{-- Chart.js Library --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Custom Calendar Logic ---
+    const activityDateDisplay = document.getElementById('dash-activityDateDisplay');
+    const activityDateInput = document.getElementById('activity-date');
+    const customCalendar = document.getElementById('dash-customCalendar');
+    const calendarDays = document.getElementById('dash-calendarDays');
+    const currentMonthYear = document.getElementById('dash-currentMonthYear');
+    const prevMonthBtn = document.getElementById('dash-prevMonth');
+    const nextMonthBtn = document.getElementById('dash-nextMonth');
+    const todayBtn = document.getElementById('dash-todayBtn');
+    const clearDateBtn = document.getElementById('dash-clearDateBtn');
+    const monthYearToggle = document.getElementById('dash-monthYearToggle');
+    const toggleArrow = document.getElementById('dash-toggleArrow');
+    const monthView = document.getElementById('dash-monthView');
+    const yearView = document.getElementById('dash-yearView');
+    const yearGrid = document.getElementById('dash-yearGrid');
+
+    let currentDate = new Date();
+    let selectedDate = new Date(activityDateInput.value); // Initialize with default value
+    let isYearView = false;
+    let yearRangeStart = new Date().getFullYear() - 8;
+
+    const formatDateDisplay = (date) => {
+        const options = { month: 'short', day: 'numeric', year: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    };
+
+    const formatDateValue = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const toggleView = () => {
+        isYearView = !isYearView;
+        if (isYearView) {
+            monthView.classList.add('hidden');
+            yearView.classList.remove('hidden');
+            toggleArrow.classList.add('rotated');
+            generateYearPicker();
+        } else {
+            yearView.classList.add('hidden');
+            monthView.classList.remove('hidden');
+            toggleArrow.classList.remove('rotated');
+            generateCalendar();
+        }
+    };
+
+    const generateYearPicker = () => {
+        yearGrid.innerHTML = '';
+        const currentYear = new Date().getFullYear();
+        const selectedYear = selectedDate ? selectedDate.getFullYear() : null;
+
+        for (let i = 0; i < 16; i++) {
+            const year = yearRangeStart + i;
+            const yearBtn = document.createElement('button');
+            yearBtn.type = 'button';
+            yearBtn.className = 'year-button';
+            yearBtn.textContent = year;
+            
+            if (year === currentYear) yearBtn.classList.add('current-year');
+            if (year === selectedYear) yearBtn.classList.add('selected-year');
+            
+            yearBtn.addEventListener('click', () => {
+                currentDate.setFullYear(year);
+                isYearView = false;
+                monthView.classList.remove('hidden');
+                yearView.classList.add('hidden');
+                toggleArrow.classList.remove('rotated');
+                generateCalendar();
+            });
+            yearGrid.appendChild(yearBtn);
+        }
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        currentMonthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    };
+
+    const generateCalendar = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+        
+        calendarDays.innerHTML = '';
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const daysInPrevMonth = new Date(year, month, 0).getDate();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = firstDay - 1; i >= 0; i--) {
+            const day = daysInPrevMonth - i;
+            const dayBtn = document.createElement('button');
+            dayBtn.type = 'button';
+            dayBtn.className = 'calendar-day other-month';
+            dayBtn.textContent = day;
+            calendarDays.appendChild(dayBtn);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayBtn = document.createElement('button');
+            dayBtn.type = 'button';
+            dayBtn.className = 'calendar-day';
+            dayBtn.textContent = day;
+            const currentDayDate = new Date(year, month, day);
+            currentDayDate.setHours(0, 0, 0, 0);
+
+            if (currentDayDate.getTime() === today.getTime()) dayBtn.classList.add('today');
+            if (selectedDate) {
+                const selected = new Date(selectedDate);
+                selected.setHours(0, 0, 0, 0);
+                if (currentDayDate.getTime() === selected.getTime()) dayBtn.classList.add('selected');
+            }
+
+            dayBtn.addEventListener('click', () => selectDate(new Date(year, month, day)));
+            calendarDays.appendChild(dayBtn);
+        }
+
+        const totalCells = calendarDays.children.length;
+        const remainingCells = 42 - totalCells;
+        for (let day = 1; day <= remainingCells; day++) {
+            const dayBtn = document.createElement('button');
+            dayBtn.type = 'button';
+            dayBtn.className = 'calendar-day other-month';
+            dayBtn.textContent = day;
+            calendarDays.appendChild(dayBtn);
+        }
+    };
+
+    const selectDate = (date) => {
+        selectedDate = date;
+        activityDateDisplay.value = formatDateDisplay(date);
+        activityDateInput.value = formatDateValue(date);
+        customCalendar.classList.add('hidden');
+        activityDateInput.dispatchEvent(new Event('change')); // Trigger change event logic
+        generateCalendar();
+    };
+
+    activityDateDisplay.addEventListener('click', () => {
+        customCalendar.classList.toggle('hidden');
+        if (!customCalendar.classList.contains('hidden')) generateCalendar();
+    });
+
+    monthYearToggle.addEventListener('click', toggleView);
+
+    prevMonthBtn.addEventListener('click', () => {
+        if (isYearView) {
+            yearRangeStart -= 16;
+            generateYearPicker();
+        } else {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        }
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        if (isYearView) {
+            yearRangeStart += 16;
+            generateYearPicker();
+        } else {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        }
+    });
+
+    todayBtn.addEventListener('click', () => selectDate(new Date()));
+
+    clearDateBtn.addEventListener('click', () => {
+        selectedDate = null;
+        activityDateDisplay.value = '';
+        activityDateInput.value = '';
+        customCalendar.classList.add('hidden');
+        activityDateInput.dispatchEvent(new Event('change'));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!customCalendar.contains(e.target) && !activityDateDisplay.contains(e.target)) {
+            customCalendar.classList.add('hidden');
+        }
+    });
+
     // Update time every second
     function updateTime() {
         const now = new Date();
@@ -690,6 +1027,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Helper to get theme colors
+    function getThemeColor(type) {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (type === 'text') return isDark ? '#e2e8f0' : '#64748b'; // slate-200 vs slate-500
+        if (type === 'grid') return isDark ? '#334155' : '#f1f5f9'; // slate-700 vs slate-100
+        return '#000000';
+    }
+
     // Module Usage Chart - Bubble Chart for Frequency Heatmap
     const moduleUsageCtx = document.getElementById('moduleUsageChart').getContext('2d');
     
@@ -699,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Usage Frequency',
                 data: [],
-                backgroundColor: 'rgba(244, 63, 94, 0.6)', // Rose-500 with opacity
+                backgroundColor: 'rgba(244, 63, 94, 0.6)', 
                 borderColor: '#f43f5e',
                 borderWidth: 1,
             }]
@@ -714,7 +1059,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         label: function(context) {
                             const point = context.raw;
                             return `${point.x} (${point.y}): ${point.r / 3} interactions`; 
-                            // Reversed scaling logic for tooltip
                         }
                     }
                 }
@@ -722,15 +1066,17 @@ document.addEventListener('DOMContentLoaded', function() {
             scales: {
                 y: {
                     type: 'category',
-                    labels: [], // Populated dynamically
-                    grid: { color: '#f1f5f9' },
+                    labels: [], 
+                    grid: { color: getThemeColor('grid') },
+                    ticks: { color: getThemeColor('text') },
                     offset: true
                 },
                 x: {
-                    type: 'category', // Modules on bottom
+                    type: 'category', 
                     labels: {!! json_encode($moduleNames ?? []) !!},
                     grid: { display: false },
                     ticks: {
+                        color: getThemeColor('text'),
                         font: { size: 10 },
                         autoSkip: false,
                         maxRotation: 45,
@@ -741,6 +1087,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Update all charts when theme changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === "attributes" && mutation.attributeName === "data-theme") {
+                const textColor = getThemeColor('text');
+                const gridColor = getThemeColor('grid');
+                
+                // Update defaults
+                Chart.defaults.color = textColor;
+                
+                // Update specific charts
+                [curriculumChart, exportChart, moduleUsageChart].forEach(chart => {
+                    if (chart) {
+                        // Update scales if they exist
+                        if (chart.options.scales) {
+                            Object.values(chart.options.scales).forEach(scale => {
+                                if (scale.ticks) scale.ticks.color = textColor;
+                                if (scale.grid) scale.grid.color = gridColor;
+                            });
+                        }
+                        // Update legend
+                        if (chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+                            chart.options.plugins.legend.labels.color = textColor;
+                        }
+                        chart.update();
+                    }
+                });
+
+                // Re-create other charts that might be tougher to update in-place or if needed
+                // For now, simpler update loop covers most cases. 
+                // Note: The simple bar/pie charts created without variable assignment (new Chart(...)) won't be updated here.
+                // We should ideally assign them to variables too.
+            }
+        });
+    });
+
+    observer.observe(document.documentElement, {
+        attributes: true, //configure it to listen to attribute changes
+    });
+
 
     // Toggle Logic for Module Usage
     const dayBtn = document.getElementById('module-day-btn'); // New button
@@ -900,10 +1287,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    clearFilterBtn.addEventListener('click', () => {
-        dateInput.value = '';
-        loadActivities();
-    });
+    // Clear Filter Button (external)
+    if(clearFilterBtn) {
+        clearFilterBtn.addEventListener('click', () => {
+            selectedDate = null;
+            activityDateDisplay.value = '';
+            activityDateInput.value = ''; // Update the hidden input
+            activityDateInput.dispatchEvent(new Event('change')); // Trigger change logic
+            customCalendar.classList.add('hidden');
+        });
+    }
+
+    // Initial load will happen because we call loadActivities(dateInput.value) below and we initialized value correctly
+
 
     // Initial load with filter if date is set
     if (dateInput.value) {
