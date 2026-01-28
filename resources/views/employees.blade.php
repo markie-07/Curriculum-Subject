@@ -4,18 +4,18 @@
 <div class="w-full max-w-full mx-auto px-6 py-8">
     @if(request()->routeIs('employees.create') || request()->routeIs('employees.edit'))
         <!-- ADD/EDIT EMPLOYEE FORM -->
-        <div class="employee-header-gradient rounded-lg shadow-lg p-6 text-white mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 mb-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold">
+                    <h1 class="text-3xl font-bold text-gray-800">
                         {{ request()->routeIs('employees.create') ? 'Add New Employee' : 'Edit Employee' }}
                     </h1>
-                    <p class="text-blue-100 mt-2">
+                    <p class="text-gray-500 mt-2">
                         {{ request()->routeIs('employees.create') ? 'Create a new employee account with access credentials' : 'Update employee account information' }}
                     </p>
                 </div>
                 <div class="text-right">
-                    <a href="{{ route('employees.index') }}" class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2">
+                    <a href="{{ route('employees.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -237,14 +237,14 @@
 
     @else
         <!-- EMPLOYEE LIST VIEW -->
-        <div class="employee-header-gradient rounded-lg shadow-lg p-6 text-white mb-8">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 mb-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold">Employee Management</h1>
-                    <p class="text-blue-100 mt-2">Manage employee accounts and access</p>
+                    <h1 class="text-3xl font-bold text-gray-800">Employee Management</h1>
+                    <p class="text-gray-500 mt-2">Manage employee accounts and access</p>
                 </div>
                 <div class="text-right">
-                    <button id="addEmployeeButton" class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2">
+                    <button id="addEmployeeButton" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 shadow-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>

@@ -455,7 +455,14 @@
                                         - Final Exam
                                     @endif
                                 </span>
-                                <svg class="w-6 h-6 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                <div class="flex items-center">
+                                    @if(!in_array($i, [6, 12, 18]))
+                                        <span id="week-progress-{{ $i }}" class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-1 rounded-full border border-blue-100 bg-white min-w-[85px] shadow-sm mr-4 text-sm font-bold text-gray-400">0%</span>
+                                    @else
+                                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mr-4">EXAM</span>
+                                    @endif
+                                    <svg class="w-6 h-6 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
                             </button>
                             <div class="accordion-content bg-gray-50 p-6 border-t" style="display: none;">
                                 @if(in_array($i, [6, 12, 18]))
@@ -475,11 +482,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_content" class="block text-sm font-medium text-gray-700">Content{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_content" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_silo" class="block text-sm font-medium text-gray-700">Student Intended Learning Outcomes{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_silo" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_silo" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                     <div>
@@ -487,11 +494,11 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 border rounded-md {{ $i == 0 ? 'bg-gray-50' : 'bg-white' }}">
                                             <div>
                                                 <label for="week_{{ $i }}_at_onsite" class="block text-xs font-semibold text-gray-600 mb-1">ONSITE</label>
-                                                <textarea id="week_{{ $i }}_at_onsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                             <div>
                                                 <label for="week_{{ $i }}_at_offsite" class="block text-xs font-semibold text-gray-600 mb-1">OFFSITE</label>
-                                                <textarea id="week_{{ $i }}_at_offsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -502,11 +509,11 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_onsite" class="block text-xs font-semibold text-gray-600 mb-1">Face to Face (On-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_onsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_offsite" class="block text-xs font-semibold text-gray-600 mb-1">Online (Off-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_offsite" {{ $i == 0 ? '' : 'required' }} rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -514,11 +521,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_ltsm" class="block text-sm font-medium text-gray-700">Learning and Teaching Support Materials (LTSM){{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_ltsm" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_ltsm" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_output" class="block text-sm font-medium text-gray-700">Output Materials{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_output" {{ $i == 0 ? '' : 'required' }} rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_output" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -615,7 +622,7 @@
 
             {{-- Save/Update Button --}}
             <div class="mt-10 pt-6 border-t border-gray-200">
-                <button id="saveCourseButton" type="submit" class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <button id="saveCourseButton" type="button" class="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     <span>Save Course</span>
                 </button>
@@ -1609,6 +1616,11 @@ Learning Management System`;
         populateMappingGrid('program-mapping-table-body', subject.program_mapping_grid, 'pilo');
         populateMappingGrid('course-mapping-table-body', subject.course_mapping_grid, 'cilo');
         populateWeeklyPlan(subject.lessons);
+        
+        // Update progress percentages
+        if (typeof updateAllProgress === 'function') {
+            updateAllProgress();
+        }
 
         // Populate DepEd Fields
         if (subject.syllabus_type === 'DepEd') {
@@ -1733,13 +1745,30 @@ Learning Management System`;
         }
     };
 
+    // --- FORM VALIDATION HANDLER (Fix for hidden required fields) ---
+    // This ensures that if a required field inside a collapsed accordion is empty,
+    // the accordion opens automatically so the user can see the error.
+    document.addEventListener('invalid', (function(){
+        return function(e) {
+            const target = e.target;
+            // Check if element is inside a hidden accordion content
+            const accordionContent = target.closest('.accordion-content');
+            if (accordionContent && (accordionContent.style.display === 'none' || accordionContent.style.display === '')) {
+                accordionContent.style.display = 'block';
+                const header = accordionContent.previousElementSibling;
+                if (header) {
+                     const icon = header.querySelector('svg');
+                     if(icon) icon.style.transform = "rotate(180deg)";
+                }
+            }
+        };
+    })(), true);
+
     // --- FORM SUBMISSION LOGIC ---
-    if (courseForm) {
-        courseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+    if (saveButton) {
+        saveButton.addEventListener('click', (e) => {
             // Use HTML5 validation
-            if (!courseForm.checkValidity()) {
+            if (courseForm && !courseForm.checkValidity()) {
                 courseForm.reportValidity();
                 return;
             }
@@ -2659,6 +2688,102 @@ window.addEventListener('beforeunload', (e) => {
 const disableDirtyCheck = () => {
     isSubmitting = true;
 };
+
+// --- WEEKLY PROGRESS TRACKING ---
+function updateWeekProgress(weekIndex) {
+    // Skip exam weeks processing as they are handled by logic in HTML or don't need calc
+    if ([6, 12, 18].includes(weekIndex)) return;
+
+    const suffixes = ['content', 'silo', 'at_onsite', 'at_offsite', 'tla_onsite', 'tla_offsite', 'ltsm', 'output'];
+    let total = 0;
+    let filled = 0;
+    let hasFields = false;
+    
+    suffixes.forEach(suffix => {
+        const el = document.getElementById(`week_${weekIndex}_${suffix}`);
+        if (el && el.tagName === 'TEXTAREA') {
+             hasFields = true;
+             total++;
+             if (el.value.trim() !== '') {
+                 filled++;
+             }
+        }
+    });
+
+    const progressEl = document.getElementById(`week-progress-${weekIndex}`);
+    if (!progressEl) return;
+
+    if (!hasFields) {
+        // Fallback if somehow no fields found but not an exam week?
+        progressEl.textContent = '';
+        return;
+    }
+
+    const percentage = Math.round((filled / total) * 100);
+    progressEl.textContent = `${percentage}%`;
+    
+    // Color coding
+    // Base classes from user request: relative overflow-hidden inline-flex items-center justify-center px-2.5 py-1 rounded-full border border-blue-100 bg-white min-w-[85px] shadow-sm
+    // Added: mr-4 text-sm font-bold transition-colors duration-300
+    const baseClass = 'relative overflow-hidden inline-flex items-center justify-center px-2.5 py-1 rounded-full border border-blue-100 bg-white min-w-[85px] shadow-sm mr-4 text-sm font-bold transition-colors duration-300';
+    
+    progressEl.className = baseClass;
+    
+    if (percentage === 100) {
+        progressEl.classList.add('text-green-600');
+    } else if (percentage > 0) {
+         progressEl.classList.add('text-blue-600');
+    } else {
+        progressEl.classList.add('text-gray-400');
+    }
+}
+
+function updateAllProgress() {
+    for(let i=0; i<=18; i++) {
+        updateWeekProgress(i);
+    }
+}
+
+function setupProgressTrackers() {
+   for(let i=0; i<=18; i++) {
+      if ([6, 12, 18].includes(i)) continue;
+
+      const suffixes = ['content', 'silo', 'at_onsite', 'at_offsite', 'tla_onsite', 'tla_offsite', 'ltsm', 'output'];
+      suffixes.forEach(suffix => {
+          const el = document.getElementById(`week_${i}_${suffix}`);
+          if (el) {
+              el.addEventListener('input', () => updateWeekProgress(i));
+              // Also update on change just in case
+              el.addEventListener('change', () => updateWeekProgress(i));
+          }
+      });
+   }
+   // Initial Calculation
+   updateAllProgress();
+}
+
+// Hook into existing initialization and data loading
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing listeners ...
+    setupProgressTrackers();
+});
+
+// Since populateForm and populateDefaultContent might run after DOMContentLoaded (or inside async fetch),
+// we need to make sure we update progress after data injection.
+// I will proxy the populate functions or call updateAllProgress() at end of them if I can,
+// but since I can't easily edit the middle of those functions with this tool effectively without huge context,
+// I will attach a mutation observer or just rely on 'input' events if they were fired?
+// No, populateForm sets .value directly which doesn't fire 'input'.
+// So I will use a setInterval check for a few seconds after load, or just append a call to updateAllProgress() at end of script to run on window load?
+// Better: Add a listener for a custom event 'dataPopulated' or similar, assuming I can dispatch it.
+// Or just expose updateAllProgress globally and call it.
+window.updateAllProgress = updateAllProgress; // Expose globally
+
+// Add call to updateAllProgress inside existing window.onload if possible, or create a new one.
+window.addEventListener('load', () => {
+   setTimeout(updateAllProgress, 500); // Delay slightly to ensure values are set
+   setTimeout(updateAllProgress, 2000); // Another check
+});
 
 
 </script>
