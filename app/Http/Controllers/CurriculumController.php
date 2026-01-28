@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curriculum;
+use App\Models\Program;
 use App\Models\Subject;
 use App\Models\Notification;
 use App\Services\CurriculumVersionService;
@@ -619,6 +620,37 @@ public function saveSubjects(Request $request)
             \Log::error("Error in getCurriculumSubjects: " . $e->getMessage());
             return response()->json([
                 'message' => 'A database error occurred while fetching curriculum subjects.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Stores a new program (Curriculum Name option).
+     */
+    public function storeProgram(Request $request)
+    {
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'code' => 'required|string|max:50|unique:programs,code',
+            'department' => 'required|in:Senior High,College',
+        ]);
+
+        try {
+            $program = Program::create([
+                'description' => $validated['description'],
+                'code' => $validated['code'],
+                'department' => $validated['department'],
+            ]);
+
+            return response()->json([
+                'message' => 'Program created successfully!',
+                'program' => $program
+            ], 201);
+        } catch (\Exception $e) {
+            \Log::error('Error creating program: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error creating program.',
                 'error' => $e->getMessage()
             ], 500);
         }

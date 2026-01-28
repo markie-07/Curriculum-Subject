@@ -542,9 +542,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     modalOptionsList.addEventListener('click', (e) => {
-        if (e.target.tagName === 'LI') {
-            selectedModalSubject.code = e.target.dataset.value;
-            selectedModalSubject.name = e.target.dataset.name;
+        // Find the closest LI element (in case user clicks on badge or inner div)
+        const li = e.target.closest('li');
+        if (li && li.dataset.value) {
+            selectedModalSubject.code = li.dataset.value;
+            selectedModalSubject.name = li.dataset.name;
             modalSelectorButton.querySelector('span').textContent = selectedModalSubject.name;
             modalSelectorButton.querySelector('span').classList.remove('text-gray-500');
             modalDropdownPanel.classList.add('hidden');
@@ -718,6 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     function populateSubjectDropdown(subjects) {
         modalOptionsList.innerHTML = '';
         modalSelectorButton.querySelector('span').textContent = subjects.length > 0 ? 'Select a Subject' : 'No subjects available';
@@ -727,65 +730,150 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Group subjects by year and semester
-        const subjectsByYearSemester = {};
-        subjects.forEach(subject => {
-            const year = subject.pivot?.year || 'Unassigned';
-            const semester = subject.pivot?.semester || 'Unassigned';
-            const key = `${year}-${semester}`;
-            
-            if (!subjectsByYearSemester[key]) {
-                subjectsByYearSemester[key] = {
-                    year: year,
-                    semester: semester,
-                    subjects: []
-                };
-            }
-            subjectsByYearSemester[key].subjects.push(subject);
-        });
-
-        // Sort the groups by year and semester
-        const sortedGroups = Object.values(subjectsByYearSemester).sort((a, b) => {
-            if (a.year === 'Unassigned') return 1;
-            if (b.year === 'Unassigned') return -1;
-            if (a.year !== b.year) return parseInt(a.year) - parseInt(b.year);
-            return parseInt(a.semester) - parseInt(b.semester);
-        });
-
-        // Create sections for each year-semester group
-        sortedGroups.forEach(group => {
-            // Create section header
-            let headerText = '';
-            if (group.year === 'Unassigned') {
-                headerText = 'Unassigned Subjects';
-            } else {
-                const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
-                const semesterName = group.semester == 1 ? 'First' : 'Second';
-                headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
-            }
-            
-            const headerLi = document.createElement('li');
-            headerLi.className = 'px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 border-b border-slate-200';
-            headerLi.textContent = headerText;
-            headerLi.style.cursor = 'default';
-            modalOptionsList.appendChild(headerLi);
-
-            // Add subjects for this section
-            group.subjects.forEach(subject => {
-                const li = document.createElement('li');
-                li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer pl-6';
-                li.dataset.value = subject.subject_code;
-                const subjectName = `${subject.subject_name} (${subject.subject_code})`;
-                li.dataset.name = subjectName;
-                li.textContent = subjectName;
-                modalOptionsList.appendChild(li);
+        // Fetch prerequisite data to show status badges
+        let subjectsWithPrerequisites = new Set();
+        let subjectsUsedAsPrerequisites = new Set();
+        let dropdownPrerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
+        let dropdownDependentMap = {};    // Maps subject -> array of subjects that require it
+        
+        fetch(`/api/prerequisites/${modalCurriculumIdInput.value}`)
+            .then(response => response.json())
+            .then(data => {
+                // Build maps of prerequisite relationships
+                if (data.prerequisites) {
+                    Object.keys(data.prerequisites).forEach(subjectCode => {
+                        if (data.prerequisites[subjectCode].length > 0) {
+                            subjectsWithPrerequisites.add(subjectCode);
+                            
+                            // Store the prerequisite codes for this subject
+                            dropdownPrerequisiteMap[subjectCode] = data.prerequisites[subjectCode].map(p => p.prerequisite_subject_code);
+                            
+                            // Track which subjects are used as prerequisites and by whom
+                            data.prerequisites[subjectCode].forEach(prereq => {
+                                const prereqCode = prereq.prerequisite_subject_code;
+                                subjectsUsedAsPrerequisites.add(prereqCode);
+                                
+                                if (!dropdownDependentMap[prereqCode]) {
+                                    dropdownDependentMap[prereqCode] = [];
+                                }
+                                dropdownDependentMap[prereqCode].push(subjectCode);
+                            });
+                        }
+                    });
+                }
+                renderSubjectDropdown();
+            })
+            .catch(error => {
+                console.error('Error fetching prerequisite status for dropdown:', error);
+                renderSubjectDropdown();
             });
-        });
+
+        function renderSubjectDropdown() {
+            modalOptionsList.innerHTML = '';
+            
+            // Group subjects by year and semester
+            const subjectsByYearSemester = {};
+            subjects.forEach(subject => {
+                const year = subject.pivot?.year || 'Unassigned';
+                const semester = subject.pivot?.semester || 'Unassigned';
+                const key = `${year}-${semester}`;
+                
+                if (!subjectsByYearSemester[key]) {
+                    subjectsByYearSemester[key] = {
+                        year: year,
+                        semester: semester,
+                        subjects: []
+                    };
+                }
+                subjectsByYearSemester[key].subjects.push(subject);
+            });
+
+            // Sort the groups by year and semester
+            const sortedGroups = Object.values(subjectsByYearSemester).sort((a, b) => {
+                if (a.year === 'Unassigned') return 1;
+                if (b.year === 'Unassigned') return -1;
+                if (a.year !== b.year) return parseInt(a.year) - parseInt(b.year);
+                return parseInt(a.semester) - parseInt(b.semester);
+            });
+
+            // Create sections for each year-semester group
+            sortedGroups.forEach(group => {
+                // Create section header
+                let headerText = '';
+                if (group.year === 'Unassigned') {
+                    headerText = 'Unassigned Subjects';
+                } else {
+                    const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
+                    const semesterName = group.semester == 1 ? 'First' : 'Second';
+                    headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
+                }
+                
+                const headerLi = document.createElement('li');
+                headerLi.className = 'px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 border-b border-slate-200';
+                headerLi.textContent = headerText;
+                headerLi.style.cursor = 'default';
+                modalOptionsList.appendChild(headerLi);
+
+                // Add subjects for this section
+                group.subjects.forEach(subject => {
+                    const hasPrerequisites = subjectsWithPrerequisites.has(subject.subject_code);
+                    const isUsedAsPrerequisite = subjectsUsedAsPrerequisites.has(subject.subject_code);
+                    
+                    // Get prerequisite and dependent codes for this subject
+                    const prereqCodes = dropdownPrerequisiteMap[subject.subject_code] || [];
+                    const dependentCodes = dropdownDependentMap[subject.subject_code] || [];
+                    
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer pl-6 transition-colors';
+                    li.dataset.value = subject.subject_code;
+                    const subjectName = `${subject.subject_name} (${subject.subject_code})`;
+                    li.dataset.name = subjectName;
+                    
+                    // Create HTML with subject code badges
+                    li.innerHTML = `
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="flex-1">${subject.subject_name} (${subject.subject_code})</span>
+                            <div class="flex items-center gap-1 flex-shrink-0 flex-wrap">
+                                ${prereqCodes.length > 0
+                                    ? prereqCodes.map(code => 
+                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300" title="Requires: ${code}">↓${code}</span>`
+                                      ).join('')
+                                    : ''
+                                }
+                                ${dependentCodes.length > 0
+                                    ? dependentCodes.map(code => 
+                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 border border-purple-300" title="Required by: ${code}">↑${code}</span>`
+                                      ).join('')
+                                    : ''
+                                }
+                            </div>
+                        </div>
+                    `;
+                    
+                    modalOptionsList.appendChild(li);
+                });
+            });
+        }
     }
 
     function populatePrerequisiteButtons(selectedSubjectCode, existingPrerequisites = []) {
         prerequisiteList.innerHTML = '';
-        const eligibleSubjects = allSubjectsForCurriculum.filter(s => s.subject_code !== selectedSubjectCode);
+        
+        // Filter subjects based on curriculum type
+        let eligibleSubjects = allSubjectsForCurriculum.filter(s => s.subject_code !== selectedSubjectCode);
+        
+        // Get the current curriculum ID to determine filtering
+        const curriculumId = modalCurriculumIdInput.value;
+        const isGeneralEducation = curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs';
+        
+        // Apply subject type filtering
+        if (isGeneralEducation) {
+            // For General Education: show only Minor subjects (General Education subjects)
+            eligibleSubjects = eligibleSubjects.filter(s => s.subject_type !== 'Major');
+        } else {
+            // For Regular Curriculums: show only Major subjects
+            eligibleSubjects = eligibleSubjects.filter(s => s.subject_type === 'Major');
+        }
 
         if (eligibleSubjects.length === 0) {
             prerequisiteList.innerHTML = '<p class="text-gray-500">No other subjects available to be prerequisites.</p>';
@@ -795,101 +883,180 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize sequence for existing prerequisites
         prerequisiteSequence = [...existingPrerequisites];
 
-        // Group subjects by year and semester
-        const subjectsByYearSemester = {};
-        eligibleSubjects.forEach(subject => {
-            const year = subject.pivot?.year || 'Unassigned';
-            const semester = subject.pivot?.semester || 'Unassigned';
-            const key = `${year}-${semester}`;
-            
-            if (!subjectsByYearSemester[key]) {
-                subjectsByYearSemester[key] = {
-                    year: year,
-                    semester: semester,
-                    subjects: []
-                };
-            }
-            subjectsByYearSemester[key].subjects.push(subject);
-        });
 
-        // Sort the groups by year and semester
-        const sortedGroups = Object.values(subjectsByYearSemester).sort((a, b) => {
-            if (a.year === 'Unassigned') return 1;
-            if (b.year === 'Unassigned') return -1;
-            if (a.year !== b.year) return parseInt(a.year) - parseInt(b.year);
-            return parseInt(a.semester) - parseInt(b.semester);
-        });
-
-        // Create sections for each year-semester group
-        sortedGroups.forEach(group => {
-            // Create section header
-            const sectionHeader = document.createElement('div');
-            sectionHeader.className = 'mb-3 mt-4 first:mt-0';
-            
-            let headerText = '';
-            if (group.year === 'Unassigned') {
-                headerText = 'Unassigned Subjects';
-            } else {
-                const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
-                const semesterName = group.semester == 1 ? 'First' : 'Second';
-                headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
-            }
-            
-            sectionHeader.innerHTML = `
-                <h4 class="text-sm font-semibold text-slate-700 mb-2 pb-1 border-b border-slate-200">
-                    ${headerText}
-                </h4>
-            `;
-            prerequisiteList.appendChild(sectionHeader);
-
-            // Create grid for this section's subjects
-            const buttonGrid = document.createElement('div');
-            buttonGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4';
-
-            group.subjects.forEach(subject => {
-                const isSelected = existingPrerequisites.includes(subject.subject_code);
-                const sequenceNumber = isSelected ? prerequisiteSequence.indexOf(subject.subject_code) + 2 : 0; // Start from 2 (main subject is 1)
-                
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = `w-full p-3 rounded-lg border-2 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    isSelected 
-                        ? 'bg-blue-100 border-blue-500 text-blue-800 shadow-md' 
-                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50'
-                }`;
-                button.dataset.subjectCode = subject.subject_code;
-                button.dataset.selected = isSelected;
-                button.dataset.sequenceNumber = sequenceNumber;
-            
-                button.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <div class="font-semibold text-sm">${subject.subject_name}</div>
-                            <div class="text-xs opacity-75">${subject.subject_code}</div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${isSelected 
-                                ? `<div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">${sequenceNumber}</div>`
-                                : '<div class="w-6 h-6 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold">+</div>'
-                            }
-                            <div class="flex-shrink-0">
-                                ${isSelected 
-                                    ? '<svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                    : '<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>'
+        // Fetch current prerequisites data to show which subjects have prerequisites and are prerequisites
+        let subjectsWithPrerequisites = new Set();
+        let subjectsUsedAsPrerequisites = new Set();
+        let prerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
+        let dependentMap = {};    // Maps subject -> array of subjects that require it
+        
+        fetch(`/api/prerequisites/${modalCurriculumIdInput.value}`)
+            .then(response => response.json())
+            .then(data => {
+                // Build maps of prerequisite relationships
+                if (data.prerequisites) {
+                    Object.keys(data.prerequisites).forEach(subjectCode => {
+                        if (data.prerequisites[subjectCode].length > 0) {
+                            subjectsWithPrerequisites.add(subjectCode);
+                            
+                            // Store the prerequisite codes for this subject
+                            prerequisiteMap[subjectCode] = data.prerequisites[subjectCode].map(p => p.prerequisite_subject_code);
+                            
+                            // Track which subjects are used as prerequisites and by whom
+                            data.prerequisites[subjectCode].forEach(prereq => {
+                                const prereqCode = prereq.prerequisite_subject_code;
+                                subjectsUsedAsPrerequisites.add(prereqCode);
+                                
+                                if (!dependentMap[prereqCode]) {
+                                    dependentMap[prereqCode] = [];
                                 }
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // Add click handler for toggle functionality
-                button.addEventListener('click', () => togglePrerequisiteButton(button));
-                
-                buttonGrid.appendChild(button);
+                                dependentMap[prereqCode].push(subjectCode);
+                            });
+                        }
+                    });
+                }
+                renderPrerequisiteButtons();
+            })
+            .catch(error => {
+                console.error('Error fetching prerequisite status:', error);
+                renderPrerequisiteButtons();
             });
 
-            prerequisiteList.appendChild(buttonGrid);
-        });
+        function renderPrerequisiteButtons() {
+            prerequisiteList.innerHTML = '';
+            
+            // Group subjects by year and semester
+            const subjectsByYearSemester = {};
+            eligibleSubjects.forEach(subject => {
+                const year = subject.pivot?.year || 'Unassigned';
+                const semester = subject.pivot?.semester || 'Unassigned';
+                const key = `${year}-${semester}`;
+                
+                if (!subjectsByYearSemester[key]) {
+                    subjectsByYearSemester[key] = {
+                        year: year,
+                        semester: semester,
+                        subjects: []
+                    };
+                }
+                subjectsByYearSemester[key].subjects.push(subject);
+            });
+
+            // Sort the groups by year and semester
+            const sortedGroups = Object.values(subjectsByYearSemester).sort((a, b) => {
+                if (a.year === 'Unassigned') return 1;
+                if (b.year === 'Unassigned') return -1;
+                if (a.year !== b.year) return parseInt(a.year) - parseInt(b.year);
+                return parseInt(a.semester) - parseInt(b.semester);
+            });
+
+            // Create sections for each year-semester group
+            sortedGroups.forEach(group => {
+                // Create section header
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'mb-3 mt-4 first:mt-0';
+                
+                let headerText = '';
+                if (group.year === 'Unassigned') {
+                    headerText = 'Unassigned Subjects';
+                } else {
+                    const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
+                    const semesterName = group.semester == 1 ? 'First' : 'Second';
+                    headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
+                }
+                
+                sectionHeader.innerHTML = `
+                    <h4 class="text-sm font-semibold text-slate-700 mb-2 pb-1 border-b border-slate-200">
+                        ${headerText}
+                    </h4>
+                `;
+                prerequisiteList.appendChild(sectionHeader);
+
+                // Create grid for this section's subjects
+                const buttonGrid = document.createElement('div');
+                buttonGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4';
+
+                group.subjects.forEach(subject => {
+                    const isSelected = existingPrerequisites.includes(subject.subject_code);
+                    const sequenceNumber = isSelected ? prerequisiteSequence.indexOf(subject.subject_code) + 2 : 0; // Start from 2 (main subject is 1)
+                    const hasPrerequisites = subjectsWithPrerequisites.has(subject.subject_code);
+                    const isUsedAsPrerequisite = subjectsUsedAsPrerequisites.has(subject.subject_code);
+                    
+                    // Disable subjects that:
+                    // 1. Already have prerequisites (to prevent circular dependencies)
+                    // 2. Are already used as prerequisites for other subjects (to prevent breaking existing chains)
+                    const isDisabled = (hasPrerequisites || isUsedAsPrerequisite) && !isSelected;
+                    
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.disabled = isDisabled;
+                    button.className = `w-full p-3 rounded-lg border-2 text-left transition-all duration-200 ${
+                        isDisabled
+                            ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60'
+                            : isSelected 
+                                ? 'bg-blue-100 border-blue-500 text-blue-800 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500' 
+                                : 'bg-white border-gray-300 text-gray-700 hover:border-blue-400 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    }`;
+                    button.dataset.subjectCode = subject.subject_code;
+                    button.dataset.selected = isSelected;
+                    button.dataset.sequenceNumber = sequenceNumber;
+                    button.dataset.hasPrerequisites = hasPrerequisites;
+                    button.dataset.isUsedAsPrerequisite = isUsedAsPrerequisite;
+                
+                    // Get prerequisite codes for this subject
+                    const prereqCodes = prerequisiteMap[subject.subject_code] || [];
+                    const dependentCodes = dependentMap[subject.subject_code] || [];
+                    
+                    button.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                    <div class="font-semibold text-sm">${subject.subject_name}</div>
+                                    ${prereqCodes.length > 0
+                                        ? prereqCodes.map(code => 
+                                            `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300" title="Requires: ${code}">↓ ${code}</span>`
+                                          ).join('')
+                                        : ''
+                                    }
+                                    ${dependentCodes.length > 0
+                                        ? dependentCodes.map(code => 
+                                            `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 border border-purple-300" title="Required by: ${code}">↑ ${code}</span>`
+                                          ).join('')
+                                        : ''
+                                    }
+                                </div>
+                                <div class="text-xs opacity-75">${subject.subject_code}</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${isSelected 
+                                    ? `<div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">${sequenceNumber}</div>`
+                                    : isDisabled
+                                        ? '<div class="w-6 h-6 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-xs font-bold">✕</div>'
+                                        : '<div class="w-6 h-6 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold">+</div>'
+                                }
+                                <div class="flex-shrink-0">
+                                    ${isSelected 
+                                        ? '<svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
+                                        : isDisabled
+                                            ? '<svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path></svg>'
+                                            : '<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add click handler for toggle functionality (only if not disabled)
+                    if (!isDisabled) {
+                        button.addEventListener('click', () => togglePrerequisiteButton(button));
+                    }
+                    
+                    buttonGrid.appendChild(button);
+                });
+
+                prerequisiteList.appendChild(buttonGrid);
+            });
+        }
         
         // Create hidden inputs for form submission
         updateHiddenInputs();
@@ -941,13 +1108,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateButtonContent(button, isSelected, sequenceNumber) {
-        const subjectName = button.querySelector('.font-semibold').textContent;
-        const subjectCode = button.querySelector('.text-xs').textContent;
+        const subjectNameDiv = button.querySelector('.font-semibold');
+        const subjectName = subjectNameDiv ? subjectNameDiv.textContent : '';
+        const subjectCodeDiv = button.querySelector('.text-xs.opacity-75');
+        const subjectCode = subjectCodeDiv ? subjectCodeDiv.textContent : '';
+        const buttonSubjectCode = button.dataset.subjectCode;
+        
+        // Get prerequisite and dependent codes for this subject
+        const prereqCodes = prerequisiteMap[buttonSubjectCode] || [];
+        const dependentCodes = dependentMap[buttonSubjectCode] || [];
         
         button.innerHTML = `
             <div class="flex items-center justify-between">
                 <div class="flex-1">
-                    <div class="font-semibold text-sm">${subjectName}</div>
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <div class="font-semibold text-sm">${subjectName}</div>
+                        ${prereqCodes.length > 0
+                            ? prereqCodes.map(code => 
+                                `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300" title="Requires: ${code}">↓ ${code}</span>`
+                              ).join('')
+                            : ''
+                        }
+                        ${dependentCodes.length > 0
+                            ? dependentCodes.map(code => 
+                                `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 border border-purple-300" title="Required by: ${code}">↑ ${code}</span>`
+                              ).join('')
+                            : ''
+                        }
+                    </div>
                     <div class="text-xs opacity-75">${subjectCode}</div>
                 </div>
                 <div class="flex items-center gap-2">

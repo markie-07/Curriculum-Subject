@@ -118,24 +118,72 @@
                                 <div class="flex items-center justify-between mb-1">
                                     <label for="curriculum" class="block text-sm font-medium text-slate-700">Curriculum Name</label>
                                 </div>
-                                <div class="relative">
-                                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-                                    <select id="curriculum" name="curriculum" class="w-full appearance-none pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
-                                        <option value="" disabled selected>Select Curriculum</option>
-                                        @if(isset($programs))
-                                            <optgroup label="College">
-                                                @foreach($programs->where('department', 'College') as $program)
-                                                    <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->code }} - {{ $program->description }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                            <optgroup label="Senior High">
-                                                @foreach($programs->where('department', 'Senior High') as $program)
-                                                    <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->code }} - {{ $program->description }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                        @endif
-                                    </select>
-                                    <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
+                                <div class="flex gap-2">
+                                    <div class="relative w-full">
+                                        {{-- Hidden select for form submission --}}
+                                        <select id="curriculum" name="curriculum" class="hidden" required>
+                                            <option value="" disabled selected>Select Curriculum</option>
+                                            @if(isset($programs))
+                                                <optgroup label="College">
+                                                    @foreach($programs->where('department', 'College') as $program)
+                                                        <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->description }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                                <optgroup label="Senior High">
+                                                    @foreach($programs->where('department', 'Senior High') as $program)
+                                                        <option value="{{ $program->description }}" data-code="{{ $program->code }}">{{ $program->description }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endif
+                                        </select>
+
+                                        {{-- Custom searchable dropdown --}}
+                                        <div class="relative">
+                                            <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
+                                            <button type="button" id="curriculumDropdownButton" class="w-full appearance-none pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-left text-slate-500">
+                                                <span id="curriculumSelectedText">Select Curriculum</span>
+                                            </button>
+                                            <svg class="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none transition-transform" id="curriculumDropdownArrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg>
+                                            
+                                            {{-- Dropdown menu --}}
+                                            <div id="curriculumDropdownMenu" class="hidden absolute z-50 w-full mt-2 bg-white border border-slate-300 rounded-lg shadow-lg max-h-80 overflow-hidden">
+                                                {{-- Search input --}}
+                                                <div class="p-3 border-b border-slate-200 bg-slate-50">
+                                                    <div class="relative">
+                                                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                                                        <input type="text" id="curriculumSearchInput" placeholder="Search curriculum..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                                    </div>
+                                                </div>
+                                                
+                                                {{-- Options list --}}
+                                                <div id="curriculumOptionsList" class="overflow-y-auto max-h-60">
+                                                    @if(isset($programs))
+                                                        <div class="curriculum-group">
+                                                            <div class="px-3 py-2 text-xs font-semibold text-slate-500 bg-slate-50 sticky top-0">College</div>
+                                                            @foreach($programs->where('department', 'College') as $program)
+                                                                <div class="curriculum-option px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors" data-value="{{ $program->description }}" data-code="{{ $program->code }}" data-department="College">
+                                                                    <div class="text-sm text-slate-700">{{ $program->description }}</div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                        <div class="curriculum-group">
+                                                            <div class="px-3 py-2 text-xs font-semibold text-slate-500 bg-slate-50 sticky top-0">Senior High</div>
+                                                            @foreach($programs->where('department', 'Senior High') as $program)
+                                                                <div class="curriculum-option px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors" data-value="{{ $program->description }}" data-code="{{ $program->code }}" data-department="Senior High">
+                                                                    <div class="text-sm text-slate-700">{{ $program->description }}</div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addNewProgramButton" class="flex-shrink-0 px-3 py-2 bg-blue-100 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-200 transition-colors" title="Add New Curriculum Name">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </button>
                                 </div>
                                 
                                 {{-- Duplicate Detection Alert --}}
@@ -386,6 +434,98 @@
                 </div>
             </div>
         </div>
+
+        {{-- Add Program Modal --}}
+        <div id="addProgramModal" class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="program-modal-panel">
+                    <button id="closeProgramModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-bold text-slate-800">Add New Curriculum Name</h2>
+                        <p class="text-sm text-slate-500 mt-1">Create a new program entry for the dropdown.</p>
+                    </div>
+
+                    <form id="programForm" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="newProgramDescription" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Name</label>
+                            <input type="text" id="newProgramDescription" name="description" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Bachelor of Science in Information Technology" required>
+                        </div>
+                        <div>
+                            <label for="newProgramCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code</label>
+                            <input type="text" id="newProgramCode" name="code" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. BSIT" required>
+                        </div>
+                        <div>
+                            <label for="newProgramDepartment" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
+                            <select id="newProgramDepartment" name="department" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="" disabled selected>Select Level</option>
+                                <option value="College">College</option>
+                                <option value="Senior High">Senior High</option>
+                            </select>
+                        </div>
+                        <div class="pt-4 flex gap-3">
+                            <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                Add Curriculum
+                            </button>
+                            <button type="button" id="cancelProgramButton" class="flex-1 px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Add Program Modal --}}
+        <div id="addProgramModal" class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="program-modal-panel">
+                    <button id="closeProgramModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-bold text-slate-800">Add New Curriculum Name</h2>
+                        <p class="text-sm text-slate-500 mt-1">Create a new program entry for the dropdown.</p>
+                    </div>
+
+                    <form id="programForm" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="newProgramDescription" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Name</label>
+                            <input type="text" id="newProgramDescription" name="description" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Bachelor of Science in Information Technology" required>
+                        </div>
+                        <div>
+                            <label for="newProgramCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code</label>
+                            <input type="text" id="newProgramCode" name="code" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. BSIT" required>
+                        </div>
+                        <div>
+                            <label for="newProgramDepartment" class="block text-sm font-medium text-slate-700 mb-1">Level</label>
+                            <select id="newProgramDepartment" name="department" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="" disabled selected>Select Level</option>
+                                <option value="College">College</option>
+                                <option value="Senior High">Senior High</option>
+                            </select>
+                        </div>
+                        <div class="pt-4 flex gap-3">
+                            <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                Add Curriculum
+                            </button>
+                            <button type="button" id="cancelProgramButton" class="flex-1 px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
 
     <style>
@@ -526,6 +666,22 @@
             const modalTitle = document.getElementById('modal-title');
             const submitButton = document.getElementById('submit-button');
             const curriculumIdField = document.getElementById('curriculumId');
+
+            // Add Program Modal Elements
+            const addNewProgramButton = document.getElementById('addNewProgramButton');
+            const addProgramModal = document.getElementById('addProgramModal');
+            const closeProgramModalButton = document.getElementById('closeProgramModalButton');
+            const cancelProgramButton = document.getElementById('cancelProgramButton');
+            const programModalPanel = document.getElementById('program-modal-panel');
+            const programForm = document.getElementById('programForm');
+
+            // Custom Searchable Dropdown Elements
+            const curriculumDropdownButton = document.getElementById('curriculumDropdownButton');
+            const curriculumDropdownMenu = document.getElementById('curriculumDropdownMenu');
+            const curriculumDropdownArrow = document.getElementById('curriculumDropdownArrow');
+            const curriculumSelectedText = document.getElementById('curriculumSelectedText');
+            const curriculumSearchInput = document.getElementById('curriculumSearchInput');
+            const curriculumOptionsList = document.getElementById('curriculumOptionsList');
 
             // Confirmation Modal elements
             const confirmationModal = document.getElementById('confirmationModal');
@@ -991,6 +1147,89 @@
             
 
             
+            // --- Custom Searchable Dropdown Functionality ---
+            
+            // Toggle dropdown
+            curriculumDropdownButton.addEventListener('click', () => {
+                const isHidden = curriculumDropdownMenu.classList.contains('hidden');
+                if (isHidden) {
+                    curriculumDropdownMenu.classList.remove('hidden');
+                    curriculumDropdownArrow.style.transform = 'rotate(180deg)';
+                    curriculumSearchInput.focus();
+                } else {
+                    curriculumDropdownMenu.classList.add('hidden');
+                    curriculumDropdownArrow.style.transform = 'rotate(0deg)';
+                    curriculumSearchInput.value = '';
+                    filterCurriculumOptions('');
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!curriculumDropdownButton.contains(e.target) && !curriculumDropdownMenu.contains(e.target)) {
+                    curriculumDropdownMenu.classList.add('hidden');
+                    curriculumDropdownArrow.style.transform = 'rotate(0deg)';
+                    curriculumSearchInput.value = '';
+                    filterCurriculumOptions('');
+                }
+            });
+
+            // Search functionality
+            curriculumSearchInput.addEventListener('input', (e) => {
+                filterCurriculumOptions(e.target.value);
+            });
+
+            // Filter options based on search
+            const filterCurriculumOptions = (searchTerm) => {
+                const options = curriculumOptionsList.querySelectorAll('.curriculum-option');
+                const groups = curriculumOptionsList.querySelectorAll('.curriculum-group');
+                const lowerSearch = searchTerm.toLowerCase();
+
+                groups.forEach(group => {
+                    const groupOptions = group.querySelectorAll('.curriculum-option');
+                    let hasVisibleOptions = false;
+
+                    groupOptions.forEach(option => {
+                        const text = option.dataset.value.toLowerCase();
+                        if (text.includes(lowerSearch)) {
+                            option.style.display = 'block';
+                            hasVisibleOptions = true;
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    });
+
+                    // Hide group if no visible options
+                    group.style.display = hasVisibleOptions ? 'block' : 'none';
+                });
+            };
+
+            // Handle option selection
+            curriculumOptionsList.addEventListener('click', (e) => {
+                const option = e.target.closest('.curriculum-option');
+                if (!option) return;
+
+                const value = option.dataset.value;
+                const code = option.dataset.code;
+                const department = option.dataset.department;
+
+                // Update hidden select
+                curriculumInput.value = value;
+                
+                // Update display text
+                curriculumSelectedText.textContent = value;
+                curriculumSelectedText.classList.remove('text-slate-500');
+                curriculumSelectedText.classList.add('text-slate-700');
+
+                // Close dropdown
+                curriculumDropdownMenu.classList.add('hidden');
+                curriculumDropdownArrow.style.transform = 'rotate(0deg)';
+                curriculumSearchInput.value = '';
+                filterCurriculumOptions('');
+
+                // Trigger change event on hidden select
+                curriculumInput.dispatchEvent(new Event('change'));
+            });
 
             
             // Update Program Code and Level when Curriculum is selected
@@ -1551,6 +1790,14 @@
                     // Use curriculum_name from API response
                     const curriculumName = curriculum.curriculum_name || curriculum.curriculum || '';
                     document.getElementById('curriculum').value = curriculumName;
+                    
+                    // Update custom dropdown display
+                    if (curriculumName) {
+                        curriculumSelectedText.textContent = curriculumName;
+                        curriculumSelectedText.classList.remove('text-slate-500');
+                        curriculumSelectedText.classList.add('text-slate-700');
+                    }
+                    
                     document.getElementById('programCode').value = curriculum.program_code;
                     document.getElementById('academicYear').value = curriculum.academic_year;
                     if (curriculum.expiration_date) {
@@ -1642,6 +1889,11 @@
                     modalSubTitle.textContent = 'Fill in the details below to add a new curriculum.';
                     submitButton.querySelector('span').textContent = 'Create';
                     curriculumIdField.value = '';
+                    
+                    // Reset custom dropdown display
+                    curriculumSelectedText.textContent = 'Select Curriculum';
+                    curriculumSelectedText.classList.remove('text-slate-700');
+                    curriculumSelectedText.classList.add('text-slate-500');
                     
                     // Reset dynamic sections
                     memorandumContainer.classList.add('hidden');
@@ -1992,6 +2244,108 @@
                 // Set status for submit handler
                 curriculumForm.dataset.approvalStatus = 'rejected';
             };
+
+            // --- Program Modal Functions ---
+            const openProgramModal = () => {
+                addProgramModal.classList.remove('hidden');
+                setTimeout(() => {
+                    programModalPanel.classList.remove('opacity-0', 'scale-95');
+                    programModalPanel.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            };
+
+            const closeProgramModal = () => {
+                programModalPanel.classList.remove('opacity-100', 'scale-100');
+                programModalPanel.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    addProgramModal.classList.add('hidden');
+                    programForm.reset();
+                }, 300);
+            };
+
+            addNewProgramButton.addEventListener('click', openProgramModal);
+            closeProgramModalButton.addEventListener('click', closeProgramModal);
+            cancelProgramButton.addEventListener('click', closeProgramModal);
+
+            // Close modal when clicking outside
+            addProgramModal.addEventListener('click', (e) => {
+                if (e.target === addProgramModal) {
+                    closeProgramModal();
+                }
+            });
+
+            programForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(programForm);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('/api/programs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Add new option to the hidden select dropdown
+                        const optGroupLabel = data.department;
+                        let optGroup = Array.from(curriculumInput.getElementsByTagName('optgroup'))
+                                           .find(group => group.label === optGroupLabel);
+                        
+                        // If optgroup doesn't exist, create it
+                        if (!optGroup) {
+                            optGroup = document.createElement('optgroup');
+                            optGroup.label = optGroupLabel;
+                            curriculumInput.appendChild(optGroup);
+                        }
+
+                        const option = document.createElement('option');
+                        option.value = result.program.description;
+                        option.dataset.code = result.program.code;
+                        option.textContent = result.program.description;
+                        
+                        optGroup.appendChild(option);
+                        
+                        // Add new option to the custom dropdown UI
+                        const groupLabel = data.department;
+                        let customGroup = Array.from(curriculumOptionsList.querySelectorAll('.curriculum-group'))
+                                               .find(group => group.querySelector('div').textContent === groupLabel);
+                        
+                        if (customGroup) {
+                            const newOption = document.createElement('div');
+                            newOption.className = 'curriculum-option px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors';
+                            newOption.dataset.value = result.program.description;
+                            newOption.dataset.code = result.program.code;
+                            newOption.dataset.department = data.department;
+                            newOption.innerHTML = `<div class="text-sm text-slate-700">${result.program.description}</div>`;
+                            customGroup.appendChild(newOption);
+                        }
+                        
+                        // Select the new option
+                        curriculumInput.value = result.program.description;
+                        curriculumSelectedText.textContent = result.program.description;
+                        curriculumSelectedText.classList.remove('text-slate-500');
+                        curriculumSelectedText.classList.add('text-slate-700');
+                        
+                        // Trigger change event to populate other fields
+                        curriculumInput.dispatchEvent(new Event('change'));
+
+                        showSuccessModal('Program Added', 'The new curriculum name has been added successfully.');
+                        closeProgramModal();
+                    } else {
+                         alert(result.message || 'Error creating program.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An unexpected error occurred.');
+                }
+            });
 
             fetchCurriculums();
         });

@@ -239,6 +239,9 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::get('/curriculum/{id}/subjects', [CurriculumExportToolController::class, 'getCurriculumSubjects']);
         Route::get('/curriculum/{id}/export-pdf', [CurriculumExportToolController::class, 'exportPdf']);
 
+        // --- Program Routes ---
+        Route::post('/programs', [CurriculumController::class, 'storeProgram']);
+
         // --- Subject Routes ---
         Route::get('/subjects', [SubjectController::class, 'index']);
         Route::post('/subjects', [SubjectController::class, 'store']);
