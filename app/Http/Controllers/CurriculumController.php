@@ -20,9 +20,21 @@ class CurriculumController extends Controller
      */
     public function index()
     {
-        // Automatically check for expired curriculums to keep status up-to-date
-        // Temporarily disabled due to potential performance issues
-        // \Illuminate\Support\Facades\Artisan::call('curriculums:expire');
+        // Automatically manage curriculum lifecycle based on expiration dates
+        $today = Carbon::today();
+
+        // 1. Delete expired processing/rejected curriculums (User Request: "should not display on the database")
+        Curriculum::whereIn('approval_status', ['processing', 'rejected'])
+            ->whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '<=', $today)
+            ->delete();
+
+        // 2. Mark approved expired curriculums as 'old' (User Request: "it will become old curriculum")
+        Curriculum::where('approval_status', 'approved')
+            ->whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '<=', $today)
+            ->where('version_status', '!=', 'old')
+            ->update(['version_status' => 'old']);
 
         $curriculums = Curriculum::withCount('subjects')
             ->withSum('subjects', 'subject_unit')
@@ -570,12 +582,13 @@ public function saveSubjects(Request $request)
         try {
             $curriculum = Curriculum::findOrFail($id);
             
-            // Get all subjects that are linked to this curriculum (available for this curriculum)
-            // This includes subjects that were created with this curriculum selected
-            // We get subjects that either have no year/semester assigned (available for mapping)
-            // or subjects that are already mapped to this curriculum
-            $subjects = Subject::whereHas('curriculums', function($query) use ($id) {
-                $query->where('curriculum_id', $id);
+            // Retrieve subjects linked to this curriculum AND subjects shared across the same Program
+            $subjects = Subject::whereHas('curriculums', function($query) use ($curriculum) {
+                $query->where('curriculum_id', $curriculum->id)
+                      ->orWhere(function($subQuery) use ($curriculum) {
+                          $subQuery->where('program_code', $curriculum->program_code)
+                                   ->where('year_level', $curriculum->year_level);
+                      });
             })->get()->map(function ($subject) {
                 return [
                     'id' => $subject->id,

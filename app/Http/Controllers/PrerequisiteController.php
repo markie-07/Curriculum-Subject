@@ -50,7 +50,17 @@ class PrerequisiteController extends Controller
 
         // Group by the subject that HAS prerequisites (Child -> Parents)
         // Returns objects like { "ChildCode": [ { subject_code: "ChildCode", prerequisite_subject_code: "ParentCode", ... } ] }
-        $prerequisites = Prerequisite::where('curriculum_id', $curriculum->id)
+        
+        // Fix: Fetch distinct prerequisites to avoid duplicates and ensure all relevant rules are found
+        // mimic "Minor Subject" logic by checking subject codes too
+        $subjectCodes = $subjects->pluck('subject_code')->unique()->values();
+        
+        $prerequisites = Prerequisite::where(function($q) use ($curriculum, $subjectCodes) {
+                $q->where('curriculum_id', $curriculum->id)
+                  ->orWhereIn('subject_code', $subjectCodes);
+            })
+            ->select('subject_code', 'prerequisite_subject_code')
+            ->distinct()
             ->get()
             ->groupBy('subject_code');
 
@@ -68,8 +78,23 @@ class PrerequisiteController extends Controller
         try {
             \Illuminate\Support\Facades\Log::info('fetchGeneralData called', ['type' => $type]);
             
-            $syllabusType = ($type === 'gen-ed-college') ? 'CHED' : 'DepEd';
-            $subjectTypes = ['Minor', 'General', 'Elective'];
+            \Illuminate\Support\Facades\Log::info('fetchGeneralData called', ['type' => $type]);
+            
+            // Determine Syllabus and Subject Types based on the requested global context
+            if ($type === 'major-college') {
+                $syllabusType = 'CHED';
+                $subjectTypes = ['Major'];
+            } elseif ($type === 'major-shs') {
+                $syllabusType = 'DepEd';
+                $subjectTypes = ['Major', 'Core', 'Applied', 'Specialized'];
+            } elseif ($type === 'gen-ed-shs') {
+                $syllabusType = 'DepEd';
+                $subjectTypes = ['Minor', 'General', 'Elective'];
+            } else {
+                // Default to College Gen Ed
+                $syllabusType = 'CHED';
+                $subjectTypes = ['Minor', 'General', 'Elective'];
+            }
     
             $subjects = Subject::whereIn('subject_type', $subjectTypes)
                 ->where('syllabus_type', $syllabusType)
@@ -79,7 +104,10 @@ class PrerequisiteController extends Controller
             $subjectCodes = $subjects->pluck('subject_code');
             
             // Fetch prerequisites where the child subject is in our list
+            // Added distinct() to prevent duplicate rows in the global view
             $prerequisites = Prerequisite::whereIn('subject_code', $subjectCodes)
+                ->select('subject_code', 'prerequisite_subject_code')
+                ->distinct()
                 ->get()
                 ->groupBy('subject_code');
             
@@ -116,41 +144,37 @@ class PrerequisiteController extends Controller
         if (in_array($validated['curriculum_id'], ['gen-ed-college', 'gen-ed-shs'])) {
             $level = ($validated['curriculum_id'] === 'gen-ed-college') ? 'College' : 'Senior High';
             
-            // Find all curriculums of this level
-            $curriculums = Curriculum::where('year_level', $level)->get();
             $updatedCount = 0;
 
-            foreach ($curriculums as $curriculum) {
-                 // Update only if curriculum contains this subject OR if we decide Gen Ed applies everywhere independently (usually subject must exist in curriculum)
-                 // Checking if subject exists in curriculum first is safer.
-                 $hasSubject = $curriculum->subjects()->where('subject_code', $validated['subject_code'])->exists();
+            // FETCH ONLY THE LATEST CURRICULUM to serve as the 'host' for these global rules.
+            // Since fetchData now checks globally by subject_code, we don't need to duplicate rows.
+            $targetCurriculum = Curriculum::where('year_level', $level)->latest()->first();
+            
+            if ($targetCurriculum) {
+                 // Delete existing GLOBAL prerequisites for this subject (cleanup any old duplicates too)
+                 Prerequisite::whereIn('curriculum_id', Curriculum::where('year_level', $level)->pluck('id'))
+                    ->where('subject_code', $validated['subject_code'])
+                    ->delete();
                  
-                 if ($hasSubject) {
-                     // Delete existing prerequisites for this subject in this curriculum
-                     Prerequisite::where('curriculum_id', $curriculum->id)
-                        ->where('subject_code', $validated['subject_code'])
-                        ->delete();
-                     
-                     // Add new prerequisites
-                     if (!empty($validated['prerequisite_codes'])) {
-                        $previousSubject = $validated['subject_code'];
-                        foreach ($validated['prerequisite_codes'] as $prereqCode) {
-                            Prerequisite::create([
-                                'curriculum_id' => $curriculum->id,
-                                'subject_code' => $prereqCode,
-                                'prerequisite_subject_code' => $previousSubject,
-                            ]);
-                            $previousSubject = $prereqCode;
-                        }
+                 // Add new prerequisites to the single target curriculum
+                 if (!empty($validated['prerequisite_codes'])) {
+                    $previousSubject = $validated['subject_code'];
+                    foreach ($validated['prerequisite_codes'] as $prereqCode) {
+                        Prerequisite::create([
+                            'curriculum_id' => $targetCurriculum->id,
+                            'subject_code' => $previousSubject,
+                            'prerequisite_subject_code' => $prereqCode,
+                        ]);
+                        $previousSubject = $prereqCode;
                     }
-                    $updatedCount++;
+                }
+                $updatedCount++;
+            }
                     
                     // Mark curriculum as processing if it was rejected
-                    if ($curriculum->approval_status === 'rejected') {
-                        $curriculum->update(['approval_status' => 'processing']);
+                    if ($targetCurriculum && $targetCurriculum->approval_status === 'rejected') {
+                        $targetCurriculum->update(['approval_status' => 'processing']);
                     }
-                 }
-            }
 
             return response()->json([
                 'message' => "Prerequisites updated for $updatedCount $level curriculums containing this subject!",
@@ -169,26 +193,13 @@ class PrerequisiteController extends Controller
                  return response()->json(['errors' => ['curriculum_id' => ['The selected curriculum is invalid.']]], 422);
             }
 
-            // Find related curriculums to sync prerequisites using Program Code (preferred) or Name
-            $query = Curriculum::where('year_level', $primaryCurriculum->year_level)
-                ->where('version_status', '!=', 'old');
-            
-            if (!empty($primaryCurriculum->program_code)) {
-                $query->where('program_code', $primaryCurriculum->program_code);
-            } else {
-                $query->where('curriculum', $primaryCurriculum->curriculum);
-            }
-            
-            $targets = $query->get();
+            // Disable auto-sync to unrelated versions to prevent "duplicate data" per user request
+            // Only update the specific curriculum selected
+            $targets = collect([$primaryCurriculum]);
             
             $updatedCount = 0;
 
             foreach ($targets as $target) {
-                // Ensure the subject exists in the target curriculum before adding prerequisites
-                // This prevents adding orphaned prerequisites to a curriculum that doesn't have the subject
-                $hasSubject = $target->subjects()->where('subject_code', $validated['subject_code'])->exists();
-                
-                if ($hasSubject) {
                     // If curriculum was rejected, revert to processing on modification
                     if ($target->approval_status === 'rejected') {
                         $target->update(['approval_status' => 'processing']);
@@ -206,15 +217,14 @@ class PrerequisiteController extends Controller
                         foreach ($validated['prerequisite_codes'] as $prereqCode) {
                             Prerequisite::create([
                                 'curriculum_id' => $target->id,
-                                'subject_code' => $prereqCode, 
-                                'prerequisite_subject_code' => $previousSubject, 
+                                'subject_code' => $previousSubject, 
+                                'prerequisite_subject_code' => $prereqCode, 
                             ]);
                             
                             $previousSubject = $prereqCode;
                         }
                     }
                     $updatedCount++;
-                }
             }
 
             // Log activity

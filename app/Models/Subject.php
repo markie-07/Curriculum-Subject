@@ -40,13 +40,7 @@ class Subject extends Model
         'prepared_by',
         'reviewed_by',
         'approved_by',
-        'q_1_performance_standards',
-        'q_1_performance_tasks',
-        'q_2_performance_standards',
-        'q_2_performance_tasks',
         'deped_data',
-        'time_allotment',
-        'schedule',
         'syllabus_path',
     ];
 

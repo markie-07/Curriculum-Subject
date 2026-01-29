@@ -1640,7 +1640,7 @@ Learning Management System`;
 
                 if (ext === 'pdf') {
                     if (pdfFrame) {
-                        pdfFrame.src = subject.syllabus_path;
+                        pdfFrame.src = subject.syllabus_path + '#toolbar=0&navpanes=0';
                         pdfFrame.classList.remove('hidden');
                         if (placeholder) placeholder.classList.add('hidden');
                     }
@@ -2449,7 +2449,7 @@ function handleSyllabusUpload(input) {
             const placeholder = document.getElementById('pdf-placeholder');
             
             if (file.type === 'application/pdf') {
-                pdfFrame.src = fileURL;
+                pdfFrame.src = fileURL + '#toolbar=0&navpanes=0';
                 pdfFrame.classList.remove('hidden');
                 imagePreview.classList.add('hidden');
                 placeholder.classList.add('hidden');

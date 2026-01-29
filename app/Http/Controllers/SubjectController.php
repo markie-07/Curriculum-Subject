@@ -27,13 +27,7 @@ class SubjectController extends Controller
             'memorandum',
             'memorandum_year',
             'memorandum_category',
-            'q_1_performance_standards',
-            'q_1_performance_tasks',
-            'q_2_performance_standards',
-            'q_2_performance_tasks',
             'deped_data',
-            'time_allotment',
-            'schedule',
             'syllabus_path',
             'created_at',
             'program_mapping_grid',
@@ -86,13 +80,7 @@ class SubjectController extends Controller
             'memorandum' => 'nullable|string',
             'memorandum_year' => 'nullable|string',
             'memorandum_category' => 'nullable|string',
-            'q_1_performance_standards' => 'nullable|string',
-            'q_1_performance_tasks' => 'nullable|string',
-            'q_2_performance_standards' => 'nullable|string',
-            'q_2_performance_tasks' => 'nullable|string',
             'deped_data' => 'nullable|array',
-            'time_allotment' => 'nullable|string',
-            'schedule' => 'nullable|string',
             'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
@@ -129,13 +117,7 @@ class SubjectController extends Controller
             'memorandum' => $validated['memorandum'] ?? null,
             'memorandum_year' => $validated['memorandum_year'] ?? null,
             'memorandum_category' => $validated['memorandum_category'] ?? null,
-            'q_1_performance_standards' => $validated['q_1_performance_standards'] ?? null,
-            'q_1_performance_tasks' => $validated['q_1_performance_tasks'] ?? null,
-            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
-            'q_2_performance_tasks' => $validated['q_2_performance_tasks'] ?? null,
             'deped_data' => $validated['deped_data'] ?? null,
-            'time_allotment' => $validated['time_allotment'] ?? null,
-            'schedule' => $validated['schedule'] ?? null,
             'syllabus_path' => $syllabusPath,
         ]);
 
@@ -224,14 +206,8 @@ class SubjectController extends Controller
             'memorandum' => 'nullable|string',
             'memorandum_year' => 'nullable|string',
             'memorandum_category' => 'nullable|string',
-            'q_1_performance_standards' => 'nullable|string',
-            'q_1_performance_tasks' => 'nullable|string',
-            'q_2_performance_standards' => 'nullable|string',
-            'q_2_performance_tasks' => 'nullable|string',
             'deped_data' => 'nullable|array',
-            'time_allotment' => 'nullable|string',
-            'schedule' => 'nullable|string',
-            'schedule' => 'nullable|string',
+
             'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
@@ -259,16 +235,9 @@ class SubjectController extends Controller
             'approved_by' => $validated['approved_by'] ?? null,
             'memorandum' => $validated['memorandum'] ?? null,
             'memorandum_year' => $validated['memorandum_year'] ?? null,
-            'memorandum_year' => $validated['memorandum_year'] ?? null,
+
             'memorandum_category' => $validated['memorandum_category'] ?? null,
-            'q_1_performance_standards' => $validated['q_1_performance_standards'] ?? null,
-            'q_1_performance_tasks' => $validated['q_1_performance_tasks'] ?? null,
-            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
-            'q_2_performance_standards' => $validated['q_2_performance_standards'] ?? null,
-            'q_2_performance_tasks' => $validated['q_2_performance_tasks'] ?? null,
             'deped_data' => $validated['deped_data'] ?? null,
-            'time_allotment' => $validated['time_allotment'] ?? null,
-            'schedule' => $validated['schedule'] ?? null,
         ];
 
         if ($request->hasFile('syllabus_path')) {

@@ -1041,25 +1041,38 @@
                 // Get the current curriculum ID
                 let curriculumId = curriculumSelector.value;
                 
-                // Auto-detect context for Gen Ed subjects if no curriculum selected
+                // Auto-detect context for Gen Ed subjects or Global Major context if no curriculum selected
                 if (!curriculumId) {
                     const genEdTypes = ['Minor', 'General', 'Elective'];
+                    
                     if (genEdTypes.includes(subjectData.subject_type)) {
                         console.log('Auto-detecting General Education context for:', subjectCode);
                         curriculumId = 'gen-ed-college';
-                    } else {
+                    } 
+                    // NEW: Auto-detect Major subjects globally if no curriculum is active
+                    else if (subjectData.subject_type === 'Major' || subjectData.subject_type === 'Core' || subjectData.subject_type === 'Applied' || subjectData.subject_type === 'Specialized') {
+                        console.log('Auto-detecting Global Major context for:', subjectCode);
+                        if (subjectData.syllabus_type === 'DepEd') {
+                            curriculumId = 'major-shs';
+                        } else {
+                            curriculumId = 'major-college';
+                        }
+                    }
+                    else {
                         if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
                         if (chedPrereqToEl) chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
                         return;
                     }
                 }
                 
-                // Handle General Education special IDs
-                let apiUrl = `/api/prerequisites/${curriculumId}`;
-                if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
-                    apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
+                // Handle General Education and Major Global special IDs
+                let apiUrl = `/api/prerequisites/${curriculumId}?t=${new Date().getTime()}`;
+                if (['gen-ed-college', 'gen-ed-shs', 'major-college', 'major-shs'].includes(curriculumId)) {
+                    apiUrl = `/api/gen-ed-prerequisites/${curriculumId}?t=${new Date().getTime()}`;
                 }
                 
+                console.log(`🔍 Fetching prerequisites from: ${apiUrl} for subject: ${subjectCode}`);
+
                 // Fetch prerequisite data for the curriculum
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('Failed to fetch prerequisites');
@@ -1067,21 +1080,41 @@
                 const data = await response.json();
                 const prerequisites = data.prerequisites || {};
                 const subjects = data.subjects || [];
+
+                console.log('📦 Prerequisites Data:', prerequisites);
+                console.log(`🔑 Prerequisite Keys: ${Object.keys(prerequisites).join(', ')}`);
+                console.log(`🎯 Looking for connections to: ${subjectCode}`);
+
+                // Use allSystemSubjects (global) if available to lookup names of unmapped subjects
+                const lookupSubjects = (typeof allSystemSubjects !== 'undefined' && allSystemSubjects.length > 0) ? allSystemSubjects : subjects;
                 
                 // Find prerequisites for this subject (Credit Prerequisites - Parents)
                 // prerequisites[subjectCode] is an array of objects like { subject_code: "Child", prerequisite_subject_code: "Parent" }
                 const subjectPrereqObjects = prerequisites[subjectCode] || [];
                 const subjectPrereqCodes = subjectPrereqObjects.map(p => p.prerequisite_subject_code);
-                const prereqSubjects = subjects.filter(s => subjectPrereqCodes.includes(s.subject_code));
+                
+                // Map codes to subject objects, with fallback for missing ones
+                const prereqSubjects = subjectPrereqCodes.map(code => {
+                    const found = lookupSubjects.find(s => s.subject_code == code);
+                    return found || { subject_code: code, subject_name: 'Unlisted Subject', subject_type: 'N/A' };
+                });
+                
                 
                 // Find subjects that have this subject as a prerequisite (Pre-requisite to - Children)
                 const prereqTo = [];
+                const normalizedSubjectCode = String(subjectCode).trim();
+
                 Object.keys(prerequisites).forEach(childCode => {
                     // childCode requires the subjects listed in prerequisites[childCode]
-                    const parents = prerequisites[childCode].map(p => p.prerequisite_subject_code);
-                    if (parents.includes(subjectCode)) {
-                        const subject = subjects.find(s => s.subject_code === childCode);
-                        if (subject) prereqTo.push(subject);
+                    const parents = prerequisites[childCode].map(p => String(p.prerequisite_subject_code).trim());
+                    
+                    // Check if current subject is in the parents list (permissive check)
+                    const isParent = parents.some(p => p === normalizedSubjectCode);
+                    
+                    if (isParent) {
+                        const found = lookupSubjects.find(s => String(s.subject_code).trim() == String(childCode).trim());
+                        // Add subject or fallback
+                        prereqTo.push(found || { subject_code: childCode, subject_name: 'Unlisted Subject', subject_type: 'N/A' });
                     }
                 });
                 

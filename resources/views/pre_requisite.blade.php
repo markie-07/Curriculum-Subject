@@ -282,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedCurriculum = { id: null, name: '-- Select a Curriculum --' };
     let selectedModalSubject = { code: null, name: 'Select a Subject' };
     let prerequisiteSequence = []; // Track the order of prerequisite selection
+    let prerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
+    let dependentMap = {};    // Maps subject -> array of subjects that require it
 
     // --- Main Page Elements ---
     const setPrerequisiteBtn = document.getElementById('setPrerequisiteBtn');
@@ -887,8 +889,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fetch current prerequisites data to show which subjects have prerequisites and are prerequisites
         let subjectsWithPrerequisites = new Set();
         let subjectsUsedAsPrerequisites = new Set();
-        let prerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
-        let dependentMap = {};    // Maps subject -> array of subjects that require it
+        prerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
+        dependentMap = {};    // Maps subject -> array of subjects that require it
         
         fetch(`/api/prerequisites/${modalCurriculumIdInput.value}`)
             .then(response => response.json())
