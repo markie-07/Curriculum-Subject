@@ -139,6 +139,46 @@
                         </div>
                         <p class="ml-4 font-semibold text-gray-600">Total Weight</p>
                     </div>
+
+                    {{-- Template Selection --}}
+                    <div class="mt-6 border-t border-gray-200 pt-6">
+                         <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Select Subject Area (Standard Template)</h3>
+                            <div class="relative inline-block text-left">
+                                <button type="button" id="template-dropdown-btn" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Select Template
+                                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div id="template-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10 transition-all duration-200 opacity-0 transform scale-95">
+                                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="template-dropdown-btn">
+                                        <button type="button" class="template-option block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-template="gen_ed">
+                                            <span class="font-bold block">General Education</span>
+                                            <span class="text-xs text-gray-500">CS 40% | Proj 25% | Exam 35%</span>
+                                        </button>
+                                        <button type="button" class="template-option block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-template="prof_lab">
+                                            <span class="font-bold block">Professional - Laboratory</span>
+                                            <span class="text-xs text-gray-500">CS 35% | Proj 40% | Exam 25%</span>
+                                        </button>
+                                         <button type="button" class="template-option block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-template="prof_non_lab">
+                                            <span class="font-bold block">Professional - Non-Laboratory</span>
+                                            <span class="text-xs text-gray-500">CS 40% | Proj 35% | Exam 25%</span>
+                                        </button>
+                                        <button type="button" class="template-option block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-template="prof_board">
+                                            <span class="font-bold block">Professional - Board Courses</span>
+                                            <span class="text-xs text-gray-500">CS 40% | Proj 30% | Exam 30%</span>
+                                        </button>
+                                        <button type="button" class="template-option block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem" data-template="prof_non_board">
+                                            <span class="font-bold block">Professional - Non-Board</span>
+                                            <span class="text-xs text-gray-500">CS 35% | Proj 40% | Exam 25%</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                         <p class="text-xs text-gray-500 mb-4">Note: Applying a template will overwrite any existing grade components.</p>
+                    </div>
                 </div>
 
                 <div class="mt-10 pt-6 border-t border-gray-200">
@@ -652,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
         componentContainer.innerHTML = `
             <div class="accordion-toggle w-full flex justify-between items-center p-4 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
                 <div class="flex items-center gap-4">
-                    <input type="text" value="${period.startsWith('component') ? '' : period}" placeholder="Component Name (e.g., Midterm)" class="component-name-input font-semibold text-lg text-gray-700 capitalize border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" value="${period.startsWith('component') ? '' : period}" placeholder="Subject Area / Component Name (e.g., Midterm)" class="component-name-input font-semibold text-lg text-gray-700 capitalize border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                     <div class="flex items-center">
                         <input type="number" value="${weight}" class="semestral-input w-20 text-center font-bold border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
                         <span class="ml-2 text-lg text-gray-600">%</span>
@@ -671,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <table class="w-full text-sm">
                         <thead class="border-b border-gray-200">
                             <tr>
-                                <th class="p-2 text-left font-semibold text-gray-600">Sub-Component</th>
+                                <th class="p-2 text-left font-semibold text-gray-600">Sub-Component / Modality</th>
                                 <th class="p-2 text-center font-semibold text-gray-600 w-28">Weight (%)</th>
                                 <th class="p-2 text-center font-semibold text-gray-600 w-28">Actions</th>
                             </tr>
@@ -706,6 +746,244 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return componentContainer;
     };
+
+    // Template Definitions
+    const templates = {
+        gen_ed: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                    name: 'Class Standing',
+                    weight: 40,
+                    sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 33 },
+                        { name: 'Written Works (WW) - Online', weight: 17 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 27 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 13 }
+                    ]
+                },
+                {
+                    name: 'Project',
+                    weight: 25,
+                    sub_components: [
+                        { name: 'Course-based Output (CBO)', weight: 100 }
+                    ]
+                },
+                {
+                    name: 'Examination',
+                    weight: 35,
+                    sub_components: [
+                        { name: 'Written Examination (WE)', weight: 100 }
+                    ]
+                }
+            ]
+        },
+        prof_lab: {
+             periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 35,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 27 },
+                        { name: 'Written Works (WW) - Online', weight: 13 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 33 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 17 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 40,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 25,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        prof_non_lab: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 40,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 27 },
+                        { name: 'Written Works (WW) - Online', weight: 13 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 33 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 17 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 35,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 25,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        prof_board: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 40,
+                     sub_components: [
+                         { name: 'Attendance (Att.) - F2F', weight: 7 },
+                         { name: 'Attendance (Att.) - Online', weight: 3 },
+                         { name: 'Written Works (WW) - F2F', weight: 40 },
+                         { name: 'Written Works (WW) - Online', weight: 0 },
+                         { name: 'Performance Tasks (PT) - F2F', weight: 50 },
+                         { name: 'Performance Tasks (PT) - Online', weight: 0 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 30,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 30,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        prof_non_board: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 35,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 27 },
+                        { name: 'Written Works (WW) - Online', weight: 13 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 33 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 17 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 40,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 25,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        }
+    };
+
+    const applyTemplate = (templateKey) => {
+        const template = templates[templateKey];
+        if (!template) return;
+
+        accordionContainer.innerHTML = ''; // Clear existing
+
+        template.periods.forEach(period => {
+             const newComponent = createGradeComponent(period.name, period.weight, template.components);
+             accordionContainer.appendChild(newComponent);
+        });
+
+        calculateAndUpdateTotals();
+    };
+
+    // Template Dropdown Logic
+    const templateBtn = document.getElementById('template-dropdown-btn');
+    const templateMenu = document.getElementById('template-dropdown-menu');
+
+    if (templateBtn && templateMenu) {
+        templateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = templateMenu.classList.contains('hidden');
+            if (isHidden) {
+                templateMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    templateMenu.classList.remove('opacity-0', 'scale-95');
+                    templateMenu.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                templateMenu.classList.remove('opacity-100', 'scale-100');
+                templateMenu.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    templateMenu.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!templateMenu.contains(e.target) && !templateBtn.contains(e.target)) {
+                 templateMenu.classList.remove('opacity-100', 'scale-100');
+                 templateMenu.classList.add('opacity-0', 'scale-95');
+                 setTimeout(() => {
+                    templateMenu.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        document.querySelectorAll('.template-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const templateKey = btn.dataset.template;
+                
+                // Confirm Overwrite
+                if (accordionContainer.children.length > 0) {
+                     Swal.fire({
+                        title: 'Apply Template?',
+                        text: "This will overwrite your current grade components. Continue?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#4f46e5',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, apply it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                             applyTemplate(templateKey);
+                             templateMenu.classList.add('hidden'); // Close menu
+                        }
+                    });
+                } else {
+                    applyTemplate(templateKey);
+                    templateMenu.classList.add('hidden');
+                }
+            });
+        });
+    }
 
     addGradeComponentBtn.addEventListener('click', () => {
         // Check if subjects are selected
@@ -746,9 +1024,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const namePlaceholder = isSub ? "Sub-component Name" : "Main Component Name";
         const inputClass = isSub ? 'sub-input' : 'main-input';
         
+        const componentNameBg = !isSub ? 'bg-blue-50 focus:bg-white transition-colors border border-blue-200 focus:border-indigo-500' : 'bg-transparent border-0 focus:ring-0';
+        
         tr.innerHTML = `
             <td class="p-2 ${isSub ? 'pl-6' : 'pl-4'} align-middle">
-                <input type="text" placeholder="${namePlaceholder}" value="${component.name}" class="component-name-input w-full border-0 focus:ring-0 p-1 rounded bg-transparent">
+                <input type="text" placeholder="${namePlaceholder}" value="${component.name}" class="component-name-input w-full p-2 rounded appearance-none ${componentNameBg}">
             </td>
             <td class="p-2 w-28 align-middle">
                 <input type="number" value="${component.weight}" class="${inputClass} w-full text-center font-semibold border-gray-300 rounded-lg p-2 shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
