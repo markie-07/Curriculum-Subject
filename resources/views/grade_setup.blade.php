@@ -195,6 +195,7 @@
         </div>
 
         {{-- Grade History --}}
+
         <div id="grade-history-card-main" class="lg:col-span-1 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80 flex flex-col">
             <h2 id="grade-history-title" class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Curriculum Grade History</h2>
             
@@ -808,9 +809,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     weight: 40,
                     sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
                 },
-                 {
+                {
                     name: 'Examination',
                     weight: 25,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        permanent: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 40,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 27 },
+                        { name: 'Written Works (WW) - Online', weight: 13 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 33 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 17 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 30,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 30,
                     sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
                 }
             ]
@@ -839,9 +871,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     weight: 35,
                     sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
                 },
-                 {
+                {
                     name: 'Examination',
                     weight: 25,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        permanent: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 40,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 7 },
+                        { name: 'Attendance (Att.) - Online', weight: 3 },
+                        { name: 'Written Works (WW) - F2F', weight: 27 },
+                        { name: 'Written Works (WW) - Online', weight: 13 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 33 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 17 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 30,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 30,
                     sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
                 }
             ]
@@ -901,10 +964,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     weight: 40,
                     sub_components: [ {name: 'Course-based Output (CBO)', weight: 100} ]
                 },
-                 {
+                {
                     name: 'Examination',
                     weight: 25,
                     sub_components: [ {name: 'Written Examination (WE)', weight: 100} ]
+                }
+            ]
+        },
+        permanent: {
+            periods: [
+                 { name: 'Prelim', weight: 30 },
+                 { name: 'Midterm', weight: 30 },
+                 { name: 'Finals', weight: 40 }
+            ],
+            components: [
+                {
+                     name: 'Class Standing',
+                     weight: 0,
+                     sub_components: [
+                        { name: 'Attendance (Att.) - F2F', weight: 0 },
+                        { name: 'Attendance (Att.) - Online', weight: 0 },
+                        { name: 'Written Works (WW) - F2F', weight: 0 },
+                        { name: 'Written Works (WW) - Online', weight: 0 },
+                        { name: 'Performance Tasks (PT) - F2F', weight: 0 },
+                        { name: 'Performance Tasks (PT) - Online', weight: 0 }
+                     ]
+                },
+                {
+                    name: 'Project',
+                    weight: 0,
+                    sub_components: [ {name: 'Course-based Output (CBO)', weight: 0} ]
+                },
+                 {
+                    name: 'Examination',
+                    weight: 0,
+                    sub_components: [ {name: 'Written Examination (WE)', weight: 0} ]
                 }
             ]
         }
@@ -1455,6 +1549,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const populateCurriculumList = (curriculums) => {
         memorandumList.innerHTML = '';
 
+        // Minor Subjects Header
+        const minorHeader = document.createElement('h4');
+        minorHeader.className = 'text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 pl-2';
+        minorHeader.textContent = 'Minor Subjects';
+        memorandumList.appendChild(minorHeader);
+
         // Add General Education Option
         const genEdDiv = document.createElement('div');
         genEdDiv.className = 'p-3 hover:bg-green-50 rounded-lg cursor-pointer border border-transparent hover:border-green-200 transition-colors duration-150 mb-3 border-b border-gray-100 pb-3';
@@ -1487,6 +1587,12 @@ document.addEventListener('DOMContentLoaded', () => {
             memorandumList.appendChild(msg);
             return;
         }
+
+        // Major Subjects Header
+        const majorHeader = document.createElement('h4');
+        majorHeader.className = 'text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4 pl-2';
+        majorHeader.textContent = 'Major Subjects';
+        memorandumList.appendChild(majorHeader);
         
         curriculums.forEach(curriculum => {
             const div = document.createElement('div');
@@ -1780,7 +1886,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (accordionContainer.children.length === 0) {
                 // Use setTimeout to ensure UI updates first and transition works
                 setTimeout(() => {
-                    addGradeComponentBtn.click();
+                    // Check if strictly one major subject is selected (or at least one)
+                    // The user requested: "i select the major subject... apply"
+                    const hasMajorSubject = selectedSubjects.some(s => (s.subject_type || '').toLowerCase() === 'major');
+                    
+                    if (hasMajorSubject) {
+                        applyTemplate('permanent');
+                    } else {
+                        addGradeComponentBtn.click();
+                    }
                 }, 100);
             }
         } else {
