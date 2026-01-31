@@ -71,6 +71,22 @@
                                 <option value="Minor">Minor</option>
                             </select>
                         </div>
+                        <div>
+                            <label for="course_classification" class="block text-sm font-medium text-gray-700">Subject Category</label>
+                            <select name="course_classification" id="course_classification" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="General Education">General Education</option>
+                                <option value="Professional Subject Non Laboratory">Professional Subject Non Laboratory</option>
+                                <option value="Professional Subject Laboratory">Professional Subject Laboratory</option>
+                                <option value="Professional Subject Board Courses">Professional Subject Board Courses</option>
+                                <option value="Professional Subject Non Board Courses">Professional Subject Non Board Courses</option>
+                                <option value="Professional Subject OC">Professional Subject OC</option>
+                                <option value="NSTP 1">NSTP 1</option>
+                                <option value="NSTP 2">NSTP 2</option>
+                                <option value="Research">Research</option>
+                                <option value="OJT/Practicum">OJT/Practicum</option>
+                            </select>
+                        </div>
 
                         <div class="md:col-span-2 lg:col-span-2">
                             <label for="curriculum_id" class="block text-sm font-medium text-gray-700">Curriculum</label>
@@ -1224,6 +1240,7 @@ function switchSyllabus(type) {
         document.getElementById('course_title').value = '';
         document.getElementById('course_code').value = '';
         document.getElementById('subject_type').value = '';
+        document.getElementById('course_classification').value = '';
         document.getElementById('course_description').value = '';
         
         // Clear Approval fields
@@ -1576,6 +1593,7 @@ Learning Management System`;
         document.getElementById('course_title').value = subject.subject_name;
         document.getElementById('course_code').value = subject.subject_code;
         document.getElementById('subject_type').value = subject.subject_type;
+        document.getElementById('course_classification').value = subject.course_classification || '';
         document.getElementById('credit_units').value = subject.subject_unit;
         document.getElementById('contact_hours').value = subject.contact_hours;
         document.getElementById('course_description').value = subject.course_description;
@@ -1813,6 +1831,7 @@ Learning Management System`;
         formData.append('course_title', document.getElementById('course_title').value);
         formData.append('subject_code', document.getElementById('course_code').value);
         formData.append('subject_type', document.getElementById('subject_type').value);
+        formData.append('course_classification', document.getElementById('course_classification').value);
         
         const syllabusType = document.getElementById('syllabus_type').value;
         formData.append('syllabus_type', syllabusType);

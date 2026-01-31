@@ -20,6 +20,7 @@ class SubjectController extends Controller
             'subject_code',
 
             'subject_type', // Ensure this line exists
+            'course_classification',
             'syllabus_type',
             'subject_unit',
             'contact_hours',
@@ -58,6 +59,7 @@ class SubjectController extends Controller
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code',
             'subject_unit' => 'nullable|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'course_classification' => 'nullable|string',
             'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
             'contact_hours' => 'nullable|integer',
@@ -96,6 +98,7 @@ class SubjectController extends Controller
             'subject_name' => $validated['course_title'],
             'subject_code' => $validated['subject_code'],
             'subject_type' => $validated['subject_type'],
+            'course_classification' => $validated['course_classification'] ?? null,
             'syllabus_type' => $validated['syllabus_type'] ?? 'CHED',
             'subject_unit' => $validated['subject_unit'] ?? 0,
             'lessons' => $validated['lessons'] ?? null,
@@ -184,6 +187,7 @@ class SubjectController extends Controller
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code,' . $subject->id,
             'subject_unit' => 'nullable|integer',
             'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'course_classification' => 'nullable|string',
             'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
             'contact_hours' => 'nullable|integer',
@@ -215,6 +219,7 @@ class SubjectController extends Controller
             'subject_name' => $validated['course_title'],
             'subject_code' => $validated['subject_code'],
             'subject_type' => $validated['subject_type'],
+            'course_classification' => $validated['course_classification'] ?? null,
             'syllabus_type' => $validated['syllabus_type'] ?? 'CHED',
             'subject_unit' => $validated['subject_unit'] ?? 0,
             'lessons' => $validated['lessons'] ?? null,
@@ -370,6 +375,7 @@ class SubjectController extends Controller
                         'subject_name' => $version->subject_name,
                         'subject_code' => $version->subject_code,
                         'subject_type' => $version->subject_type,
+                        'course_classification' => $version->course_classification,
                         'subject_unit' => $version->subject_unit,
                         'units' => $version->subject_unit, // For compatibility with frontend
                         'contact_hours' => $version->contact_hours,

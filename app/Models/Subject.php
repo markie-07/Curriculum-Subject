@@ -17,6 +17,7 @@ class Subject extends Model
         'subject_name',
         'syllabus_type',
         'subject_type',
+        'course_classification',
         'subject_unit',
         'memorandum',
         'memorandum_year',
