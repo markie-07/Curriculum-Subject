@@ -110,6 +110,7 @@ class CurriculumExportToolController extends Controller
                         'subject_name' => $subject->subject_name,
                         'subject_code' => $subject->subject_code,
                         'subject_type' => $subject->subject_type,
+                        'course_classification' => $subject->course_classification,
                         'subject_unit' => $subject->subject_unit,
                         'year' => $subject->pivot->year ?? 'N/A',
                         'semester' => $subject->pivot->semester ?? 'N/A'
@@ -140,26 +141,21 @@ class CurriculumExportToolController extends Controller
                 
                 // Apply course type filtering if specified
                 if (!empty($courseTypes)) {
-                    // Handle General Education with flexible matching
-                    if (in_array('General Education', $courseTypes)) {
-                        $geIdentifiers = ['GE', 'General Education', 'Gen Ed', 'General'];
-                        $otherTypes = array_diff($courseTypes, ['General Education']);
+                    $query->where(function ($subQuery) use ($courseTypes) {
+                        // Match subject_type
+                        $subQuery->whereIn('subject_type', $courseTypes);
                         
-                        $query->where(function ($subQuery) use ($geIdentifiers, $otherTypes) {
-                            // Match General Education subjects with flexible matching
+                        // Match course_classification
+                        $subQuery->orWhereIn('course_classification', $courseTypes);
+                        
+                        // Handle General Education with flexible matching
+                        if (in_array('General Education', $courseTypes)) {
+                            $geIdentifiers = ['GE', 'General Education', 'Gen Ed', 'General'];
                             foreach ($geIdentifiers as $geId) {
                                 $subQuery->orWhere('subject_type', 'LIKE', '%' . $geId . '%');
                             }
-                            
-                            // Match other types exactly
-                            if (!empty($otherTypes)) {
-                                $subQuery->orWhereIn('subject_type', $otherTypes);
-                            }
-                        });
-                    } else {
-                        // Use exact matching for non-GE subjects
-                        $query->whereIn('subject_type', $courseTypes);
-                    }
+                        }
+                    });
                 }
             }, 
             'subjects.prerequisites', 

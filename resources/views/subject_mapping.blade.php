@@ -131,8 +131,7 @@
                     </div>
                     <select id="typeFilter" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         <option value="All Types">All Types</option>
-                        <option value="Major">Major</option>
-                        <option value="Minor">Minor</option>
+                        <option value="General Education">General Education</option>
                         <option value="NSTP 1">NSTP 1</option>
                         <option value="NSTP 2">NSTP 2</option>
                         <option value="Research">Research</option>
@@ -265,6 +264,25 @@
                         <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                              <h3 class="text-lg font-semibold text-gray-700 mb-4">COURSE MAPPING GRID</h3>
                             <div id="chedCourseMapping"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Section: Department Vision and Mission -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
+                        Department Vision & Mission
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-8">
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-700 mb-3">Department Vision</label>
+                            <div id="chedDeptVision" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-700 mb-3">Department Mission</label>
+                            <div id="chedDeptMission" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div>
                         </div>
                     </div>
                 </div>
@@ -741,17 +759,17 @@
                             </button>
                         </div>
                         <div class="grid grid-cols-2 gap-6">
-                            {{-- Minor Subjects Column --}}
+                            {{-- General Education Subjects Column --}}
                             <div>
-                                <h3 class="text-lg font-semibold text-purple-700 mb-3 pb-2 border-b border-purple-200">Minor Subjects</h3>
+                                <h3 class="text-lg font-semibold text-purple-700 mb-3 pb-2 border-b border-purple-200">General Education</h3>
                                 <div id="modalMinorSubjectList" class="space-y-2">
                                     <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
                                 </div>
                             </div>
                             
-                            {{-- Major Subjects Column --}}
+                            {{-- Professional Subjects Column --}}
                             <div>
-                                <h3 class="text-lg font-semibold text-blue-700 mb-3 pb-2 border-b border-blue-200">Major Subjects</h3>
+                                <h3 class="text-lg font-semibold text-blue-700 mb-3 pb-2 border-b border-blue-200">Professional Subjects</h3>
                                 <div id="modalMajorSubjectList" class="space-y-2">
                                     <p class="text-gray-500 text-center py-8 text-sm">Loading...</p>
                                 </div>
@@ -882,6 +900,14 @@
         const selectedSubjectsCount = document.getElementById('selectedSubjectsCount');
         let allSystemSubjects = [];
         let selectedSubjectsForAdding = new Set();
+        
+        // --- CONSTANTS FOR VISION & MISSION ---
+        const defaultDeptVision = "To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.";
+        const defaultDeptMission = "The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.";
+
+        const genEdDeptVision = "BCP General Education Department innovates, investigates and discovers greatness and prosperity through oneness.";
+        const genEdDeptMission = "To awaken the curiosity and ignite passion of individuals to excel independency in academic endeavors towards their development into ethically and morally strong people.";
+
 
         // --- CORE ELEMENTS & STATE ---
         const searchInput = document.getElementById('searchInput');
@@ -1220,6 +1246,11 @@
             setText('chedSubjectUnit', data.subject_unit);
             setText('chedContactHours', data.contact_hours);
             setText('chedCourseDescription', data.course_description);
+
+            // Department Vision & Mission
+            const isGenEd = data.course_classification === 'General Education' || (data.subject_type && data.subject_type.includes('Gen'));
+            setText('chedDeptVision', isGenEd ? genEdDeptVision : defaultDeptVision);
+            setText('chedDeptMission', isGenEd ? genEdDeptMission : defaultDeptMission);
             
             // Fetch and display prerequisites
             await fetchAndDisplayPrerequisites(data);
@@ -2413,8 +2444,19 @@ const updateAllTotals = () => {
         
         document.getElementById('confirmImportButton').addEventListener('click', () => {
             if (subjectToImport) {
-                // Redirect to the export route
-                window.location.href = `/api/subjects/${subjectToImport.id}/export-pdf`;
+                // Determine which texts to use
+                const isGenEd = subjectToImport.course_classification === 'General Education' || (subjectToImport.subject_type && subjectToImport.subject_type.includes('Gen'));
+                const vision = isGenEd ? genEdDeptVision : defaultDeptVision;
+                const mission = isGenEd ? genEdDeptMission : defaultDeptMission;
+                
+                // Encode for URL
+                const params = new URLSearchParams({
+                    vision: vision,
+                    mission: mission
+                });
+
+                // Redirect to the export route with params
+                window.location.href = `/api/subjects/${subjectToImport.id}/export-pdf?${params.toString()}`;
             }
             hideImportConfirmationModal();
         });
@@ -2630,23 +2672,26 @@ const updateAllTotals = () => {
             const searchTerm = searchInput.value.toLowerCase();
             const selectedType = typeFilter.value;
             const subjectCards = availableSubjectsContainer.querySelectorAll('.subject-card');
-            const geIdentifiers = ["ge", "general education", "gen ed"];
+            const geIdentifiers = ["ge", "general education", "gen ed", "minor", "general"];
 
             subjectCards.forEach(card => {
                 const subjectData = JSON.parse(card.dataset.subjectData);
                 const subjectType = subjectData.subject_type.toLowerCase();
+                const courseClassification = (subjectData.course_classification || '').toLowerCase();
                 
                 const searchMatch = subjectData.subject_name.toLowerCase().includes(searchTerm) || subjectData.subject_code.toLowerCase().includes(searchTerm);
                 
                 let typeMatch = false;
                 if (selectedType === 'All Types') {
                     typeMatch = true;
-                } else if (selectedType === 'GE') {
-                    typeMatch = geIdentifiers.some(id => subjectType.includes(id));
+                } else if (selectedType === 'General Education') {
+                    // Match General Education by checking both subject_type and course_classification
+                    typeMatch = geIdentifiers.some(id => subjectType.includes(id) || courseClassification.includes(id));
                 } else if (selectedType.startsWith('Professional Subject')) {
                     // Check course_classification for Professional Subjects
                     typeMatch = subjectData.course_classification === selectedType;
                 } else {
+                    // For other types (NSTP, Research, OJT/Practicum), match exactly
                     typeMatch = (subjectType === selectedType.toLowerCase());
                 }
 

@@ -85,17 +85,32 @@
                             </select>
                         </div>
                         <script>
+                            const defaultDeptVision = "To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.";
+                            const defaultDeptMission = "The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.";
+
+                            const genEdDeptVision = "BCP General Education Department innovates, investigates and discovers greatness and prosperity through oneness.";
+                            const genEdDeptMission = "To awaken the curiosity and ignite passion of individuals to excel independency in academic endeavors towards their development into ethically and morally strong people.";
+
                             function updateSubjectType() {
                                 const classification = document.getElementById('course_classification').value;
                                 const subjectTypeInput = document.getElementById('subject_type');
+                                const visionText = document.getElementById('dept_vision_text');
+                                const missionText = document.getElementById('dept_mission_text');
                                 
                                 let type = '';
                                 if (classification === 'General Education') {
                                     type = 'Minor';
+                                    if(visionText) visionText.textContent = genEdDeptVision;
+                                    if(missionText) missionText.textContent = genEdDeptMission;
                                 } else if (classification && classification.startsWith('Professional Subject')) {
                                     type = 'Major';
+                                    if(visionText) visionText.textContent = defaultDeptVision;
+                                    if(missionText) missionText.textContent = defaultDeptMission;
                                 } else if (['NSTP 1', 'NSTP 2', 'Research', 'OJT/Practicum'].includes(classification)) {
                                     type = classification;
+                                    // Keep default for others or specified? Assuming default/CCS for now unless requested otherwise.
+                                    if(visionText) visionText.textContent = defaultDeptVision;
+                                    if(missionText) missionText.textContent = defaultDeptMission;
                                 }
                                 
                                 subjectTypeInput.value = type;
@@ -254,7 +269,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold text-gray-600 mb-2">DEPARTMENT</h4>
-                                <p class="text-gray-700 text-sm">To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.</p>
+                                <p id="dept_vision_text" class="text-gray-700 text-sm">To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.</p>
                             </div>
                         </div>
                     </div>
@@ -268,7 +283,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold text-gray-600 mb-2">DEPARTMENT</h4>
-                                <p class="text-gray-700 text-sm">The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.</p>
+                                <p id="dept_mission_text" class="text-gray-700 text-sm">The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.</p>
                             </div>
                         </div>
                     </div>

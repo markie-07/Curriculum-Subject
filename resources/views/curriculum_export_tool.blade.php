@@ -113,20 +113,52 @@
                         </div>
                     </div>
 
-                    {{-- Course Type Filter --}}
+                    {{-- Subject Type Filter --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Filter by Course Type (Optional)</label>
-                        <div class="grid grid-cols-2 gap-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Filter by Subject Type (Optional)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                             <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                                <input type="checkbox" name="course_types" value="Major" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                <span class="ml-3 text-sm font-medium text-gray-700">Major</span>
+                                <input type="checkbox" name="course_types" value="General Education" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">General Education</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                                <input type="checkbox" name="course_types" value="Minor" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                <span class="ml-3 text-sm font-medium text-gray-700">Minor</span>
+                                <input type="checkbox" name="course_types" value="Professional Subject - Non-Laboratory" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Professional Subject - Non-Laboratory</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="Professional Subject - Laboratory" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Professional Subject - Laboratory</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="Professional Subject - Board Courses" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Professional Subject - Board Courses</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="Professional Subject - Non-Board Courses" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Professional Subject - Non-Board Courses</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="Professional Subject - OC" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Professional Subject - OC</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="NSTP 1" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">NSTP 1</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="NSTP 2" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">NSTP 2</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="Research" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">Research</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="checkbox" name="course_types" value="OJT/PRACTICUM" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-medium text-gray-700">OJT/PRACTICUM</span>
                             </label>
                         </div>
-                        <p class="mt-2 text-xs text-gray-500">Leave unchecked to include all course types in the export.</p>
+                        <p class="mt-2 text-xs text-gray-500">Leave unchecked to include all subject types in the export.</p>
                         <div id="filter-summary" class="mt-3 hidden">
                             <div class="flex items-center gap-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -588,17 +620,23 @@ document.addEventListener('DOMContentLoaded', function () {
             
             filteredSubjects = filteredSubjects.filter(subject => {
                 const subjectType = subject.subject_type;
+                const classification = subject.course_classification;
                 
                 return selectedTypes.some(selectedType => {
+                    // Check direct match with subject_type
+                    if (subjectType === selectedType) return true;
+                    
+                    // Check direct match with course_classification
+                    if (classification === selectedType) return true;
+                    
                     if (selectedType === 'General Education') {
                         // Handle General Education with flexible matching
                         return geIdentifiers.some(id => 
                             subjectType.toLowerCase().includes(id.toLowerCase())
                         );
-                    } else {
-                        // Exact match for other types
-                        return subjectType === selectedType;
-                    }
+                    } 
+                    
+                    return false;
                 });
             });
         }
@@ -743,7 +781,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                    .map(checkbox => checkbox.value);
 
         // Build export URL with filters
-        let exportUrl = `/curriculum/${curriculumId}/export-pdf`;
+        let exportUrl = `/api/curriculum/${curriculumId}/export-pdf`;
         if (selectedTypes.length > 0) {
             const queryParams = new URLSearchParams();
             selectedTypes.forEach(type => queryParams.append('course_types[]', type));
