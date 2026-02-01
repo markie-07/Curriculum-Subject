@@ -64,6 +64,7 @@ class EmployeeController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => 'employee',
                 'status' => 'active', // Set default status
+                'modules' => json_encode($request->input('modules', [])),
             ]);
 
             // Log activity
@@ -137,6 +138,7 @@ class EmployeeController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
+            'modules' => json_encode($request->input('modules', [])),
         ];
 
         if ($request->filled('password')) {

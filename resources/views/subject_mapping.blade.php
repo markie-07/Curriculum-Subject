@@ -237,7 +237,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                              <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Subject Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="chedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
 
@@ -424,7 +424,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                              <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="depedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Subject Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="depedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
@@ -955,7 +955,7 @@
             setText('depedCourseTitle', data.subject_name);
             setText('depedSubjectCode', data.subject_code);
             setText('depedCourseClassification', data.course_classification); // Added
-            setText('depedSubjectType', data.subject_type);
+            setText('depedSubjectType', data.course_classification || data.subject_type);
             
             // Hide Obsolete Sections/Fields for DepEd as requested
             const hideEl = (id) => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); };
@@ -1216,7 +1216,7 @@
             setText('chedCourseTitle', data.subject_name);
             setText('chedSubjectCode', data.subject_code);
             setText('chedCourseClassification', data.course_classification); // Added
-            setText('chedSubjectType', data.subject_type);
+            setText('chedSubjectType', data.course_classification || data.subject_type);
             setText('chedSubjectUnit', data.subject_unit);
             setText('chedContactHours', data.contact_hours);
             setText('chedCourseDescription', data.course_description);
@@ -2414,7 +2414,7 @@ const updateAllTotals = () => {
         document.getElementById('confirmImportButton').addEventListener('click', () => {
             if (subjectToImport) {
                 // Redirect to the export route
-                window.location.href = `/subjects/${subjectToImport.id}/export-pdf`;
+                window.location.href = `/api/subjects/${subjectToImport.id}/export-pdf`;
             }
             hideImportConfirmationModal();
         });

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'role',
         'status',
         'last_activity',
+        'modules',
     ];
 
     /**
@@ -48,6 +49,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'last_activity' => 'datetime',
+            'modules' => 'array',
         ];
     }
 
@@ -166,5 +168,37 @@ class User extends Authenticatable
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
+    }
+
+    /**
+     * Check if employee has access to a specific module
+     */
+    public function hasModuleAccess(string $module): bool
+    {
+        // Admins and super admins have access to everything
+        if ($this->isAdminOrSuperAdmin()) {
+            return true;
+        }
+
+        // Get modules and ensure it's an array
+        $modules = $this->modules;
+        
+        // Handle null or empty values
+        if (empty($modules)) {
+            return false;
+        }
+        
+        // If it's a string (shouldn't happen with proper casting, but just in case)
+        if (is_string($modules)) {
+            $modules = json_decode($modules, true) ?? [];
+        }
+        
+        // Ensure it's an array
+        if (!is_array($modules)) {
+            return false;
+        }
+
+        // Check if employee has access to the module
+        return in_array($module, $modules);
     }
 }

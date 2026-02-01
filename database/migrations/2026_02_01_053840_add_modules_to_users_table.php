@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'last_activity')) {
-                $table->timestamp('last_activity')->nullable();
+            if (!Schema::hasColumn('users', 'modules')) {
+                $table->json('modules')->nullable()->after('role');
             }
         });
     }
@@ -24,8 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'last_activity')) {
-                $table->dropColumn('last_activity');
+            if (Schema::hasColumn('users', 'modules')) {
+                $table->dropColumn('modules');
             }
         });
     }

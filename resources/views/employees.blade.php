@@ -171,6 +171,9 @@
                     </div>
                 </div>
 
+                <!-- Module Access Control -->
+                @include('partials.module-access-control')
+
                 <!-- Submit Buttons -->
                 <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
                     <a href="{{ route('employees.index') }}" 
@@ -558,6 +561,9 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Module Access Control -->
+                        @include('partials.module-access-control-modal', ['employee' => null])
 
                         <div class="flex gap-4 pt-4">
                             <button type="button" id="cancelEmployeeModalButton" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>

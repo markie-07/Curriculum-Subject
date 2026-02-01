@@ -30,7 +30,7 @@
         @php $isEmployee = Auth::user()->role === 'employee'; @endphp
         
         <!-- Dashboard -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('dashboard'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -50,7 +50,7 @@
         <div class="border-t border-blue-600/30 my-3"></div>
 
         <!-- Official Curriculum -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('official_curriculum'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
@@ -75,7 +75,7 @@
             <p class="text-[10px] text-blue-200/60 mt-0.5">Build and manage curriculums</p>
         </div>
         <!-- Curriculum Builder -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('curriculum_builder'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -93,7 +93,7 @@
         @endif
 
         <!-- Subject Mapping -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('subject_mapping'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
@@ -111,7 +111,7 @@
         @endif
 
         <!-- Pre-requisite -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('pre_requisite'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
@@ -129,7 +129,7 @@
         @endif
 
         <!-- Compliance Validator -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('compliance_validator'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -155,7 +155,7 @@
             <p class="text-[10px] text-blue-200/60 mt-0.5">Course and grade management</p>
         </div>
         <!-- Course Builder -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('course_builder'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -173,7 +173,7 @@
         @endif
 
         <!-- Grade Weighting Setup -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('grade_setup'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
@@ -194,7 +194,7 @@
         <div class="border-t border-blue-600/30 my-3"></div>
 
         <!-- SOLO: Subject Equivalency Tool -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('equivalency_tool'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
@@ -215,7 +215,7 @@
         <div class="border-t border-blue-600/30 my-3"></div>
 
         <!-- SOLO: Mapping History -->
-        @if($isEmployee)
+        @if($isEmployee && !Auth::user()->hasModuleAccess('mapping_history'))
         <div class="locked-item group flex items-center px-4 py-3 text-sm font-medium rounded-xl bg-gray-600/20 border border-gray-500/30 cursor-not-allowed opacity-60 relative">
             <div class="w-8 h-8 bg-gray-600/30 rounded-lg flex items-center justify-center mr-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

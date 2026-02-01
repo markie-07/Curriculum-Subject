@@ -39,14 +39,25 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('curriculums', function (Blueprint $table) {
-            $table->dropColumn([
+            $columnsToCheck = [
                 'compliance',
                 'memorandum_year',
                 'memorandum_category',
                 'memorandum',
                 'semester_units',
                 'total_units'
-            ]);
+            ];
+            
+            $columnsToDrop = [];
+            foreach ($columnsToCheck as $column) {
+                if (Schema::hasColumn('curriculums', $column)) {
+                    $columnsToDrop[] = $column;
+                }
+            }
+            
+            if (!empty($columnsToDrop)) {
+                $table->dropColumn($columnsToDrop);
+            }
         });
     }
 };
