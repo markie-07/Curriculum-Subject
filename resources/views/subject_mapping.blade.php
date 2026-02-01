@@ -133,6 +133,15 @@
                         <option value="All Types">All Types</option>
                         <option value="Major">Major</option>
                         <option value="Minor">Minor</option>
+                        <option value="NSTP 1">NSTP 1</option>
+                        <option value="NSTP 2">NSTP 2</option>
+                        <option value="Research">Research</option>
+                        <option value="OJT/Practicum">OJT/Practicum</option>
+                        <option value="Professional Subject Non Laboratory">Professional Subject Non Laboratory</option>
+                        <option value="Professional Subject Laboratory">Professional Subject Laboratory</option>
+                        <option value="Professional Subject Board Courses">Professional Subject Board Courses</option>
+                        <option value="Professional Subject Non Board Courses">Professional Subject Non Board Courses</option>
+                        <option value="Professional Subject OC">Professional Subject OC</option>
                     </select>
                 </div>
 
@@ -228,16 +237,15 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                              <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="chedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-
-                            <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
                             <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
                         </div>
                     </div>
@@ -257,6 +265,43 @@
                         <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                              <h3 class="text-lg font-semibold text-gray-700 mb-4">COURSE MAPPING GRID</h3>
                             <div id="chedCourseMapping"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Institutional Information -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Institutional Information
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Legend</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                                <ul class="space-y-2">
+                                    <li><span class="font-bold text-gray-800">L</span> – Facilitate Learning of the competencies</li>
+                                    <li><span class="font-bold text-gray-800">P</span> – Allow student to practice competencies (No input but competency is evaluated)</li>
+                                    <li><span class="font-bold text-gray-800">O</span> – Provide opportunity for development (No input or evaluation, but there is opportunity to practice the competencies)</li>
+                                </ul>
+                                <ul class="space-y-2">
+                                    <li><span class="font-bold text-gray-800">CTPSS</span> - Critical Thinking and Problem-Solving Skills</li>
+                                    <li><span class="font-bold text-gray-800">ECC</span> - Effective Communication and Collaboration</li>
+                                    <li><span class="font-bold text-gray-800">EPP</span> - Ethical and Professional Practice</li>
+                                    <li><span class="font-bold text-gray-800">GLC</span> - Global and Lifelong Learning Commitment</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Expected BCP Graduate Elements</h3>
+                            <p class="text-sm text-gray-600 mb-2">The BCP ideal graduate demonstrates/internalizes this attribute:</p>
+                            <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 ml-2">
+                                <li>Critical thinking and problem-solving skills</li>
+                                <li>Effective communication and collaboration</li>
+                                <li>Ethical and professional practice</li>
+                                <li>Global and lifelong learning commitment</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -297,6 +342,25 @@
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Extended Readings / References</label><div id="chedExtendedReadings" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
                         </div>
                         <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Assessment</label><div id="chedCourseAssessment" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap min-h-[100px]"></div></div>
+                        
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                             <h3 class="text-lg font-semibold text-gray-700 mb-4">Course Policies and Statements</h3>
+                             <div class="space-y-6">
+                                 <div>
+                                     <h4 class="text-md font-bold text-gray-800 mb-2">Learners with Disabilities</h4>
+                                     <p class="text-sm text-gray-600 leading-relaxed text-justify">
+                                         This course is committed in providing equal access and participation for all students including those with disabilities. If you have a disability that may require accommodations, please contact the OFFICE OF THE STUDENTS’ AFFAIRS and SERVICES to register in the LIST OF LEARNERS with Disabilities. Please be aware that it is your responsibility to communicate your needs and works with the instructor to ensure that appropriate accommodations can be arranged promptly.
+                                     </p>
+                                 </div>
+                                 
+                                 <div>
+                                     <h4 class="text-md font-bold text-gray-800 mb-2">Syllabus Flexibility</h4>
+                                     <p class="text-sm text-gray-600 leading-relaxed text-justify">
+                                         The faculty reserves the right to change or amend this syllabus as needed. Any changes to the syllabus will be communicated promptly to the VPAA through the Department Heads / Deans, if any, adjustments will be made to ensure that all students can continue to meet the course objectives. Your feedback and input are valued, and we encourage open communication to facilitate a positive and productive learning experience for all.
+                                     </p>
+                                 </div>
+                             </div>
+                        </div>
                     </div>
                 </div>
 
@@ -362,12 +426,8 @@
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
-                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Document Category</label><div id="depedMemorandumCategory" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="depedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
-                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Title</label><div id="depedTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
-
-                            <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="depedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
-
                             <div id="depedTimeAllotmentContainer"><label class="block text-sm font-medium text-gray-700 mb-2">Time Allotment</label><div id="depedTimeAllotment" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             <div id="depedScheduleContainer" class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Schedule</label><div id="depedSchedule" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                             
@@ -894,10 +954,8 @@
             console.log('DepEd Modal Data:', data);
             setText('depedCourseTitle', data.subject_name);
             setText('depedSubjectCode', data.subject_code);
+            setText('depedCourseClassification', data.course_classification); // Added
             setText('depedSubjectType', data.subject_type);
-            setText('depedMemorandumCategory', data.memorandum_category);
-            setText('depedTitle', data.memorandum);
-            setText('depedMemorandum', data.memorandum);
             
             // Hide Obsolete Sections/Fields for DepEd as requested
             const hideEl = (id) => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); };
@@ -1157,11 +1215,10 @@
             setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
             setText('chedCourseTitle', data.subject_name);
             setText('chedSubjectCode', data.subject_code);
+            setText('chedCourseClassification', data.course_classification); // Added
             setText('chedSubjectType', data.subject_type);
             setText('chedSubjectUnit', data.subject_unit);
             setText('chedContactHours', data.contact_hours);
-            setText('chedMemorandumYear', data.memorandum_year);
-            setText('chedMemorandum', data.memorandum);
             setText('chedCourseDescription', data.course_description);
             
             // Fetch and display prerequisites
@@ -1499,12 +1556,12 @@
                 <div class="flex items-center gap-2 text-sm">
                     <span class="subject-code font-mono ${textColorClass} bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">${subject.subject_code}</span>
                     ${subject.subject_unit && subject.subject_unit > 0 ? `<span class="separator-dot ${dotColorClass}">•</span><span class="subject-units font-medium ${unitsColorClass}">${subject.subject_unit} Units</span>` : ''}
-                    ${subject.memorandum_year ? `<span class="separator-dot ${dotColorClass}">•</span><span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">${subject.memorandum_year}</span>` : ''}
+
                 </div>
-                ${subject.memorandum ? `<div class="text-xs text-gray-500 italic truncate mt-1" title="${subject.memorandum}">${subject.memorandum}</div>` : ''}
+
             </div>
             <div class="flex flex-col items-end gap-2 pl-2">
-                <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${typeBadgeClass}">${subject.subject_type}</span>
+                <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border text-right ${typeBadgeClass}">${(subject.course_classification || subject.subject_type).replace(/Professional Subject/gi, "Professional\u00A0Subject")}</span>
                 ${statusHTML}
             </div>
             <div class="add-subject-checkbox hidden ml-2">
@@ -1586,7 +1643,7 @@
                         <p class="text-sm leading-tight truncate ${textClass}">${subjectData.subject_name}</p>
                         <div class="flex items-center gap-2 mt-0.5">
                             <p class="text-xs font-mono ${codeClass}">${subjectData.subject_code}</p>
-                            <span class="text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded border ${typeBadgeClass}">${subjectType}</span>
+                            <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border text-right max-w-[120px] whitespace-pre-wrap ${typeBadgeClass}">${subjectData.course_classification || subjectType}</span>
                         </div>
                     </div>
                 </div>
@@ -2586,6 +2643,9 @@ const updateAllTotals = () => {
                     typeMatch = true;
                 } else if (selectedType === 'GE') {
                     typeMatch = geIdentifiers.some(id => subjectType.includes(id));
+                } else if (selectedType.startsWith('Professional Subject')) {
+                    // Check course_classification for Professional Subjects
+                    typeMatch = subjectData.course_classification === selectedType;
                 } else {
                     typeMatch = (subjectType === selectedType.toLowerCase());
                 }

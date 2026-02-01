@@ -1738,7 +1738,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="flex-1">
                         <div class="flex justify-between">
                             <p class="text-sm font-semibold text-gray-900">${subject.subject_code}</p>
-                            <span class="text-xs font-mono text-gray-500 border px-1 rounded">${subject.subject_type}</span>
+                            <span class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${
+                                (subject.subject_type || '').toLowerCase() === 'major' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                (subject.subject_type || '').toLowerCase() === 'minor' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                                ['ge', 'general education'].some(t => (subject.subject_type || '').toLowerCase().includes(t)) ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                                'bg-gray-100 text-gray-600 border-gray-200'
+                            }">${subject.course_classification || subject.subject_type}</span>
                         </div>
                         <p class="text-sm text-gray-600">${subject.subject_name}</p>
                         <div class="flex gap-2 mt-1 items-center">
@@ -3072,7 +3077,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Populate minor subjects
             const minorContainer = document.getElementById('minor-subjects-container');
-            const minorSubjects = data.subjects.filter(subject => subject.subject_type === 'Minor');
+            const minorSubjects = data.subjects.filter(subject => (subject.subject_type || 'Minor') === 'Minor');
             
             if (minorSubjects.length > 0) {
                 minorContainer.innerHTML = minorSubjects.map(subject => {
@@ -3094,9 +3099,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 minorContainer.innerHTML = '<p class="text-gray-500 text-sm" id="no-minor-subjects">No minor subjects found.</p>';
             }
             
-            // Populate major subjects
+            // Populate major subjects (Everything that is NOT Minor)
             const majorContainer = document.getElementById('major-subjects-container');
-            const majorSubjects = data.subjects.filter(subject => subject.subject_type === 'Major');
+            // Treat NSTP, Research, OJT as "Major" in this view so they can be customized
+            const majorSubjects = data.subjects.filter(subject => (subject.subject_type || 'Minor') !== 'Minor');
             
             if (majorSubjects.length > 0) {
                 // Check grades for each major subject individually

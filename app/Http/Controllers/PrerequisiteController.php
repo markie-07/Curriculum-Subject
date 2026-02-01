@@ -151,19 +151,19 @@ class PrerequisiteController extends Controller
             $targetCurriculum = Curriculum::where('year_level', $level)->latest()->first();
             
             if ($targetCurriculum) {
-                 // Delete existing GLOBAL prerequisites for this subject (cleanup any old duplicates too)
-                 Prerequisite::whereIn('curriculum_id', Curriculum::where('year_level', $level)->pluck('id'))
-                    ->where('subject_code', $validated['subject_code'])
-                    ->delete();
-                 
-                 // Add new prerequisites to the single target curriculum
-                 if (!empty($validated['prerequisite_codes'])) {
+                if (!empty($validated['prerequisite_codes'])) {
                     $previousSubject = $validated['subject_code'];
                     foreach ($validated['prerequisite_codes'] as $prereqCode) {
+                         // Delete existing GLOBAL prerequisites for this dependent subject
+                         Prerequisite::whereIn('curriculum_id', Curriculum::where('year_level', $level)->pluck('id'))
+                            ->where('subject_code', $prereqCode)
+                            ->delete();
+                         
+                         // Add new prerequisite: $prereqCode depends on $previousSubject
                         Prerequisite::create([
                             'curriculum_id' => $targetCurriculum->id,
-                            'subject_code' => $previousSubject,
-                            'prerequisite_subject_code' => $prereqCode,
+                            'subject_code' => $prereqCode,
+                            'prerequisite_subject_code' => $previousSubject,
                         ]);
                         $previousSubject = $prereqCode;
                     }
@@ -205,20 +205,20 @@ class PrerequisiteController extends Controller
                         $target->update(['approval_status' => 'processing']);
                     }
 
-                    // First, delete all existing prerequisites for this subject to avoid duplicates
-                    Prerequisite::where('curriculum_id', $target->id)
-                        ->where('subject_code', $validated['subject_code'])
-                        ->delete();
-
                     // Now, add the new prerequisites from the form submission
                     if (!empty($validated['prerequisite_codes'])) {
                         $previousSubject = $validated['subject_code']; 
                         
                         foreach ($validated['prerequisite_codes'] as $prereqCode) {
+                             // First, delete all existing prerequisites for this dependent subject to avoid duplicates
+                            Prerequisite::where('curriculum_id', $target->id)
+                                ->where('subject_code', $prereqCode)
+                                ->delete();
+
                             Prerequisite::create([
                                 'curriculum_id' => $target->id,
-                                'subject_code' => $previousSubject, 
-                                'prerequisite_subject_code' => $prereqCode, 
+                                'subject_code' => $prereqCode, // Dependent
+                                'prerequisite_subject_code' => $previousSubject, // Prerequisite
                             ]);
                             
                             $previousSubject = $prereqCode;

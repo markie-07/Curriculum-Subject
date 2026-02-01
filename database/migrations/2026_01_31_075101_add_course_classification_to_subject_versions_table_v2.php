@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subject_versions', function (Blueprint $table) {
-            $table->string('course_classification')->nullable()->after('subject_type');
-        });
+        if (Schema::hasTable('subject_versions')) {
+            Schema::table('subject_versions', function (Blueprint $table) {
+                if (!Schema::hasColumn('subject_versions', 'course_classification')) {
+                    $table->string('course_classification')->nullable()->after('subject_type');
+                }
+            });
+        }
     }
 
     /**
@@ -21,8 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subject_versions', function (Blueprint $table) {
-            $table->dropColumn('course_classification');
-        });
+        if (Schema::hasTable('subject_versions')) {
+            Schema::table('subject_versions', function (Blueprint $table) {
+                if (Schema::hasColumn('subject_versions', 'course_classification')) {
+                    $table->dropColumn('course_classification');
+                }
+            });
+        }
     }
 };

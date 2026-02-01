@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subject_versions', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('subject_versions')) {
+            Schema::table('subject_versions', function (Blueprint $table) {
+                //
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subject_versions', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('subject_versions')) {
+            Schema::table('subject_versions', function (Blueprint $table) {
+                //
+            });
+        }
     }
 };

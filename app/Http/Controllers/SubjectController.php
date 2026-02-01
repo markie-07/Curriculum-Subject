@@ -25,9 +25,7 @@ class SubjectController extends Controller
             'subject_unit',
             'contact_hours',
             'course_description',
-            'memorandum',
-            'memorandum_year',
-            'memorandum_category',
+
             'deped_data',
             'syllabus_path',
             'created_at',
@@ -58,7 +56,7 @@ class SubjectController extends Controller
             'course_title' => 'required|string|max:255|unique:subjects,subject_name',
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code',
             'subject_unit' => 'nullable|integer',
-            'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'subject_type' => 'required|string|in:Major,Minor,Elective,General,NSTP 1,NSTP 2,Research,OJT/Practicum',
             'course_classification' => 'nullable|string',
             'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
@@ -79,10 +77,7 @@ class SubjectController extends Controller
             'approved_by' => 'nullable|string',
             'curriculum_ids' => 'nullable|array',
             'curriculum_ids.*' => 'integer|exists:curriculums,id',
-            'memorandum' => 'nullable|string',
-            'memorandum_year' => 'nullable|string',
-            'memorandum_category' => 'nullable|string',
-            'deped_data' => 'nullable|array',
+
             'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
@@ -117,10 +112,7 @@ class SubjectController extends Controller
             'prepared_by' => $validated['prepared_by'] ?? null,
             'reviewed_by' => $validated['reviewed_by'] ?? null,
             'approved_by' => $validated['approved_by'] ?? null,
-            'memorandum' => $validated['memorandum'] ?? null,
-            'memorandum_year' => $validated['memorandum_year'] ?? null,
-            'memorandum_category' => $validated['memorandum_category'] ?? null,
-            'deped_data' => $validated['deped_data'] ?? null,
+
             'syllabus_path' => $syllabusPath,
         ]);
 
@@ -186,7 +178,7 @@ class SubjectController extends Controller
             'course_title' => 'required|string|max:255|unique:subjects,subject_name,' . $subject->id,
             'subject_code' => 'required|string|max:255|unique:subjects,subject_code,' . $subject->id,
             'subject_unit' => 'nullable|integer',
-            'subject_type' => 'required|string|in:Major,Minor,Elective,General',
+            'subject_type' => 'required|string|in:Major,Minor,Elective,General,NSTP 1,NSTP 2,Research,OJT/Practicum',
             'course_classification' => 'nullable|string',
             'syllabus_type' => 'nullable|string|in:CHED,DepEd',
             'lessons' => 'nullable|array',
@@ -207,10 +199,6 @@ class SubjectController extends Controller
             'approved_by' => 'nullable|string',
             'curriculum_ids' => 'nullable|array',
             'curriculum_ids.*' => 'integer|exists:curriculums,id',
-            'memorandum' => 'nullable|string',
-            'memorandum_year' => 'nullable|string',
-            'memorandum_category' => 'nullable|string',
-            'deped_data' => 'nullable|array',
 
             'syllabus_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
@@ -238,11 +226,7 @@ class SubjectController extends Controller
             'prepared_by' => $validated['prepared_by'] ?? null,
             'reviewed_by' => $validated['reviewed_by'] ?? null,
             'approved_by' => $validated['approved_by'] ?? null,
-            'memorandum' => $validated['memorandum'] ?? null,
-            'memorandum_year' => $validated['memorandum_year'] ?? null,
 
-            'memorandum_category' => $validated['memorandum_category'] ?? null,
-            'deped_data' => $validated['deped_data'] ?? null,
         ];
 
         if ($request->hasFile('syllabus_path')) {

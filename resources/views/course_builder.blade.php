@@ -63,17 +63,14 @@
                             <label for="course_code" class="block text-sm font-medium text-gray-700">Course Code</label>
                             <input type="text" name="course_code" id="course_code" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
-                        <div>
+                        <div class="hidden">
+                             <!-- Hidden subject_type that gets populated by JS -->
                             <label for="subject_type" class="block text-sm font-medium text-gray-700">Course Type</label>
-                            <select name="subject_type" id="subject_type" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                                <option value="" disabled selected>Select a Type</option>
-                                <option value="Major">Major</option>
-                                <option value="Minor">Minor</option>
-                            </select>
+                            <input type="text" name="subject_type" id="subject_type" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" readonly>
                         </div>
-                        <div>
+                        <div class="md:col-span-2">
                             <label for="course_classification" class="block text-sm font-medium text-gray-700">Subject Category</label>
-                            <select name="course_classification" id="course_classification" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                            <select name="course_classification" id="course_classification" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required onchange="updateSubjectType()">
                                 <option value="" disabled selected>Select Category</option>
                                 <option value="General Education">General Education</option>
                                 <option value="Professional Subject Non Laboratory">Professional Subject Non Laboratory</option>
@@ -87,6 +84,23 @@
                                 <option value="OJT/Practicum">OJT/Practicum</option>
                             </select>
                         </div>
+                        <script>
+                            function updateSubjectType() {
+                                const classification = document.getElementById('course_classification').value;
+                                const subjectTypeInput = document.getElementById('subject_type');
+                                
+                                let type = '';
+                                if (classification === 'General Education') {
+                                    type = 'Minor';
+                                } else if (classification && classification.startsWith('Professional Subject')) {
+                                    type = 'Major';
+                                } else if (['NSTP 1', 'NSTP 2', 'Research', 'OJT/Practicum'].includes(classification)) {
+                                    type = classification;
+                                }
+                                
+                                subjectTypeInput.value = type;
+                            }
+                        </script>
 
                         <div class="md:col-span-2 lg:col-span-2">
                             <label for="curriculum_id" class="block text-sm font-medium text-gray-700">Curriculum</label>
@@ -100,65 +114,7 @@
                             </div>
                         </div>
 
-                        {{-- Memorandum Container (Hidden by default) --}}
-                        <div id="memorandumContainer" class="hidden md:col-span-2 lg:col-span-3">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                                {{-- Year Selection for CHED --}}
-                                <div id="yearContainer" class="hidden">
-                                    <label for="memorandumYear" class="block text-sm font-medium text-gray-700">Memorandum Year</label>
-                                    <div class="relative">
-                                        <select id="memorandumYear" name="memorandumYear" class="appearance-none block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
-                                            <option value="" disabled selected>Select Year</option>
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {{-- Category Selection for DepEd --}}
-                                <div id="categoryContainer" class="hidden">
-                                    <label for="memorandumCategory" class="block text-sm font-medium text-gray-700">Document Category</label>
-                                    <div class="relative">
-                                        <select id="memorandumCategory" name="memorandumCategory" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
-                                            <option value="" disabled selected>Select Category</option>
-                                            <option value="Shape Paper">Shape Paper</option>
-                                            <option value="Curriculum Guides (Core)">Curriculum Guides (Core)</option>
-                                            <option value="Curriculum Guides (Academic)">Curriculum Guides (Academic)</option>
-                                            <option value="Curriculum Guides (TechPro)">Curriculum Guides (TechPro)</option>
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                {{-- Title Selection for DepEd (Hidden by default) --}}
-                                <div id="titleContainer" class="hidden md:col-span-2">
-                                    <label for="memorandumTitle" class="block text-sm font-medium text-gray-700">Title / Group</label>
-                                    <div class="relative">
-                                        <select id="memorandumTitle" name="memorandumTitle" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
-                                            <option value="" disabled selected>Select Title</option>
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div id="memoContainer" class="md:col-span-2">
-                                    <label for="memorandum" class="block text-sm font-medium text-gray-700">Official Memorandum</label>
-                                    <div class="relative">
-                                        <select id="memorandum" name="memorandum" class="appearance-none block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
-                                            <option value="" disabled selected>Select Memorandum</option>
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         {{-- DepEd Specific Fields --}}
                         <div id="deped-course-info-fields" class="contents hidden">
                             <div class="col-span-1 md:col-span-2 lg:col-span-3">
@@ -1867,9 +1823,14 @@ Learning Management System`;
         formData.append('reviewed_by', document.getElementById('reviewed_by').value);
         formData.append('approved_by', document.getElementById('approved_by').value);
         
-        formData.append('memorandum', document.getElementById('memorandum').value || '');
-        formData.append('memorandum_year', document.getElementById('memorandumYear').value || '');
-        formData.append('memorandum_category', document.getElementById('memorandumCategory').value || '');
+        const memorandumEl = document.getElementById('memorandum');
+        formData.append('memorandum', memorandumEl ? memorandumEl.value : '');
+        
+        const memorandumYearEl = document.getElementById('memorandumYear');
+        formData.append('memorandum_year', memorandumYearEl ? memorandumYearEl.value : '');
+        
+        const memorandumCategoryEl = document.getElementById('memorandumCategory');
+        formData.append('memorandum_category', memorandumCategoryEl ? memorandumCategoryEl.value : '');
 
         // Complex Data (JSON)
         // Note: For existing manual DepEd logic (if any remains), we keep it, but user wants them removed.
