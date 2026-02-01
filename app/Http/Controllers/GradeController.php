@@ -187,11 +187,10 @@ class GradeController extends Controller
                     'course_type' => $v->course_type ?? $courseType,
                     'change_reason' => $v->change_reason,
                     'changed_by' => $v->changed_by,
+                    'updated_at' => $v->created_at,
                     'created_at' => $v->created_at,
                 ];
             })->values();
-
-            $previousVersion = $versions->first();
 
             return response()->json([
                 'current_version' => [
@@ -200,17 +199,8 @@ class GradeController extends Controller
                     'course_type' => $courseType,
                     'updated_at' => $currentGrade->updated_at,
                 ],
-                'previous_version' => $previousVersion ? [
-                    'version_number' => $previousVersion->version_number,
-                    'components' => $previousVersion->components,
-                    'curriculum_id' => $previousVersion->curriculum_id ?? $curriculumId,
-                    'course_type' => $previousVersion->course_type ?? $courseType,
-                    'change_reason' => $previousVersion->change_reason,
-                    'changed_by' => $previousVersion->changed_by,
-                    'created_at' => $previousVersion->created_at,
-                ] : null,
-                'versions' => $versionsArray,
-                'has_previous_version' => $previousVersion !== null,
+                'previous_versions' => $versionsArray->toArray(),
+                'has_previous_version' => $versions->isNotEmpty(),
             ]);
 
         } catch (\Exception $e) {

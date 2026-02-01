@@ -379,18 +379,7 @@
                 </div>
             </div>
                             
-                            <div id="unitsContainer" class="hidden">
-                                <label id="semesterUnitsLabel" class="block text-sm font-medium text-slate-700 mb-3">Semester Units</label>
-                                <div id="semesterInputs" class="space-y-3">
-                                    <!-- Dynamic semester inputs will be inserted here -->
-                                </div>
-                                <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium text-blue-800">Total Units:</span>
-                                        <span id="totalUnits" class="text-lg font-bold text-blue-900">0</span>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="pt-6 flex flex-col sm:flex-row-reverse gap-3">
                                 <button type="submit" id="submit-button" class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-600 border-2 border-blue-600 hover:bg-white hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" clip-rule="evenodd" /></svg>
@@ -653,9 +642,7 @@
             const memorandumCategorySelect = document.getElementById('memorandumCategory');
             const memorandumSelect = document.getElementById('memorandum');
             const yearLevelSelect = document.getElementById('yearLevel');
-            const unitsContainer = document.getElementById('unitsContainer');
-            const semesterInputs = document.getElementById('semesterInputs');
-            const totalUnitsDisplay = document.getElementById('totalUnits');
+
 
             // Add/Edit Modal elements
             const addCurriculumModal = document.getElementById('addCurriculumModal');
@@ -1387,7 +1374,6 @@
             // Handle year level selection for units
             yearLevelSelect.addEventListener('change', function() {
                 const selectedLevel = this.value;
-                generateSemesterInputs(selectedLevel);
                 
                 // Auto-select compliance based on level
                 if (selectedLevel === 'College') {
@@ -1398,14 +1384,11 @@
                     complianceSelect.dispatchEvent(new Event('change'));
                 }
                 
-                const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
                 const academicYearContainer = document.getElementById('academicYearContainer');
                 const academicYearInput = document.getElementById('academicYear');
                 const expirationDateContainer = document.getElementById('expirationDateContainer');
 
                 if (selectedLevel === 'Senior High') {
-                    // Hide units section for Senior High (they don't use units)
-                    unitsContainer.classList.add('hidden');
                     // Hide Academic Year for Senior High
                     if(academicYearContainer) academicYearContainer.classList.add('hidden');
                     if(academicYearInput) {
@@ -1415,12 +1398,6 @@
                     // Hide Expiration Date for Senior High
                     if(expirationDateContainer) expirationDateContainer.classList.add('hidden');
                 } else {
-                    semesterUnitsLabel.textContent = 'Semester Units';
-                    if (selectedLevel) {
-                        unitsContainer.classList.remove('hidden');
-                    } else {
-                        unitsContainer.classList.add('hidden');
-                    }
                     // Show Academic Year for others
                     if(academicYearContainer) academicYearContainer.classList.remove('hidden');
                     if(academicYearInput) academicYearInput.setAttribute('required', 'required');
@@ -1429,72 +1406,7 @@
                 }
             });
             
-            // Generate semester inputs based on level
-            function generateSemesterInputs(level) {
-                semesterInputs.innerHTML = '';
-                let semesters = [];
-                
-                if (level === 'College') {
-                    semesters = [
-                        '1st Year First Semester',
-                        '1st Year Second Semester',
-                        '2nd Year First Semester',
-                        '2nd Year Second Semester',
-                        '3rd Year First Semester',
-                        '3rd Year Second Semester',
-                        '4th Year First Semester',
-                        '4th Year Second Semester'
-                    ];
-                } else if (level === 'Senior High') {
-                    semesters = [
-                        '1st Year First Quarter',
-                        '1st Year Second Quarter',
-                        '2nd Year Third Quarter',
-                        '2nd Year Fourth Quarter'
-                    ];
-                }
-                
-                semesters.forEach((semester, index) => {
-                    const inputGroup = document.createElement('div');
-                    inputGroup.className = 'flex items-center gap-3';
-                    inputGroup.innerHTML = `
-                        <label class="text-sm font-medium text-slate-700 w-48 flex-shrink-0">${semester}:</label>
-                        <div class="relative flex-grow">
-                            <input type="number" 
-                                   id="semester_${index}" 
-                                   name="semester_units[${index}]" 
-                                   class="semester-unit-input w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-                                   placeholder="0" 
-                                   min="0" 
-                                   step="0.5">
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">units</span>
-                        </div>
-                    `;
-                    semesterInputs.appendChild(inputGroup);
-                });
-                
-                // Add event listeners for automatic calculation
-                document.querySelectorAll('.semester-unit-input').forEach(input => {
-                    input.addEventListener('input', calculateTotalUnits);
-                });
-                
-                calculateTotalUnits();
-            }
-            
-            // Calculate total units
-            function calculateTotalUnits() {
-                const inputs = document.querySelectorAll('.semester-unit-input');
-                let total = 0;
-                
-                inputs.forEach(input => {
-                    const value = parseFloat(input.value) || 0;
-                    total += value;
-                });
-                
-                // Format total units without .0 for whole numbers
-                const formattedTotal = total % 1 === 0 ? Math.floor(total) : total.toFixed(1);
-                totalUnitsDisplay.textContent = formattedTotal;
-            }
+
 
             // --- Card & API Logic ---
             const createCurriculumCard = (curriculum) => {
@@ -1550,12 +1462,7 @@
                     </span>`
                     : '';
 
-                // Format total units display (remove .0 from whole numbers)
-                const formatUnits = (units) => {
-                    if (!units) return '';
-                    const num = parseFloat(units);
-                    return num % 1 === 0 ? Math.floor(num) : num;
-                };
+
 
                 // Calculate Completion Percentage (College)
                 let completionPercent = 0;
@@ -1566,11 +1473,7 @@
                     completionPercent = Math.min(100, Math.round((mappedUnits / totalUnits) * 100));
                 }
 
-                const totalUnitsDisplay = totalUnits > 0
-                    ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800" title="Mapped: ${formatUnits(mappedUnits)} / ${formatUnits(totalUnits)}">
-                        ${formatUnits(totalUnits)} units
-                    </span>`
-                    : '';
+
 
                 // Version status badge - Only show if approved
                 let versionBadge = '';
@@ -1626,10 +1529,8 @@
                 // Action buttons based on status
                 let actionButtons = '';
                 
-                // Show if Processing AND (College >= 75% OR Not College & has subjects)
-                const showActionButtons = (approvalStatus === 'processing') && 
-                                        ((curriculum.year_level === 'College' && completionPercent >= 75) || 
-                                         (curriculum.year_level !== 'College' && curriculum.subjects_count > 0));
+                // Show if Processing AND has at least one subject
+                const showActionButtons = (approvalStatus === 'processing') && (curriculum.subjects_count > 0);
 
                 if (showActionButtons) {
                     const isSeniorHigh = curriculum.year_level === 'Senior High';
@@ -1699,19 +1600,6 @@
                             <div class="flex flex-col items-end sm:items-end gap-1 w-full sm:w-auto">
                                 <div class="flex items-center gap-1 flex-wrap justify-end">
                                     ${complianceBadge}
-                                    ${totalUnitsDisplay}
-                                    ${curriculum.year_level === 'College' && totalUnits > 0 ? `
-                                    <div class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-1 rounded-full border border-blue-100 bg-white min-w-[85px] shadow-sm" title="${formatUnits(mappedUnits)} / ${formatUnits(totalUnits)} units mapped">
-                                        <!-- Water Fill Effect -->
-                                        <div class="absolute bottom-0 left-0 w-full bg-blue-100/80 transition-all duration-700 ease-out border-t border-blue-200" 
-                                             style="height: ${completionPercent}%"></div>
-                                        
-                                        <!-- Percentage Text -->
-                                        <span class="relative z-10 text-[10px] font-bold ${completionPercent >= 75 ? 'text-blue-700' : 'text-slate-600'}">
-                                            ${completionPercent}% Filled
-                                        </span>
-                                    </div>
-                                    ` : ''}
                                     ${versionBadge}
                                     ${approvalBadge}
                                 </div>
@@ -1843,11 +1731,9 @@
                     
                     // Generate semester inputs and populate if data exists
                     if (curriculum.year_level) {
-                        generateSemesterInputs(curriculum.year_level);
                         
                         // Hide units container for Senior High, show for College
                         if (curriculum.year_level === 'Senior High') {
-                            unitsContainer.classList.add('hidden');
                              // Hide Academic Year for Senior High
                             const academicYearContainer = document.getElementById('academicYearContainer');
                             const academicYearInput = document.getElementById('academicYear');
@@ -1865,23 +1751,6 @@
                             if(academicYearInput) academicYearInput.setAttribute('required', 'required');
                             // Show Expiration Date
                             if(expirationDateContainer) expirationDateContainer.classList.remove('hidden');
-                            unitsContainer.classList.remove('hidden'); // Ensure units container is visible
-                            
-                            const semesterUnitsLabel = document.getElementById('semesterUnitsLabel');
-                            semesterUnitsLabel.textContent = 'Semester Units';
-                            
-                            // Populate semester units if available
-                            if (curriculum.semester_units) {
-                                setTimeout(() => {
-                                    curriculum.semester_units.forEach((units, index) => {
-                                        const input = document.getElementById(`semester_${index}`);
-                                        if (input) {
-                                            input.value = units;
-                                        }
-                                    });
-                                    calculateTotalUnits();
-                                }, 100);
-                            }
                         }
                     }
                 } else {
@@ -1899,20 +1768,7 @@
                     memorandumContainer.classList.add('hidden');
                     yearContainer.classList.add('hidden');
                     categoryContainer.classList.add('hidden');
-                    unitsContainer.classList.add('hidden');
 
-                    // Reset Academic Year visibility
-                    const academicYearContainer = document.getElementById('academicYearContainer');
-                    const academicYearInput = document.getElementById('academicYear');
-                    const expirationDateContainer = document.getElementById('expirationDateContainer');
-                    if(academicYearContainer) academicYearContainer.classList.remove('hidden');
-                    if(academicYearInput) academicYearInput.setAttribute('required', 'required');
-                    if(expirationDateContainer) expirationDateContainer.classList.remove('hidden');
-                    memorandumSelect.innerHTML = '<option value="" disabled selected>Select Memorandum</option>';
-                    memorandumYearSelect.value = '';
-                    memorandumCategorySelect.value = '';
-                    semesterInputs.innerHTML = '';
-                    totalUnitsDisplay.textContent = '0';
                     
                     // Ensure Program Code and Level are reset for new curriculum
                     const programCodeInput = document.getElementById('programCode');
@@ -1958,12 +1814,6 @@
                     const url = id ? `/api/curriculums/${id}` : '/api/curriculums';
                     
                     const formData = new FormData(curriculumForm);
-                    // Collect semester units
-                    const semesterUnits = [];
-                    document.querySelectorAll('.semester-unit-input').forEach(input => {
-                        semesterUnits.push(parseFloat(input.value) || 0);
-                    });
-                    
                     const payload = {
                         curriculum: formData.get('curriculum'),
                         programCode: formData.get('programCode'),
@@ -1973,9 +1823,7 @@
                         compliance: formData.get('compliance'),
                         memorandumYear: formData.get('memorandumYear'),
                         memorandumCategory: formData.get('memorandumCategory'),
-                        memorandum: formData.get('memorandum'),
-                        semesterUnits: semesterUnits,
-                        totalUnits: parseFloat(totalUnitsDisplay.textContent) || 0
+                        memorandum: formData.get('memorandum')
                     };
                     
                     try {

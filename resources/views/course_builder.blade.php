@@ -54,21 +54,24 @@
                     </span>
                 </h2>
                 <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div class="md:col-span-2 lg:col-span-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {{-- Row 1 --}}
+                        <div class="md:col-span-2 lg:col-span-3">
                             <label for="course_title" class="block text-sm font-medium text-gray-700">Course Title</label>
                             <input type="text" name="course_title" id="course_title" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
-                        <div>
+                        <div class="lg:col-span-1">
                             <label for="course_code" class="block text-sm font-medium text-gray-700">Course Code</label>
                             <input type="text" name="course_code" id="course_code" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                         </div>
+                        
                         <div class="hidden">
-                             <!-- Hidden subject_type that gets populated by JS -->
                             <label for="subject_type" class="block text-sm font-medium text-gray-700">Course Type</label>
                             <input type="text" name="subject_type" id="subject_type" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" readonly>
                         </div>
-                        <div class="md:col-span-2">
+
+                        {{-- Row 2 --}}
+                        <div class="lg:col-span-1">
                             <label for="course_classification" class="block text-sm font-medium text-gray-700">Subject Category</label>
                             <select name="course_classification" id="course_classification" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required onchange="updateSubjectType()">
                                 <option value="" disabled selected>Select Category</option>
@@ -84,6 +87,28 @@
                                 <option value="OJT/Practicum">OJT/Practicum</option>
                             </select>
                         </div>
+                        
+                        <div id="ched-course-info-fields-1" class="contents">
+                            <div class="lg:col-span-1">
+                                <label for="credit_units" class="block text-sm font-medium text-gray-700">Credit Units</label>
+                                <input type="number" required name="credit_units" id="credit_units" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            <div class="lg:col-span-1">
+                                <label for="contact_hours" class="block text-sm font-medium text-gray-700">Contact Hours</label>
+                                <input type="number" required name="contact_hours" id="contact_hours" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-1">
+                            <label for="curriculum_id" class="block text-sm font-medium text-gray-700">Curriculum</label>
+                            <div class="relative cursor-pointer" id="openCurriculumModal">
+                                <div class="block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm bg-white hover:bg-gray-50 transition-colors flex justify-between items-center group">
+                                    <span id="curriculumButtonText" class="text-gray-500 truncate">Select curriculums...</span>
+                                    <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
                         <script>
                             const defaultDeptVision = "To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.";
                             const defaultDeptMission = "The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.";
@@ -102,13 +127,12 @@
                                     type = 'Minor';
                                     if(visionText) visionText.textContent = genEdDeptVision;
                                     if(missionText) missionText.textContent = genEdDeptMission;
-                                } else if (classification && classification.startsWith('Professional Subject')) {
+                                } else if (classification && (classification.startsWith('Professional Subject') || ['Core Subjects', 'Applied Track Subjects', 'Specialized Subjects', 'Work Immersion'].includes(classification))) {
                                     type = 'Major';
                                     if(visionText) visionText.textContent = defaultDeptVision;
                                     if(missionText) missionText.textContent = defaultDeptMission;
                                 } else if (['NSTP 1', 'NSTP 2', 'Research', 'OJT/Practicum'].includes(classification)) {
                                     type = classification;
-                                    // Keep default for others or specified? Assuming default/CCS for now unless requested otherwise.
                                     if(visionText) visionText.textContent = defaultDeptVision;
                                     if(missionText) missionText.textContent = defaultDeptMission;
                                 }
@@ -117,22 +141,9 @@
                             }
                         </script>
 
-                        <div class="md:col-span-2 lg:col-span-2">
-                            <label for="curriculum_id" class="block text-sm font-medium text-gray-700">Curriculum</label>
-
-                            <div class="relative cursor-pointer" id="openCurriculumModal">
-                                <div class="block w-full py-3 px-4 rounded-md border border-gray-300 shadow-sm bg-white hover:bg-gray-50 transition-colors flex justify-between items-center group">
-                                    <span id="curriculumButtonText" class="text-gray-500">Select curriculums for this subject...</span>
-                                    <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
-                                <!-- Hidden inputs will be appended by JS or handled via FormData construction -->
-                            </div>
-                        </div>
-
-
-                        {{-- DepEd Specific Fields --}}
-                        <div id="deped-course-info-fields" class="contents hidden">
-                            <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                        {{-- DepEd (Hidden) --}}
+                         <div id="deped-course-info-fields" class="contents hidden">
+                            <div class="col-span-1 md:col-span-2 lg:col-span-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Syllabus Document (PDF/Image)</label>
                                 <div class="flex items-center space-x-4 mb-4">
                                     <button type="button" onclick="document.getElementById('syllabus_file').click()" class="px-6 py-3 bg-red-50 text-red-600 rounded-md border border-red-200 hover:bg-red-100 transition-colors flex items-center shadow-sm">
@@ -146,7 +157,6 @@
                                     <svg class="w-4 h-4 inline mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     Uploading a file will replace the manual curriculum guide fields.
                                 </p>
-                                
                                 <div id="pdf-preview-container" class="w-full h-[600px] border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50 overflow-hidden relative">
                                     <div id="pdf-placeholder" class="text-center text-gray-400 p-8">
                                         <svg class="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -157,17 +167,15 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- CHED Specific Fields --}}
-                        <div id="ched-course-info-fields" class="contents">
-                            <div>
-                                <label for="credit_units" class="block text-sm font-medium text-gray-700">Credit Units</label>
-                                <input type="number" required name="credit_units" id="credit_units" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label for="contact_hours" class="block text-sm font-medium text-gray-700">Contact Hours</label>
-                                <input type="number" required name="contact_hours" id="contact_hours" class="mt-1 block w-full py-3 px-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
+
+                         <div id="course_description_container" class="lg:col-span-4">
+                            <label for="course_description" class="block text-sm font-medium text-gray-700">Course Description</label>
+                            <textarea id="course_description" required name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        </div>
+                        
+                         {{-- CHED Import (Row 4) --}}
+                         <div id="ched-course-info-fields-2" class="contents">
+                            <div class="lg:col-span-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Import Syllabus (PDF)</label>
                                 <div class="flex items-center space-x-4">
                                     <button type="button" onclick="document.getElementById('ched_syllabus_file').click()" class="px-4 py-3 bg-blue-50 text-blue-600 rounded-md border border-blue-200 hover:bg-blue-100 transition-colors flex items-center w-full justify-center">
@@ -183,11 +191,6 @@
                             </div>
                         </div>
 
-
-                        <div id="course_description_container" class="lg:col-span-3">
-                            <label for="course_description" class="block text-sm font-medium text-gray-700">Course Description</label>
-                            <textarea id="course_description" required name="course_description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                        </div>
                     </div>
                     
 
@@ -1185,7 +1188,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function switchSyllabus(type) {
     const chedContainer = document.getElementById('ched-container');
-    // const depedContainer = document.getElementById('deped-container'); // Unused
+
+    // Update Subject Category Options
+    const categorySelect = document.getElementById('course_classification');
+    if (categorySelect) {
+        const currentVal = categorySelect.value;
+        const isEdit = document.getElementById('subject_id') && document.getElementById('subject_id').value !== '';
+        
+        categorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
+        
+        const chedOptions = [
+            "General Education",
+            "Professional Subject Non Laboratory",
+            "Professional Subject Laboratory",
+            "Professional Subject Board Courses",
+            "Professional Subject Non Board Courses",
+            "Professional Subject OC",
+            "NSTP 1",
+            "NSTP 2",
+            "Research",
+            "OJT/Practicum"
+        ];
+        
+        const depedOptions = [
+            "Core Subjects",
+            "Applied Track Subjects",
+            "Specialized Subjects",
+            "Work Immersion"
+        ];
+        
+        const opts = (type === 'CHED') ? chedOptions : depedOptions;
+        
+        opts.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (isEdit && currentVal === opt) {
+                option.selected = true;
+            }
+            categorySelect.appendChild(option);
+        });
+    }
     
     const btnChed = document.getElementById('btn-ched');
     const btnDeped = document.getElementById('btn-deped');
@@ -1196,8 +1239,10 @@ function switchSyllabus(type) {
     }
     const syllabusTypeInput = document.getElementById('syllabus_type');
     
-    // Course Info Fields
-    const chedFields = document.getElementById('ched-course-info-fields');
+    // Course Info Fields - Split CHED groups
+    const chedFields1 = document.getElementById('ched-course-info-fields-1');
+    const chedFields2 = document.getElementById('ched-course-info-fields-2');
+    
     const depedFields = document.getElementById('deped-course-info-fields');
     const depedGrids = document.getElementById('deped-curriculum-grids');
     const approvalSection = document.getElementById('approval-section');
@@ -1232,14 +1277,18 @@ function switchSyllabus(type) {
     if (type === 'CHED') {
         chedContainer.classList.remove('hidden');
         
-        // Show CHED fields, Hide DepEd fields and grids
-        chedFields.classList.remove('hidden');
+        // Show CHED fields (both groups)
+        if(chedFields1) chedFields1.classList.remove('hidden');
+        if(chedFields2) chedFields2.classList.remove('hidden');
+        
         depedFields.classList.add('hidden');
         depedGrids.classList.add('hidden');
         
         // Toggle Required Attributes
         toggleRequired(chedContainer, true);
-        toggleRequired(chedFields, true);
+        if(chedFields1) toggleRequired(chedFields1, true);
+        if(chedFields2) toggleRequired(chedFields2, true);
+        
         toggleRequired(depedFields, false);
         toggleRequired(depedGrids, false);
         
@@ -1262,8 +1311,10 @@ function switchSyllabus(type) {
 
         // Clear DepEd-specific fields if not editing
         if (!isEditing) {
-            document.getElementById('time_allotment').value = '';
-            document.getElementById('schedule').value = '';
+            const timeAllotment = document.getElementById('time_allotment');
+            if (timeAllotment) timeAllotment.value = '';
+            const schedule = document.getElementById('schedule');
+            if (schedule) schedule.value = '';
             
             // Clear quarter grids
             for (let q = 1; q <= 2; q++) {
@@ -1289,8 +1340,10 @@ function switchSyllabus(type) {
     } else {
         chedContainer.classList.add('hidden');
         
-        // Hide CHED fields, Show DepEd fields (which is now just PDF upload)
-        chedFields.classList.add('hidden');
+        // Hide CHED fields
+        if(chedFields1) chedFields1.classList.add('hidden');
+        if(chedFields2) chedFields2.classList.add('hidden');
+        
         depedFields.classList.remove('hidden');
         
         // Hide Curriculum Grids (User requested removal for DepEd as PDF replaces them)
@@ -1298,8 +1351,10 @@ function switchSyllabus(type) {
         
         // Toggle Required Attributes
         toggleRequired(chedContainer, false);
-        toggleRequired(chedFields, false);
-        toggleRequired(depedFields, false);
+        if(chedFields1) toggleRequired(chedFields1, false);
+        if(chedFields2) toggleRequired(chedFields2, false);
+        
+        toggleRequired(depedFields, true);
         toggleRequired(depedGrids, false);
 
         // Hide Course Description for DepEd

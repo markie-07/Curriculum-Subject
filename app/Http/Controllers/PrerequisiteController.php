@@ -27,10 +27,44 @@ class PrerequisiteController extends Controller
         ];
 
         $curriculums = Curriculum::whereNotIn('program_code', $shsCodes)
+            ->where('program_code', '!=', 'SYS-GLOBAL') // Hide system buffer
             ->orderBy('curriculum')
             ->get();
 
-        return view('pre_requisite', compact('curriculums'));
+        // Check for active subject categories (those that have prerequisites set)
+        $activeCategories = [];
+        $categoryMap = [
+            'gen-ed-college' => 'General Education (NSTP 1, NSTP 2)',
+            'prof-non-lab' => 'Professional Subject Non Laboratory',
+            'prof-lab' => 'Professional Subject Laboratory',
+            'prof-board' => 'Professional Subject Board Courses',
+            'prof-non-board' => 'Professional Subject Non Board Courses',
+            'prof-oc' => 'Professional Subject OC',
+            'research' => 'Research',
+            'ojt' => 'OJT/Practicum',
+        ];
+
+        foreach ($categoryMap as $key => $displayName) {
+            // Special handling for gen-ed-college
+            if ($key === 'gen-ed-college') {
+                // Check for NSTP 1, NSTP 2, or General Education subjects
+                $subjectCodes = Subject::whereIn('course_classification', ['NSTP 1', 'NSTP 2', 'General Education'])
+                    ->pluck('subject_code');
+            } else {
+                // Find subjects of this classification
+                $subjectCodes = Subject::where('course_classification', $displayName)->pluck('subject_code');
+            }
+            
+            // Check if any prerequisites exist for these subjects
+            if (Prerequisite::whereIn('subject_code', $subjectCodes)->exists()) {
+                $activeCategories[] = [
+                    'id' => $key,
+                    'name' => $displayName
+                ];
+            }
+        }
+
+        return view('pre_requisite', compact('curriculums', 'activeCategories', 'categoryMap'));
     }
 
     /**
@@ -78,33 +112,59 @@ class PrerequisiteController extends Controller
         try {
             \Illuminate\Support\Facades\Log::info('fetchGeneralData called', ['type' => $type]);
             
-            \Illuminate\Support\Facades\Log::info('fetchGeneralData called', ['type' => $type]);
-            
-            // Determine Syllabus and Subject Types based on the requested global context
-            if ($type === 'major-college') {
-                $syllabusType = 'CHED';
-                $subjectTypes = ['Major'];
-            } elseif ($type === 'major-shs') {
-                $syllabusType = 'DepEd';
-                $subjectTypes = ['Major', 'Core', 'Applied', 'Specialized'];
-            } elseif ($type === 'gen-ed-shs') {
-                $syllabusType = 'DepEd';
-                $subjectTypes = ['Minor', 'General', 'Elective'];
+            // Map virtual IDs to Course Classifications
+            $categoryMap = [
+                'gen-ed-college' => ['NSTP 1', 'NSTP 2', 'General Education'], // Special: array of classifications
+                'prof-non-lab' => 'Professional Subject Non Laboratory',
+                'prof-lab' => 'Professional Subject Laboratory',
+                'prof-board' => 'Professional Subject Board Courses',
+                'prof-non-board' => 'Professional Subject Non Board Courses',
+                'prof-oc' => 'Professional Subject OC',
+                'research' => 'Research',
+                'ojt' => 'OJT/Practicum',
+            ];
+
+            if (array_key_exists($type, $categoryMap)) {
+                // Handling Category-based Virtual IDs
+                $classification = $categoryMap[$type];
+                
+                // Special handling for gen-ed-college (array of classifications)
+                if (is_array($classification)) {
+                    $subjects = Subject::whereIn('course_classification', $classification)
+                        ->orderBy('subject_name')
+                        ->get();
+                } else {
+                    $subjects = Subject::where('course_classification', $classification)
+                        ->orderBy('subject_name')
+                        ->get();
+                }
+
             } else {
-                // Default to College Gen Ed
-                $syllabusType = 'CHED';
-                $subjectTypes = ['Minor', 'General', 'Elective'];
+                // Determine Syllabus and Subject Types based on the requested global context (Gen Ed)
+                if ($type === 'major-college') {
+                    $syllabusType = 'CHED';
+                    $subjectTypes = ['Major'];
+                } elseif ($type === 'major-shs') {
+                    $syllabusType = 'DepEd';
+                    $subjectTypes = ['Major', 'Core', 'Applied', 'Specialized'];
+                } elseif ($type === 'gen-ed-shs') {
+                    $syllabusType = 'DepEd';
+                    $subjectTypes = ['Minor', 'General', 'Elective'];
+                } else {
+                    // Default fallback
+                    $syllabusType = 'CHED';
+                    $subjectTypes = ['Minor', 'General', 'Elective'];
+                }
+        
+                $subjects = Subject::whereIn('subject_type', $subjectTypes)
+                    ->where('syllabus_type', $syllabusType)
+                    ->orderBy('subject_name')
+                    ->get();
             }
-    
-            $subjects = Subject::whereIn('subject_type', $subjectTypes)
-                ->where('syllabus_type', $syllabusType)
-                ->orderBy('subject_name')
-                ->get();
     
             $subjectCodes = $subjects->pluck('subject_code');
             
             // Fetch prerequisites where the child subject is in our list
-            // Added distinct() to prevent duplicate rows in the global view
             $prerequisites = Prerequisite::whereIn('subject_code', $subjectCodes)
                 ->select('subject_code', 'prerequisite_subject_code')
                 ->distinct()
@@ -140,50 +200,110 @@ class PrerequisiteController extends Controller
         }
         $validated = $validator->validated();
 
-        // Handle General Education Bulk Update
-        if (in_array($validated['curriculum_id'], ['gen-ed-college', 'gen-ed-shs'])) {
-            $level = ($validated['curriculum_id'] === 'gen-ed-college') ? 'College' : 'Senior High';
+        // Handle General Education and Category/Virtual ID Bulk Updates
+        $virtualIds = [
+            'gen-ed-college', 'gen-ed-shs',
+            'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+            'research', 'ojt'
+        ];
+
+        if (in_array($validated['curriculum_id'], $virtualIds)) {
+            // Determine level. SHS is unique, everything else defaults to College
+            $level = ($validated['curriculum_id'] === 'gen-ed-shs') ? 'Senior High' : 'College';
             
             $updatedCount = 0;
 
             // FETCH ONLY THE LATEST CURRICULUM to serve as the 'host' for these global rules.
-            // Since fetchData now checks globally by subject_code, we don't need to duplicate rows.
+            // Try to find by year_level first, then fallback to any curriculum
             $targetCurriculum = Curriculum::where('year_level', $level)->latest()->first();
             
+            // Fallback: If no curriculum found with year_level, try to find any curriculum
+            // For College: exclude SHS/Senior High patterns
+            // For SHS: look for SHS/Senior High patterns
+            if (!$targetCurriculum) {
+                if ($level === 'College') {
+                    $targetCurriculum = Curriculum::where('curriculum', 'NOT LIKE', '%Senior High%')
+                        ->where('curriculum', 'NOT LIKE', '%SHS%')
+                        ->latest()
+                        ->first();
+                } else {
+                    $targetCurriculum = Curriculum::where(function($query) {
+                        $query->where('curriculum', 'LIKE', '%Senior High%')
+                              ->orWhere('curriculum', 'LIKE', '%SHS%');
+                    })->latest()->first();
+                }
+                
+                // Final Fallback: If still no curriculum found (e.g., unexpected naming), just pick the latest one.
+                if (!$targetCurriculum) {
+                    $targetCurriculum = Curriculum::latest()->first();
+                }
+
+                // ABSOLUTE FINAL FALLBACK: Create a placeholder curriculum if the database is empty.
+                // This handles the case where the user has 0 curriculums but tries to set prerequisites.
+                if (!$targetCurriculum) {
+                    try {
+                        $targetCurriculum = Curriculum::create([
+                            'curriculum' => 'Global Prerequisite Storage (System)',
+                            'program_code' => 'SYS-GLOBAL',
+                            'year_level' => 'College',
+                            'academic_year' => date('Y') . '-' . (date('Y') + 1),
+                            'semester_units' => [],
+                            'total_units' => 0,
+                            'version_status' => 'approved',
+                            'approval_status' => 'approved'
+                        ]);
+                    } catch (\Exception $e) {
+                        // Fallback in case of strict validation/database errors on create
+                        return response()->json([
+                            'error' => "No curriculum found and failed to auto-create storage: " . $e->getMessage(),
+                        ], 500);
+                    }
+                }
+            }
+            
             if ($targetCurriculum) {
+                // Delete existing prerequisites for this subject in the target curriculum
+                Prerequisite::where('curriculum_id', $targetCurriculum->id)
+                    ->where('subject_code', $validated['subject_code'])
+                    ->delete();
+                
                 if (!empty($validated['prerequisite_codes'])) {
-                    $previousSubject = $validated['subject_code'];
+                    // Create prerequisites in the correct order
+                    // The main subject depends on all the prerequisite codes
                     foreach ($validated['prerequisite_codes'] as $prereqCode) {
-                         // Delete existing GLOBAL prerequisites for this dependent subject
-                         Prerequisite::whereIn('curriculum_id', Curriculum::where('year_level', $level)->pluck('id'))
-                            ->where('subject_code', $prereqCode)
-                            ->delete();
-                         
-                         // Add new prerequisite: $prereqCode depends on $previousSubject
                         Prerequisite::create([
                             'curriculum_id' => $targetCurriculum->id,
-                            'subject_code' => $prereqCode,
-                            'prerequisite_subject_code' => $previousSubject,
+                            'subject_code' => $validated['subject_code'], // The subject that HAS prerequisites
+                            'prerequisite_subject_code' => $prereqCode,    // The subject it DEPENDS ON
                         ]);
-                        $previousSubject = $prereqCode;
                     }
                 }
                 $updatedCount++;
+                
+                // Mark curriculum as processing if it was rejected
+                if ($targetCurriculum->approval_status === 'rejected') {
+                    $targetCurriculum->update(['approval_status' => 'processing']);
+                }
+                
+                return response()->json([
+                    'message' => "Prerequisites updated for $updatedCount $level curriculums containing this subject!",
+                    'notification' => [
+                         'type' => 'success',
+                         'title' => 'Bulk Update Successful',
+                         'message' => "Prerequisites updated for $updatedCount $level curriculums!"
+                    ]
+                ]);
+            } else {
+                // No curriculum found for this level
+                return response()->json([
+                    'error' => "No $level curriculum found. Please create a curriculum first.",
+                    'notification' => [
+                        'type' => 'error',
+                        'title' => 'No Curriculum Found',
+                        'message' => "No $level curriculum found. Please create a curriculum first."
+                    ]
+                ], 404);
             }
-                    
-                    // Mark curriculum as processing if it was rejected
-                    if ($targetCurriculum && $targetCurriculum->approval_status === 'rejected') {
-                        $targetCurriculum->update(['approval_status' => 'processing']);
-                    }
-
-            return response()->json([
-                'message' => "Prerequisites updated for $updatedCount $level curriculums containing this subject!",
-                'notification' => [
-                     'type' => 'success',
-                     'title' => 'Bulk Update Successful',
-                     'message' => "Prerequisites updated for $updatedCount $level curriculums!"
-                ]
-            ]);
 
         } else {
             // Normal Curriculum Flow

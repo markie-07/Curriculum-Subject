@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     /* Color styles for subject types, consistent with the mapping page */
     .subject-tag-major { background-color: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
@@ -18,7 +19,7 @@
                     <h1 class="text-2xl font-bold text-gray-800">Set Subject Prerequisites</h1>
                     <p class="text-sm text-gray-500 mt-1">Define the relationships between subjects for a curriculum.</p>
                 </div>
-                <button id="setPrerequisiteBtn" class="bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors shadow-md flex items-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                <button id="setPrerequisiteBtn" class="bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors shadow-md flex items-center gap-2 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     Set Prerequisite
                 </button>
@@ -27,7 +28,7 @@
 
         <div class="bg-white p-6 rounded-2xl shadow-lg">
             <div class="mb-6 pb-6 border-b border-gray-200">
-                <label for="curriculum-selector-button" class="block text-lg font-semibold text-gray-700 mb-2">Select Curriculum to View</label>
+                <label for="curriculum-selector-button" class="block text-lg font-semibold text-gray-700 mb-2">Select Subject Category</label>
                 <div id="custom-curriculum-selector" class="relative">
                     <button type="button" id="curriculum-selector-button" class="w-full border border-gray-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <span class="text-gray-500 truncate pr-2">-- Select a Curriculum --</span>
@@ -38,27 +39,9 @@
                             <input type="text" id="curriculum-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a curriculum...">
                         </div>
                         <ul id="curriculum-options-list" class="max-h-60 overflow-y-auto">
-                            {{-- General Education Options --}}
-                            <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="gen-ed-college" data-name="General Education - College">
-                                General Education - College
-                            </li>
-                            
-                            @php
-                                // Group by Program Code (or Name) and take the latest to ensure unique display
-                                $uniqueMainCurriculums = $curriculums->sortByDesc('academic_year')->unique(function ($item) {
-                                    return $item->program_code ?: $item->curriculum;
-                                });
-                            @endphp
-
-                            @foreach($uniqueMainCurriculums as $curriculum)
-                                @php
-                                    $displayText = $curriculum->curriculum;
-                                    if (!empty($curriculum->program_code)) {
-                                        $displayText .= ' (' . $curriculum->program_code . ')';
-                                    }
-                                @endphp
-                                <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
-                                    {{ $displayText }}
+                            @foreach($activeCategories as $category)
+                                <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="{{ $category['id'] }}" data-name="{{ $category['name'] }}">
+                                    {{ $category['name'] }}
                                 </li>
                             @endforeach
                         </ul>
@@ -111,45 +94,38 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
                     <div class="relative z-30">
-                        <label for="modal-curriculum-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Select Curriculum</label>
-                        <div id="modal-custom-curriculum-selector" class="relative">
-                            <button type="button" id="modal-curriculum-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
-                                <span class="text-slate-500 truncate pr-2">-- Select a Curriculum --</span>
+                        <label for="modal-category-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Select Subject Category</label>
+                        <div id="modal-custom-category-selector" class="relative">
+                            <button type="button" id="modal-category-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
+                                <span class="text-slate-500 truncate pr-2">-- Select a Subject Category --</span>
                                 <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div id="modal-curriculum-dropdown-panel" class="absolute z-50 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
-                                <div class="p-2 bg-slate-50 border-b border-slate-100 rounded-t-lg">
-                                    <input type="text" id="modal-curriculum-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" placeholder="Search for a curriculum...">
-                                </div>
-                                <ul id="modal-curriculum-options-list" class="max-h-60 overflow-y-auto py-1">
-                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="gen-ed-college" data-name="General Education - College">
-                                        General Education - College
+                            <div id="modal-category-dropdown-panel" class="absolute z-50 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
+                                <ul id="modal-category-options-list" class="max-h-60 overflow-y-auto py-1">
+                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer text-slate-700 transition-colors" data-value="general-education" data-name="General Education (NSTP 1, NSTP 2)">
+                                        General Education (NSTP 1, NSTP 2)
                                     </li>
-                                    @php
-                                        // Filter valid curriculums first matches status check logic
-                                        $validCurriculums = $curriculums->filter(function($c) {
-                                            $status = strtolower($c->approval_status);
-                                            return in_array($status, ['processing', 'rejected', 'returned']) && $c->version_status !== 'old';
-                                        });
-
-                                        // Group by Program Code (or Name) and take the latest
-                                        $uniqueCurriculums = $validCurriculums->sortByDesc('academic_year')->unique(function ($item) {
-                                            return $item->program_code ?: $item->curriculum;
-                                        });
-                                    @endphp
-
-                                    @foreach($uniqueCurriculums as $curriculum)
-                                        @php
-                                            // Create display text - we deliberately OMIT the year to show it as a "Program" group
-                                            $displayText = $curriculum->curriculum;
-                                            if (!empty($curriculum->program_code)) {
-                                                $displayText .= ' (' . $curriculum->program_code . ')';
-                                            }
-                                        @endphp
-                                        <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="{{ $curriculum->id }}" data-name="{{ $displayText }}">
-                                            {{ $displayText }}
-                                        </li>
-                                    @endforeach
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-non-lab" data-name="Professional Subject Non Laboratory">
+                                        Professional Subject Non Laboratory
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-lab" data-name="Professional Subject Laboratory">
+                                        Professional Subject Laboratory
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-board" data-name="Professional Subject Board Courses">
+                                        Professional Subject Board Courses
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-non-board" data-name="Professional Subject Non Board Courses">
+                                        Professional Subject Non Board Courses
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-oc" data-name="Professional Subject OC">
+                                        Professional Subject OC
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="research" data-name="Research">
+                                        Research
+                                    </li>
+                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="ojt" data-name="OJT/Practicum">
+                                        OJT/Practicum
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -433,18 +409,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalPanel = prerequisiteModal.querySelector('.transform');
     const cancelModalBtn = document.getElementById('cancelModalBtn');
     const modalCurriculumIdInput = document.getElementById('modalCurriculumId');
-    const modalCurriculumName = document.getElementById('modalCurriculumName');
     const modalSubjectCodeInput = document.getElementById('modalSubjectCode');
     const prerequisiteList = document.getElementById('prerequisiteList');
     const prerequisiteForm = document.getElementById('prerequisiteForm');
     const savePrerequisitesBtn = document.getElementById('savePrerequisitesBtn');
     
-    // --- Modal Curriculum Searchable Dropdown Elements ---
-    const modalCurriculumCustomSelector = document.getElementById('modal-custom-curriculum-selector');
-    const modalCurriculumSelectorButton = document.getElementById('modal-curriculum-selector-button');
-    const modalCurriculumDropdownPanel = document.getElementById('modal-curriculum-dropdown-panel');
-    const modalCurriculumSearchInput = document.getElementById('modal-curriculum-search-input');
-    const modalCurriculumOptionsList = document.getElementById('modal-curriculum-options-list');
+    // Global variable to store subjects of the currently selected category
+    let currentCategorySubjects = [];
+    
+    // --- Modal Category Searchable Dropdown Elements ---
+    const modalCategoryCustomSelector = document.getElementById('modal-custom-category-selector');
+    const modalCategorySelectorButton = document.getElementById('modal-category-selector-button');
+    const modalCategoryDropdownPanel = document.getElementById('modal-category-dropdown-panel');
+    const modalCategoryOptionsList = document.getElementById('modal-category-options-list');
     
     // --- Modal Subject Searchable Dropdown Elements ---
     const modalCustomSelector = document.getElementById('modal-custom-subject-selector');
@@ -488,32 +465,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         if (!mainCustomSelector.contains(e.target)) mainDropdownPanel.classList.add('hidden');
         if (!modalCustomSelector.contains(e.target)) modalDropdownPanel.classList.add('hidden');
-        if (!modalCurriculumCustomSelector.contains(e.target)) modalCurriculumDropdownPanel.classList.add('hidden');
+        if (!modalCategoryCustomSelector.contains(e.target)) modalCategoryDropdownPanel.classList.add('hidden');
     });
 
-    // --- Modal Curriculum Dropdown Logic ---
-    modalCurriculumSelectorButton.addEventListener('click', (e) => {
+    // --- Modal Category Dropdown Logic ---
+    modalCategorySelectorButton.addEventListener('click', (e) => {
         e.stopPropagation();
-        modalCurriculumDropdownPanel.classList.toggle('hidden');
+        modalCategoryDropdownPanel.classList.toggle('hidden');
     });
 
-    modalCurriculumSearchInput.addEventListener('input', () => {
-        const filter = modalCurriculumSearchInput.value.toLowerCase();
-        modalCurriculumOptionsList.querySelectorAll('li').forEach(option => {
-            option.style.display = option.textContent.toLowerCase().includes(filter) ? '' : 'none';
-        });
-    });
-
-    modalCurriculumOptionsList.addEventListener('click', (e) => {
+    modalCategoryOptionsList.addEventListener('click', (e) => {
         if (e.target.tagName === 'LI') {
-            const curriculumId = e.target.dataset.value;
-            const curriculumName = e.target.dataset.name;
+            const categoryValue = e.target.dataset.value;
+            const categoryName = e.target.dataset.name;
             
-            // Update modal curriculum selection
-            modalCurriculumIdInput.value = curriculumId;
-            modalCurriculumSelectorButton.querySelector('span').textContent = curriculumName;
-            modalCurriculumSelectorButton.querySelector('span').classList.remove('text-slate-500');
-            modalCurriculumDropdownPanel.classList.add('hidden');
+            // Update modal category selection
+            modalCategorySelectorButton.querySelector('span').textContent = categoryName;
+            modalCategorySelectorButton.querySelector('span').classList.remove('text-slate-500');
+            modalCategoryDropdownPanel.classList.add('hidden');
             
             // Reset subject selection
             selectedModalSubject.code = null;
@@ -525,8 +494,8 @@ document.addEventListener('DOMContentLoaded', () => {
             prerequisiteList.innerHTML = '<p class="text-slate-500">Select a subject to see available prerequisites.</p>';
             savePrerequisitesBtn.disabled = true;
             
-            // Fetch subjects for this curriculum
-            fetchSubjectsForModal(curriculumId);
+            // Fetch subjects for this category
+            fetchSubjectsForCategory(categoryValue);
         }
     });
 
@@ -558,34 +527,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Modal Controls ---
     const showModal = (subjectCodeToEdit = null, curriculumIdFromEdit = null) => {
-        // If editing from main page and curriculum is selected, pre-populate
-        if (curriculumIdFromEdit && selectedCurriculum.id) {
-            modalCurriculumIdInput.value = selectedCurriculum.id;
-            modalCurriculumSelectorButton.querySelector('span').textContent = selectedCurriculum.name;
-            modalCurriculumSelectorButton.querySelector('span').classList.remove('text-slate-500');
-            
-            fetchSubjectsForModal(selectedCurriculum.id).then(() => {
-                if (subjectCodeToEdit) {
-                    const subject = allSubjectsForCurriculum.find(s => s.subject_code === subjectCodeToEdit);
-                    if (subject) {
-                        selectedModalSubject.code = subject.subject_code;
-                        selectedModalSubject.name = `${subject.subject_name} (${subject.subject_code})`;
-                        modalSelectorButton.querySelector('span').textContent = selectedModalSubject.name;
-                        modalSelectorButton.querySelector('span').classList.remove('text-slate-500');
-                        handleSubjectSelection(subjectCodeToEdit);
-                    }
-                }
-            });
-        } else {
-            // Reset modal to default state
-            modalCurriculumIdInput.value = '';
-            modalCurriculumSelectorButton.querySelector('span').textContent = '-- Select a Curriculum --';
-            modalCurriculumSelectorButton.querySelector('span').classList.add('text-slate-500');
-            modalSelectorButton.querySelector('span').textContent = 'Select a curriculum first';
-            modalSelectorButton.querySelector('span').classList.add('text-slate-500');
-            prerequisiteList.innerHTML = '<p class="text-slate-500">Select a curriculum and subject to see available prerequisites.</p>';
-        }
-
+        // Reset modal to default state (category-based selection)
+        modalCurriculumIdInput.value = selectedCurriculum.id;
+        modalCategorySelectorButton.querySelector('span').textContent = '-- Select a Subject Category --';
+        modalCategorySelectorButton.querySelector('span').classList.add('text-slate-500');
+        modalSelectorButton.querySelector('span').textContent = 'Select a category first';
+        modalSelectorButton.querySelector('span').classList.add('text-slate-500');
+        prerequisiteList.innerHTML = '<p class="text-slate-500">Select a category and subject to see available prerequisites.</p>';
+        
         prerequisiteModal.classList.remove('hidden');
         setTimeout(() => modalPanel.classList.remove('opacity-0', 'scale-95'), 10);
     };
@@ -596,14 +545,14 @@ document.addEventListener('DOMContentLoaded', () => {
             prerequisiteModal.classList.add('hidden');
             prerequisiteForm.reset();
             modalOptionsList.innerHTML = '';
-            prerequisiteList.innerHTML = '<p class="text-slate-500">Select a curriculum and subject to see available prerequisites.</p>';
+            prerequisiteList.innerHTML = '<p class="text-slate-500">Select a category and subject to see available prerequisites.</p>';
             
-            // Reset curriculum dropdown
-            modalCurriculumSelectorButton.querySelector('span').textContent = '-- Select a Curriculum --';
-            modalCurriculumSelectorButton.querySelector('span').classList.add('text-slate-500');
+            // Reset category dropdown
+            modalCategorySelectorButton.querySelector('span').textContent = '-- Select a Subject Category --';
+            modalCategorySelectorButton.querySelector('span').classList.add('text-slate-500');
             
             // Reset subject dropdown
-            modalSelectorButton.querySelector('span').textContent = 'Select a curriculum first';
+            modalSelectorButton.querySelector('span').textContent = 'Select a category first';
             modalSelectorButton.querySelector('span').classList.add('text-slate-500');
             
             savePrerequisitesBtn.disabled = true;
@@ -623,17 +572,22 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchPrerequisiteData(curriculumId) {
         if (!curriculumId) {
             prerequisiteChainContainer.innerHTML = '<p class="text-center text-gray-500 py-8">Select a curriculum from the dropdown above to view its prerequisite chain.</p>';
-            setPrerequisiteBtn.disabled = true;
             return;
         }
 
         prerequisiteChainContainer.innerHTML = '<p class="text-center text-gray-500 py-8">Loading chain...</p>';
-        setPrerequisiteBtn.disabled = false;
 
         try {
-            // Handle General Education special IDs
+            // Define Virtual IDs
+            const virtualIds = [
+                'gen-ed-college', 'gen-ed-shs',
+                'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+                'research', 'ojt'
+            ];
+            
+            // Handle Virtual IDs
             let apiUrl = `/api/prerequisites/${curriculumId}`;
-            if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+            if (virtualIds.includes(curriculumId)) {
                 apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
             }
             
@@ -644,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Filter Regular Curriculums
             let subjects = data.subjects || [];
-            if (curriculumId !== 'gen-ed-college' && curriculumId !== 'gen-ed-shs') {
+            if (!virtualIds.includes(curriculumId)) {
                 subjects = subjects.filter(s => s.subject_type === 'Major');
             }
             
@@ -657,9 +611,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchPrerequisiteDataAfterSave(curriculumId) {
         try {
-            // Handle General Education special IDs
+            // Define Virtual IDs
+            const virtualIds = [
+                'gen-ed-college', 'gen-ed-shs',
+                'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+                'research', 'ojt'
+            ];
+            
+            // Handle Virtual IDs
             let apiUrl = `/api/prerequisites/${curriculumId}`;
-            if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+            if (virtualIds.includes(curriculumId)) {
                 apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
             }
             
@@ -667,10 +628,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Failed to fetch data.');
             
             const data = await response.json();
-            
-            // Filter Regular Curriculums
+             
+             // Filter Regular Curriculums
             let subjects = data.subjects || [];
-            if (curriculumId !== 'gen-ed-college' && curriculumId !== 'gen-ed-shs') {
+            if (!virtualIds.includes(curriculumId)) {
                 subjects = subjects.filter(s => s.subject_type === 'Major');
             }
 
@@ -682,8 +643,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchSubjectsForModal(curriculumId) {
-        // Handle General Education special IDs
-        if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+        // Define all virtual IDs
+        const virtualIds = [
+            'gen-ed-college', 'gen-ed-shs',
+            'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+            'research', 'ojt'
+        ];
+        
+        // Handle all virtual IDs (General Education and Category-based)
+        if (virtualIds.includes(curriculumId)) {
             try {
                 const response = await fetch(`/api/gen-ed-prerequisites/${curriculumId}`);
                 if (!response.ok) {
@@ -722,6 +690,154 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // New function to fetch subjects based on category
+    async function fetchSubjectsForCategory(categoryValue) {
+        try {
+            // Dictionary to map categories to virtual IDs for global/category-based editing
+            const categoryToVirtualId = {
+                'general-education': 'gen-ed-college',
+                'professional-non-lab': 'prof-non-lab',
+                'professional-lab': 'prof-lab',
+                'professional-board': 'prof-board',
+                'professional-non-board': 'prof-non-board',
+                'professional-oc': 'prof-oc',
+                'research': 'research',
+                'ojt': 'ojt'
+            };
+
+            // Fetch all subjects from the current curriculum OR determine virtual ID
+            let curriculumId = selectedCurriculum.id;
+            
+            // PRIORITY: If the selected category maps to a Virtual ID (Global Category), use it!
+            // This ensures we fetch the correct global subjects (e.g., Prof Lab) instead of 
+            // relying on the main dropdown which might be set to 'General Education'.
+            if (categoryToVirtualId[categoryValue]) {
+                curriculumId = categoryToVirtualId[categoryValue];
+                // Update hidden input so handleSubjectSelection works correctly
+                modalCurriculumIdInput.value = curriculumId;
+            } 
+            else if (!curriculumId) {
+                modalOptionsList.innerHTML = '<li class="px-4 py-2 text-orange-600">⚠️ Please select a curriculum first</li>';
+                modalSelectorButton.querySelector('span').textContent = 'Select a curriculum first';
+                modalSelectorButton.disabled = true;
+                return;
+            }
+
+            // Show loading state
+            modalOptionsList.innerHTML = '<li class="px-4 py-2 text-gray-500">Loading subjects...</li>';
+            modalSelectorButton.querySelector('span').textContent = 'Loading...';
+            modalSelectorButton.disabled = true;
+
+            // DETERMINE CORRECT API ENDPOINT
+            let apiUrl = `/api/prerequisites/${curriculumId}`;
+            // check if it's one of our virtual IDs (including shs gen ed which isn't in the map above default)
+            const virtualIds = Object.values(categoryToVirtualId).concat(['gen-ed-shs']);
+            
+            if (virtualIds.includes(curriculumId)) {
+                apiUrl = `/api/gen-ed-prerequisites/${curriculumId}`;
+            }
+
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Failed to fetch subjects.');
+            
+            const data = await response.json();
+            let allSubjects = data.subjects || [];
+            
+            console.log('All subjects fetched:', allSubjects.length);
+            if (allSubjects.length > 0) {
+                console.log('Sample subject:', allSubjects[0]);
+                console.log('Sample classification:', allSubjects[0].course_classification);
+            }
+            console.log('Selected category value:', categoryValue);
+            
+            // Filter subjects based on category using course_classification field
+            // Using case-insensitive and trimmed comparison for robustness
+            let filteredSubjects = [];
+            
+            switch(categoryValue) {
+                case 'general-education':
+                    // Filter for NSTP 1 and NSTP 2 or General Education
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'nstp 1' || classification === 'nstp 2' || classification === 'general education';
+                    });
+                    break;
+                    
+                case 'professional-non-lab':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'professional subject non laboratory';
+                    });
+                    break;
+                    
+                case 'professional-lab':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'professional subject laboratory';
+                    });
+                    break;
+                    
+                case 'professional-board':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'professional subject board courses';
+                    });
+                    break;
+                    
+                case 'professional-non-board':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'professional subject non board courses';
+                    });
+                    break;
+                    
+                case 'professional-oc':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'professional subject oc';
+                    });
+                    break;
+                    
+                case 'research':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'research';
+                    });
+                    break;
+                    
+                case 'ojt':
+                    filteredSubjects = allSubjects.filter(s => {
+                        const classification = (s.course_classification || '').toLowerCase().trim();
+                        return classification === 'ojt/practicum';
+                    });
+                    break;
+                    
+                default:
+                    filteredSubjects = allSubjects;
+            }
+            
+            console.log('Filtered subjects count:', filteredSubjects.length);
+            
+            if (filteredSubjects.length === 0) {
+                modalOptionsList.innerHTML = `<li class="px-4 py-2 text-gray-500">No subjects found for this category</li>`;
+                modalSelectorButton.querySelector('span').textContent = 'No subjects available';
+                modalSelectorButton.disabled = true;
+                // Still store all subjects so prerequisites work if needed? actually filtered is empty so user can't select subject anyway.
+                allSubjectsForCurriculum = allSubjects;
+                currentCategorySubjects = []; 
+            } else {
+                allSubjectsForCurriculum = allSubjects;
+                currentCategorySubjects = filteredSubjects;
+                populateSubjectDropdown(filteredSubjects);
+            }
+            
+        } catch (error) {
+            console.error('Error fetching subjects for category:', error);
+            modalOptionsList.innerHTML = `<li class="px-4 py-2 text-red-500">Error: ${error.message}</li>`;
+            modalSelectorButton.querySelector('span').textContent = 'Error loading subjects';
+            modalSelectorButton.disabled = true;
+        }
+    }
 
     function populateSubjectDropdown(subjects) {
         modalOptionsList.innerHTML = '';
@@ -738,7 +854,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let dropdownPrerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
         let dropdownDependentMap = {};    // Maps subject -> array of subjects that require it
         
-        fetch(`/api/prerequisites/${modalCurriculumIdInput.value}`)
+        // Determine correct API endpoint based on ID format
+        const virtualIds = [
+            'gen-ed-college', 'gen-ed-shs',
+            'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+            'research', 'ojt'
+        ];
+        
+        let apiUrl = `/api/prerequisites/${modalCurriculumIdInput.value}`;
+        if (virtualIds.includes(modalCurriculumIdInput.value)) {
+            apiUrl = `/api/gen-ed-prerequisites/${modalCurriculumIdInput.value}`;
+        }
+        
+        fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 // Build maps of prerequisite relationships
@@ -803,18 +931,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Create section header
                 let headerText = '';
                 if (group.year === 'Unassigned') {
-                    headerText = 'Unassigned Subjects';
+                    // Skip header for Unassigned
                 } else {
                     const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
                     const semesterName = group.semester == 1 ? 'First' : 'Second';
                     headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
                 }
                 
-                const headerLi = document.createElement('li');
-                headerLi.className = 'px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 border-b border-slate-200';
-                headerLi.textContent = headerText;
-                headerLi.style.cursor = 'default';
-                modalOptionsList.appendChild(headerLi);
+                // Only append header if it has text
+                if (headerText) {
+                    const headerLi = document.createElement('li');
+                    headerLi.className = 'px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 border-b border-slate-200';
+                    headerLi.textContent = headerText;
+                    headerLi.style.cursor = 'default';
+                    modalOptionsList.appendChild(headerLi);
+                }
 
                 // Add subjects for this section
                 group.subjects.forEach(subject => {
@@ -825,8 +956,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const prereqCodes = dropdownPrerequisiteMap[subject.subject_code] || [];
                     const dependentCodes = dropdownDependentMap[subject.subject_code] || [];
                     
+                    const isDisabled = hasPrerequisites || isUsedAsPrerequisite;
+
                     const li = document.createElement('li');
-                    li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer pl-6 transition-colors';
+                    if (isDisabled) {
+                        li.className = 'px-4 py-2 bg-gray-50 text-gray-400 pl-6 cursor-not-allowed border-b border-gray-100 block';
+                        li.style.pointerEvents = 'none'; // Prevent clicks
+                    } else {
+                        li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer pl-6 transition-colors border-b border-gray-100 block';
+                    }
+                    
                     li.dataset.value = subject.subject_code;
                     const subjectName = `${subject.subject_name} (${subject.subject_code})`;
                     li.dataset.name = subjectName;
@@ -834,17 +973,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Create HTML with subject code badges
                     li.innerHTML = `
                         <div class="flex items-center justify-between gap-2">
-                            <span class="flex-1">${subject.subject_name} (${subject.subject_code})</span>
+                            <span class="flex-1">${subject.subject_name} (${subject.subject_code}) ${isDisabled ? '<span class="text-xs font-normal italic ml-2">(Configured)</span>' : ''}</span>
                             <div class="flex items-center gap-1 flex-shrink-0 flex-wrap">
                                 ${prereqCodes.length > 0
                                     ? prereqCodes.map(code => 
-                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300" title="Requires: ${code}">↓${code}</span>`
+                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200" title="Requires: ${code}">↓${code}</span>`
                                       ).join('')
                                     : ''
                                 }
                                 ${dependentCodes.length > 0
                                     ? dependentCodes.map(code => 
-                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 border border-purple-300" title="Required by: ${code}">↑${code}</span>`
+                                        `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200" title="Required by: ${code}">↑${code}</span>`
                                       ).join('')
                                     : ''
                                 }
@@ -861,21 +1000,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function populatePrerequisiteButtons(selectedSubjectCode, existingPrerequisites = []) {
         prerequisiteList.innerHTML = '';
         
-        // Filter subjects based on curriculum type
-        let eligibleSubjects = allSubjectsForCurriculum.filter(s => s.subject_code !== selectedSubjectCode);
-        
-        // Get the current curriculum ID to determine filtering
-        const curriculumId = modalCurriculumIdInput.value;
-        const isGeneralEducation = curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs';
-        
-        // Apply subject type filtering
-        if (isGeneralEducation) {
-            // For General Education: show only Minor subjects (General Education subjects)
-            eligibleSubjects = eligibleSubjects.filter(s => s.subject_type !== 'Major');
-        } else {
-            // For Regular Curriculums: show only Major subjects
-            eligibleSubjects = eligibleSubjects.filter(s => s.subject_type === 'Major');
-        }
+        // Use currentCategorySubjects to ensure candidates are from the same category
+        // This satisfies the requirement: "only the subject that similar Subject Category will display"
+        let eligibleSubjects = currentCategorySubjects.filter(s => s.subject_code !== selectedSubjectCode);
 
         if (eligibleSubjects.length === 0) {
             prerequisiteList.innerHTML = '<p class="text-gray-500">No other subjects available to be prerequisites.</p>';
@@ -892,7 +1019,19 @@ document.addEventListener('DOMContentLoaded', () => {
         prerequisiteMap = {}; // Maps subject -> array of its prerequisite codes
         dependentMap = {};    // Maps subject -> array of subjects that require it
         
-        fetch(`/api/prerequisites/${modalCurriculumIdInput.value}`)
+        // Determine correct API endpoint based on ID format
+        const virtualIds = [
+            'gen-ed-college', 'gen-ed-shs',
+            'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+            'research', 'ojt'
+        ];
+        
+        let apiUrl = `/api/prerequisites/${modalCurriculumIdInput.value}`;
+        if (virtualIds.includes(modalCurriculumIdInput.value)) {
+            apiUrl = `/api/gen-ed-prerequisites/${modalCurriculumIdInput.value}`;
+        }
+        
+        fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 // Build maps of prerequisite relationships
@@ -960,19 +1099,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 let headerText = '';
                 if (group.year === 'Unassigned') {
-                    headerText = 'Unassigned Subjects';
+                    // Skip header text for unassigned
                 } else {
                     const yearSuffix = group.year == 1 ? 'st' : group.year == 2 ? 'nd' : group.year == 3 ? 'rd' : 'th';
                     const semesterName = group.semester == 1 ? 'First' : 'Second';
                     headerText = `${group.year}${yearSuffix} Year - ${semesterName} Semester`;
                 }
                 
-                sectionHeader.innerHTML = `
-                    <h4 class="text-sm font-semibold text-slate-700 mb-2 pb-1 border-b border-slate-200">
-                        ${headerText}
-                    </h4>
-                `;
-                prerequisiteList.appendChild(sectionHeader);
+                if (headerText) {
+                    sectionHeader.innerHTML = `
+                        <h4 class="text-sm font-semibold text-slate-700 mb-2 pb-1 border-b border-slate-200">
+                            ${headerText}
+                        </h4>
+                    `;
+                    prerequisiteList.appendChild(sectionHeader);
+                }
 
                 // Create grid for this section's subjects
                 const buttonGrid = document.createElement('div');
@@ -1265,14 +1406,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const chainHtml = chain.map((subject, index) => {
                     const subjectName = subject.subject_name;
+                    // Provide a fallback if course_classification is missing, though it should be there for gen-ed
+                    const subjectCategory = subject.course_classification || 'Uncategorized';
                     const subjectColorClass = getSubjectColorClass(subject.subject_type);
                     const sequenceNumber = index + 1;
                     const isFirst = index === 0;
                     
                     return `
                         <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 ${isFirst ? 'bg-green-600' : 'bg-blue-600'} text-white rounded-full flex items-center justify-center text-xs font-bold">${sequenceNumber}</div>
-                            <span class="font-semibold px-3 py-1.5 rounded-md ${subjectColorClass}">${subjectName}</span>
+                            <div class="w-6 h-6 ${isFirst ? 'bg-green-600' : 'bg-blue-600'} text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">${sequenceNumber}</div>
+                            <div class="flex flex-col">
+                                <span class="font-semibold px-3 py-1 rounded-md ${subjectColorClass}">${subjectName}</span>
+                                <span class="text-xs text-gray-500 mt-0.5 ml-1 italic">${subjectCategory}</span>
+                            </div>
                         </div>
                     `;
                 }).join(' <span class="font-bold text-2xl text-gray-400 mx-2">&rarr;</span> ');
@@ -1305,8 +1451,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Don't enable save button just for selecting a subject
         // Save button will be enabled only after successfully saving prerequisites in modal
         
+        // Determine correct API endpoint based on ID format
+        const virtualIds = [
+            'gen-ed-college', 'gen-ed-shs',
+            'prof-non-lab', 'prof-lab', 'prof-board', 'prof-non-board', 'prof-oc',
+            'research', 'ojt'
+        ];
+        
         let url = `/api/prerequisites/${curriculumId}`;
-        if (curriculumId === 'gen-ed-college' || curriculumId === 'gen-ed-shs') {
+        if (virtualIds.includes(curriculumId)) {
             url = `/api/gen-ed-prerequisites/${curriculumId}`;
         }
         
