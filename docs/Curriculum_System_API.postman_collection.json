@@ -1,0 +1,1326 @@
+{
+    "info": {
+        "_postman_id": "curriculum-system-api-complete",
+        "name": "Curriculum Management System API (Complete)",
+        "description": "Complete API collection for the Curriculum Management System.\n\n## 🚀 Setup Instructions:\n\n1. **Import** this collection into Postman.\n2. **Login** to your app in the browser.\n3. **Get Session Cookie**:\n    - F12 > Application > Cookies > Copy `laravel_session` value.\n    - In Postman, click **Cookies** link (below Send button) > Add Domain `127.0.0.1` > Add Cookie `laravel_session=<value>`.\n4. **Get CSRF Token**:\n    - Run the `GET CSRF Token` request in the **Auth & Helpers** folder.\n    - Copy the token value.\n    - Click **Top Level Collection Name** > **Variables** tab.\n    - Paste token into `csrf_token` CURRENT VALUE.\n5. **Save** and start listing requests!",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth & Helpers",
+            "item": [
+                {
+                    "name": "GET CSRF Token",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/csrf-token",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "csrf-token"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Curriculums",
+            "item": [
+                {
+                    "name": "List All Curriculums",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Approved ONLY",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/approved",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "approved"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single Curriculum",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Curriculum",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"curriculum\": \"Bachelor of Science in Computer Science\",\n    \"programCode\": \"BSCS\",\n    \"academicYear\": \"2024-2025\",\n    \"yearLevel\": \"College\",\n    \"compliance\": \"CHED\",\n    \"memorandumYear\": \"2017\",\n    \"memorandum\": \"CMO No. 25\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Curriculum",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"curriculum\": \"Updated Name\",\n    \"programCode\": \"BSCS\",\n    \"academicYear\": \"2024-2025\",\n    \"yearLevel\": \"College\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Curriculum",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Approve",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}/approve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}",
+                                "approve"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reject",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}/reject",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}",
+                                "reject"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Restore",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}/restore",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}",
+                                "restore"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Save Subjects (Bulk)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"curriculumId\": {{curriculum_id}},\n    \"curriculumData\": []\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/save",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "save"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Remove Subject",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum/remove-subject",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum",
+                                "remove-subject"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Curriculum Subjects",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}/subjects",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}",
+                                "subjects"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Available Subjects",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_ids\": [1, 2, 3]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculums/{{curriculum_id}}/add-subjects",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculums",
+                                "{{curriculum_id}}",
+                                "add-subjects"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Export Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum/{{curriculum_id}}/details",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum",
+                                "{{curriculum_id}}",
+                                "details"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Export PDF",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum/{{curriculum_id}}/export-pdf",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum",
+                                "{{curriculum_id}}",
+                                "export-pdf"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Subjects",
+            "item": [
+                {
+                    "name": "List All Subjects",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Subject",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_code\": \"IT 101\",\n    \"subject_name\": \"Intro to Computing\",\n    \"subject_unit\": 3,\n    \"subject_type\": \"Lecture\",\n    \"course_classification\": \"Professional\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Subject",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects/{{subject_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects",
+                                "{{subject_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Subject",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_name\": \"Updated Name\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects/{{subject_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects",
+                                "{{subject_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Subject",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects/{{subject_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects",
+                                "{{subject_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Versions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects/{{subject_id}}/versions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects",
+                                "{{subject_id}}",
+                                "versions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Export PDF",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/subjects/{{subject_id}}/export-pdf",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subjects",
+                                "{{subject_id}}",
+                                "export-pdf"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Programs",
+            "item": [
+                {
+                    "name": "Create Program",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"code\": \"BSIT\",\n    \"description\": \"Bachelor of Science in Information Technology\",\n    \"department\": \"College\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/programs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "programs"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Prerequisites",
+            "item": [
+                {
+                    "name": "Get Gen Ed Prerequisites",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/gen-ed-prerequisites/College",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "gen-ed-prerequisites",
+                                "College"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Curriculum Prerequisites",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/prerequisites/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "prerequisites",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Store Prerequisite",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_id\": 1,\n    \"prerequisite_id\": 2,\n    \"type\": \"hard\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/prerequisites",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "prerequisites"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Grades",
+            "item": [
+                {
+                    "name": "Store Grades",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_id\": {{subject_id}},\n    \"grades\": [\n        {\"grade\": \"1.0\", \"description\": \"Excellent\"}\n    ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/grades",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "grades"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Subject Grades",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/grades/{{subject_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "grades",
+                                "{{subject_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Curriculum Grades",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum-grades",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum-grades"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Specific Curriculum Grades",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum-grades/{{curriculum_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum-grades",
+                                "{{curriculum_id}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Equivalencies",
+            "item": [
+                {
+                    "name": "List Equivalencies",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/equivalencies",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "equivalencies"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Equivalency",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"subject_id\": 1,\n    \"equivalent_subject_id\": 2,\n    \"remarks\": \"Testing\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/equivalencies",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "equivalencies"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Equivalency",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/equivalencies/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "equivalencies",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Compliance",
+            "item": [
+                {
+                    "name": "List Compliance Links",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/compliance-links",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "compliance-links"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/compliance-links/categories",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "compliance-links",
+                                "categories"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Compliance Link",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"CHED Memo\",\n    \"url\": \"https://ched.gov.ph\",\n    \"category\": \"General\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/compliance-links",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "compliance-links"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Dashboard & Search",
+            "item": [
+                {
+                    "name": "Global Search",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"query\": \"Math\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/global-search",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "global-search"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Dashboard Data Export",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/dashboard/export-data",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "export-data"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Recent Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/dashboard/recent-activities",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "recent-activities"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Extraction Tools",
+            "item": [
+                {
+                    "name": "Check Description Similarity",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"text1\": \"Introduction to Programming\",\n    \"text2\": \"Intro to Prog\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/check-description-similarity",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "check-description-similarity"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Curriculum History",
+            "item": [
+                {
+                    "name": "Get Versions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum-history/{{curriculum_id}}/versions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum-history",
+                                "{{curriculum_id}}",
+                                "versions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Snapshot",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-CSRF-TOKEN",
+                                "value": "{{csrf_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"description\": \"Manual backup\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/curriculum-history/{{curriculum_id}}/snapshot",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "curriculum-history",
+                                "{{curriculum_id}}",
+                                "snapshot"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "System Settings",
+            "item": [
+                {
+                    "name": "Get All Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/system-settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "system-settings"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Settings by Category",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/system-settings/vision",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "system-settings",
+                                "vision"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8000",
+            "type": "string"
+        },
+        {
+            "key": "csrf_token",
+            "value": "PASTE_YOUR_CSRF_TOKEN_HERE",
+            "type": "string"
+        },
+        {
+            "key": "curriculum_id",
+            "value": "2",
+            "type": "string"
+        },
+        {
+            "key": "subject_id",
+            "value": "1",
+            "type": "string"
+        }
+    ]
+}

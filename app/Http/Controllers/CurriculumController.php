@@ -67,6 +67,52 @@ class CurriculumController extends Controller
     }
 
     /**
+     * Retrieves only APPROVED curriculums.
+     */
+    public function getApproved()
+    {
+        // Automatically manage curriculum lifecycle based on expiration dates
+        $today = Carbon::today();
+
+        // Mark approved expired curriculums as 'old'
+        Curriculum::where('approval_status', 'approved')
+            ->whereNotNull('expiration_date')
+            ->whereDate('expiration_date', '<=', $today)
+            ->where('version_status', '!=', 'old')
+            ->update(['version_status' => 'old']);
+
+        $curriculums = Curriculum::withCount('subjects')
+            ->withSum('subjects', 'subject_unit')
+            ->where('approval_status', 'approved') // Only get approved curriculums
+            ->orderBy('year_level')
+            ->orderBy('curriculum')
+            ->orderByDesc('academic_year')
+            ->get()
+            ->map(function ($curriculum) {
+                return [
+                    'id' => $curriculum->id,
+                    'curriculum_name' => $curriculum->curriculum,
+                    'program_code' => $curriculum->program_code,
+                    'academic_year' => $curriculum->academic_year,
+                    'expiration_date' => $curriculum->expiration_date,
+                    'year_level' => $curriculum->year_level,
+                    'compliance' => $curriculum->compliance,
+                    'memorandum_year' => $curriculum->memorandum_year,
+                    'memorandum_category' => $curriculum->memorandum_category,
+                    'memorandum' => $curriculum->memorandum,
+                    'semester_units' => $curriculum->semester_units,
+                    'total_units' => $curriculum->total_units,
+                    'version_status' => $curriculum->version_status,
+                    'approval_status' => $curriculum->approval_status,
+                    'created_at' => $curriculum->created_at,
+                    'subjects_count' => $curriculum->subjects_count,
+                    'mapped_units' => $curriculum->subjects_sum_subject_unit,
+                ];
+            });
+        return response()->json($curriculums);
+    }
+
+    /**
  * Stores a new curriculum.
  */
 public function store(Request $request)

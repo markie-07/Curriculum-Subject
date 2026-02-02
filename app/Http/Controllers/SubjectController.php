@@ -46,8 +46,21 @@ class SubjectController extends Controller
         ])
         ->orderBy('subject_name')
         ->get();
+
+        // Fetch all system settings
+        $settings = \App\Models\SystemSetting::all();
         
-        return response()->json($subjects);
+        // Group by category -> key -> value
+        $systemSettings = $settings->groupBy('category')->map(function ($items) {
+            return $items->mapWithKeys(function ($item) {
+                return [$item->key => $item->value];
+            });
+        });
+        
+        return response()->json([
+            'subjects' => $subjects,
+            'system_settings' => $systemSettings
+        ]);
     }
 
     public function store(Request $request)
@@ -167,7 +180,22 @@ class SubjectController extends Controller
     public function show($id)
     {
         $subject = Subject::with('curriculums')->findOrFail($id);
-        return response()->json($subject);
+
+        // Fetch all system settings
+        $settings = \App\Models\SystemSetting::all();
+        
+        // Group by category -> key -> value
+        $systemSettings = $settings->groupBy('category')->map(function ($items) {
+            return $items->mapWithKeys(function ($item) {
+                return [$item->key => $item->value];
+            });
+        });
+
+        // Convert subject to array and add system_settings
+        $response = $subject->toArray();
+        $response['system_settings'] = $systemSettings;
+
+        return response()->json($response);
     }
 
     public function update(Request $request, $id)

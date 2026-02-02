@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Use custom CSRF middleware to exclude logout route
         $middleware->validateCsrfTokens(except: [
-            'logout'
+            'logout',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

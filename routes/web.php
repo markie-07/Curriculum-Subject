@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CurriculumHistoryController;
 use App\Http\Controllers\ExtractSyllabusController;
+use App\Http\Controllers\SystemSettingController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -23,6 +24,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::get('/otp-verify', [AuthController::class, 'showOtpForm'])->name('otp.verify');
     Route::post('/otp-verify', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
+    
+    // Helper route to get CSRF token for Postman
+    Route::get('/csrf-token', function () {
+        return response()->json(['csrf_token' => csrf_token()]);
+    });
     Route::post('/otp-resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
     
     // CSRF token refresh route
@@ -221,9 +227,11 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     })->where('path', '.*')->name('view.syllabus');
 
     // API Routes - Accessible to all authenticated users with session support
-    Route::prefix('api')->group(function () {
+    // Protected by CSRF, session management, and rate limiting
+    Route::prefix('api')->middleware('throttle:120,1')->group(function () {
         // --- Curriculum Routes ---
         Route::get('/curriculums', [CurriculumController::class, 'index']);
+        Route::get('/curriculums/approved', [CurriculumController::class, 'getApproved']); // New endpoint for approved only
         Route::post('/curriculums', [CurriculumController::class, 'store']);
         Route::get('/curriculums/{id}', [CurriculumController::class, 'getCurriculumData']);
         Route::put('/curriculums/{id}', [CurriculumController::class, 'update']);
@@ -302,6 +310,10 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
 
         // --- Description Similarity Check ---
         Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);
+
+        // --- System Settings Routes ---
+        Route::get('/system-settings', [SystemSettingController::class, 'index']);
+        Route::get('/system-settings/{category}', [SystemSettingController::class, 'getByCategory']);
     });
 
 }); // End of auth middleware group
