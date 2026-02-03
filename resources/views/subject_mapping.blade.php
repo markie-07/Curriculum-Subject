@@ -206,7 +206,7 @@
                         <div class="flex gap-2">
                             <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 border-2 border-blue-700 hover:bg-white hover:text-blue-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hidden">
                                 <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                                Revise
+                                Mapped the Subject
                             </button>
                             <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-700 border-2 border-green-700 hover:bg-white hover:text-green-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hidden" disabled>
                                 <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h6m4-4H9m0 0V9m0 0V5a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2h-3m-4-4V9"></path></svg>
@@ -1133,23 +1133,21 @@
                 if (!curriculumId) {
                     const genEdTypes = ['Minor', 'General', 'Elective'];
                     
-                    if (genEdTypes.includes(subjectData.subject_type)) {
+                     // 1. Try to detect purely based on subject type/classification
+                    const type = (subjectData.subject_type || '').toLowerCase();
+                    const classification = (subjectData.course_classification || '').toLowerCase();
+                    const isGenEd = type.includes('general') || classification.includes('general') || classification.includes('nstp') || type.includes('nstp');
+                    
+                    if (isGenEd) {
                         console.log('Auto-detecting General Education context for:', subjectCode);
                         curriculumId = 'gen-ed-college';
-                    } 
-                    // NEW: Auto-detect Major subjects globally if no curriculum is active
-                    else if (subjectData.subject_type === 'Major' || subjectData.subject_type === 'Core' || subjectData.subject_type === 'Applied' || subjectData.subject_type === 'Specialized') {
-                        console.log('Auto-detecting Global Major context for:', subjectCode);
-                        if (subjectData.syllabus_type === 'DepEd') {
-                            curriculumId = 'major-shs';
-                        } else {
-                            curriculumId = 'major-college';
-                        }
-                    }
-                    else {
-                        if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
-                        if (chedPrereqToEl) chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
-                        return;
+                    } else if (subjectData.syllabus_type === 'DepEd') {
+                         console.log('Auto-detecting DepEd context for:', subjectCode);
+                         curriculumId = 'gen-ed-shs'; // Fallback for SHS if specific id not found
+                    } else {
+                         // Default to Major College global search if nothing else fits
+                         console.log('Auto-detecting Global Major context for:', subjectCode);
+                         curriculumId = 'major-college';
                     }
                 }
                 
@@ -1166,73 +1164,116 @@
                 if (!response.ok) throw new Error('Failed to fetch prerequisites');
                 
                 const data = await response.json();
-                const prerequisites = data.prerequisites || {};
+                const prerequisites = data.prerequisites || {}; // Keys are Children. Values are Parents.
                 const subjects = data.subjects || [];
 
                 console.log('📦 Prerequisites Data:', prerequisites);
-                console.log(`🔑 Prerequisite Keys: ${Object.keys(prerequisites).join(', ')}`);
-                console.log(`🎯 Looking for connections to: ${subjectCode}`);
-
+                
                 // Use allSystemSubjects (global) if available to lookup names of unmapped subjects
                 const lookupSubjects = (typeof allSystemSubjects !== 'undefined' && allSystemSubjects.length > 0) ? allSystemSubjects : subjects;
-                
-                // Find prerequisites for this subject (Credit Prerequisites - Parents)
-                // prerequisites[subjectCode] is an array of objects like { subject_code: "Child", prerequisite_subject_code: "Parent" }
-                const subjectPrereqObjects = prerequisites[subjectCode] || [];
-                const subjectPrereqCodes = subjectPrereqObjects.map(p => p.prerequisite_subject_code);
-                
-                // Map codes to subject objects, with fallback for missing ones
-                const prereqSubjects = subjectPrereqCodes.map(code => {
-                    const found = lookupSubjects.find(s => s.subject_code == code);
-                    return found || { subject_code: code, subject_name: 'Unlisted Subject', subject_type: 'N/A' };
-                });
-                
-                
-                // Find subjects that have this subject as a prerequisite (Pre-requisite to - Children)
-                const prereqTo = [];
-                const normalizedSubjectCode = String(subjectCode).trim();
+                const normalize = (str) => String(str).trim();
+                const targetCode = normalize(subjectCode);
 
-                Object.keys(prerequisites).forEach(childCode => {
-                    // childCode requires the subjects listed in prerequisites[childCode]
-                    const parents = prerequisites[childCode].map(p => String(p.prerequisite_subject_code).trim());
+                // --- Helper Recursive Functions ---
+
+                // 1. Find Ancestors (Parents, Grandparents...) -> "Credit Prerequisites"
+                const getAllAncestors = (childCode, visited = new Set()) => {
+                    if (visited.has(childCode)) return [];
+                    visited.add(childCode);
+
+                    // Find direct parents
+                    // We need to look up keys in 'prerequisites' that match 'childCode'
+                    // The lookup needs to be somewhat loose on trimming to be safe
+                    const key = Object.keys(prerequisites).find(k => normalize(k) === childCode);
+                    if (!key) return [];
+
+                    const directParents = (prerequisites[key] || []).map(p => normalize(p.prerequisite_subject_code));
                     
-                    // Check if current subject is in the parents list (permissive check)
-                    const isParent = parents.some(p => p === normalizedSubjectCode);
-                    
-                    if (isParent) {
-                        const found = lookupSubjects.find(s => String(s.subject_code).trim() == String(childCode).trim());
-                        // Add subject or fallback
-                        prereqTo.push(found || { subject_code: childCode, subject_name: 'Unlisted Subject', subject_type: 'N/A' });
-                    }
+                    let ancestors = [...directParents];
+                    directParents.forEach(parent => {
+                        ancestors = [...ancestors, ...getAllAncestors(parent, visited)];
+                    });
+                    return ancestors;
+                };
+
+                // 2. Build Children Map for Descendants traversal (Parent -> Children)
+                const childrenMap = {};
+                Object.keys(prerequisites).forEach(childKey => {
+                    const child = normalize(childKey);
+                    (prerequisites[childKey] || []).forEach(p => {
+                        const parent = normalize(p.prerequisite_subject_code);
+                        if (!childrenMap[parent]) childrenMap[parent] = [];
+                        // Avoid duplicates
+                        if (!childrenMap[parent].includes(child)) {
+                            childrenMap[parent].push(child);
+                        }
+                    });
                 });
+
+                // 3. Find Descendants (Children, Grandchildren...) -> "Pre-requisite to"
+                const getAllDescendants = (parentCode, visited = new Set()) => {
+                    if (visited.has(parentCode)) return [];
+                    visited.add(parentCode);
+
+                    const directChildren = childrenMap[parentCode] || [];
+                    let descendants = [...directChildren];
+
+                    directChildren.forEach(child => {
+                        descendants = [...descendants, ...getAllDescendants(child, visited)];
+                    });
+                    return descendants;
+                };
+
+                // --- Execute Lookup ---
                 
-                // Display Credit Prerequisites
+                const ancestorCodes = [...new Set(getAllAncestors(targetCode))];
+                const descendantCodes = [...new Set(getAllDescendants(targetCode))];
+
+                console.log(`Ancestors for ${targetCode}:`, ancestorCodes);
+                console.log(`Descendants for ${targetCode}:`, descendantCodes);
+
+                // --- Map to Subject Objects ---
+                
+                const mapToObjects = (codes) => {
+                     return codes.map(code => {
+                        const found = lookupSubjects.find(s => normalize(s.subject_code) === code);
+                        return found || { subject_code: code, subject_name: 'Unlisted Subject', subject_type: 'N/A' };
+                    });
+                };
+
+                const validAncestors = mapToObjects(ancestorCodes);
+                const validDescendants = mapToObjects(descendantCodes);
+                
+                // --- Render ---
+
+                // Display Credit Prerequisites (use Descendants/Children from DB structure because data is inverted)
                 if (chedPrerequisitesEl) {
-                    if (prereqSubjects.length > 0) {
-                        const prereqHTML = prereqSubjects.map(s => 
+                    if (validDescendants.length > 0) {
+                        const html = validDescendants.map(s => 
                             `\u003cspan class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-blue-200"\u003e
                                 ${s.subject_code} - ${s.subject_name}
                             \u003c/span\u003e`
                         ).join('');
-                        chedPrerequisitesEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${prereqHTML}\u003c/div\u003e`;
+                        chedPrerequisitesEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${html}\u003c/div\u003e`;
                     } else {
                         chedPrerequisitesEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
                     }
                 }
                 
-                // Display Pre-requisite to
+                // Display Pre-requisite to (use Ancestors/Parents from DB structure because data is inverted)
                 if (chedPrereqToEl) {
-                    if (prereqTo.length > 0) {
-                        const prereqToHTML = prereqTo.map(s => 
+                    if (validAncestors.length > 0) {
+                        const html = validAncestors.map(s => 
                             `\u003cspan class="inline-block bg-purple-50 text-purple-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-purple-200"\u003e
                                 ${s.subject_code} - ${s.subject_name}
                             \u003c/span\u003e`
                         ).join('');
-                        chedPrereqToEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${prereqToHTML}\u003c/div\u003e`;
+                        chedPrereqToEl.innerHTML = `\u003cdiv class="flex flex-wrap gap-1"\u003e${html}\u003c/div\u003e`;
                     } else {
                         chedPrereqToEl.innerHTML = '\u003cspan class="text-gray-500"\u003eN/A\u003c/span\u003e';
                     }
                 }
+
             } catch (error) {
                 console.error('Error fetching prerequisites:', error);
                 if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '\u003cspan class="text-red-500"\u003eError loading prerequisites\u003c/span\u003e';
@@ -1912,7 +1953,7 @@ const updateAllTotals = () => {
                 if (openMemorandumModalBtn) openMemorandumModalBtn.classList.add('hidden');
 
                 saveButton.setAttribute('disabled', 'disabled');
-                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg> Revise`;
+                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg> Mapped the Subject`;
 
                 subjectTags.forEach(tag => tag.setAttribute('draggable', 'false'));
                 
@@ -3358,20 +3399,48 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
                     return response.json();
                 })
                 .then(data => {
-                    if (!data || !Array.isArray(data)) throw new Error('Invalid subjects data from server.');
+                    // Check if data has subjects property which is an array
+                    const subjects = data.subjects || data; 
+                    
+                    if (!subjects || !Array.isArray(subjects)) throw new Error('Invalid subjects data from server.');
                     
                     // Store locally
-                    currentAvailableSubjects = data;
+                    currentAvailableSubjects = subjects;
                     currentMappedSubjects = []; // None mapped yet
-                    allSystemSubjects = data;
+                    allSystemSubjects = subjects;
 
                     // Show all subjects as available (none are mapped yet)
-                    renderAvailableSubjects(data, []);
+                    renderAvailableSubjects(subjects, []);
                 })
                 .catch(error => {
                     console.error('Error loading subjects:', error);
                     availableSubjectsContainer.innerHTML = '<p class="text-red-500 text-center mt-4">Error loading subjects. Please refresh the page.</p>';
                 });
+        }
+
+        function configureFiltersForCurriculum(isSeniorHigh) {
+            const formatFilter = document.getElementById('formatFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            
+            if (isSeniorHigh) {
+                // Set to DepEd
+                formatFilter.value = 'DepEd';
+                // Hide non-DepEd options
+                Array.from(formatFilter.options).forEach(opt => {
+                    opt.hidden = (opt.value !== 'DepEd');
+                });
+            } else {
+                // Set to CHED (College)
+                formatFilter.value = 'CHED';
+                // Hide non-CHED options
+                Array.from(formatFilter.options).forEach(opt => {
+                    opt.hidden = (opt.value !== 'CHED');
+                });
+            }
+            
+            // Update type options and refresh
+            updateTypeOptions();
+            filterSubjects();
         }
 
         function fetchCurriculumData(id) {
@@ -3384,6 +3453,10 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             // Handle General Education View Special Case
             if (id === 'gen-ed-college' || id === 'gen-ed-shs') {
                 const yearLevel = selectedOption.dataset.yearLevel || (id === 'gen-ed-college' ? 'College' : 'Senior High');
+                
+                // Configure filters
+                configureFiltersForCurriculum(yearLevel === 'Senior High');
+
                 renderCurriculumOverview(yearLevel, []); // Empty grid
                 
                 // Fetch Gen Ed Data
@@ -3417,6 +3490,8 @@ function renderCurriculumOverview(yearLevel, semesterUnits = []) {
             }
 
             const yearLevel = selectedOption.dataset.yearLevel;
+            // Configure filters for normal curriculums
+            configureFiltersForCurriculum(yearLevel === 'Senior High');
             const semesterUnits = JSON.parse(selectedOption.dataset.semesterUnits || '[]');
             renderCurriculumOverview(yearLevel, semesterUnits);
 

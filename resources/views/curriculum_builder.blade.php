@@ -213,14 +213,14 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="programCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code <span class="text-xs text-slate-500">(Auto-filled)</span></label>
+                                <label for="programCode" class="block text-sm font-medium text-slate-700 mb-1">Program Code <span class="text-xs text-slate-500"></span></label>
                                 <div class="relative">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.5A.75.75 0 014.5 3h15a.75.75 0 01.75.75v15a.75.75 0 01-.75.75h-15a.75.75 0 01-.75-.75v-15zM8.25 9a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5h-7.5zM8.25 12.75a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-4.5z" /></svg>
                                     <input type="text" id="programCode" name="programCode" placeholder="Select a curriculum first" class="w-full pl-10 pr-4 py-2.5 bg-gray-100 text-slate-600 border border-slate-300 rounded-lg shadow-sm cursor-not-allowed" required readonly>
                                 </div>
                             </div>
                             <div>
-                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level <span class="text-xs text-slate-500">(Auto-filled)</span></label>
+                                <label for="yearLevel" class="block text-sm font-medium text-slate-700 mb-1">Level <span class="text-xs text-slate-500"></span></label>
                                  <div class="relative">
                                      <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5-1.5V3" /></svg>
                                     <select id="yearLevel" name="yearLevel" class="w-full appearance-none pl-10 pr-10 py-2.5 bg-gray-100 text-slate-600 border border-slate-300 rounded-lg shadow-sm cursor-not-allowed pointer-events-none" required tabindex="-1">
@@ -239,7 +239,7 @@
                                 </div>
                             </div>
                             <div id="expirationDateContainer">
-                                <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum Expiration Date</label>
+                                <label for="expirationDate" class="block text-sm font-medium text-slate-700 mb-1">Curriculum End Date</label>
                                 <div class="relative">
                                     <div class="relative group">
                                         <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-colors group-focus-within:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" /></svg>

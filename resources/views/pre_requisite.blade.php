@@ -1358,79 +1358,105 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Build prerequisite maps
-        const directPrereqMap = {}; // subject -> its direct prerequisite
-        const childrenMap = {}; // subject -> subjects that require it
 
-        Object.keys(prerequisites).forEach(subjectCode => {
-            prerequisites[subjectCode].forEach(prereq => {
-                directPrereqMap[subjectCode] = prereq.prerequisite_subject_code;
-                if (!childrenMap[prereq.prerequisite_subject_code]) {
-                    childrenMap[prereq.prerequisite_subject_code] = [];
-                }
-                childrenMap[prereq.prerequisite_subject_code].push(subjectCode);
+
+        // Find chain starts (subjects with no prerequisites)
+        // 1. Build Children Map (Parent -> Array of Children) to identify Leaf/Terminal Nodes
+        const childrenMap = {};
+        Object.keys(prerequisites).forEach(childCode => {
+            prerequisites[childCode].forEach(prereq => {
+                const parentCode = prereq.prerequisite_subject_code;
+                if (!childrenMap[parentCode]) childrenMap[parentCode] = [];
+                childrenMap[parentCode].push(childCode);
             });
         });
 
-        // Find chain starts (subjects with no prerequisites)
-        // Find chain starts (subjects with no prerequisites OR parent is filtered out)
-        const chainStarts = subjects.filter(subject => {
-            const parentCode = directPrereqMap[subject.subject_code];
-            return !parentCode || !subjectMap.has(parentCode);
-        });
-        const processedSubjects = new Set();
+        // 2. Identify Terminal Subjects (Subjects that have prerequisites but are NOT prerequisites to others)
+        // These are the "Ends" of the chains.
+        const subjectsWithPrereqs = Object.keys(prerequisites).filter(key => prerequisites[key].length > 0);
+        let terminalSubjects = subjectsWithPrereqs.filter(code => !childrenMap[code]);
 
-        chainStarts.forEach(startSubject => {
-            if (processedSubjects.has(startSubject.subject_code)) return;
-            
-            // Build complete chain from this start
-            const chain = [];
-            let currentSubject = startSubject.subject_code;
-            
-            // Follow the chain to the end
-            while (currentSubject && !processedSubjects.has(currentSubject)) {
-                const subject = subjectMap.get(currentSubject);
-                if (subject) {
-                    chain.push(subject);
-                    processedSubjects.add(currentSubject);
-                }
-                
-                // Find next subject in chain
-                const nextSubjects = childrenMap[currentSubject];
-                currentSubject = nextSubjects && nextSubjects.length > 0 ? nextSubjects[0] : null;
+        // Fallback: If no terminal subjects found (e.g. cycle or empty), use all subjects with prereqs
+        if (terminalSubjects.length === 0 && subjectsWithPrereqs.length > 0) {
+             terminalSubjects = subjectsWithPrereqs;
+        }
+
+        const uniqueChains = []; 
+
+        // Helper to perform Backward DFS from a node to find all paths to roots
+        const buildPaths = (childCode, currentPath) => {
+            // Find subject data
+            let subject = subjectMap.get(childCode);
+            if (!subject) {
+                 // Fallback for missing/external subjects
+                 subject = {
+                    subject_code: childCode,
+                    subject_name: childCode, 
+                    course_classification: 'External/Unknown',
+                    subject_type: 'Unknown'
+                };
             }
 
-            // Only display if this is a meaningful chain (more than 1 subject or has prerequisites)
-            if (chain.length > 1 || prerequisites[startSubject.subject_code]) {
-                const chainDiv = document.createElement('div');
-                chainDiv.className = 'flex items-center justify-between gap-2 p-3 bg-gray-50 rounded-lg border';
-                
-                const chainHtml = chain.map((subject, index) => {
-                    const subjectName = subject.subject_name;
-                    // Provide a fallback if course_classification is missing, though it should be there for gen-ed
-                    const subjectCategory = subject.course_classification || 'Uncategorized';
-                    const subjectColorClass = getSubjectColorClass(subject.subject_type);
-                    const sequenceNumber = index + 1;
-                    const isFirst = index === 0;
-                    
-                    return `
-                        <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 ${isFirst ? 'bg-green-600' : 'bg-blue-600'} text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">${sequenceNumber}</div>
-                            <div class="flex flex-col">
-                                <span class="font-semibold px-3 py-1 rounded-md ${subjectColorClass}">${subjectName}</span>
-                                <span class="text-xs text-gray-500 mt-0.5 ml-1 italic">${subjectCategory}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join(' <span class="font-bold text-2xl text-gray-400 mx-2">&rarr;</span> ');
+            const newPath = [subject, ...currentPath];
+            
+            const parents = prerequisites[childCode];
+            
+            // If no parents, we reached a root of this chain
+            if (!parents || parents.length === 0) {
+                // Only add if path has at least 2 nodes (Parent -> Child) or is significant
+                if (newPath.length > 1) {
+                    // REVERSE the chain for display to match the "Pre-requisite TO" user flow.
+                    // Data is stored as: Dependent (Child) -> Prerequisite (Parent).
+                    // Logic builds: [Parent, Child].
+                    // User wants: [Child (Selected), Parent (Target)].
+                    uniqueChains.push([...newPath].reverse());
+                }
+                return;
+            }
+            
+            // Recurse for each parent
+            parents.forEach(p => {
+                const parentCode = p.prerequisite_subject_code;
+                // Avoid cycles: Check if parent is already in the downstream path
+                if (!newPath.some(s => s.subject_code === parentCode)) { 
+                    buildPaths(parentCode, newPath);
+                }
+            });
+        };
 
-                chainDiv.innerHTML = `
-                    <div class="flex-grow flex flex-wrap items-center gap-2">
-                        ${chainHtml}
+        // Build all chains starting from terminal nodes
+        terminalSubjects.forEach(termCode => buildPaths(termCode, []));
+
+        // 3. Render the Chains
+        uniqueChains.forEach(chain => {
+             const chainDiv = document.createElement('div');
+             chainDiv.className = 'flex items-center justify-between gap-2 p-3 bg-white rounded-lg border border-gray-200 shadow-sm mb-3';
+             
+             const chainHtml = chain.map((subject, index) => {
+                const subjectName = subject.subject_name;
+                const subjectCategory = subject.course_classification || 'Uncategorized';
+                const subjectColorClass = getSubjectColorClass(subject.subject_type);
+                const sequenceNumber = index + 1;
+                const isFirst = index === 0;
+                
+                return `
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 ${isFirst ? 'bg-green-600' : 'bg-blue-600'} text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-sm">${sequenceNumber}</div>
+                        <div class="flex flex-col">
+                            <span class="font-semibold px-3 py-1 rounded-md text-sm border ${subjectColorClass}">${subjectName}</span>
+                            <span class="text-xs text-cool-gray-500 mt-0.5 ml-1 italic">${subjectCategory}</span>
+                        </div>
                     </div>
                 `;
+            }).join(' <div class="mx-2 text-gray-300 flex-shrink-0"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></div> ');
 
-                prerequisiteChainContainer.appendChild(chainDiv);
-            }
+            chainDiv.innerHTML = `
+                <div class="flex-grow flex flex-wrap items-center gap-2">
+                    ${chainHtml}
+                </div>
+            `;
+
+            prerequisiteChainContainer.appendChild(chainDiv);
         });
 
         // Edit buttons removed - no longer needed
@@ -1473,31 +1499,58 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         savePrerequisitesBtn.disabled = true;
         const formData = new FormData(prerequisiteForm);
-        const data = {
-            curriculum_id: formData.get('curriculum_id'),
-            subject_code: formData.get('subject_code'),
-            prerequisite_codes: formData.getAll('prerequisite_codes[]')
-        };
+        
+        // Get the "Root" subject (the one selected in the dropdown)
+        const rootSubject = formData.get('subject_code');
+        const curriculumId = formData.get('curriculum_id');
+        
+        // We use prerequisiteSequence which stores the values in order of selection [SubjectB, SubjectC, ...]
+        // We want to create chain: Root -> SubjectB -> SubjectC ...
+        
+        // Note: functionality to support MULTIPLE parallel children at the same step is not supported by this linear chain logic.
+        // If the user wants parallel structure, they would have to add them separately. 
+        // But the current UI with (1)->(2)->(3) strongly implies a linear chain.
+        
+        let previousSubject = rootSubject;
+        
         try {
-            const response = await fetch('/api/prerequisites', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to save prerequisites.');
+            // Validate sequence
+            if (prerequisiteSequence.length === 0) {
+                 throw new Error('No prerequisites selected.');
+            }
+
+            // Iterate and create links sequentially
+            for (const targetSubject of prerequisiteSequence) {
+                const data = {
+                    curriculum_id: curriculumId,
+                    subject_code: previousSubject, // Parent
+                    prerequisite_codes: [targetSubject] // Child
+                };
+                
+                const response = await fetch('/api/prerequisites', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Failed to link ${previousSubject} -> ${targetSubject}`);
+                }
+                
+                // Move pointer: current child becomes next parent
+                previousSubject = targetSubject;
             }
             
-            const result = await response.json();
+            // All saved successfully
             hideModal();
             
             // Update main page curriculum selection to match modal selection
-            const savedCurriculumId = data.curriculum_id;
+            const savedCurriculumId = curriculumId;
             const curriculumOption = mainOptionsList.querySelector(`li[data-value="${savedCurriculumId}"]`);
             if (curriculumOption) {
                 selectedCurriculum.id = savedCurriculumId;

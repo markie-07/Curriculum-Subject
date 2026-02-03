@@ -220,29 +220,15 @@
                 </button>
             </div>
             
-            {{-- Subject Type Filter Buttons (for subject view) --}}
-            <div id="subject-type-filters" class="mb-4 flex gap-2 hidden">
-                <button 
-                    id="subject-filter-all-btn" 
-                    class="subject-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-indigo-600 text-white"
-                    data-filter="all"
-                >
-                    All
-                </button>
-                <button 
-                    id="subject-filter-major-btn" 
-                    class="subject-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    data-filter="major"
-                >
-                    Major
-                </button>
-                <button 
-                    id="subject-filter-minor-btn" 
-                    class="subject-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    data-filter="minor"
-                >
-                    Minor
-                </button>
+            {{-- Subject Type Filter Buttons (Replaced with Level and Category Dropdowns) --}}
+            <div id="subject-type-filters" class="mb-4 hidden flex flex-col gap-2">
+                <select id="grade-history-level-filter" class="w-full text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3">
+                    <option value="college">CHED (College)</option>
+                    <option value="senior_high">DepEd (Senior High)</option>
+                </select>
+                <select id="grade-history-category-filter" class="w-full text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3">
+                    <option value="all">All Categories</option>
+                </select>
             </div>
             
             <div id="grade-history-container" class="space-y-4 flex-1 overflow-y-auto min-h-0">
@@ -596,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Confirm Subject Selection Logic
     if (confirmSelectSubjectsBtn) {
-        confirmSelectSubjectsBtn.addEventListener('click', () => {
+        confirmSelectSubjectsBtn.addEventListener('click', async () => {
              console.log('Confirm button clicked');
              console.log('Current selectedSubjects:', selectedSubjects);
 
@@ -618,28 +604,37 @@ document.addEventListener('DOMContentLoaded', () => {
                              // This subject is graded in this curriculum. Check if curriculum is Active/New AND Approved.
                              
                              // 1. Check if "Old" (Expired or explicitly Old version)
-                             const isExpired = curr.expiration_date && new Date(curr.expiration_date) <= new Date();
-                             const isOld = curr.version_status === 'old' || isExpired;
-                             
-                             // 2. Check Approval Status
-                             // The user wants to allow editing if the curriculum is still "Processing" (not yet approved/finalized).
-                             // So we only block if it is Approved.
-                             const isApproved = (curr.status === 'Approved' || curr.approval_status === 'approved'); // Check both potential fields
-                             
-                             // BLOCK LOGIC:
-                             // changing grades is RESTRICTED only if:
-                             // - It is NOT Old (meaning it is New/Active)
-                             // - AND it IS Approved (Finalized)
-                             
-                             if (!isOld && isApproved) {
-                                  // It is an Active & Approved curriculum -> BLOCK IT
-                                  blockedSubjectsDetails.push({
-                                      subject_code: s.subject_code,
-                                      subject_name: s.subject_name,
-                                      curriculum_name: curr.curriculum_name || curr.program_code || 'Unknown Curriculum',
-                                      status: 'New'
-                                  });
-                             }
+                              // Enhanced Date Check with end_date fallback
+                              let isExpired = false;
+                              const expStr = curr.expiration_date || curr.end_date;
+                              if (expStr) {
+                                  const exp = new Date(expStr);
+                                  const now = new Date();
+                                  
+                                  // Normalize to simple date comparison (ignoring time/timezone shifts)
+                                  const expZero = new Date(exp.getFullYear(), exp.getMonth(), exp.getDate());
+                                  const nowZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                                  if (!isNaN(expZero.getTime())) {
+                                      isExpired = expZero <= nowZero;
+                                  }
+                              }
+                              const status = (curr.version_status || '').toLowerCase();
+                              const isOld = status === 'old' || status === 'archived' || isExpired;
+                              
+                              console.log(`Checking Curriculum: ${curr.curriculum_name}, Exp: ${expStr}, IsExpired: ${isExpired}, IsOld: ${isOld}`);
+                              
+                              // 2. Check Approval Status
+                              const isApproved = (curr.status === 'Approved' || curr.approval_status === 'approved');
+
+                              if (!isOld && isApproved) {
+                                   blockedSubjectsDetails.push({
+                                       subject_code: s.subject_code,
+                                       subject_name: s.subject_name,
+                                       curriculum_name: `${curr.curriculum_name || curr.program_code} (AY: ${curr.academic_year || 'N/A'})`,
+                                       status: 'New'
+                                   });
+                              }
                          }
                      });
                  }
@@ -725,6 +720,47 @@ document.addEventListener('DOMContentLoaded', () => {
                  console.log('Proceeding: Subjects are either ungraded or belong to old curriculums.');
                  updateSelectedSubjectsList();
                  hideModal('select-subjects-modal');
+
+                 // Load existing grades from template (first graded subject found)
+                 const templateSubject = selectedSubjects.find(s => s.has_grades || s.is_graded);
+                 
+                 if (templateSubject) {
+                     Swal.fire({
+                         title: `Loading grades from ${templateSubject.subject_code}...`,
+                         allowOutsideClick: false,
+                         showConfirmButton: false,
+                         didOpen: () => {
+                             Swal.showLoading();
+                         }
+                     });
+                     try {
+                         const versionData = await fetchAPI(`grades/${templateSubject.id}/version-history`);
+                         Swal.close();
+                         
+                         if (versionData && versionData.current_version && versionData.current_version.components) {
+                              console.log('Loading components from template:', templateSubject.subject_code);
+                              loadGradeDataToDOM(versionData.current_version.components);
+                              
+                              Swal.fire({
+                                  toast: true,
+                                  position: 'top-end',
+                                  icon: 'success',
+                                  title: 'Grades Loaded',
+                                  text: `Loaded grading scheme from ${templateSubject.subject_code}.`,
+                                  showConfirmButton: false,
+                                  timer: 3000
+                              });
+                         } else {
+                              loadGradeDataToDOM({});
+                         }
+                     } catch (error) {
+                         console.error('Error loading grades:', error);
+                         Swal.close();
+                         loadGradeDataToDOM({});
+                     }
+                 } else {
+                     loadGradeDataToDOM({});
+                 }
              }
         });
     }
@@ -1230,7 +1266,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const subjectCategories = {
         'College': [
-            'General Education (NSTP 1, NSTP 2)',
+            'General Education',
+            'NSTP 1',
+            'NSTP 2',
             'Professional Subject Non Laboratory',
             'Professional Subject Laboratory',
             'Professional Subject Board Courses',
@@ -1253,7 +1291,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let allSubjects = [];
         try {
-            allSubjects = await fetchAPI('subjects');
+            const response = await fetchAPI('subjects');
+            allSubjects = response.subjects || response.data || [];
         } catch (e) {
             console.error(e);
             memorandumList.innerHTML = '<p class="text-red-500 text-center py-4">Error loading data.</p>';
@@ -1276,10 +1315,16 @@ document.addEventListener('DOMContentLoaded', () => {
                  const sClassLower = sClass.toLowerCase();
 
                  if (selectedLevel === 'College') {
-                    if (category.startsWith('General Education')) {
+                    if (category === 'General Education') {
+                        if (sClassLower.includes('nstp') || sType.includes('nstp')) return false;
                         if (sType === 'minor') return true;
-                        return ['general education', 'nstp', 'minor'].some(t => sClassLower.includes(t)) || 
-                               ['general education', 'nstp'].some(t => sType.includes(t));
+                        return sClassLower.includes('general education') || sType.includes('general education');
+                    }
+                    if (category === 'NSTP 1') {
+                        return sClassLower.includes('nstp 1') || sType.includes('nstp 1') || (s.subject_code && s.subject_code.toLowerCase().includes('nstp 1'));
+                    }
+                    if (category === 'NSTP 2') {
+                        return sClassLower.includes('nstp 2') || sType.includes('nstp 2') || (s.subject_code && s.subject_code.toLowerCase().includes('nstp 2'));
                     }
                     if (category === 'Research') return sClassLower === 'research' || sType === 'research';
                     if (category === 'OJT/Practicum') return sClassLower.includes('ojt') || sClassLower.includes('practicum') || sType.includes('ojt') || sType.includes('practicum');
@@ -1355,7 +1400,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchSubjectsByCategory = async (category) => {
         try {
-            const allSubjects = await fetchAPI('subjects');
+            const response = await fetchAPI('subjects');
+            const allSubjects = response.subjects || response.data || [];
             return allSubjects.filter(s => {
                  // 1. Level Check
                  const sLevel = (s.year_level || '').toString().trim();
@@ -1372,11 +1418,16 @@ document.addEventListener('DOMContentLoaded', () => {
                  const sClassLower = sClass.toLowerCase();
 
                  if (selectedLevel === 'College') {
-                    if (category.startsWith('General Education')) {
-                        // Match "General Education", "NSTP 1", "NSTP 2", type "Minor"
+                    if (category === 'General Education') {
+                        if (sClassLower.includes('nstp') || sType.includes('nstp')) return false;
                         if (sType === 'minor') return true;
-                        return ['general education', 'nstp', 'minor'].some(t => sClassLower.includes(t)) || 
-                               ['general education', 'nstp'].some(t => sType.includes(t));
+                        return sClassLower.includes('general education') || sType.includes('general education');
+                    }
+                    if (category === 'NSTP 1') {
+                        return sClassLower.includes('nstp 1') || sType.includes('nstp 1') || (s.subject_code && s.subject_code.toLowerCase().includes('nstp 1'));
+                    }
+                    if (category === 'NSTP 2') {
+                        return sClassLower.includes('nstp 2') || sType.includes('nstp 2') || (s.subject_code && s.subject_code.toLowerCase().includes('nstp 2'));
                     }
                     if (category === 'Research') return sClassLower === 'research' || sType === 'research';
                     if (category === 'OJT/Practicum') return sClassLower.includes('ojt') || sClassLower.includes('practicum') || sType.includes('ojt') || sType.includes('practicum');
@@ -1686,7 +1737,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
             
             // Cleanup wrapped responses
-            let allSubjects = Array.isArray(allSubjectsItems) ? allSubjectsItems : (allSubjectsItems.data || []);
+            let allSubjects = Array.isArray(allSubjectsItems) ? allSubjectsItems : (allSubjectsItems.subjects || allSubjectsItems.data || []);
             let allCurriculums = Array.isArray(allCurriculumsItems) ? allCurriculumsItems : (allCurriculumsItems.data || []);
             
             // 2. Discover Curriculums IDs
@@ -1835,17 +1886,96 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentHistoryView === 'memorandum') allItems = historyStats.memorandums;
         else if (currentHistoryView === 'subject') allItems = historyStats.subjects;
         else allItems = historyStats.curriculums;
+
+        // Custom Subject View Rendering with Grouping
+        if (currentHistoryView === 'subject') {
+            const levelFilterEl = document.getElementById('grade-history-level-filter');
+            const categoryFilterEl = document.getElementById('grade-history-category-filter');
+            
+            const levelFilter = levelFilterEl ? levelFilterEl.value : 'college';
+            
+            // Filter by Level (CHED vs DepEd)
+            const levelFilteredItems = allItems.filter(s => {
+                 const sLevel = (s.year_level || '').toString().trim();
+                 const sSyllabus = (s.syllabus_type || '').toLowerCase();
+                 const isSHS = /^(Senior High|SHS|Grade 11|Grade 12)/i.test(sLevel) || sSyllabus === 'deped' || (s.curriculum_name && s.curriculum_name.includes('Senior High'));
+                 
+                 return levelFilter === 'senior_high' ? isSHS : !isSHS;
+            });
+
+            // Populate Category Options dynamically based on visible subjects
+            if (categoryFilterEl) {
+                // Check if we need to update options (detect level change or init)
+                if (categoryFilterEl.dataset.currentLevel !== levelFilter) {
+                    const uniqueCategories = [...new Set(levelFilteredItems.map(i => i.course_classification || i.subject_type || 'Others'))].sort();
+                    
+                    categoryFilterEl.innerHTML = '<option value="all">All Categories</option>';
+                    uniqueCategories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        categoryFilterEl.appendChild(opt);
+                    });
+                    
+                    categoryFilterEl.dataset.currentLevel = levelFilter;
+                    categoryFilterEl.value = 'all'; 
+                }
+            }
+
+            // Filter by selected Category
+            let finalItems = levelFilteredItems;
+            if (categoryFilterEl && categoryFilterEl.value !== 'all') {
+                finalItems = levelFilteredItems.filter(s => (s.course_classification || s.subject_type || 'Others') === categoryFilterEl.value);
+            }
+
+            if (finalItems.length === 0) {
+                 container.innerHTML = `<p class="text-gray-500 text-sm text-center py-4">No graded subjects found matching criteria.</p>`;
+                 return;
+            }
+
+            // Group by Category (course_classification)
+            const groups = {};
+            finalItems.forEach(item => {
+                const cat = item.course_classification || item.subject_type || 'Others';
+                if (!groups[cat]) groups[cat] = [];
+                groups[cat].push(item);
+            });
+
+            // Render Groups
+            Object.keys(groups).sort().forEach(category => {
+                  const header = document.createElement('h5');
+                  header.className = 'text-xs font-bold text-gray-500 uppercase tracking-widest mt-4 mb-2 pl-1 border-b border-gray-100 pb-1 sticky top-0 bg-white z-10';
+                  header.textContent = category;
+                  container.appendChild(header);
+
+                  groups[category].forEach(item => {
+                       const div = document.createElement('div');
+                       div.className = 'p-3 border rounded-lg hover:bg-gray-50 mb-2 transition-colors cursor-pointer group bg-white shadow-sm';
+                       
+                       div.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-medium text-gray-800 text-sm flex items-center gap-2">${item.subject_code}</p>
+                                <p class="text-xs text-gray-600 truncate mt-0.5">${item.subject_name}</p>
+                            </div>
+                            <span class="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">Graded</span>
+                        </div>
+                       `;
+                       div.addEventListener('dblclick', (e) => {
+                           e.stopPropagation();
+                           showGradeComponentDetails(item.id, item.subject_name, item.subject_code);
+                       });
+                       container.appendChild(div);
+                  });
+            });
+            return; // Stop processing 'items.forEach' loop logic for other views
+        }
         
-        // Apply Filter
+        // --- Standard Logic for Curriculums / Memorandums ---
         let items = allItems;
         if (currentHistoryFilter !== 'all') {
-            if (currentHistoryView === 'subject') {
-                // Filter Major/Minor
-                items = items.filter(i => (i.subject_type || 'major').toLowerCase() === currentHistoryFilter);
-            } else {
-                // Filter College/Senior High (mapped to 'college' / 'seniorhigh')
-                items = items.filter(i => i.type === currentHistoryFilter); 
-            }
+            // Filter College/Senior High (mapped to 'college' / 'seniorhigh')
+            items = items.filter(i => i.type === currentHistoryFilter); 
         }
         
         if (items.length === 0) {
@@ -1857,62 +1987,50 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = 'p-3 border rounded-lg hover:bg-gray-50 mb-2 transition-colors cursor-pointer group';
             
-            if (currentHistoryView === 'subject') {
-                const typeBadge = (item.subject_type || 'Major').toLowerCase() === 'minor' 
-                    ? '<span class="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">Minor</span>' 
-                    : '<span class="text-xs bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded">Major</span>';
+            // Curriculum or Memorandum View (Already checked subject view above)
+            const name = currentHistoryView === 'curriculum' ? (item.curriculum_name || item.program_code) : item.name;
+            const percent = item.percentage;
+            const countText = `${item.graded_subjects || item.graded} / ${item.total_subjects || item.total} Subjects`;
+            const tagColor = item.type === 'seniorhigh' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100';
+            const tagText = currentHistoryView === 'memorandum' 
+                ? (item.type === 'seniorhigh' ? 'DepEd' : 'CHED') 
+                : (item.type === 'seniorhigh' ? 'Senior High' : 'College');
+            
+            div.innerHTML = `
+               <div class="flex flex-col h-full justify-between">
+                    <div class="flex justify-between items-start gap-2 mb-2">
+                         <h4 class="font-semibold text-gray-800 text-sm leading-tight line-clamp-2" title="${name}">${name}</h4>
+                         <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor} border whitespace-nowrap">${tagText}</span>
+                    </div>
                     
-                div.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium text-gray-800 text-sm flex items-center gap-2">${item.subject_code} ${typeBadge}</p>
-                            <p class="text-xs text-gray-600 truncate mt-0.5">${item.subject_name}</p>
-                        </div>
-                        <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">Graded</span>
-                    </div>
-                `;
-                
-                // Add Double Click listener to view details
-                div.addEventListener('dblclick', (e) => {
-                    e.stopPropagation();
-                    showGradeComponentDetails(item.id, item.subject_name, item.subject_code);
-                });
-                
-            } else {
-                // Curriculum or Memorandum
-                const name = currentHistoryView === 'curriculum' ? (item.curriculum_name || item.program_code) : item.name;
-                const percent = item.percentage;
-                const countText = `${item.graded_subjects || item.graded} / ${item.total_subjects || item.total} Subjects`;
-                const tagColor = item.type === 'seniorhigh' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100';
-                const tagText = currentHistoryView === 'memorandum' 
-                    ? (item.type === 'seniorhigh' ? 'DepEd' : 'CHED') 
-                    : (item.type === 'seniorhigh' ? 'Senior High' : 'College');
-                
-                div.innerHTML = `
-                   <div class="flex flex-col h-full justify-between">
-                        <div class="flex justify-between items-start gap-2 mb-2">
-                             <h4 class="font-semibold text-gray-800 text-sm leading-tight line-clamp-2" title="${name}">${name}</h4>
-                             <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor} border whitespace-nowrap">${tagText}</span>
-                        </div>
+                    <div class="flex justify-between items-center mt-1">
+                        <span class="text-xs text-slate-500 font-medium">${countText}</span>
                         
-                        <div class="flex justify-between items-center mt-1">
-                            <span class="text-xs text-slate-500 font-medium">${countText}</span>
-                            
-                            <!-- Liquid Badge -->
-                            <div class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-indigo-100 bg-white min-w-[65px] h-6 shadow-sm">
-                                <div class="absolute bottom-0 left-0 w-full bg-indigo-100/80 transition-all duration-700 ease-out border-t border-indigo-200" 
-                                     style="height: ${percent}%"></div>
-                                <span class="relative z-10 text-[10px] font-bold ${percent >= 75 ? 'text-indigo-700' : 'text-slate-600'}">
-                                    ${percent}%
-                                </span>
-                            </div>
+                        <!-- Liquid Badge -->
+                        <div class="relative overflow-hidden inline-flex items-center justify-center px-2.5 py-0.5 rounded-full border border-indigo-100 bg-white min-w-[65px] h-6 shadow-sm">
+                            <div class="absolute bottom-0 left-0 w-full bg-indigo-100/80 transition-all duration-700 ease-out border-t border-indigo-200" 
+                                 style="height: ${percent}%"></div>
+                            <span class="relative z-10 text-[10px] font-bold ${percent >= 75 ? 'text-indigo-700' : 'text-slate-600'}">
+                                ${percent}%
+                            </span>
                         </div>
                     </div>
-                `;
-            }
+                </div>
+            `;
             container.appendChild(div);
         });
     };
+
+    // Add listener for new dropdowns
+    const levelSelector = document.getElementById('grade-history-level-filter');
+    const categorySelector = document.getElementById('grade-history-category-filter');
+    
+    if(levelSelector) {
+        levelSelector.addEventListener('change', () => renderHistory());
+    }
+    if(categorySelector) {
+        categorySelector.addEventListener('change', () => renderHistory());
+    }
     
     // --- Unsaved Changes Protection ---
     let hasUnsavedChanges = false;
@@ -3308,7 +3426,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayAllSubjects = async () => {
         try {
             gradeHistoryContainer.innerHTML = '';
-            const allSubjects = await fetchAPI('subjects');
+            const response = await fetchAPI('subjects');
+            const allSubjects = response.subjects || response.data || [];
             
             if (allSubjects && allSubjects.length > 0) {
                 // OPTIMIZED: Display all subjects immediately without checking grades

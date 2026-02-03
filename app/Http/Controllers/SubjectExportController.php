@@ -25,27 +25,65 @@ class SubjectExportController extends Controller
         // Find the curriculum this subject belongs to (get the first one if multiple)
         $curriculum = $subject->curriculums()->first();
         
+        // Fallback: If no curriculum attached to subject, try to find one from prerequisites table
+        if (!$curriculum) {
+            $relatedPrereq = \App\Models\Prerequisite::where('subject_code', $subject->subject_code)
+                ->orWhere('prerequisite_subject_code', $subject->subject_code)
+                ->first();
+            
+            if ($relatedPrereq) {
+                $curriculum = \App\Models\Curriculum::find($relatedPrereq->curriculum_id);
+            }
+        }
+        
         // If we have a curriculum, get prerequisite data
         $prerequisiteData = [];
         if ($curriculum) {
             // Fetch all prerequisite relationships for the current curriculum.
             $allPrerequisites = \App\Models\Prerequisite::where('curriculum_id', $curriculum->id)->get();
 
-            // MAP 1: PARENTS (for Credit Prerequisites) - What subjects are required before this one
+            // MAP 1: PARENTS (for Credit Prerequisites/Ancestors) - What subjects are required before this one
+            // In DB: subject_code (Child) depends on prerequisite_subject_code (Parent)
             $directParentsMap = $allPrerequisites->groupBy('subject_code')->map(function ($item) {
                 return $item->pluck('prerequisite_subject_code')->all();
             })->all();
             
             // Create a complete prerequisites map that includes ALL dependencies (recursive)
-            $subjectToParentsMap = [];
-            foreach ($directParentsMap as $subjectCode => $directPrereqs) {
-                $subjectToParentsMap[$subjectCode] = $this->getAllPrerequisites($subjectCode, $directParentsMap, []);
+            $subjectToParentsMap = []; // Ancestors
+            // We need to build the map for ALL subjects in the curriculum to ensure deep recursion works
+            // But for this specific export, we only strictly need the current subject's ancestors.
+            // However, getAllPrerequisites logic relies on the map being fully populated or recursively accessible.
+            // My implementation passes $directParentsMap passed in.
+            
+            // Optimization: Just calculate for the current subject? 
+            // The view might need it for others? No, just $subject.
+            // But to be safe and consistent with previous logic, let's keep it or just do it for $subject.
+            // Actually, let's just do it for the current subject to save time, OR do it for all if fast enough.
+            // The previous code did it for ALL. Let's keep it safe.
+            foreach ($directParentsMap as $sCode => $directPrereqs) {
+                 $subjectToParentsMap[$sCode] = $this->getAllPrerequisites($sCode, $directParentsMap, []);
+            }
+            // Ensure current subject is in the map even if it has no parents (for consistency)
+            if (!isset($subjectToParentsMap[$subject->subject_code])) {
+                 $subjectToParentsMap[$subject->subject_code] = [];
             }
 
-            // MAP 2: CHILDREN (for Pre-requisite to) - What subjects require this one as prerequisite
-            $subjectToChildrenMap = $allPrerequisites->groupBy('prerequisite_subject_code')->map(function ($item) {
+
+            // MAP 2: CHILDREN (for Pre-requisite to/Descendants) - What subjects require this one
+            // We need to traverse DOWN.
+            // Direct Children Map: Parent -> [Children]
+            $directChildrenMap = $allPrerequisites->groupBy('prerequisite_subject_code')->map(function ($item) {
                 return $item->pluck('subject_code')->all();
             })->all();
+            
+            $subjectToChildrenMap = []; // Descendants
+            foreach ($directChildrenMap as $pCode => $directChildren) {
+                $subjectToChildrenMap[$pCode] = $this->getAllPrerequisites($pCode, $directChildrenMap, []);
+            }
+            // Ensure current subject is in map
+            if (!isset($subjectToChildrenMap[$subject->subject_code])) {
+                $subjectToChildrenMap[$subject->subject_code] = [];
+            }
             
             $prerequisiteData = [
                 'subjectToParentsMap' => $subjectToParentsMap,
@@ -76,15 +114,27 @@ class SubjectExportController extends Controller
         // Record Export History
         $user = auth()->user();
         if ($user) {
-            $history = ExportHistory::create([
-                'curriculum_id' => $curriculum ? $curriculum->id : null,
-                'user_id' => $user->id,
-                'file_name' => $fileName . '_details.pdf',
-                'format' => 'pdf',
-                'export_type' => 'subject',
-                'exported_by_name' => $user->name ?? $user->username,
-                'exported_by_email' => $user->email,
-            ]);
+            // Only create export history if we have a valid curriculum, otherwise just log to activity log
+            // This prevents "Column 'curriculum_id' cannot be null" error for unmapped subjects
+            $historyId = null;
+            
+            if ($curriculum) {
+                try {
+                    $history = ExportHistory::create([
+                        'curriculum_id' => $curriculum->id,
+                        'user_id' => $user->id,
+                        'file_name' => $fileName . '_details.pdf',
+                        'format' => 'pdf',
+                        'export_type' => 'subject',
+                        'exported_by_name' => $user->name ?? $user->username,
+                        'exported_by_email' => $user->email,
+                    ]);
+                    $historyId = $history->id;
+                } catch (\Exception $e) {
+                    // If history creation fails (e.g. strict SQL mode), just continue to allow download
+                    \Illuminate\Support\Facades\Log::warning('Failed to create export history: ' . $e->getMessage());
+                }
+            }
 
             // Log Activity for all authenticated users
             ActivityLogService::logExport(
@@ -97,7 +147,7 @@ class SubjectExportController extends Controller
                     'curriculum_id' => $curriculum ? $curriculum->id : null,
                     'format' => 'pdf',
                     'export_type' => 'subject',
-                    'export_history_id' => $history->id
+                    'export_history_id' => $historyId
                 ]
             );
             // Also update last activity

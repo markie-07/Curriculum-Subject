@@ -278,11 +278,12 @@
                 <div style="padding: 10px;">
                     <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Credit Prerequisites:</div>
                     <div>
-                        @if(!empty($prerequisiteData) && isset($prerequisiteData['subjectToParentsMap']))
+                        @if(!empty($prerequisiteData) && isset($prerequisiteData['subjectToChildrenMap']))
                             @php
-                                $directPrerequisites = $prerequisiteData['subjectToParentsMap'][$subject->subject_code] ?? [];
-                                sort($directPrerequisites);
-                                echo !empty($directPrerequisites) ? implode(', ', $directPrerequisites) : 'None';
+                                // Use Children/Descendants for Credit Prerequisites (swapped logic)
+                                $creditPrereqs = $prerequisiteData['subjectToChildrenMap'][$subject->subject_code] ?? [];
+                                sort($creditPrereqs);
+                                echo !empty($creditPrereqs) ? implode(', ', $creditPrereqs) : 'None';
                             @endphp
                         @else
                             None
@@ -307,37 +308,17 @@
                 <div style="padding: 10px;">
                     <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Pre-requisite to:</div>
                     <div>
-                        @if(!empty($prerequisiteData) && isset($prerequisiteData['subjectToChildrenMap']))
+                        @if(!empty($prerequisiteData) && isset($prerequisiteData['subjectToParentsMap']))
                             @php
-                                $childSubjects = $prerequisiteData['subjectToChildrenMap'][$subject->subject_code] ?? [];
-                                echo !empty($childSubjects) ? implode(', ', $childSubjects) : 'None';
+                                // Use Parents/Ancestors for Pre-requisite to (swapped logic)
+                                $prereqTo = $prerequisiteData['subjectToParentsMap'][$subject->subject_code] ?? [];
+                                sort($prereqTo);
+                                echo !empty($prereqTo) ? implode(', ', $prereqTo) : 'None';
                             @endphp
                         @else
                             None
                         @endif
                     </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td width="50%" style="vertical-align: top; padding: 8px; border: none;">
-                <!-- Curriculum Name -->
-                <div style="padding: 10px; margin-bottom: 10px;">
-                    <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Curriculum:</div>
-                    <div>{{ $curriculum->curriculum ?? 'N/A' }}</div>
-                </div>
-
-                <!-- Memorandum Year -->
-                <div style="padding: 10px; margin-bottom: 10px;">
-                    <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Memorandum Year:</div>
-                    <div>{{ $curriculum->memorandum_year ?? 'N/A' }}</div>
-                </div>
-            </td>
-            <td width="50%" style="vertical-align: top; padding: 8px; border: none;">
-                <!-- Official Memorandum -->
-                <div style="padding: 10px; margin-bottom: 10px;">
-                    <div class="bold" style="font-size: 8.5pt; margin-bottom: 3px;">Official Memorandum:</div>
-                    <div>{{ $curriculum->memorandum ?? 'N/A' }}</div>
                 </div>
             </td>
         </tr>

@@ -311,6 +311,9 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         // --- Description Similarity Check ---
         Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);
 
+        // --- AI Syllabus Generation ---
+        Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
+
         // --- System Settings Routes ---
         Route::get('/system-settings', [SystemSettingController::class, 'index']);
         Route::get('/system-settings/{category}', [SystemSettingController::class, 'getByCategory']);

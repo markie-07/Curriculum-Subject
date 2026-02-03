@@ -427,10 +427,16 @@
 
             {{-- Weekly Plan (Weeks 0-18) --}}
             <div class="mb-12">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                    <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Weekly Plan (Weeks 0-18)
-                </h2>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Weekly Plan (Weeks 0-18)
+                    </h2>
+                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="flex items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg text-sm font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Generate Full Syllabus (Weeks 1-17)
+                    </button>
+                </div>
                 <div class="space-y-4">
                     @for ($i = 0; $i <= 18; $i++)
                         <div class="border rounded-2xl overflow-hidden shadow-sm">
@@ -468,6 +474,14 @@
                                         <input type="hidden" id="week_{{ $i }}_content" value="{{ $i == 6 ? 'Prelim Exam' : ($i == 12 ? 'Midterm Exam' : 'Final Exam') }}">
                                     </div>
                                 @else
+                                @if($i > 0)
+                                <div class="flex justify-end mb-4">
+                                    <button type="button" onclick="generateSyllabusRange({{ $i }}, {{ $i }})" class="flex items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors border border-indigo-200">
+                                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        Regenerate Week
+                                    </button>
+                                </div>
+                                @endif
                                 <div class="grid grid-cols-1 gap-6">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
@@ -1126,7 +1140,109 @@
          }
     });
 
-function toggleAccordion(button) {
+    // Update Loading Text
+    const updateAiLoadingText = (title, message) => {
+        const modal = document.getElementById('aiAnalysisLoadingModal');
+        if (!modal) return;
+        modal.querySelector('h3').textContent = title;
+        modal.querySelector('p').textContent = message;
+    };
+
+    // Generate Syllabus Range
+    window.generateSyllabusRange = async (startWeek, endWeek) => {
+        const courseTitle = document.getElementById('course_title').value;
+        const courseCode = document.getElementById('course_code').value;
+        const courseDescription = document.getElementById('course_description').value;
+
+        if (!courseTitle || !courseCode || !courseDescription) {
+            alert('Please fill in Course Title, Course Code, and Course Description first.');
+            return;
+        }
+
+        const modal = document.getElementById('aiAnalysisLoadingModal');
+        updateAiLoadingText('Generating Syllabus Content', `Generating content for Weeks ${startWeek}-${endWeek}...`);
+        modal.classList.remove('hidden');
+
+        try {
+            // Create range array
+            const weeks = [];
+            for (let i = startWeek; i <= endWeek; i++) {
+                if ([6, 12, 18].includes(i)) continue; // Skip exams
+                weeks.push(i);
+            }
+
+            if (weeks.length === 0) {
+                 modal.classList.add('hidden');
+                 return;
+            }
+
+            // Collect Memo Data (if any)
+            const memorandumYearEl = document.getElementById('memorandumYear');
+            const memorandumEl = document.getElementById('memorandum');
+
+            const cmoYear = (memorandumYearEl && !memorandumYearEl.disabled) ? memorandumYearEl.value : null;
+            const cmoTitle = (memorandumEl && !memorandumEl.disabled) ? memorandumEl.value : null;
+
+            const response = await fetch('/api/generate-syllabus-weeks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    course_title: courseTitle,
+                    course_code: courseCode,
+                    course_description: courseDescription,
+                    weeks: weeks,
+                    cmo_year: cmoYear,
+                    cmo_title: cmoTitle
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to generate syllabus');
+            }
+
+            const data = await response.json();
+            
+            // Populate fields
+            if (data && data.weeks) {
+                Object.keys(data.weeks).forEach(weekNum => {
+                    const weekData = data.weeks[weekNum];
+                    if (weekData) {
+                         // content, silo, at_onsite, at_offsite, tla_onsite, tla_offsite, ltsm, output
+                         const setVal = (id, val) => {
+                             const el = document.getElementById(id);
+                             if (el) el.value = val || '';
+                         };
+
+                         setVal(`week_${weekNum}_content`, weekData.content);
+                         setVal(`week_${weekNum}_silo`, weekData.silo);
+                         setVal(`week_${weekNum}_at_onsite`, weekData.at_onsite);
+                         setVal(`week_${weekNum}_at_offsite`, weekData.at_offsite);
+                         setVal(`week_${weekNum}_tla_onsite`, weekData.tla_onsite);
+                         setVal(`week_${weekNum}_tla_offsite`, weekData.tla_offsite);
+                         setVal(`week_${weekNum}_ltsm`, weekData.ltsm);
+                         setVal(`week_${weekNum}_output`, weekData.output);
+
+                         // Update progress bar
+                         if (typeof updateWeekProgress === 'function') {
+                             updateWeekProgress(weekNum);
+                         }
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Error generating syllabus: ' + error.message);
+        } finally {
+            modal.classList.add('hidden');
+        }
+    };
+
+    function toggleAccordion(button) {
     const content = button.nextElementSibling;
     const icon = button.querySelector('svg');
     if (content.style.display === "none" || content.style.display === "") {
@@ -2030,8 +2146,13 @@ Learning Management System`;
         const description = document.getElementById('course_description').value;
         
         if (description && description.trim() !== '') {
-            // Show loading modal
-            document.getElementById('aiAnalysisLoadingModal').classList.remove('hidden');
+            // Show loading modal with correct text
+            const loadingModal = document.getElementById('aiAnalysisLoadingModal');
+            if (loadingModal) {
+                loadingModal.querySelector('h3').textContent = 'Analyzing Course Description';
+                loadingModal.querySelector('p').textContent = 'AI is checking for similar courses...';
+                loadingModal.classList.remove('hidden');
+            }
             
             try {
                 const similarityCheck = await checkDescriptionSimilarity(description);
