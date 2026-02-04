@@ -99,37 +99,48 @@ class DashboardController extends Controller
                       ->orWhereNull('approval_status');
             })->count();
 
-            // Subject Mapping Statistics (Major vs Minor) - FIXED with proper grouping
-            $majorSubjects = Subject::where(function($query) {
-                $query->where('subject_type', 'Major')
-                      ->orWhere('subject_type', 'LIKE', '%Major%');
-            })->count();
-            
-            $minorSubjects = Subject::where(function($query) {
-                $query->where('subject_type', 'Minor')
-                      ->orWhere('subject_type', 'LIKE', '%Minor%');
-            })->count();
+            // Subject Classification Statistics
+            $subjectCategories = [
+                'General Education',
+                'Professional Subject Non Laboratory',
+                'Professional Subject Laboratory', 
+                'Professional Subject Board Courses',
+                'Professional Subject Non Board Courses',
+                'Professional Subject OC',
+                'NSTP 1',
+                'NSTP 2',
+                'Research',
+                'OJT/Practicum'
+            ];
+
+            $subjectCounts = [];
+            $gradeCounts = [];
+
+            foreach ($subjectCategories as $category) {
+                // Count subjects in this category
+                $subjectCounts[$category] = Subject::where(function($query) use ($category) {
+                    $query->where('subject_type', $category)
+                          ->orWhere('subject_type', 'LIKE', '%' . $category . '%');
+                })->count();
+
+                // Count subjects with grades in this category
+                try {
+                    $gradeCounts[$category] = DB::table('grades')
+                        ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                        ->where(function($query) use ($category) {
+                            $query->where('subjects.subject_type', $category)
+                                  ->orWhere('subjects.subject_type', 'LIKE', '%' . $category . '%');
+                        })
+                        ->distinct('grades.subject_id')
+                        ->count('grades.subject_id');
+                } catch (\Exception $e) {
+                    $gradeCounts[$category] = 0;
+                }
+            }
             
             $totalSubjects = Subject::count();
 
-            // Log individual counts for debugging
-            \Log::info('Dashboard Counts', [
-                'totalCurriculums' => $totalCurriculums,
-                'newHighSchoolCount' => $newHighSchoolCount,
-                'newCollegeCount' => $newCollegeCount,
-                'oldHighSchoolCount' => $oldHighSchoolCount,
-                'oldCollegeCount' => $oldCollegeCount,
-                'newCurriculumCount' => $newCurriculumCount,
-                'oldCurriculumCount' => $oldCurriculumCount,
-                'approvedCount' => $approvedCount,
-                'rejectedCount' => $rejectedCount,
-                'processingCount' => $processingCount,
-                'totalSubjects' => $totalSubjects,
-                'majorSubjects' => $majorSubjects,
-                'minorSubjects' => $minorSubjects,
-            ]);
-
-            // Grades Setup Statistics
+            // Grades Setup Statistics - Global Counts
             try {
                 $curriculumsWithGrades = DB::table('grades')
                     ->distinct()
@@ -138,30 +149,10 @@ class DashboardController extends Controller
                 $subjectsWithGrades = DB::table('grades')
                     ->distinct()
                     ->count('subject_id');
-
-                $majorSubjectsWithGrades = DB::table('grades')
-                    ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
-                    ->where(function($query) {
-                        $query->where('subjects.subject_type', 'Major')
-                              ->orWhere('subjects.subject_type', 'LIKE', '%Major%');
-                    })
-                    ->distinct('grades.subject_id')
-                    ->count('grades.subject_id');
-
-                $minorSubjectsWithGrades = DB::table('grades')
-                    ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
-                    ->where(function($query) {
-                        $query->where('subjects.subject_type', 'Minor')
-                              ->orWhere('subjects.subject_type', 'LIKE', '%Minor%');
-                    })
-                    ->distinct('grades.subject_id')
-                    ->count('grades.subject_id');
             } catch (\Exception $e) {
                 \Log::warning('Grades table not found: ' . $e->getMessage());
                 $curriculumsWithGrades = 0;
                 $subjectsWithGrades = 0;
-                $majorSubjectsWithGrades = 0;
-                $minorSubjectsWithGrades = 0;
             }
 
             // Equivalency Statistics (correct table name)
@@ -209,15 +200,14 @@ class DashboardController extends Controller
                 'rejectedCount' => $rejectedCount,
                 'processingCount' => $processingCount,
                 
-                // Subject Mapping
-                'majorSubjects' => $majorSubjects,
-                'minorSubjects' => $minorSubjects,
+                // Detailed Subject Counts
+                'subjectCategories' => $subjectCategories,
+                'subjectCounts' => $subjectCounts,
+                'gradeCounts' => $gradeCounts,
                 
                 // Grades Setup
                 'curriculumsWithGrades' => $curriculumsWithGrades,
                 'subjectsWithGrades' => $subjectsWithGrades,
-                'majorSubjectsWithGrades' => $majorSubjectsWithGrades,
-                'minorSubjectsWithGrades' => $minorSubjectsWithGrades,
                 
                 // Export Activity
                 'curriculumExports' => $exportData['curriculum'],
@@ -491,7 +481,8 @@ class DashboardController extends Controller
                     'employee_activity_logs.activity_type as action',
                     'employee_activity_logs.description',
                     'employee_activity_logs.created_at',
-                    'users.name as user_name'
+                    'users.name as user_name',
+                    'users.email as user_email'
                 )
                 ->where('employee_activity_logs.activity_type', '!=', 'view')
                 ->orderBy('employee_activity_logs.created_at', 'desc')
@@ -524,7 +515,8 @@ class DashboardController extends Controller
                     'employee_activity_logs.activity_type as action',
                     'employee_activity_logs.description',
                     'employee_activity_logs.created_at',
-                    'users.name as user_name'
+                    'users.name as user_name',
+                    'users.email as user_email'
                 )
                 ->where('employee_activity_logs.activity_type', '!=', 'view');
             
@@ -589,12 +581,11 @@ class DashboardController extends Controller
             'approvedCount' => 0,
             'rejectedCount' => 0,
             'processingCount' => 0,
-            'majorSubjects' => 0,
-            'minorSubjects' => 0,
+            'subjectCategories' => [],
+            'subjectCounts' => [],
+            'gradeCounts' => [],
             'curriculumsWithGrades' => 0,
             'subjectsWithGrades' => 0,
-            'majorSubjectsWithGrades' => 0,
-            'minorSubjectsWithGrades' => 0,
             'curriculumExports' => 0,
             'subjectExports' => 0,
             'exportDates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

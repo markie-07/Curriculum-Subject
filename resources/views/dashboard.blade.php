@@ -11,16 +11,26 @@
                     <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-2">Dashboard Overview</h1>
                     <p class="text-slate-600">Welcome back! Here's what's happening with your curriculum management system.</p>
                 </div>
-                <div class="text-right">
-                    <p class="text-sm text-slate-500">{{ now()->format('l, F j, Y') }}</p>
-                    <p class="text-2xl font-bold text-blue-600" id="current-time">{{ now()->format('h:i A') }}</p>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-sm text-slate-500">{{ now()->format('l, F j, Y') }}</p>
+                        <p class="text-2xl font-bold text-blue-600" id="current-time">{{ now()->format('h:i A') }}</p>
+                    </div>
+                    <button id="dashboard-settings-btn" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors" title="Dashboard Settings">
+                        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+
+
     {{-- Statistics Grid --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div id="section-statistics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {{-- Total Curriculums --}}
         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div class="flex items-center justify-between">
@@ -83,7 +93,7 @@
     </div>
 
     {{-- Charts Section --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div id="section-charts" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {{-- Official Curriculum Chart --}}
         <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
             <div class="flex items-center justify-between mb-4">
@@ -165,75 +175,81 @@
     </div>
 
     {{-- Second Row Charts --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {{-- Subject Mapping Chart --}}
-        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-slate-800">Subject Classification</h2>
-                <div class="bg-purple-100 p-2 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    {{-- Combined Subject Classification & Grades Setup Chart --}}
+    <div id="section-subject-grades" class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-8">
+        {{-- Header with Toggle --}}
+        <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+            <div class="flex items-center gap-3">
+                <h2 class="text-xl font-bold text-slate-800" id="subject-grades-title">Subject Classification</h2>
+                <div class="bg-purple-100 p-2 rounded-lg transition-colors" id="subject-grades-icon-bg">
+                    <svg class="w-6 h-6 text-purple-600 transition-colors" id="subject-grades-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
                 </div>
             </div>
-            <div class="relative h-64">
-                <canvas id="subjectMappingChart"></canvas>
-            </div>
-            @php
-                 $totalMapped = ($majorSubjects ?? 0) + ($minorSubjects ?? 0);
-                 $majorMapPercent = $totalMapped > 0 ? round(($majorSubjects / $totalMapped) * 100) : 0;
-                 $minorMapPercent = $totalMapped > 0 ? round(($minorSubjects / $totalMapped) * 100) : 0;
-            @endphp
-
-            <div class="mt-4 grid grid-cols-2 gap-4">
-                <div class="text-center p-3 bg-purple-50 rounded-lg">
-                    <p class="text-sm text-slate-600">Major Subjects</p>
-                    <p class="text-2xl font-bold text-purple-600">{{ $majorSubjects ?? 0 }}</p>
-                    <p class="text-xs font-semibold text-purple-500 mt-1">{{ $majorMapPercent }}%</p>
-                </div>
-                <div class="text-center p-3 bg-pink-50 rounded-lg">
-                    <p class="text-sm text-slate-600">Minor Subjects</p>
-                    <p class="text-2xl font-bold text-pink-600">{{ $minorSubjects ?? 0 }}</p>
-                    <p class="text-xs font-semibold text-pink-500 mt-1">{{ $minorMapPercent }}%</p>
-                </div>
+            
+            {{-- Toggle Switch --}}
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-slate-600 transition-colors" id="view-subject-label">Subject Classification</span>
+                <button id="subject-grades-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                </button>
+                <span class="text-sm font-medium text-slate-400 transition-colors" id="view-grades-label">Grades Setup</span>
             </div>
         </div>
 
-        {{-- Grades Setup Chart --}}
-        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-slate-800">Grades Setup Overview</h2>
-                <div class="bg-teal-100 p-2 rounded-lg">
-                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                    </svg>
-                </div>
+        {{-- Subject Classification View --}}
+        <div id="subject-classification-view" class="transition-all duration-300">
+            <div class="relative h-64">
+                <canvas id="subjectMappingChart"></canvas>
             </div>
+            
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto custom-scrollbar pr-2">
+                @foreach($subjectCategories as $index => $category)
+                    @php
+                        $count = $subjectCounts[$category] ?? 0;
+                        $percent = $totalSubjects > 0 ? round(($count / $totalSubjects) * 100) : 0;
+                        $colors = ['bg-blue-50', 'bg-violet-50', 'bg-pink-50', 'bg-red-50', 'bg-orange-50', 'bg-amber-50', 'bg-emerald-50', 'bg-cyan-50', 'bg-indigo-50', 'bg-teal-50'];
+                        $textColors = ['text-blue-600', 'text-violet-600', 'text-pink-600', 'text-red-600', 'text-orange-600', 'text-amber-600', 'text-emerald-600', 'text-cyan-600', 'text-indigo-600', 'text-teal-600'];
+                        $colorIndex = $index % count($colors);
+                    @endphp
+                    <div class="text-center p-2 {{ $colors[$colorIndex] }} rounded-lg">
+                        <p class="text-xs text-slate-600 truncate" title="{{ $category }}">{{ $category }}</p>
+                        <p class="text-lg font-bold {{ $textColors[$colorIndex] }}">{{ $count }}</p>
+                        <p class="text-[10px] font-semibold {{ $textColors[$colorIndex] }}/70">{{ $percent }}%</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Grades Setup View --}}
+        <div id="grades-setup-view" class="hidden transition-all duration-300">
             <div class="relative h-64">
                 <canvas id="gradesChart"></canvas>
             </div>
-            @php
-                $majorPercent = $majorSubjects > 0 ? round(($majorSubjectsWithGrades / $majorSubjects) * 100) : 0;
-                $minorPercent = $minorSubjects > 0 ? round(($minorSubjectsWithGrades / $minorSubjects) * 100) : 0;
-            @endphp
             
-            <div class="mt-4 grid grid-cols-2 gap-4">
-                <div class="text-center p-3 bg-teal-50 rounded-lg">
-                    <p class="text-xs text-slate-600">Major Subjects</p>
-                    <p class="text-xl font-bold text-teal-600">{{ $majorSubjectsWithGrades ?? 0 }} <span class="text-sm font-normal text-slate-500">of {{ $majorSubjects ?? 0 }}</span></p>
-                    <p class="text-xs font-semibold text-teal-500 mt-1">{{ $majorPercent }}% Graded</p>
-                </div>
-                <div class="text-center p-3 bg-cyan-50 rounded-lg">
-                    <p class="text-xs text-slate-600">Minor Subjects</p>
-                    <p class="text-xl font-bold text-cyan-600">{{ $minorSubjectsWithGrades ?? 0 }} <span class="text-sm font-normal text-slate-500">of {{ $minorSubjects ?? 0 }}</span></p>
-                    <p class="text-xs font-semibold text-cyan-500 mt-1">{{ $minorPercent }}% Graded</p>
-                </div>
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto custom-scrollbar pr-2">
+                @foreach($subjectCategories as $index => $category)
+                    @php
+                        $total = $subjectCounts[$category] ?? 0;
+                        $graded = $gradeCounts[$category] ?? 0;
+                        $percent = $total > 0 ? round(($graded / $total) * 100) : 0;
+                        $colors = ['bg-blue-50', 'bg-violet-50', 'bg-pink-50', 'bg-red-50', 'bg-orange-50', 'bg-amber-50', 'bg-emerald-50', 'bg-cyan-50', 'bg-indigo-50', 'bg-teal-50'];
+                        $textColors = ['text-blue-600', 'text-violet-600', 'text-pink-600', 'text-red-600', 'text-orange-600', 'text-amber-600', 'text-emerald-600', 'text-cyan-600', 'text-indigo-600', 'text-teal-600'];
+                        $colorIndex = $index % count($colors);
+                    @endphp
+                    <div class="text-center p-2 {{ $colors[$colorIndex] }} rounded-lg">
+                        <p class="text-xs text-slate-600 truncate" title="{{ $category }}">{{ $category }}</p>
+                        <p class="text-lg font-bold {{ $textColors[$colorIndex] }}">{{ $graded }} <span class="text-xs font-normal text-slate-500">of {{ $total }}</span></p>
+                        <p class="text-[10px] font-semibold {{ $textColors[$colorIndex] }}/70">{{ $percent }}% Graded</p>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
 
     {{-- Reorganized Bottom Section --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <div id="section-bottom" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {{-- Module Usage Frequency (Takes 2 Columns) --}}
         <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-slate-200 p-6 flex flex-col">
             <div class="flex items-center justify-between mb-6">
@@ -372,9 +388,13 @@
                                 </div>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs font-medium text-slate-800">{{ $activity->action ?? 'Activity' }}</p>
-                                <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">{{ $activity->description ?? '' }}</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">{{ $activity->created_at ? $activity->created_at->diffForHumans() : '' }}</p>
+                                <div class="flex justify-between items-start">
+                                    <p class="text-xs font-bold text-slate-800">{{ $activity->user_name ?? 'Unknown User' }}</p>
+                                    <span class="text-[10px] text-slate-400 whitespace-nowrap ml-2">{{ $activity->created_at ? $activity->created_at->diffForHumans() : '' }}</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mb-1">{{ $activity->user_email ?? '' }}</p>
+                                <p class="text-xs font-medium text-blue-600">{{ $activity->action ?? 'Activity' }}</p>
+                                <p class="text-[10px] text-slate-600 mt-0.5 line-clamp-2">{{ $activity->description ?? '' }}</p>
                             </div>
                         </div>
                     @empty
@@ -390,6 +410,122 @@
         </div>
     </div>
 </div>
+
+    {{-- Overlay --}}
+    <div id="settings-overlay" class="fixed inset-0 bg-gray-900/60 hidden transition-opacity duration-300 backdrop-blur-sm" style="z-index: 100000;"></div>
+
+    {{-- Dashboard Settings Sidebar --}}
+    <div id="dashboard-settings-sidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out" style="z-index: 100001;">
+        <div class="flex flex-col h-full">
+            {{-- Sidebar Header --}}
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-lg font-bold text-slate-800">Dashboard Settings</h3>
+                <button id="close-settings-btn" class="p-1 rounded-lg hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Sidebar Content --}}
+            <div class="flex-1 overflow-y-auto p-6">
+                <p class="text-sm text-slate-600 mb-4">Toggle sections to show or hide them on your dashboard</p>
+                
+                <div class="space-y-4">
+                    {{-- Statistics Cards Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Statistics Cards</p>
+                            <p class="text-xs text-slate-500">Total counts overview</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-statistics" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Official Curriculum Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Official Curriculum</p>
+                            <p class="text-xs text-slate-500">Distribution chart</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-curriculum" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Course Builder Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Course Builder Status</p>
+                            <p class="text-xs text-slate-500">Approval status chart</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-course-builder" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Subject Classification Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Subject & Grades</p>
+                            <p class="text-xs text-slate-500">Classification & setup</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-subject-grades" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Module Usage Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Module Usage</p>
+                            <p class="text-xs text-slate-500">Frequency heatmap</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-module-usage" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Export Activity Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Export Activity</p>
+                            <p class="text-xs text-slate-500">Export statistics</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-export-activity" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    {{-- Recent Activity Toggle --}}
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-800">Recent Activity</p>
+                            <p class="text-xs text-slate-500">Activity timeline</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" id="toggle-recent-activity" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Sidebar Footer --}}
+            <div class="p-6 border-t border-slate-200">
+                <button id="reset-settings-btn" class="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg transition-colors font-medium">
+                    Reset to Default
+                </button>
+            </div>
+        </div>
+    </div>
 
 <style>
     /* Custom Calendar Picker Styling */
@@ -831,63 +967,96 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Subject Mapping Chart
+    // Subject Mapping Chart
     const subjectMappingCtx = document.getElementById('subjectMappingChart').getContext('2d');
+    
+    const subjectLabels = {!! json_encode($subjectCategories ?? []) !!};
+    const subjectData = [];
+    @foreach($subjectCategories as $cat)
+        subjectData.push({{ $subjectCounts[$cat] ?? 0 }});
+    @endforeach
+    
+    // Defined colors for each category
+    const categoryColors = [
+        '#3b82f6', // General Education - Blue
+        '#8b5cf6', // Professional Subject Non Laboratory - Violet
+        '#ec4899', // Professional Subject Laboratory - Pink
+        '#ef4444', // Professional Subject Board Courses - Red
+        '#f97316', // Professional Subject Non Board Courses - Orange
+        '#f59e0b', // Professional Subject OC - Amber
+        '#10b981', // NSTP 1 - Emerald
+        '#06b6d4', // NSTP 2 - Cyan
+        '#6366f1', // Research - Indigo
+        '#14b8a6'  // OJT/Practicum - Teal
+    ];
+
     new Chart(subjectMappingCtx, {
-        type: 'bar',
+        type: 'bar', // OR 'doughnut' properly? The previous was 'bar'. But with 10 items, 'doughnut' might be messy. Horizontal bar?
+        // Let's stick to bar but maybe horizontal index axis if labels are long. 
+        // User didn't specify chart type change, but vertical bar with long labels will be bad.
+        // Let's try horizontal bar.
         data: {
-            labels: ['Major', 'Minor'],
+            labels: subjectLabels,
             datasets: [{
                 label: 'Number of Subjects',
-                data: [{{ $majorSubjects ?? 0 }}, {{ $minorSubjects ?? 0 }}],
-                backgroundColor: ['#a855f7', '#ec4899'],
-                borderRadius: 8,
-                barThickness: 60
+                data: subjectData,
+                backgroundColor: categoryColors,
+                borderRadius: 4,
+                barThickness: 20
             }]
         },
         options: {
+            indexAxis: 'y', // Horizontal bar chart
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: { display: false }
             },
             scales: {
-                y: {
+                x: {
                     beginAtZero: true,
                     ticks: { stepSize: 1 },
                     grid: { color: '#f1f5f9' }
                 },
-                x: {
-                    grid: { display: false }
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 10 }
+                    }
                 }
             }
         }
     });
 
     // Grades Chart - Percentages
+    // Grades Chart - Percentages
     const gradesCtx = document.getElementById('gradesChart').getContext('2d');
     
-    // Calculate percentages in JS to ensure valid numbers even if blade vars are missing
-    const majorSubjectCount = {{ $majorSubjects ?? 0 }};
-    const majorGradedCount = {{ $majorSubjectsWithGrades ?? 0 }};
-    const majorPercent = majorSubjectCount > 0 ? Math.round((majorGradedCount / majorSubjectCount) * 100) : 0;
-    
-    const minorSubjectCount = {{ $minorSubjects ?? 0 }};
-    const minorGradedCount = {{ $minorSubjectsWithGrades ?? 0 }};
-    const minorPercent = minorSubjectCount > 0 ? Math.round((minorGradedCount / minorSubjectCount) * 100) : 0;
+    // Calculate percentages for each category
+    const gradesData = [];
+    @foreach($subjectCategories as $cat)
+        {
+            const total = {{ $subjectCounts[$cat] ?? 0 }};
+            const graded = {{ $gradeCounts[$cat] ?? 0 }};
+            const pct = total > 0 ? Math.round((graded / total) * 100) : 0;
+            gradesData.push(pct);
+        }
+    @endforeach
 
     new Chart(gradesCtx, {
         type: 'bar',
         data: {
-            labels: ['Major Subjects', 'Minor Subjects'],
+            labels: subjectLabels, // Same labels as Subject Classification
             datasets: [{
                 label: 'Graded Percentage',
-                data: [majorPercent, minorPercent],
-                backgroundColor: ['#14b8a6', '#06b6d4'],
-                borderRadius: 8,
-                barThickness: 60
+                data: gradesData,
+                backgroundColor: categoryColors, // Reuse same colors
+                borderRadius: 4,
+                barThickness: 20
             }]
         },
         options: {
+            indexAxis: 'y', // Horizontal bars
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -895,13 +1064,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return context.parsed.y + '% Graded';
+                            return context.parsed.x + '% Graded';
                         }
                     }
                 }
             },
             scales: {
-                y: {
+                x: { // Percentage on X axis
                     beginAtZero: true,
                     max: 100,
                     ticks: { 
@@ -910,8 +1079,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     grid: { color: '#f1f5f9' }
                 },
-                x: {
-                    grid: { display: false }
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 10 }
+                    }
                 }
             }
         }
@@ -1249,18 +1421,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         activitiesContainer.innerHTML = activities.map(activity => `
-            <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors animate-fade-in">
+            <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors animate-fade-in">
                 <div class="flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-slate-800">${activity.action || 'Activity'}</p>
-                    <p class="text-xs text-slate-500 mt-1">${activity.description || ''}</p>
-                    <p class="text-xs text-slate-400 mt-1">${activity.relative_time || ''}</p>
+                    <div class="flex justify-between items-start">
+                        <p class="text-xs font-bold text-slate-800">${activity.user_name || 'Unknown User'}</p>
+                        <span class="text-[10px] text-slate-400 whitespace-nowrap ml-2">${activity.relative_time || ''}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mb-1">${activity.user_email || ''}</p>
+                    <p class="text-xs font-medium text-blue-600">${activity.action || 'Activity'}</p>
+                    <p class="text-[10px] text-slate-600 mt-0.5 line-clamp-2">${activity.description || ''}</p>
                 </div>
             </div>
         `).join('');
@@ -1300,6 +1476,170 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial load will happen because we call loadActivities(dateInput.value) below and we initialized value correctly
 
+
+    // Subject/Grades View Toggle
+    const subjectGradesToggle = document.getElementById('subject-grades-toggle');
+    const viewSubjectLabel = document.getElementById('view-subject-label');
+    const viewGradesLabel = document.getElementById('view-grades-label');
+    const subjectView = document.getElementById('subject-classification-view');
+    const gradesView = document.getElementById('grades-setup-view');
+    const toggleCircleSubject = subjectGradesToggle.querySelector('span');
+    const sectionTitle = document.getElementById('subject-grades-title');
+    const sectionIcon = document.getElementById('subject-grades-icon');
+    const sectionIconBg = document.getElementById('subject-grades-icon-bg');
+    
+    let showingGrades = false;
+
+    subjectGradesToggle.addEventListener('click', function() {
+        showingGrades = !showingGrades;
+        
+        if (showingGrades) {
+            // Switch to Grades View
+            subjectGradesToggle.classList.remove('bg-slate-200');
+            subjectGradesToggle.classList.add('bg-teal-500');
+            toggleCircleSubject.classList.remove('translate-x-1');
+            toggleCircleSubject.classList.add('translate-x-6');
+            
+            viewSubjectLabel.classList.remove('text-slate-600');
+            viewSubjectLabel.classList.add('text-slate-400');
+            viewGradesLabel.classList.remove('text-slate-400');
+            viewGradesLabel.classList.add('text-slate-600');
+            
+            // Content
+            subjectView.classList.add('hidden');
+            gradesView.classList.remove('hidden');
+            
+            // Title & Icon
+            sectionTitle.textContent = "Grades Setup Overview";
+            sectionIconBg.classList.remove('bg-purple-100');
+            sectionIconBg.classList.add('bg-teal-100');
+            sectionIcon.classList.remove('text-purple-600');
+            sectionIcon.classList.add('text-teal-600');
+            
+            // Icon Path Change (Subject -> Grades)
+            // Subject Path: M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2
+            // Grades Path: M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z
+            sectionIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>';
+            
+        } else {
+            // Switch to Subject View
+            subjectGradesToggle.classList.remove('bg-teal-500');
+            subjectGradesToggle.classList.add('bg-slate-200');
+            toggleCircleSubject.classList.remove('translate-x-6');
+            toggleCircleSubject.classList.add('translate-x-1');
+            
+            viewSubjectLabel.classList.remove('text-slate-400');
+            viewSubjectLabel.classList.add('text-slate-600');
+            viewGradesLabel.classList.remove('text-slate-600');
+            viewGradesLabel.classList.add('text-slate-400');
+            
+            // Content
+            gradesView.classList.add('hidden');
+            subjectView.classList.remove('hidden');
+            
+            // Title & Icon
+            sectionTitle.textContent = "Subject Classification";
+            sectionIconBg.classList.remove('bg-teal-100');
+            sectionIconBg.classList.add('bg-purple-100');
+            sectionIcon.classList.remove('text-teal-600');
+            sectionIcon.classList.add('text-purple-600');
+            
+            sectionIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>';
+        }
+    });
+
+    // Dashboard Settings Sidebar
+    const settingsBtn = document.getElementById('dashboard-settings-btn');
+    const settingsSidebar = document.getElementById('dashboard-settings-sidebar');
+    const closeSettingsBtn = document.getElementById('close-settings-btn');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const resetSettingsBtn = document.getElementById('reset-settings-btn');
+
+    // Section toggles
+    const toggles = {
+        'toggle-statistics': 'section-statistics',
+        'toggle-curriculum': 'section-charts',
+        'toggle-course-builder': 'section-charts',
+        'toggle-subject-grades': 'section-subject-grades',
+        'toggle-module-usage': 'section-bottom',
+        'toggle-export-activity': 'section-bottom',
+        'toggle-recent-activity': 'section-bottom'
+    };
+
+    // Open sidebar
+    function openSettings() {
+        settingsSidebar.classList.remove('translate-x-full');
+        settingsOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close sidebar
+    function closeSettings() {
+        settingsSidebar.classList.add('translate-x-full');
+        settingsOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // Event listeners for open/close
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openSettings();
+        });
+    } else {
+        console.error('Settings button not found');
+    }
+    
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', closeSettings);
+    }
+    
+    if (settingsOverlay) {
+        settingsOverlay.addEventListener('click', closeSettings);
+    }
+
+    // Handle section visibility toggles
+    Object.keys(toggles).forEach(toggleId => {
+        const toggle = document.getElementById(toggleId);
+        const sectionId = toggles[toggleId];
+        const section = document.getElementById(sectionId);
+
+        if (toggle && section) {
+            toggle.addEventListener('change', function() {
+                if (this.checked) {
+                    section.classList.remove('hidden');
+                    // Add smooth fade-in animation
+                    section.style.opacity = '0';
+                    setTimeout(() => {
+                        section.style.transition = 'opacity 0.3s ease-in-out';
+                        section.style.opacity = '1';
+                    }, 10);
+                } else {
+                    // Fade out before hiding
+                    section.style.opacity = '0';
+                    setTimeout(() => {
+                        section.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+    });
+
+    // Reset all settings to default
+    resetSettingsBtn.addEventListener('click', function() {
+        Object.keys(toggles).forEach(toggleId => {
+            const toggle = document.getElementById(toggleId);
+            const sectionId = toggles[toggleId];
+            const section = document.getElementById(sectionId);
+
+            if (toggle && section) {
+                toggle.checked = true;
+                section.classList.remove('hidden');
+                section.style.opacity = '1';
+            }
+        });
+    });
 
     // Initial load with filter if date is set
     if (dateInput.value) {
