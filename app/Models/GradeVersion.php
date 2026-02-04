@@ -21,7 +21,9 @@ class GradeVersion extends Model
         'version_number',
         'components',
         'curriculum_id',
-        'course_type',
+        'subject_category',
+        'effectivity_start_date',
+        'effectivity_end_date',
         'change_reason',
         'changed_by',
     ];
@@ -76,7 +78,9 @@ class GradeVersion extends Model
             'version_number' => $versionNumber,
             'components' => $grade->components,
             'curriculum_id' => $grade->curriculum_id,
-            'course_type' => $grade->course_type,
+            'subject_category' => $grade->subject_category,
+            'effectivity_start_date' => $grade->effectivity_start_date,
+            'effectivity_end_date' => $grade->effectivity_end_date,
             'change_reason' => $changeReason,
             'changed_by' => $changedBy,
         ]);

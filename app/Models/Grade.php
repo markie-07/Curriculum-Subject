@@ -20,7 +20,9 @@ class Grade extends Model
         'subject_id',
         'components', // This is our new JSON column
         'curriculum_id', // For curriculum-based grading
-        'course_type', // 'minor' or 'major'
+        'subject_category',
+        'effectivity_start_date',
+        'effectivity_end_date',
     ];
 
     /**

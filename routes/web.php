@@ -265,6 +265,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
         // --- Grade Routes ---
+        Route::get('/grades', [GradeController::class, 'index']); // Added missing index route
         Route::post('/grades', [GradeController::class, 'store']);
         Route::get('/grades/{subjectId}', [GradeController::class, 'show']);
         Route::get('/grades/{subjectId}/version-history', [GradeController::class, 'getGradeVersionHistory']);

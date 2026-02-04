@@ -97,8 +97,30 @@
                     </div>
                 </div>
 
-
-
+                {{-- Effectivity Period --}}
+                <div id="effectivity-period-section" class="mt-8 border border-gray-200 bg-gray-50/50 p-6 rounded-xl hidden">
+                    <div class="flex items-center gap-3 pb-3 mb-4">
+                        <div class="w-10 h-10 flex-shrink-0 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-700">Effectivity Period</h2>
+                            <p class="text-sm text-gray-600 mt-1">Set the validity range for this grade scheme. Updates are restricted while active.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                            <input type="date" id="effectivity-start-date" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                            <input type="date" id="effectivity-end-date" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Grade Components --}}
                 <div class="mt-8">
@@ -143,7 +165,9 @@
 
                 </div>
 
-                <div class="mt-10 pt-6 border-t border-gray-200">
+
+
+                <div class="mt-8 flex justify-center items-center p-4 bg-gray-100 rounded-lg border border-gray-200">
                     <button id="setGradeSchemeButton" type="button" disabled class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-black font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6a1 1 0 10-2 0v5.586L7.707 10.293zM10 18a8 8 0 100-16 8 8 0 000 16z" /></svg>
                         Set Grade Scheme
@@ -484,23 +508,17 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">Select Subjects</h3>
-                        <p class="text-sm text-gray-600">Select the subjects you want to set up grades for</p>
+                        <h3 class="text-xl font-bold text-gray-800">Subject</h3>
+                        <p class="text-sm text-gray-600" id="subject-modal-subtitle">Review the subjects of the selected category</p>
                     </div>
                 </div>
-                <button id="close-select-subjects-modal-btn" class="text-gray-400 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+                {{-- Removed X Button --}}
             </div>
 
             {{-- Modal Body --}}
             <div class="p-6 max-h-[60vh] overflow-y-auto">
                 <div class="mb-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="select-all-subjects" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                            <span class="text-sm font-semibold text-gray-700">Select All</span>
-                        </label>
+                    <div class="flex items-center justify-end mb-3 hidden">
                         <span id="selected-subjects-count" class="text-sm text-gray-600">0 selected</span>
                     </div>
                     <div class="relative mb-3">
@@ -519,11 +537,8 @@
 
             {{-- Modal Footer --}}
             <div class="flex justify-end gap-3 p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
-                <button id="cancel-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    Cancel
-                </button>
-                <button id="confirm-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                    Confirm Selection
+                <button id="confirm-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    Confirm
                 </button>
             </div>
         </div>
@@ -581,187 +596,200 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmSelectSubjectsBtn = document.getElementById('confirm-select-subjects-btn');
 
     // Confirm Subject Selection Logic
-    if (confirmSelectSubjectsBtn) {
-        confirmSelectSubjectsBtn.addEventListener('click', async () => {
-             console.log('Confirm button clicked');
-             console.log('Current selectedSubjects:', selectedSubjects);
+    // Confirm Subject Selection Logic
+    const finalizeSubjectSelection = async () => {
+         console.log('Finalizing Selection');
+         console.log('Current selectedSubjects:', selectedSubjects);
 
-             // Re-evaluate graded status and check curriculum status
-             // Re-evaluate graded status and check curriculum status using raw relationships for accuracy
-             let blockedSubjectsDetails = [];
-
-             selectedSubjects.forEach(s => {
-                 // We need to check every curriculum to see if this subject is present AND graded in an ACTIVE one.
-                 if (historyStats && historyStats.raw_relationships) {
-                     historyStats.raw_relationships.forEach(rel => {
-                         const curr = rel.curriculum;
-                         const relSubjects = rel.subjects;
-                         
-                         // Check if our subject 's' exists in this curriculum's subject list
-                         const match = relSubjects.find(rs => rs.id === s.id);
-                         
-                         if (match && match.has_grades) {
-                             // This subject is graded in this curriculum. Check if curriculum is Active/New AND Approved.
-                             
-                             // 1. Check if "Old" (Expired or explicitly Old version)
-                              // Enhanced Date Check with end_date fallback
-                              let isExpired = false;
-                              const expStr = curr.expiration_date || curr.end_date;
-                              if (expStr) {
-                                  const exp = new Date(expStr);
-                                  const now = new Date();
-                                  
-                                  // Normalize to simple date comparison (ignoring time/timezone shifts)
-                                  const expZero = new Date(exp.getFullYear(), exp.getMonth(), exp.getDate());
-                                  const nowZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-                                  if (!isNaN(expZero.getTime())) {
-                                      isExpired = expZero <= nowZero;
-                                  }
-                              }
-                              const status = (curr.version_status || '').toLowerCase();
-                              const isOld = status === 'old' || status === 'archived' || isExpired;
-                              
-                              console.log(`Checking Curriculum: ${curr.curriculum_name}, Exp: ${expStr}, IsExpired: ${isExpired}, IsOld: ${isOld}`);
-                              
-                              // 2. Check Approval Status
-                              const isApproved = (curr.status === 'Approved' || curr.approval_status === 'approved');
-
-                              if (!isOld && isApproved) {
-                                   blockedSubjectsDetails.push({
-                                       subject_code: s.subject_code,
-                                       subject_name: s.subject_name,
-                                       curriculum_name: `${curr.curriculum_name || curr.program_code} (AY: ${curr.academic_year || 'N/A'})`,
-                                       status: 'New'
-                                   });
-                              }
-                         }
-                     });
-                 }
-             });
-             
-             // Group blocked subjects by subject code to avoid repetition
-             const groupedBlockedSubjects = {};
-             
-             blockedSubjectsDetails.forEach(item => {
-                 if (!groupedBlockedSubjects[item.subject_code]) {
-                     groupedBlockedSubjects[item.subject_code] = {
-                         subject_name: item.subject_name,
-                         curriculums: []
-                     };
-                 }
-                 // Add unique curriculum names
-                 if (!groupedBlockedSubjects[item.subject_code].curriculums.includes(item.curriculum_name)) {
-                     groupedBlockedSubjects[item.subject_code].curriculums.push(item.curriculum_name);
-                 }
-             });
-             
-             console.log('Grouped blocked subjects:', groupedBlockedSubjects);
-             
-             if (Object.keys(groupedBlockedSubjects).length > 0) {
-                 // Format the list of active curriculums prohibiting the action
-                 let curriculumListHtml = '<div class="mt-4 text-left max-h-60 overflow-y-auto bg-gray-50 rounded-lg border border-gray-200 divide-y divide-gray-100">';
+         const activeSubject = selectedSubjects.find(s => {
+             if (s.effectivity_end_date) {
+                 // 1. Get Today as YYYY-MM-DD (Local Time)
+                 const today = new Date();
+                 const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
                  
-                 // Sort keys (subject codes)
-                 const sortedCodes = Object.keys(groupedBlockedSubjects).sort();
-
-                 sortedCodes.forEach(code => {
-                     const data = groupedBlockedSubjects[code];
-                     const curriculumList = data.curriculums.map(c => `<div class="pl-2 border-l-2 border-slate-300 ml-1 mt-1">${c}</div>`).join('');
-                     
-                     curriculumListHtml += `
-                        <div class="p-3">
-                            <div class="font-medium text-gray-800 text-sm">${code} - ${data.subject_name}</div>
-                            <div class="flex flex-col gap-1 mt-1 text-xs text-gray-500">
-                                <div class="flex items-start gap-2">
-                                    <span class="font-medium whitespace-nowrap">Status:</span> 
-                                    <span class="font-bold text-green-600">New</span>
-                                </div>
-                                <div class="mt-1">
-                                    <span class="font-medium">Curriculums:</span>
-                                    <div class="flex flex-col gap-1 mt-1 text-slate-600">
-                                        ${curriculumList}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                 });
-                 curriculumListHtml += '</div>';
-
-                 // Alert: Cannot update graded subjects if active
-                 Swal.fire({
-                     icon: 'error',
-                     title: 'Action Restricted',
-                     html: `
-                        <div class="text-gray-600 mb-2">The following subjects belong to an <b>Active</b> curriculum and cannot have their grades updated.</div>
-                        <div class="text-xs text-gray-500 italic mb-4">Only curriculums that are "Old" or have reached their end date can be modified.</div>
-                        ${curriculumListHtml}
-                     `,
-                     confirmButtonText: 'OK',
-                     confirmButtonColor: '#EF4444',
-                     customClass: {
-                         popup: 'rounded-2xl',
-                         confirmButton: 'px-6 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none transition-colors shadow-sm'
-                     }
-                 }).then(() => {
-                      // Reset everything (same as before)
-                      hideModal('select-subjects-modal');
-                      selectedMemorandum = null;
-                      if (typeof memorandumBtnText !== 'undefined') {
-                        memorandumBtnText.textContent = 'Select Subject Category';
-                        memorandumBtnText.classList.remove('text-gray-900', 'font-bold');
-                      }
-                      selectedSubjects = [];
-                      updateSelectedSubjectsList();
-                      if (typeof accordionContainer !== 'undefined') accordionContainer.innerHTML = '';
-                      checkGradingEligibility();
-                 });
-             } else {
-                 console.log('Proceeding: Subjects are either ungraded or belong to old curriculums.');
-                 updateSelectedSubjectsList();
-                 hideModal('select-subjects-modal');
-
-                 // Load existing grades from template (first graded subject found)
-                 const templateSubject = selectedSubjects.find(s => s.has_grades || s.is_graded);
+                 // 2. Get End Date as YYYY-MM-DD (Raw String from DB)
+                 // Safety check: ensure it's a string
+                 const rawEndDate = String(s.effectivity_end_date);
+                 const endDateStr = rawEndDate.substring(0, 10);
                  
-                 if (templateSubject) {
-                     Swal.fire({
-                         title: `Loading grades from ${templateSubject.subject_code}...`,
-                         allowOutsideClick: false,
-                         showConfirmButton: false,
-                         didOpen: () => {
-                             Swal.showLoading();
-                         }
-                     });
-                     try {
-                         const versionData = await fetchAPI(`grades/${templateSubject.id}/version-history`);
-                         Swal.close();
-                         
-                         if (versionData && versionData.current_version && versionData.current_version.components) {
-                              console.log('Loading components from template:', templateSubject.subject_code);
-                              loadGradeDataToDOM(versionData.current_version.components);
-                              
-                              Swal.fire({
-                                  toast: true,
-                                  position: 'top-end',
-                                  icon: 'success',
-                                  title: 'Grades Loaded',
-                                  text: `Loaded grading scheme from ${templateSubject.subject_code}.`,
-                                  showConfirmButton: false,
-                                  timer: 3000
-                              });
-                         } else {
-                              loadGradeDataToDOM({});
-                         }
-                     } catch (error) {
-                         console.error('Error loading grades:', error);
-                         Swal.close();
-                         loadGradeDataToDOM({});
-                     }
-                 } else {
-                     loadGradeDataToDOM({});
+                 console.log(`Checking ${s.subject_code}: Today(${todayStr}) vs End(${endDateStr})`);
+                 
+                 // 3. Compare Strict Strings
+                 // Allowed if Today >= EndDate
+                 // Blocked if Today < EndDate (Strictly Before)
+                 if (todayStr < endDateStr) {
+                     return true; // Found a blocking subject
                  }
              }
+             return false;
+         });
+
+         if (activeSubject) {
+             const endDateStr = String(activeSubject.effectivity_end_date).substring(0, 10);
+             const categoryName = activeSubject.subject_category || selectedMemorandum?.name || 'this category';
+             
+             Swal.fire({
+                icon: 'warning',
+                title: 'Action Restricted',
+                html: `
+                    <div class="mb-4">
+                        <p class="text-gray-600 mb-2">
+                            You cannot update the grade scheme for <b>${categoryName}</b> at this time.
+                        </p>
+                        <p class="text-gray-500 text-sm">
+                            The current grade configuration is still active and valid.
+                        </p>
+                    </div>
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 text-sm text-orange-800 font-medium">
+                        Updates allowed starting: <span class="font-bold">${endDateStr}</span>
+                    </div>
+                `,
+                confirmButtonText: 'I Understand',
+                confirmButtonColor: '#f97316' // Orange-500
+            });
+            return; // Stop execution
+         }
+
+         // Proceed if no active restrictions
+         updateSelectedSubjectsList();
+         hideModal('select-subjects-modal');
+         hideModal('select-memorandum-modal'); // Ensure this is also closed if skipping
+
+         // Reveal Effectivity Period Section for grading
+         const effectivitySection = document.getElementById('effectivity-period-section');
+         if (effectivitySection) {
+             effectivitySection.classList.remove('hidden');
+         }
+
+         // Load existing grades from template (first graded subject found)
+         const templateSubject = selectedSubjects.find(s => s.has_grades || s.is_graded);
+         
+         if (templateSubject) {
+             Swal.fire({
+                 title: `Loading grades from ${templateSubject.subject_code}...`,
+                 allowOutsideClick: false,
+                 showConfirmButton: false,
+                 didOpen: () => {
+                     Swal.showLoading();
+                 }
+             });
+             
+             // Reveal Effectivity Period Section
+             const effectivitySection = document.getElementById('effectivity-period-section');
+             if (effectivitySection) {
+                 effectivitySection.classList.remove('hidden');
+             }
+             try {
+                 const versionData = await fetchAPI(`grades/${templateSubject.id}/version-history`);
+                 Swal.close();
+                 
+                 // Check for Date Restriction on existing grade
+                 // Assuming 'current_version' contains the latest effective dates
+                 if (versionData && versionData.current_version) {
+                     const { effectivity_start_date, effectivity_end_date } = versionData.current_version;
+                     let isActive = false;
+                     
+                     if (effectivity_start_date && effectivity_end_date) {
+                         const now = new Date();
+                         // Zero out time for date comparison
+                         now.setHours(0,0,0,0);
+                         
+                         const start = new Date(effectivity_start_date);
+                         start.setHours(0,0,0,0);
+                         
+                         const end = new Date(effectivity_end_date);
+                         end.setHours(0,0,0,0);
+                         
+                         // Check if current date is within range [start, end]
+                         if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                             isActive = (now >= start && now <= end);
+                             console.log(`Checking Date Restriction: Now=${now.toDateString()}, End=${end.toDateString()}, IsActive=${isActive}`);
+                         }
+                     }
+                     
+                     if (isActive) {
+                         const endDate = new Date(effectivity_end_date);
+                         const updateDate = new Date(endDate);
+                         updateDate.setDate(endDate.getDate() + 1); // Updates allowed the day after
+
+                         // Show restriction notification with specific user text
+                         Swal.fire({
+                             icon: 'warning',
+                             title: 'Action Restricted',
+                             html: `
+                                 <p class="mb-3">You are not allowed to update or change the grade of this subject because this grade is still active.</p>
+                                 <p class="font-semibold text-indigo-600">You can update this grade starting from: ${updateDate.toLocaleDateString()}</p>
+                             `,
+                             footer: `<span class="text-xs text-slate-500">Current Effectivity: ${new Date(effectivity_start_date).toLocaleDateString()} - ${endDate.toLocaleDateString()}</span>`,
+                             confirmButtonColor: '#3B82F6',
+                             confirmButtonText: 'I Understand'
+                         });
+
+                         // Load data but lock the interface (Read-Only)
+                         if (versionData && versionData.current_version && versionData.current_version.components) {
+                              loadGradeDataToDOM(versionData.current_version.components);
+                              
+                              // Populate Date Inputs
+                              const startInput = document.getElementById('effectivity-start-date');
+                              const endInput = document.getElementById('effectivity-end-date');
+                              if(startInput) startInput.value = versionData.current_version.effectivity_start_date || '';
+                              if(endInput) endInput.value = versionData.current_version.effectivity_end_date || '';
+                         }
+                         
+                         // Disable Editing
+                         toggleGradeComponents(true);
+                         const setBtn = document.getElementById('setGradeSchemeButton');
+                         if(setBtn) {
+                             setBtn.disabled = true;
+                             setBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                         }
+                         
+                         return;
+                     }
+                 }
+                 
+                 if (versionData && versionData.current_version && versionData.current_version.components) {
+                      console.log('Loading components from template:', templateSubject.subject_code);
+                      loadGradeDataToDOM(versionData.current_version.components);
+                      
+                      // Populate Date Inputs
+                      const startInput = document.getElementById('effectivity-start-date');
+                      const endInput = document.getElementById('effectivity-end-date');
+                      if(startInput && versionData.current_version.effectivity_start_date) 
+                          startInput.value = versionData.current_version.effectivity_start_date;
+                      if(endInput && versionData.current_version.effectivity_end_date) 
+                          endInput.value = versionData.current_version.effectivity_end_date;
+                      
+                      Swal.fire({
+                          toast: true,
+                          position: 'top-end',
+                          icon: 'success',
+                          title: 'Grades Loaded',
+                          text: `Loaded grading scheme from ${templateSubject.subject_code}.`,
+                          showConfirmButton: false,
+                          timer: 3000
+                      });
+                 } else {
+                      loadGradeDataToDOM({});
+                 }
+             } catch (error) {
+                 console.error('Error loading grades:', error);
+                 Swal.close();
+                 loadGradeDataToDOM({});
+             }
+         } else {
+             loadGradeDataToDOM({});
+             // Clean date inputs on new
+             const startInput = document.getElementById('effectivity-start-date');
+             const endInput = document.getElementById('effectivity-end-date');
+             if(startInput) startInput.value = '';
+             if(endInput) endInput.value = '';
+         }
+    };
+
+    if (confirmSelectSubjectsBtn) {
+        confirmSelectSubjectsBtn.addEventListener('click', async () => {
+             await finalizeSubjectSelection();
         });
     }
 
@@ -1362,10 +1390,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Use blue styling for all categories for consistency
             div.className = 'p-3 hover:bg-blue-50 rounded-lg cursor-pointer border border-transparent hover:border-blue-200 transition-colors duration-150 mb-1';
             div.innerHTML = `<p class="font-medium text-gray-800">${category}</p>`;
-            div.addEventListener('click', () => {
-                 handleCategorySelection(category);
-                 hideModal('select-memorandum-modal');
-            });
+             div.addEventListener('click', async () => {
+                  await handleCategorySelection(category);
+                  hideModal('select-memorandum-modal');
+             });
             memorandumList.appendChild(div);
         });
         
@@ -1380,14 +1408,24 @@ document.addEventListener('DOMContentLoaded', () => {
         memorandumBtnText.textContent = category;
         memorandumBtnText.classList.add('text-gray-900', 'font-bold');
         
+        // Open the subjects modal to let user see and select subjects
         await openSubjectsModal(null, category);
     };
+
+    // Global to store full list for the current modal session
+    let currentCategorySubjects = [];
 
     const openSubjectsModal = async (curriculum, category = null) => {
         showModal('select-subjects-modal');
         subjectsChecklist.innerHTML = '<p class="text-gray-500 text-center py-8">Loading subjects...</p>';
-        confirmSelectSubjectsBtn.disabled = true;
+        confirmSelectSubjectsBtn.disabled = false; // Always enabled per request
         
+        // Update subtitle dynamically
+        const subtitle = document.getElementById('subject-modal-subtitle');
+        if (subtitle && category) {
+            subtitle.textContent = `Review the subject of the ${category}`;
+        }
+
         let subjects = [];
         if (category) {
              subjects = await fetchSubjectsByCategory(category);
@@ -1395,6 +1433,10 @@ document.addEventListener('DOMContentLoaded', () => {
              // Fallback/Legacy
              subjects = await fetchSubjectsByCurriculum(curriculum.id);
         }
+        
+        // Store full list
+        currentCategorySubjects = subjects;
+        
         populateSubjectsChecklist(subjects);
     };
 
@@ -1474,40 +1516,38 @@ document.addEventListener('DOMContentLoaded', () => {
             return a.subject_name.localeCompare(b.subject_name);
         });
         
+        // Default: No subjects selected initially
+        selectedSubjects = [];
+        
         subjects.forEach(subject => {
-            const isSelected = selectedSubjects.some(s => s.id === subject.id);
-            // Check if subject is already graded
-            // We can check against historyStats.subjects which contains graded subjects
-            const isGraded = historyStats.subjects.some(s => s.id === subject.id);
+            // Check grading status
+            const gradedInfo = historyStats.subjects.find(s => s.id === subject.id);
+            const isGraded = !!gradedInfo;
+            subject.is_graded = isGraded;
             
-            const div = document.createElement('div');
-            div.className = `subject-item p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors ${isSelected ? 'border-green-500 bg-green-50' : 'border-gray-200'}`;
-            // Store full subject data including graded status and curriculum context from history check
-            subject.is_graded = isGraded; 
+            if (gradedInfo) {
+                subject.effectivity_start_date = gradedInfo.effectivity_start_date;
+                subject.effectivity_end_date = gradedInfo.effectivity_end_date;
+            }
             
             // Try to find curriculum details for this subject from history stats if available
-            // This is crucial for the "Active vs Old" check later
             if (!subject.curriculum_status && historyStats && historyStats.curriculums) {
                 const parentCurriculum = historyStats.curriculums.find(c => c.id === subject.curriculum_id);
                 if (parentCurriculum) {
-                    // Calculate if expired
                     const isExpired = parentCurriculum.expiration_date && new Date(parentCurriculum.expiration_date).setHours(0,0,0,0) <= new Date().setHours(0,0,0,0);
-                    
-                    // Determine effective status (Old if version_status is old OR expired)
                     const isOld = (parentCurriculum.version_status === 'old' || isExpired);
-                    
                     subject.curriculum_status = isOld ? 'Old' : (parentCurriculum.status || 'Active');
                     subject.curriculum_name = subject.curriculum_name || parentCurriculum.curriculum_name || parentCurriculum.program_code;
                 }
             }
             
+            // Render items
+            const div = document.createElement('div');
+            div.className = `subject-item p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors border-gray-200 bg-white`;
             div.dataset.subject = JSON.stringify(subject);
             
             div.innerHTML = `
                 <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0 mt-0.5">
-                        <input type="checkbox" class="subject-checkbox w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500" ${isSelected ? 'checked' : ''}>
-                    </div>
                     <div class="flex-1">
                         <div class="flex justify-between">
                             <p class="text-sm font-semibold text-gray-900">${subject.subject_code}</p>
@@ -1524,35 +1564,30 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                 ${subject.subject_unit || 0} Units
                             </span>` : ''}
-                            ${isGraded ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800 border border-green-200">✅ Graded</span>' : ''}
+                            ${isGraded ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800 border border-green-200">✅ Graded</span>` : ''}
+                            
+                            ${isGraded && subject.effectivity_start_date && subject.effectivity_end_date ? `
+                                <div class="mt-1 flex items-center gap-1 text-[10px] text-gray-500 bg-gray-50 px-2 py-0.5 rounded border border-gray-100 w-fit">
+                                    <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span>${new Date(subject.effectivity_start_date).toLocaleDateString()} - ${new Date(subject.effectivity_end_date).toLocaleDateString()}</span>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
             `;
             
-            div.addEventListener('click', (e) => {
-                if (e.target.type !== 'checkbox') {
-                    const checkbox = div.querySelector('input[type="checkbox"]');
-                    checkbox.checked = !checkbox.checked;
-                    checkbox.dispatchEvent(new Event('change'));
-                }
-            });
-            
-            div.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
-                const itemDiv = e.target.closest('.subject-item');
-                const isChecked = e.target.checked;
+            div.addEventListener('click', () => {
+                const itemDiv = div;
+                const wasSelected = selectedSubjects.some(s => s.id === subject.id);
                 
-                if (isChecked) {
+                if (!wasSelected) {
                     itemDiv.classList.add('border-green-500', 'bg-green-50');
                     itemDiv.classList.remove('border-gray-200');
-                    // Add to selectedSubjects if not present
-                    if (!selectedSubjects.some(s => s.id === subject.id)) {
-                        selectedSubjects.push(subject);
-                    }
+                    selectedSubjects.push(subject);
                 } else {
                     itemDiv.classList.remove('border-green-500', 'bg-green-50');
                     itemDiv.classList.add('border-gray-200');
-                    // Remove from selectedSubjects
                     selectedSubjects = selectedSubjects.filter(s => s.id !== subject.id);
                 }
                 updateSelectedSubjectsCount();
@@ -1561,60 +1596,16 @@ document.addEventListener('DOMContentLoaded', () => {
             subjectsChecklist.appendChild(div);
         });
         
-        // Handle Select All
-        if (selectAllSubjectsCheckbox) {
-            selectAllSubjectsCheckbox.onclick = () => {
-                const isChecked = selectAllSubjectsCheckbox.checked;
-                const checkboxes = document.querySelectorAll('.subject-checkbox');
-                
-                checkboxes.forEach(cb => {
-                    const itemDiv = cb.closest('.subject-item');
-                    // Get subject data safely (parse back from dataset or find in subjects array if needed, 
-                    // but here we can just rebuild selectedSubjects for bulk op)
-                    
-                    cb.checked = isChecked;
-                    if (isChecked) {
-                        itemDiv.classList.add('border-green-500', 'bg-green-50');
-                        itemDiv.classList.remove('border-gray-200');
-                    } else {
-                        itemDiv.classList.remove('border-green-500', 'bg-green-50');
-                        itemDiv.classList.add('border-gray-200');
-                    }
-                });
-                
-                // Update selectedSubjects Array
-                if (isChecked) {
-                    // Add all visible subjects (that are not already selected? no, just replacement or union)
-                    // Simplest is to union:
-                    subjects.forEach(s => {
-                        if (!selectedSubjects.some(sel => sel.id === s.id)) {
-                            // Ensure is_graded is correctly set on these objects before adding
-                            s.is_graded = historyStats.subjects.some(h => h.id === s.id); 
-                            selectedSubjects.push(s);
-                        }
-                    });
-                } else {
-                    // Remove all visible subjects from selection
-                    const currentIds = new Set(subjects.map(s => s.id));
-                    selectedSubjects = selectedSubjects.filter(s => !currentIds.has(s.id));
-                }
-                
-                updateSelectedSubjectsCount();
-            };
-        }
-        
         updateSelectedSubjectsCount();
     };
     
     const updateSelectedSubjectsCount = () => {
-        const checkboxes = document.querySelectorAll('.subject-checkbox');
-        const checked = document.querySelectorAll('.subject-checkbox:checked');
-        
-        selectedSubjectsCountSpan.textContent = `${checked.length} selected`;
-        confirmSelectSubjectsBtn.disabled = checked.length === 0;
-        
-        if (selectAllSubjectsCheckbox && checkboxes.length > 0) {
-            selectAllSubjectsCheckbox.checked = checkboxes.length === checked.length;
+        if (selectedSubjectsCountSpan) {
+            selectedSubjectsCountSpan.textContent = `${selectedSubjects.length} selected`;
+        }
+        // Always enabled
+        if (confirmSelectSubjectsBtn) {
+            confirmSelectSubjectsBtn.disabled = false;
         }
     };
     
@@ -1717,6 +1708,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.curriculum-reminder-text').classList.remove('text-green-600');
         
         hasUnsavedChanges = false;
+        
+        // Reset Date Fields
+        const startInput = document.getElementById('effectivity-start-date');
+        const endInput = document.getElementById('effectivity-end-date');
+        if(startInput) startInput.value = '';
+        if(endInput) endInput.value = '';
+
         calculateAndUpdateTotals();
     };
 
@@ -1821,11 +1819,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 directGrades.forEach(g => {
                     const subId = g.subject_id;
                     const existing = pooledSubjects.find(s => s.id == subId);
-                    if (existing) existing.has_grades = true;
+                    if (existing) {
+                        existing.has_grades = true;
+                        existing.effectivity_start_date = g.effectivity_start_date;
+                        existing.effectivity_end_date = g.effectivity_end_date;
+                        existing.subject_category = g.subject_category;
+                    }
                     else {
                         const info = allSubjects.find(s => s.id == subId);
                         if (info) {
-                            pooledSubjects.push({ ...info, has_grades: true });
+                            pooledSubjects.push({ 
+                                ...info, 
+                                has_grades: true,
+                                effectivity_start_date: g.effectivity_start_date,
+                                effectivity_end_date: g.effectivity_end_date,
+                                subject_category: g.subject_category
+                            });
                             seenSubIds.add(subId);
                         }
                     }
@@ -2255,12 +2264,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     if (confirmSelectSubjectsBtn) confirmSelectSubjectsBtn.addEventListener('click', () => {
-        // Gather selected subjects from the modal
-        const checkboxes = document.querySelectorAll('.subject-checkbox:checked');
-        selectedSubjects = Array.from(checkboxes).map(cb => JSON.parse(cb.closest('.subject-item').dataset.subject));
+        // Use the FULL list of subjects for the category, regardless of what is currently filtered/visible in the UI.
+        // This ensures "General Education" selects ALL General Education subjects, not just search results.
+        selectedSubjects = [...currentCategorySubjects];
         
-        updateSelectedSubjectsList();
-        hideModal('select-subjects-modal');
+        console.log('Confirmed Selection (Full Category):', selectedSubjects.length);
+
+        // Finalize (Check Dates, Load Template, Enable Grading Form)
+        finalizeSubjectSelection();
     });
 
     const fetchGradeSetupForSubject = (subjectId) => {
@@ -2396,8 +2407,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             subject_id: subject.id,
                             curriculum_id: subject.curriculum_id || null, // Include curriculum_id if available
                             components,
-                            course_type: 'major'
+                            effectivity_start_date: document.getElementById('effectivity-start-date')?.value || null,
+                            effectivity_end_date: document.getElementById('effectivity-end-date')?.value || null,
+                            subject_category: (selectedMemorandum && selectedMemorandum.name) ? selectedMemorandum.name : 'General' 
                         };
+                        console.log('Saving payload:', payload);
                         await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
                         savedCount++;
                     } catch (err) {
@@ -2587,7 +2601,9 @@ document.addEventListener('DOMContentLoaded', () => {
             subject_id: currentSubjectId, 
             components: getGradeDataFromDOM(),
             curriculum_id: currentCurriculumId,
-            course_type: currentCourseType
+            subject_category: (selectedMemorandum && selectedMemorandum.name) ? selectedMemorandum.name : (currentCourseType === 'minor' ? 'Minor' : 'General'), // Fallback if editing legacy
+            effectivity_start_date: document.getElementById('effectivity-start-date')?.value || null,
+            effectivity_end_date: document.getElementById('effectivity-end-date')?.value || null
         };
         try {
             const data = await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
@@ -2772,41 +2788,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 year: 'numeric', month: 'short', day: 'numeric'
             });
 
+            // Render Helper
             const renderComponents = (components) => {
                 if (!components || Object.keys(components).length === 0) {
-                    return '<p class="text-gray-400 italic text-sm py-4">No components defined.</p>';
+                    return '<p class="text-gray-400 text-sm py-4 text-center">No grading components defined.</p>';
                 }
                 
-                let html = '<div class="space-y-3">';
+                let html = '<div class="space-y-4">';
                 Object.keys(components).forEach(period => {
                     const pData = components[period];
                     html += `
-                        <div class="border border-gray-200 rounded-lg overflow-hidden">
-                            <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
-                                <span class="font-semibold text-gray-800 text-sm">${period}</span>
-                                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">${pData.weight}%</span>
+                        <div class="border border-gray-200 rounded-xl overflow-hidden">
+                            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <h4 class="font-bold text-gray-700 text-sm">${period}</h4>
+                                </div>
+                                <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">${pData.weight}%</span>
                             </div>
-                            <div class="bg-white px-4 py-3">`;
+                            <div class="divide-y divide-gray-100 bg-white">`;
                     
-                    (pData.components || []).forEach((comp, idx) => {
-                        const isLast = idx === pData.components.length - 1;
+                    (pData.components || []).forEach((comp) => {
                         html += `
-                            <div class="flex justify-between items-center py-2 ${!isLast ? 'border-b border-gray-100' : ''}">
-                                <span class="text-sm text-gray-700">${comp.name}</span>
-                                <span class="text-sm text-gray-600 font-mono">${comp.weight}%</span>
-                            </div>`;
+                            <div class="px-5 py-3 hover:bg-gray-50 transition-colors">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-sm font-medium text-gray-700">${comp.name}</span>
+                                    <span class="text-sm font-bold text-gray-900">${comp.weight}%</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-indigo-500 h-1.5 rounded-full" style="width: ${comp.weight}%"></div>
+                                </div>`;
                         
                         if (comp.sub_components && comp.sub_components.length > 0) {
-                            html += '<div class="pl-4 pb-2">';
+                            html += '<div class="mt-3 pl-3 border-l-2 border-gray-100 space-y-2">';
                             comp.sub_components.forEach(sub => {
                                 html += `
-                                    <div class="flex justify-between items-center py-1">
-                                        <span class="text-xs text-gray-500">↳ ${sub.name}</span>
-                                        <span class="text-xs text-gray-500 font-mono">${sub.weight}%</span>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs text-gray-500">↳ ${sub.name}</span>
+                                            <span class="text-xs text-gray-500 font-mono">${sub.weight}%</span>
+                                        </div>
                                     </div>`;
                             });
                             html += '</div>';
                         }
+                        html += '</div>';
                     });
                     
                     html += `
@@ -2817,43 +2842,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 return html;
             };
             
+            // Main Modal HTML
             let html = `
-                <div class="bg-white">
-                    <!-- Header -->
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-900">${subjectName}</h3>
-                        <p class="text-xs text-gray-500 mt-1">${subjectCode}</p>
+                <div class="text-left bg-white h-full">
+                    <!-- Clean Header (Matches Page Theme) -->
+                    <div class="px-6 py-5 border-b border-gray-100 flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-800">${subjectCode}</h3>
+                            <p class="text-sm text-gray-500">${subjectName}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
+                                </span>
+                                <span class="text-xs text-gray-400">• Updated ${formatDate(gradeData.current_version.updated_at)}</span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="px-6 py-5 max-h-[70vh] overflow-y-auto">
+                    <div class="px-6 py-6 max-h-[65vh] overflow-y-auto custom-scrollbar">
                         <!-- Current Version -->
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-sm font-bold text-gray-900">Current Version</h4>
-                                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                    ${formatDate(gradeData.current_version.updated_at)}
-                                </span>
-                            </div>
+                        <div class="mb-8">
+                            <h4 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                Current Configuration
+                            </h4>
                             ${renderComponents(gradeData.current_version.components)}
                         </div>
                         
-                        <!-- Previous Versions -->
+                        <!-- Previous Versions (Simple Accordion) -->
                         ${gradeData.previous_versions && gradeData.previous_versions.length > 0 ? `
-                            <div class="border-t border-gray-200 pt-5">
-                                <h4 class="text-sm font-bold text-gray-700 mb-3">Previous Versions</h4>
-                                <div class="space-y-4">
-                                    ${gradeData.previous_versions.map((ver, idx) => `
-                                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                            <div class="flex items-center justify-between mb-3">
-                                                <span class="text-xs font-semibold text-gray-600">Version ${gradeData.previous_versions.length - idx}</span>
-                                                <span class="text-xs text-gray-500">
-                                                    ${formatDate(ver.updated_at)}
-                                                </span>
+                            <div class="border-t border-gray-100 pt-6">
+                                <details class="group">
+                                    <summary class="list-none flex items-center justify-between cursor-pointer text-sm font-semibold text-gray-500 hover:text-indigo-600">
+                                        <span>View Previous Versions (${gradeData.previous_versions.length})</span>
+                                        <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </summary>
+                                    
+                                    <div class="mt-4 space-y-4">
+                                        ${gradeData.previous_versions.map((ver, idx) => `
+                                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                                <div class="flex items-center justify-between mb-3 text-xs text-gray-500">
+                                                    <span class="font-bold">Version ${gradeData.previous_versions.length - idx}</span>
+                                                    <span>Ended: ${formatDate(ver.updated_at)}</span>
+                                                </div>
+                                                <div class="opacity-75">
+                                                     ${renderComponents(ver.components)}
+                                                </div>
                                             </div>
-                                            ${renderComponents(ver.components)}
-                                        </div>
-                                    `).join('')}
-                                </div>
+                                        `).join('')}
+                                    </div>
+                                </details>
                             </div>
                         ` : ''}
                     </div>
@@ -2861,14 +2903,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             Swal.fire({
                 html: html,
-                width: '650px',
+                width: '600px',
                 showConfirmButton: false,
                 showCloseButton: true,
-                padding: '0',
-                customClass: { 
-                    popup: 'rounded-lg shadow-xl',
-                    closeButton: 'text-gray-400 hover:text-gray-600'
-                }
+                customClass: {
+                    container: 'font-sans',
+                    popup: 'rounded-2xl overflow-hidden',
+                    closeButton: '!text-gray-400 hover:!text-gray-600 focus:!shadow-none'
+                },
+                padding: 0,
+                background: '#ffffff'
             });
 
         } catch (error) {

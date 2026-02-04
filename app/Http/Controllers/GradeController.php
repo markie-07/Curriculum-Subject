@@ -46,6 +46,14 @@ class GradeController extends Controller
     }
 
     /**
+     * Get all grades.
+     */
+    public function index()
+    {
+        return response()->json(Grade::all());
+    }
+
+    /**
      * Store or update a grade setup.
      */
     public function store(Request $request)
@@ -54,8 +62,12 @@ class GradeController extends Controller
             'subject_id' => 'required|exists:subjects,id',
             'components' => 'required|array', // Ensure 'components' is a valid array/object
             'curriculum_id' => 'nullable|exists:curriculums,id',
-            'course_type' => 'nullable|in:minor,major',
+            'subject_category' => 'nullable|string',
+            'effectivity_start_date' => 'nullable|date',
+            'effectivity_end_date' => 'nullable|date|after_or_equal:effectivity_start_date',
         ]);
+
+        \Illuminate\Support\Facades\Log::info('Grade Store Request:', $request->all());
 
         DB::beginTransaction();
         try {
@@ -78,8 +90,18 @@ class GradeController extends Controller
             if (isset($validated['curriculum_id'])) {
                 $gradeData['curriculum_id'] = $validated['curriculum_id'];
             }
-            if (isset($validated['course_type'])) {
-                $gradeData['course_type'] = $validated['course_type'];
+            if (isset($validated['subject_category'])) {
+                $gradeData['subject_category'] = $validated['subject_category'];
+            } else {
+                // Fallback: Try to get from Subject or default to 'General'
+                $subject = Subject::find($validated['subject_id']);
+                $gradeData['subject_category'] = $subject ? $subject->subject_type : 'General';
+            }
+            if (isset($validated['effectivity_start_date'])) {
+                $gradeData['effectivity_start_date'] = $validated['effectivity_start_date'];
+            }
+            if (isset($validated['effectivity_end_date'])) {
+                $gradeData['effectivity_end_date'] = $validated['effectivity_end_date'];
             }
 
             // Find or create the grade setup for the given subject
@@ -155,12 +177,12 @@ class GradeController extends Controller
                 ]);
             }
 
-            // Get curriculum_id and course_type from grade, or infer from subject's first curriculum
+            // Get curriculum_id and subject_category from grade, or infer from subject's first curriculum
             $curriculumId = $currentGrade->curriculum_id;
-            $courseType = $currentGrade->course_type;
+            $subjectCategory = $currentGrade->subject_category;
             
-            // If curriculum_id or course_type is NULL, try to get from subject's curriculum relationship
-            if (!$curriculumId || !$courseType) {
+            // If curriculum_id or subject_category is NULL, try to get from subject's curriculum relationship
+            if (!$curriculumId || !$subjectCategory) {
                 $subject = $currentGrade->subject;
                 $firstCurriculum = $subject->curriculums()->first();
                 
@@ -168,9 +190,9 @@ class GradeController extends Controller
                     $curriculumId = $curriculumId ?? $firstCurriculum->id;
                 }
                 
-                // Infer course_type from subject_type if not set
-                if (!$courseType && $subject) {
-                    $courseType = strtolower($subject->subject_type) === 'major' ? 'major' : 'minor';
+                // Infer subject_category from subject_type if not set (Legacy Support)
+                if (!$subjectCategory && $subject) {
+                     $subjectCategory = $subject->subject_type;
                 }
             }
 
@@ -179,12 +201,12 @@ class GradeController extends Controller
                 ->orderBy('version_number', 'desc')
                 ->get();
 
-            $versionsArray = $versions->map(function ($v) use ($curriculumId, $courseType) {
+            $versionsArray = $versions->map(function ($v) use ($curriculumId, $subjectCategory) {
                 return [
                     'version_number' => $v->version_number,
                     'components' => $v->components,
                     'curriculum_id' => $v->curriculum_id ?? $curriculumId,
-                    'course_type' => $v->course_type ?? $courseType,
+                    'subject_category' => $v->subject_category ?? $subjectCategory,
                     'change_reason' => $v->change_reason,
                     'changed_by' => $v->changed_by,
                     'updated_at' => $v->created_at,
@@ -196,7 +218,9 @@ class GradeController extends Controller
                 'current_version' => [
                     'components' => $currentGrade->components,
                     'curriculum_id' => $curriculumId,
-                    'course_type' => $courseType,
+                    'subject_category' => $subjectCategory,
+                    'effectivity_start_date' => $currentGrade->effectivity_start_date,
+                    'effectivity_end_date' => $currentGrade->effectivity_end_date,
                     'updated_at' => $currentGrade->updated_at,
                 ],
                 'previous_versions' => $versionsArray->toArray(),
@@ -217,7 +241,7 @@ class GradeController extends Controller
     {
         $validated = $request->validate([
             'curriculum_id' => 'required|exists:curriculums,id',
-            'course_type' => 'required|in:minor,major',
+            'subject_category' => 'required|string',
             'subjects' => 'required|array',
             'subjects.*.subject_id' => 'required|exists:subjects,id',
             'subjects.*.components' => 'required|array',
@@ -247,7 +271,7 @@ class GradeController extends Controller
                     [
                         'components' => $subjectData['components'],
                         'curriculum_id' => $validated['curriculum_id'],
-                        'course_type' => $validated['course_type']
+                        'subject_category' => $validated['subject_category']
                     ]
                 );
 
@@ -259,13 +283,13 @@ class GradeController extends Controller
 
             // Log activity
             if (auth()->user()) {
-                $courseTypeText = $validated['course_type'] === 'minor' ? 'minor courses' : 'major course';
+                $categoryText = $validated['subject_category'];
                 \App\Services\ActivityLogService::log(
                     'grade_setup',
-                    "Set grade schemes for {$courseTypeText} in curriculum \"{$curriculum->curriculum}\"",
+                    "Set grade schemes for {$categoryText} in curriculum \"{$curriculum->curriculum}\"",
                     [
                         'curriculum_id' => $curriculum->id,
-                        'course_type' => $validated['course_type'],
+                        'subject_category' => $validated['subject_category'],
                         'subject_count' => count($savedSubjects)
                     ]
                 );
@@ -273,9 +297,9 @@ class GradeController extends Controller
             }
 
             // Flash success message
-            $courseTypeText = $validated['course_type'] === 'minor' ? 'minor courses' : 'major course';
-            session()->flash('success', "Grade schemes for {$courseTypeText} in curriculum \"{$curriculum->curriculum}\" have been saved successfully!");
-
+            $categoryText = $validated['subject_category'];
+            session()->flash('success', "Grade schemes for {$categoryText} in curriculum \"{$curriculum->curriculum}\" have been saved successfully!");
+            
             if (request()->wantsJson()) {
                 return response()->json([
                     'success' => true,
@@ -290,7 +314,7 @@ class GradeController extends Controller
                     'notification' => [
                         'type' => 'success',
                         'title' => 'Grade Schemes Saved!',
-                        'message' => "Grade schemes for {$courseTypeText} have been saved successfully!"
+                        'message' => "Grade schemes for {$categoryText} have been saved successfully!"
                     ]
                 ], 201);
             }
@@ -378,6 +402,8 @@ class GradeController extends Controller
                     'subject_unit' => $subject->subject_unit,
                     'has_grades' => $hasGradesForThisCurriculum,
                     'grade_components' => $hasGradesForThisCurriculum ? $subject->grade->components : null,
+                    'effectivity_start_date' => $hasGradesForThisCurriculum ? $subject->grade->effectivity_start_date : null,
+                    'effectivity_end_date' => $hasGradesForThisCurriculum ? $subject->grade->effectivity_end_date : null,
                 ];
             });
 
