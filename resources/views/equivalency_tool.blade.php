@@ -3,16 +3,18 @@
 @section('content')
 <div class="p-4 sm:p-6 md:p-8 w-full bg-gray-50 min-h-screen">
     {{-- Page Header --}}
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
-        <div class="flex items-center">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-xl mr-4">
+    {{-- Page Header --}}
+    <div class="relative mb-8 overflow-hidden bg-white rounded-3xl shadow-lg border border-slate-100">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -mr-16 -mt-16"></div>
+        <div class="relative p-8 flex items-center gap-6">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
             </div>
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">Subject Equivalency Tool</h1>
-                <p class="text-sm text-slate-500 mt-1">Map subjects from other schools to your existing subjects for seamless credit transfer.</p>
+                <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Subject Equivalency Tool</h1>
+                <p class="text-slate-500 mt-2 text-lg">Manage and map credit transfers across institutions</p>
             </div>
         </div>
     </div>
@@ -21,115 +23,170 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {{-- Left Panel: Create Equivalency --}}
         <div class="lg:col-span-4">
-            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 sticky top-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Create New Equivalency</h2>
-                <p class="text-sm text-gray-500 mb-6">Enter the details of the subject from another institution and map it to one of your existing subjects.</p>
-                
-                <div class="space-y-6">
-                    <div>
-                        <label for="source-subject" class="block text-sm font-medium text-gray-700">Source Subject Name</label>
-                        <p class="text-xs text-gray-500 mb-1">The name of the subject from the other institution.</p>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494m-5.747-5.747H17.747" /></svg>
-                            </span>
-                            <input type="text" id="source-subject" placeholder="e.g., Introduction to Programming" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-8 transition-all hover:shadow-2xl duration-300">
+                <div class="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                <div class="p-8">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-slate-800">New Equivalency</h2>
+                        <p class="text-sm text-slate-500 mt-2">Link an external subject to your curriculum.</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label for="source-subject" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">External Subject Name</label>
+                            <div class="relative transition-all duration-300 focus-within:transform focus-within:-translate-y-1">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494m-5.747-5.747H17.747" /></svg>
+                                </span>
+                                <input type="text" id="source-subject" placeholder="e.g., Intro to Programming" class="block w-full py-3 pl-11 pr-4 border border-slate-200 bg-slate-50 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm">
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label for="source-code" class="block text-sm font-medium text-gray-700">Source Subject Code</label>
-                        <p class="text-xs text-gray-500 mb-1">The code of the subject from the other institution.</p>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>
-                            </span>
-                            <input type="text" id="source-code" placeholder="e.g., COMP101" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition">
-                        </div>
-                    </div>
-                    <div>
-                        <label for="source-description" class="block text-sm font-medium text-gray-700">Source Subject Description</label>
-                        <p class="text-xs text-gray-500 mb-1">Brief description of the source subject.</p>
-                        <textarea id="source-description" rows="3" placeholder="Enter the description of the source subject..." class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 transition resize-none"></textarea>
-                    </div>
-                    <div>
-                        <label for="equivalent-subject" class="block text-sm font-medium text-gray-700">Equivalent BCP Subject</label>
-                        <p class="text-xs text-gray-500 mb-1">The subject in your curriculum that it maps to.</p>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                            </span>
-                             <select id="equivalent-subject" class="mt-1 block w-full py-2 pl-10 pr-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm transition appearance-none">
-                                <option value="" disabled selected>-- Select a Subject --</option>
-                                @foreach($subjects as $subject)
-                                    <option value="{{ $subject->id }}" data-description="{{ $subject->course_description }}">{{ $subject->subject_code }} - {{ $subject->subject_name }}</option>
-                                @endforeach
-                            </select>
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div id="equivalent-description-container" class="hidden">
-                        <label for="equivalent-description" class="block text-sm font-medium text-gray-700">Equivalent Subject Description</label>
-                        <p class="text-xs text-gray-500 mb-1">Description of the selected BCP subject.</p>
-                        <div class="mt-1 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                            <p id="equivalent-description" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="mt-10">
-                    <button id="create-equivalency-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-                        <span class="flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                            Create Equivalency
-                        </span>
-                    </button>
+                        <div class="group">
+                            <label for="source-code" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">External Subject Code</label>
+                            <div class="relative transition-all duration-300 focus-within:transform focus-within:-translate-y-1">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>
+                                </span>
+                                <input type="text" id="source-code" placeholder="e.g., CS101" class="block w-full py-3 pl-11 pr-4 border border-slate-200 bg-slate-50 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm">
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label for="source-description" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Description</label>
+                            <textarea id="source-description" rows="3" placeholder="Brief subject description..." class="block w-full py-3 px-4 border border-slate-200 bg-slate-50 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm resize-none"></textarea>
+                        </div>
+
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div class="w-full border-t border-slate-200"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                                <span class="bg-white px-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Maps To</span>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label for="equivalent-subject" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Internal Subject</label>
+                            <div class="relative transition-all duration-300 focus-within:transform focus-within:-translate-y-1">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-blue-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                </span>
+                                <select id="equivalent-subject" class="block w-full py-3 pl-11 pr-10 border border-slate-200 bg-white rounded-xl text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none shadow-sm appearance-none cursor-pointer">
+                                    <option value="" disabled selected>-- Select Target Subject --</option>
+                                    @foreach($subjects as $subject)
+                                        <option value="{{ $subject->id }}" data-description="{{ $subject->course_description }}">{{ $subject->subject_code }} - {{ $subject->subject_name }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-500">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div id="equivalent-description-container" class="hidden animate-fade-in-up">
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                                <div class="flex items-start gap-2">
+                                    <svg class="w-4 h-4 text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <p id="equivalent-description" class="text-xs text-slate-600 leading-relaxed"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <button id="create-equivalency-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transform hover:-translate-y-0.5 active:translate-y-0">
+                            <span class="flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Create Mapping
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
 
         {{-- Right Panel: Existing Equivalencies --}}
-        <div class="lg:col-span-8 h-full">
-             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 h-full flex flex-col">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Existing Equivalencies</h2>
-                <div class="relative flex items-center mb-6">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+        <div class="lg:col-span-8">
+             <div class="bg-white rounded-3xl shadow-xl border border-slate-200 h-full flex flex-col overflow-hidden">
+                <div class="p-8 border-b border-slate-100 bg-slate-50/30 backdrop-blur-sm">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-800">Equivalent Mappings</h2>
+                            <p class="text-sm text-slate-500 mt-1">{{ count($equivalencies) }} active rules</p>
+                        </div>
+                        <div class="relative group w-full md:w-72">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" id="search-equivalency" placeholder="Filter subjects..." class="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm text-sm">
+                        </div>
                     </div>
-                    <input type="text" id="search-equivalency" placeholder="Search by subject name or code..." class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                 </div>
 
-                <div id="equivalency-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                <div id="equivalency-list" class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1 bg-slate-50/30" style="max-height: 800px;">
                     @forelse ($equivalencies as $item)
-                        <div class="equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer" data-id="{{ $item->id }}" data-source-name="{{ $item->source_subject_name }}" data-source-code="{{ $item->source_subject_code }}" data-source-description="{{ $item->source_subject_description }}" data-equivalent-code="{{ $item->equivalentSubject->subject_code }}" data-equivalent-name="{{ $item->equivalentSubject->subject_name }}" data-equivalent-description="{{ $item->equivalentSubject->course_description }}" data-equivalent-id="{{ $item->equivalent_subject_id }}">
-                            <div class="flex items-center">
-                                <div class="bg-green-100 text-green-600 p-2 rounded-md mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+                        <div class="equivalency-item group relative bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer" 
+                             data-id="{{ $item->id }}" 
+                             data-source-name="{{ $item->source_subject_name }}" 
+                             data-source-code="{{ $item->source_subject_code }}" 
+                             data-source-description="{{ $item->source_subject_description }}" 
+                             data-equivalent-code="{{ $item->equivalentSubject->subject_code }}" 
+                             data-equivalent-name="{{ $item->equivalentSubject->subject_name }}" 
+                             data-equivalent-description="{{ $item->equivalentSubject->course_description }}" 
+                             data-equivalent-id="{{ $item->equivalent_subject_id }}">
+                            
+                            <div class="flex items-center justify-between gap-4">
+                                {{-- Source --}}
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        @if($item->source_subject_code)
+                                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200">{{ $item->source_subject_code }}</span>
+                                        @endif
+                                        <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">External</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-700 truncate text-base leading-tight group-hover:text-blue-600 transition-colors" title="{{ $item->source_subject_name }}">{{ $item->source_subject_name }}</h3>
                                 </div>
-                                <div class="flex-grow">
-                                    <h3 class="font-semibold text-gray-800">
-                                        {{ $item->source_subject_code ? $item->source_subject_code . ' - ' : '' }}{{ $item->source_subject_name }} 
-                                        <span class="text-gray-400 mx-2">|</span> 
-                                        {{ $item->equivalentSubject->subject_code }} {{ $item->equivalentSubject->subject_name }}
-                                    </h3>
-                                    <p class="text-xs text-gray-400 mt-2 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        Created on: {{ $item->created_at->format('M d, Y \\a\\t h:i A') }}
-                                    </p>
+
+                                {{-- Connector --}}
+                                <div class="flex flex-col items-center justify-center shrink-0 w-12 text-slate-300 group-hover:text-blue-500 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
                                 </div>
+
+                                {{-- Target --}}
+                                <div class="flex-1 min-w-0 text-right">
+                                    <div class="flex items-center justify-end gap-2 mb-1">
+                                        <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Internal</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider border border-blue-100">{{ $item->equivalentSubject->subject_code }}</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-700 truncate text-base leading-tight" title="{{ $item->equivalentSubject->subject_name }}">{{ $item->equivalentSubject->subject_name }}</h3>
+                                </div>
+                            </div>
+                            
+                            {{-- Footer Data --}}
+                            <div class="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>ID: #{{ $item->id }}</span>
+                                
+                                {{-- Actions --}}
+                                <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="text-blue-500 font-medium">Click to view details</span>
+                                </div>
+
+                                <span>{{ $item->created_at->format('M d, Y') }}</span>
                             </div>
                         </div>
                     @empty
-                        <div id="no-equivalencies-message" class="text-center text-gray-500 py-10 border-2 border-dashed rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">No equivalencies created yet.</h3>
-                            <p class="mt-1 text-sm text-gray-500">Get started by creating a new equivalency.</p>
+                        <div id="no-equivalencies-message" class="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                            <div class="bg-white p-4 rounded-full shadow-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-slate-900">No Mappings Found</h3>
+                            <p class="mt-2 text-sm text-slate-500 max-w-sm">There are no subject equivalencies configured yet. Use the form on the left to create your first mapping.</p>
                         </div>
                     @endforelse
                 </div>
@@ -137,6 +194,7 @@
         </div>
     </div>
 </div>
+
 
 {{-- Confirmation Modal --}}
 <div id="confirmationModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
@@ -364,10 +422,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const createEquivalencyCard = (equivalency) => {
         const date = new Date(equivalency.created_at);
         const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
+        
         const card = document.createElement('div');
-        card.className = 'equivalency-item p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer';
+        card.className = 'equivalency-item group relative bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer';
+        
         card.dataset.id = equivalency.id;
         card.dataset.sourceName = equivalency.source_subject_name;
         card.dataset.sourceCode = equivalency.source_subject_code || '';
@@ -377,24 +435,41 @@ document.addEventListener('DOMContentLoaded', function () {
         card.dataset.equivalentDescription = equivalency.equivalent_subject.course_description || '';
         card.dataset.equivalentId = equivalency.equivalent_subject_id;
 
+        const sourceCodeBadge = equivalency.source_subject_code 
+            ? `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200">${equivalency.source_subject_code}</span>` 
+            : '';
+
         card.innerHTML = `
-            <div class="flex items-center">
-                <div class="bg-green-100 text-green-600 p-2 rounded-md mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        ${sourceCodeBadge}
+                        <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">External</span>
+                    </div>
+                    <h3 class="font-bold text-slate-700 truncate text-base leading-tight group-hover:text-blue-600 transition-colors" title="${equivalency.source_subject_name}">${equivalency.source_subject_name}</h3>
                 </div>
-                <div class="flex-grow">
-                    <h3 class="font-semibold text-gray-800">
-                        ${equivalency.source_subject_code ? equivalency.source_subject_code + ' - ' : ''}${equivalency.source_subject_name}
-                        <span class="text-gray-400 mx-2">|</span>
-                        ${equivalency.equivalent_subject.subject_code} ${equivalency.equivalent_subject.subject_name}
-                    </h3>
-                    <p class="text-xs text-gray-400 mt-2 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Created on: ${formattedDate} at ${formattedTime}
-                    </p>
+
+                <div class="flex flex-col items-center justify-center shrink-0 w-12 text-slate-300 group-hover:text-blue-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                 </div>
+
+                <div class="flex-1 min-w-0 text-right">
+                    <div class="flex items-center justify-end gap-2 mb-1">
+                        <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Internal</span>
+                        <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider border border-blue-100">${equivalency.equivalent_subject.subject_code}</span>
+                    </div>
+                    <h3 class="font-bold text-slate-700 truncate text-base leading-tight" title="${equivalency.equivalent_subject.subject_name}">${equivalency.equivalent_subject.subject_name}</h3>
+                </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between text-[11px] text-slate-400">
+                <span>ID: #${equivalency.id}</span>
+                <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                    <span class="text-blue-500 font-medium">Click to view details</span>
+                </div>
+                <span>${formattedDate}</span>
             </div>
         `;
         return card;

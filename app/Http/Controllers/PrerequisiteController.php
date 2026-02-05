@@ -279,6 +279,22 @@ class PrerequisiteController extends Controller
                     }
                 }
                 $updatedCount++;
+
+                // Log activity for Virtual/Category updates
+                if (auth()->user()) {
+                    $categoryName = ucwords(str_replace(['-', '_'], ' ', $validated['curriculum_id']));
+                    \App\Services\ActivityLogService::log(
+                        'prerequisite',
+                        'Updated prerequisites for ' . $validated['subject_code'] . ' (Category: ' . $categoryName . ')',
+                        [
+                            'category' => $validated['curriculum_id'],
+                            'subject_code' => $validated['subject_code'],
+                            'prerequisites' => $validated['prerequisite_codes'] ?? [],
+                            'synced_count' => $updatedCount
+                        ]
+                    );
+                    auth()->user()->updateLastActivity();
+                }
                 
                 // Mark curriculum as processing if it was rejected
                 if ($targetCurriculum->approval_status === 'rejected') {

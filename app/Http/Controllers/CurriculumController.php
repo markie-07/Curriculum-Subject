@@ -36,8 +36,14 @@ class CurriculumController extends Controller
             ->where('version_status', '!=', 'old')
             ->update(['version_status' => 'old']);
 
-        $curriculums = Curriculum::withCount('subjects')
-            ->withSum('subjects', 'subject_unit')
+        $curriculums = Curriculum::withCount(['subjects', 'subjects as mapped_subjects_count' => function ($query) {
+                $query->whereNotNull('curriculum_subject.year')
+                      ->whereNotNull('curriculum_subject.semester');
+            }])
+            ->withSum(['subjects as mapped_units_sum' => function ($query) {
+                $query->whereNotNull('curriculum_subject.year')
+                      ->whereNotNull('curriculum_subject.semester');
+            }], 'subject_unit')
             ->orderBy('year_level')
             ->orderBy('curriculum')
             ->orderByDesc('academic_year')
@@ -60,7 +66,8 @@ class CurriculumController extends Controller
                     'approval_status' => $curriculum->approval_status,
                     'created_at' => $curriculum->created_at,
                     'subjects_count' => $curriculum->subjects_count,
-                    'mapped_units' => $curriculum->subjects_sum_subject_unit,
+                    'mapped_units' => $curriculum->mapped_units_sum,
+                    'mapped_subjects_count' => $curriculum->mapped_subjects_count,
                 ];
             });
         return response()->json($curriculums);
@@ -81,8 +88,14 @@ class CurriculumController extends Controller
             ->where('version_status', '!=', 'old')
             ->update(['version_status' => 'old']);
 
-        $curriculums = Curriculum::withCount('subjects')
-            ->withSum('subjects', 'subject_unit')
+        $curriculums = Curriculum::withCount(['subjects', 'subjects as mapped_subjects_count' => function ($query) {
+                $query->whereNotNull('curriculum_subject.year')
+                      ->whereNotNull('curriculum_subject.semester');
+            }])
+            ->withSum(['subjects as mapped_units_sum' => function ($query) {
+                $query->whereNotNull('curriculum_subject.year')
+                      ->whereNotNull('curriculum_subject.semester');
+            }], 'subject_unit')
             ->where('approval_status', 'approved') // Only get approved curriculums
             ->orderBy('year_level')
             ->orderBy('curriculum')
@@ -106,7 +119,8 @@ class CurriculumController extends Controller
                     'approval_status' => $curriculum->approval_status,
                     'created_at' => $curriculum->created_at,
                     'subjects_count' => $curriculum->subjects_count,
-                    'mapped_units' => $curriculum->subjects_sum_subject_unit,
+                    'mapped_units' => $curriculum->mapped_units_sum,
+                    'mapped_subjects_count' => $curriculum->mapped_subjects_count,
                 ];
             });
         return response()->json($curriculums);
@@ -443,17 +457,24 @@ public function saveSubjects(Request $request)
             }
         }
         
-        // Detach all subjects first
-        $curriculum->subjects()->detach();
+        // Prepare sync data: Includes new mappings + existing unmapped subjects (set to null)
+        $syncData = $newSubjectMappings;
+        
+        $mappedSubjectIds = array_keys($newSubjectMappings);
+        $existingSubjectIds = $existingSubjects->keys()->toArray();
+        $unmappedSubjectIds = array_diff($existingSubjectIds, $mappedSubjectIds);
 
-        // Re-attach subjects with new mappings
-        foreach ($newSubjectMappings as $subjectId => $mapping) {
-            $curriculum->subjects()->attach($subjectId, $mapping);
+        // Keep unmapped subjects associated but with null year/semester
+        foreach ($unmappedSubjectIds as $id) {
+            $syncData[$id] = ['year' => null, 'semester' => null];
         }
 
-        $newSubjectIds = collect(array_keys($newSubjectMappings));
+        // Sync subjects (update existing, insert new, detach only if not in syncData - which shouldn't happen here)
+        $curriculum->subjects()->sync($syncData);
 
-        // Identify added subjects
+        $newSubjectIds = collect($mappedSubjectIds);
+
+        // Identify added subjects (New IDs not in existing)
         $addedSubjects = $newSubjectIds->diff($existingSubjects->keys());
         if ($addedSubjects->isNotEmpty()) {
             $addedNames = [];
@@ -466,16 +487,18 @@ public function saveSubjects(Request $request)
             }
         }
 
-        // Identify removed subjects
-        $removedSubjects = $existingSubjects->keys()->diff($newSubjectIds);
-        if ($removedSubjects->isNotEmpty()) {
-            $removedNames = [];
-            foreach ($removedSubjects as $subjectId) {
+        // Identify Unmapped subjects (Existing IDs not in New Mappings) - Moved to "Available"
+        if (!empty($unmappedSubjectIds)) {
+            $unmappedNames = [];
+            foreach ($unmappedSubjectIds as $subjectId) {
                 $subject = $existingSubjects[$subjectId];
-                $removedNames[] = $subject->subject_name;
+                // Only log if it was previously mapped (had year/sem)
+                if ($subject->pivot->year !== null || $subject->pivot->semester !== null) {
+                    $unmappedNames[] = $subject->subject_name;
+                }
             }
-            if (count($removedNames) > 0) {
-                $changeDescriptions[] = count($removedNames) . " subject(s) removed: " . implode(', ', $removedNames);
+            if (count($unmappedNames) > 0) {
+                $changeDescriptions[] = count($unmappedNames) . " subject(s) moved to available subjects: " . implode(', ', $unmappedNames);
             }
         }
 

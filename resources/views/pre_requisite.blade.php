@@ -27,21 +27,25 @@
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-lg">
-            <div class="mb-6 pb-6 border-b border-gray-200">
-                <label for="curriculum-selector-button" class="block text-lg font-semibold text-gray-700 mb-2">Select Subject Category</label>
-                <div id="custom-curriculum-selector" class="relative">
-                    <button type="button" id="curriculum-selector-button" class="w-full border border-gray-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <span class="text-gray-500 truncate pr-2">-- Select a Curriculum --</span>
-                        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <div class="mb-8 p-1">
+                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Select Subject Category</label>
+                <div id="custom-curriculum-selector" class="relative group">
+                    <button type="button" id="curriculum-selector-button" class="w-full text-left bg-white border border-gray-200 rounded-xl px-4 py-4 flex items-center justify-between hover:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm hover:shadow-md outline-none group-open:ring-4">
+                        <span class="text-gray-500 font-medium truncate text-base">-- Select a Curriculum --</span>
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div id="curriculum-dropdown-panel" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg hidden">
-                        <div class="p-2">
-                            <input type="text" id="curriculum-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a curriculum...">
+                    <div id="curriculum-dropdown-panel" class="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden hidden z-50 ring-1 ring-black/5 transform origin-top transition-all">
+                        <div class="p-3 border-b border-gray-100 bg-gray-50/50">
+                            <div class="relative">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="curriculum-search-input" class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-white transition-all" placeholder="Search for a curriculum...">
+                            </div>
                         </div>
-                        <ul id="curriculum-options-list" class="max-h-60 overflow-y-auto">
+                        <ul id="curriculum-options-list" class="max-h-64 overflow-y-auto p-2 custom-scrollbar space-y-1">
                             @foreach($activeCategories as $category)
-                                <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer font-semibold text-blue-700 border-b border-slate-100 transition-colors" data-value="{{ $category['id'] }}" data-name="{{ $category['name'] }}">
-                                    {{ $category['name'] }}
+                                <li class="px-4 py-3 hover:bg-blue-50 rounded-lg text-sm font-medium text-gray-700 cursor-pointer transition-all border border-transparent hover:border-blue-100 flex items-center justify-between group" data-value="{{ $category['id'] }}" data-name="{{ $category['name'] }}">
+                                    <span>{{ $category['name'] }}</span>
+                                    <svg class="w-4 h-4 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </li>
                             @endforeach
                         </ul>
@@ -72,100 +76,110 @@
 </main>
 
 {{-- Modal for Setting Prerequisites --}}
-<div id="prerequisiteModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="relative bg-white w-full max-w-5xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="prerequisite-modal-panel">
-            <button id="closePrerequisiteModalButton" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors duration-200 rounded-full p-1 hover:bg-slate-100" aria-label="Close modal">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            
-            <div class="text-center mb-8">
-                <img src="{{ asset('/images/SMSIII LOGO.png') }}" alt="SMS3 Logo" class="mx-auto h-16 w-auto mb-4">
-                <h2 class="text-2xl font-bold text-slate-800">Set Prerequisites</h2>
-                <p class="text-sm text-slate-500 mt-1">Define prerequisite relationships between subjects.</p>
+<div id="prerequisiteModal" class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 hidden">
+    <div class="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="prerequisite-modal-panel">
+        
+        {{-- Header --}}
+        <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white z-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                     <img src="{{ asset('/images/SMSIII LOGO.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+                </div>
+                <div>
+                     <h2 class="text-xl font-bold text-gray-900 tracking-tight">Set Prerequisites</h2>
+                     <p class="text-sm text-gray-500">Define prerequisite relationships between subjects.</p>
+                </div>
             </div>
+            <button id="closePrerequisiteModalButton" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors outline-none focus:ring-2 focus:ring-blue-100">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
 
-            <form id="prerequisiteForm" class="space-y-6">
+        {{-- Body --}}
+        <div class="p-8 overflow-y-auto custom-scrollbar flex-1 bg-gray-50/50">
+            <form id="prerequisiteForm" class="space-y-8 h-full flex flex-col">
                 @csrf
                 <input type="hidden" id="modalCurriculumId" name="curriculum_id">
                 <input type="hidden" id="modalSubjectCode" name="subject_code">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
-                    <div class="relative z-30">
-                        <label for="modal-category-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Select Subject Category</label>
-                        <div id="modal-custom-category-selector" class="relative">
-                            <button type="button" id="modal-category-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
-                                <span class="text-slate-500 truncate pr-2">-- Select a Subject Category --</span>
-                                <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+                {{-- Selection Area --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Category --}}
+                    <div class="space-y-2 relative z-30">
+                        <label class="text-sm font-semibold text-gray-700 ml-1">Subject Category</label>
+                        <div id="modal-custom-category-selector" class="relative group">
+                            <button type="button" id="modal-category-selector-button" class="w-full text-left bg-white border border-gray-200 rounded-xl px-4 py-3.5 flex items-center justify-between hover:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm outline-none">
+                                <span class="text-gray-500 font-medium truncate">-- Select a Subject Category --</span>
+                                <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div id="modal-category-dropdown-panel" class="absolute z-50 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
-                                <ul id="modal-category-options-list" class="max-h-60 overflow-y-auto py-1">
-                                    <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer text-slate-700 transition-colors" data-value="general-education" data-name="General Education (NSTP 1, NSTP 2)">
-                                        General Education (NSTP 1, NSTP 2)
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-non-lab" data-name="Professional Subject Non Laboratory">
-                                        Professional Subject Non Laboratory
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-lab" data-name="Professional Subject Laboratory">
-                                        Professional Subject Laboratory
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-board" data-name="Professional Subject Board Courses">
-                                        Professional Subject Board Courses
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-non-board" data-name="Professional Subject Non Board Courses">
-                                        Professional Subject Non Board Courses
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="professional-oc" data-name="Professional Subject OC">
-                                        Professional Subject OC
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="research" data-name="Research">
-                                        Research
-                                    </li>
-                                    <li class="px-4 py-2 hover:bg-slate-50 cursor-pointer text-slate-700 transition-colors" data-value="ojt" data-name="OJT/Practicum">
-                                        OJT/Practicum
-                                    </li>
-                                </ul>
+                            <div id="modal-category-dropdown-panel" class="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden hidden z-50 ring-1 ring-black/5">
+                                 <ul id="modal-category-options-list" class="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="general-education" data-name="General Education (NSTP 1, NSTP 2)">General Education (NSTP 1, NSTP 2)</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="professional-non-lab" data-name="Professional Subject Non Laboratory">Professional Subject Non Laboratory</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="professional-lab" data-name="Professional Subject Laboratory">Professional Subject Laboratory</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="professional-board" data-name="Professional Subject Board Courses">Professional Subject Board Courses</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="professional-non-board" data-name="Professional Subject Non Board Courses">Professional Subject Non Board Courses</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="professional-oc" data-name="Professional Subject OC">Professional Subject OC</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="research" data-name="Research">Research</li>
+                                    <li class="px-4 py-2.5 hover:bg-blue-50 rounded-lg text-sm text-gray-700 cursor-pointer transition-colors" data-value="ojt" data-name="OJT/Practicum">OJT/Practicum</li>
+                                 </ul>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="relative z-20">
-                        <label for="modal-subject-selector-button" class="block text-sm font-medium text-slate-700 mb-2">Subject</label>
-                        <div id="modal-custom-subject-selector" class="relative">
-                            <button type="button" id="modal-subject-selector-button" class="w-full border border-slate-300 rounded-lg p-3 flex justify-between items-center bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm hover:shadow-md">
-                                <span class="text-slate-500 truncate pr-2">Select a curriculum first</span>
-                                <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+                    {{-- Subject --}}
+                    <div class="space-y-2 relative z-20">
+                        <label class="text-sm font-semibold text-gray-700 ml-1">Target Subject</label>
+                        <div id="modal-custom-subject-selector" class="relative group">
+                             <button type="button" id="modal-subject-selector-button" class="w-full text-left bg-white border border-gray-200 rounded-xl px-4 py-3.5 flex items-center justify-between hover:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm outline-none">
+                                <span class="text-gray-500 font-medium truncate">Select a category first</span>
+                                <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div id="modal-subject-dropdown-panel" class="absolute z-40 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-xl hidden">
-                                <div class="p-2 bg-slate-50 border-b border-slate-100 rounded-t-lg">
-                                    <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" placeholder="Search for a subject...">
+                             <div id="modal-subject-dropdown-panel" class="absolute left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden hidden z-50 ring-1 ring-black/5">
+                                <div class="p-2 border-b border-gray-100 bg-gray-50/50">
+                                    <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-white" placeholder="Search for a subject...">
                                 </div>
-                                <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto py-1">
+                                <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                                    {{-- Filled by JS --}}
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Pre-requisite to</label>
-                    <div id="prerequisiteList" class="max-h-[60vh] overflow-y-auto bg-slate-50 border border-slate-200 rounded-lg p-4">
-                        <p class="text-slate-500">Select a subject to see available prerequisites.</p>
                     </div>
                 </div>
 
-                <div class="flex gap-4 pt-4">
-                    <button type="button" id="cancelModalBtn" class="flex-1 px-6 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">Cancel</button>
-                    <button type="submit" id="savePrerequisitesBtn" class="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2" disabled>
-                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                        </svg>
-                        <span>Save Prerequisites</span>
-                    </button>
+                {{-- Prerequisite List --}}
+                <div class="flex-1 flex flex-col min-h-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-semibold text-gray-700 ml-1">Available Prerequisites</label>
+                        <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-md">Select needed subjects</span>
+                    </div>
+                    <div id="prerequisiteList" class="flex-1 border border-gray-200 rounded-xl bg-white p-4 overflow-y-auto custom-scrollbar shadow-sm min-h-[250px] relative">
+                         <div class="flex flex-col items-center justify-center h-full text-center p-8">
+                            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <p class="text-gray-500 font-medium">Select a category and subject above to view prerequisites.</p>
+                            <p class="text-gray-400 text-sm mt-1">Available subjects from the selected curriculum will appear here.</p>
+                        </div>
+                    </div>
                 </div>
             </form>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-8 py-5 bg-white border-t border-gray-100 flex justify-end gap-3 shrink-0 z-10">
+            <button type="button" id="cancelModalBtn" class="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all">
+                Cancel
+            </button>
+             {{-- Using onclick to trigger form submit since button is outside form visually, though logically inside it if we wrapped the whole thing. 
+                  My structure puts the form inside the body div, so this button is outside the form tag. 
+                  I need to add form="prerequisiteForm" to the button. --}}
+             <button type="submit" form="prerequisiteForm" id="savePrerequisitesBtn" disabled class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+                <span>Save Prerequisites</span>
+            </button>
         </div>
     </div>
 </div>
@@ -1430,32 +1444,54 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Render the Chains
         uniqueChains.forEach(chain => {
              const chainDiv = document.createElement('div');
-             chainDiv.className = 'flex items-center justify-between gap-2 p-3 bg-white rounded-lg border border-gray-200 shadow-sm mb-3';
+             chainDiv.className = 'w-full overflow-x-auto custom-scrollbar pb-2'; // Allow horizontal scrolling for long chains
              
+             // Wrap content in a container that allows specific spacing/layout
+             const containerDiv = document.createElement('div');
+             containerDiv.className = 'flex items-center gap-2 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 min-w-max mb-6';
+
              const chainHtml = chain.map((subject, index) => {
                 const subjectName = subject.subject_name;
                 const subjectCategory = subject.course_classification || 'Uncategorized';
-                const subjectColorClass = getSubjectColorClass(subject.subject_type);
+                // const subjectColorClass = getSubjectColorClass(subject.subject_type); // Unused in new design
                 const sequenceNumber = index + 1;
                 const isFirst = index === 0;
+                const isLast = index === chain.length - 1;
                 
                 return `
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 ${isFirst ? 'bg-green-600' : 'bg-blue-600'} text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-sm">${sequenceNumber}</div>
-                        <div class="flex flex-col">
-                            <span class="font-semibold px-3 py-1 rounded-md text-sm border ${subjectColorClass}">${subjectName}</span>
-                            <span class="text-xs text-cool-gray-500 mt-0.5 ml-1 italic">${subjectCategory}</span>
+                    <div class="flex items-center group relative">
+                        <div class="relative z-10">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-10 ${isFirst ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-blue-200' : (isLast ? 'bg-white border-2 border-emerald-500 text-emerald-600 shadow-emerald-100' : 'bg-white border-2 border-blue-100 text-blue-600 shadow-gray-100')} rounded-2xl flex items-center justify-center text-sm font-bold shadow-lg transition-transform duration-300 group-hover:scale-110">
+                                    ${sequenceNumber}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ml-4 p-4 rounded-xl border ${isLast ? 'border-emerald-100 bg-emerald-50/30' : 'border-gray-100 bg-white'} shadow-sm group-hover:shadow-md transition-all duration-300 min-w-[220px] max-w-[280px]">
+                            <h4 class="font-bold text-gray-800 text-sm leading-snug break-words">${subjectName}</h4>
+                             <div class="flex items-center gap-2 mt-2">
+                                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">${subjectCategory}</span>
+                                <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                <span class="text-[10px] font-semibold ${isFirst ? 'text-blue-600' : (isLast ? 'text-emerald-600' : 'text-gray-500')}">
+                                    ${isFirst ? 'Target Subject' : (isLast ? 'Prerequisite' : 'Intermediate')}
+                                </span>
+                            </div>
+                            <div class="text-[10px] text-gray-400 font-mono mt-1">${subject.subject_code}</div>
                         </div>
                     </div>
                 `;
-            }).join(' <div class="mx-2 text-gray-300 flex-shrink-0"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></div> ');
-
-            chainDiv.innerHTML = `
-                <div class="flex-grow flex flex-wrap items-center gap-2">
-                    ${chainHtml}
+            }).join(`
+                <div class="flex items-center justify-center w-12 relative flex-shrink-0">
+                    <div class="h-0.5 w-full bg-gray-200 absolute top-1/2 -translate-y-1/2"></div>
+                    <div class="w-6 h-6 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center relative z-10 text-gray-400">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
                 </div>
-            `;
+            `);
 
+            containerDiv.innerHTML = chainHtml;
+            chainDiv.appendChild(containerDiv);
             prerequisiteChainContainer.appendChild(chainDiv);
         });
 

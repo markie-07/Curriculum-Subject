@@ -175,75 +175,185 @@
     </div>
 
     {{-- Second Row Charts --}}
-    {{-- Combined Subject Classification & Grades Setup Chart --}}
-    <div id="section-subject-grades" class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 mb-8">
-        {{-- Header with Toggle --}}
-        <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
-            <div class="flex items-center gap-3">
-                <h2 class="text-xl font-bold text-slate-800" id="subject-grades-title">Subject Classification</h2>
-                <div class="bg-purple-100 p-2 rounded-lg transition-colors" id="subject-grades-icon-bg">
-                    <svg class="w-6 h-6 text-purple-600 transition-colors" id="subject-grades-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                    </svg>
+    {{-- Level Toggle & Split Charts --}}
+    <div class="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-4 gap-4">
+        <h2 class="text-lg font-semibold text-slate-700">Analytics Overview</h2>
+        <div class="bg-slate-100 p-1 rounded-lg inline-flex self-end sm:self-auto">
+            <button id="btn-toggle-college" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-md bg-white text-slate-800 shadow-sm transition-all duration-200">College (CHED)</button>
+            <button id="btn-toggle-shs" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-md text-slate-500 hover:text-slate-700 transition-all duration-200">Senior High (DepEd)</button>
+        </div>
+    </div>
+
+    <div id="section-subject-grades" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {{-- Subject Classification Card --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col hover:shadow-md transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Subject Classification</h2>
+                        <p class="text-sm text-slate-500">Distribution across categories</p>
+                    </div>
+                </div>
+                <div class="px-3 py-1 rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                    <span id="subject-total-display">{{ $totalCollegeSubjects ?? 0 }}</span> Total
                 </div>
             </div>
-            
-            {{-- Toggle Switch --}}
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-slate-600 transition-colors" id="view-subject-label">Subject Classification</span>
-                <button id="subject-grades-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-                    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
-                </button>
-                <span class="text-sm font-medium text-slate-400 transition-colors" id="view-grades-label">Grades Setup</span>
-            </div>
-        </div>
 
-        {{-- Subject Classification View --}}
-        <div id="subject-classification-view" class="transition-all duration-300">
-            <div class="relative h-64">
+            <div class="relative h-72 mb-6">
                 <canvas id="subjectMappingChart"></canvas>
             </div>
             
-            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto custom-scrollbar pr-2">
-                @foreach($subjectCategories as $index => $category)
-                    @php
-                        $count = $subjectCounts[$category] ?? 0;
-                        $percent = $totalSubjects > 0 ? round(($count / $totalSubjects) * 100) : 0;
-                        $colors = ['bg-blue-50', 'bg-violet-50', 'bg-pink-50', 'bg-red-50', 'bg-orange-50', 'bg-amber-50', 'bg-emerald-50', 'bg-cyan-50', 'bg-indigo-50', 'bg-teal-50'];
-                        $textColors = ['text-blue-600', 'text-violet-600', 'text-pink-600', 'text-red-600', 'text-orange-600', 'text-amber-600', 'text-emerald-600', 'text-cyan-600', 'text-indigo-600', 'text-teal-600'];
-                        $colorIndex = $index % count($colors);
-                    @endphp
-                    <div class="text-center p-2 {{ $colors[$colorIndex] }} rounded-lg">
-                        <p class="text-xs text-slate-600 truncate" title="{{ $category }}">{{ $category }}</p>
-                        <p class="text-lg font-bold {{ $textColors[$colorIndex] }}">{{ $count }}</p>
-                        <p class="text-[10px] font-semibold {{ $textColors[$colorIndex] }}/70">{{ $percent }}%</p>
-                    </div>
-                @endforeach
+            <div class="flex-1 overflow-hidden flex flex-col">
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Detailed Breakdown</h3>
+                
+                {{-- College List --}}
+                <div id="list-subject-college" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                    @foreach($collegeCategories as $category)
+                        @php
+                            $count = $collegeSubjectCounts[$category] ?? 0;
+                            $safeTotal = ($totalCollegeSubjects ?? 0) > 0 ? $totalCollegeSubjects : 1;
+                            $percent = round(($count / $safeTotal) * 100);
+                            $colors = ['bg-blue-500', 'bg-violet-500', 'bg-pink-500', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-indigo-500', 'bg-teal-500', 'bg-slate-500'];
+                            $colorIndex = $loop->index % count($colors);
+                            $barColor = $colors[$colorIndex];
+                            $opacityClass = $count > 0 ? 'opacity-100' : 'opacity-60';
+                        @endphp
+                        <div class="group {{ $opacityClass }}">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-sm font-medium text-slate-700 truncate max-w-[70%] group-hover:text-blue-600 transition-colors" title="{{ $category }}">{{ $category }}</span>
+                                <div class="text-right">
+                                    <span class="text-sm font-bold text-slate-800">{{ $count }}</span>
+                                    <span class="text-xs text-slate-400 ml-1">({{ $percent }}%)</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- SHS List (Hidden) --}}
+                <div id="list-subject-shs" class="hidden flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                    @foreach($shsCategories as $category)
+                        @php
+                            $count = $shsSubjectCounts[$category] ?? 0;
+                            $safeTotal = ($totalSHSSubjects ?? 0) > 0 ? $totalSHSSubjects : 1;
+                            $percent = round(($count / $safeTotal) * 100);
+                            $colors = ['bg-blue-500', 'bg-violet-500', 'bg-pink-500', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-indigo-500', 'bg-teal-500', 'bg-slate-500'];
+                            $colorIndex = $loop->index % count($colors);
+                            $barColor = $colors[$colorIndex];
+                            $opacityClass = $count > 0 ? 'opacity-100' : 'opacity-60';
+                        @endphp
+                        <div class="group {{ $opacityClass }}">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-sm font-medium text-slate-700 truncate max-w-[70%] group-hover:text-blue-600 transition-colors" title="{{ $category }}">{{ $category }}</span>
+                                <div class="text-right">
+                                    <span class="text-sm font-bold text-slate-800">{{ $count }}</span>
+                                    <span class="text-xs text-slate-400 ml-1">({{ $percent }}%)</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
             </div>
         </div>
 
-        {{-- Grades Setup View --}}
-        <div id="grades-setup-view" class="hidden transition-all duration-300">
-            <div class="relative h-64">
+        {{-- Grades Setup Card --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col hover:shadow-md transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Grades Setup</h2>
+                        <p class="text-sm text-slate-500">Grading completion status</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-slate-600">Active</span>
+                </div>
+            </div>
+
+            <div class="relative h-72 mb-6">
                 <canvas id="gradesChart"></canvas>
             </div>
             
-            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto custom-scrollbar pr-2">
-                @foreach($subjectCategories as $index => $category)
-                    @php
-                        $total = $subjectCounts[$category] ?? 0;
-                        $graded = $gradeCounts[$category] ?? 0;
-                        $percent = $total > 0 ? round(($graded / $total) * 100) : 0;
-                        $colors = ['bg-blue-50', 'bg-violet-50', 'bg-pink-50', 'bg-red-50', 'bg-orange-50', 'bg-amber-50', 'bg-emerald-50', 'bg-cyan-50', 'bg-indigo-50', 'bg-teal-50'];
-                        $textColors = ['text-blue-600', 'text-violet-600', 'text-pink-600', 'text-red-600', 'text-orange-600', 'text-amber-600', 'text-emerald-600', 'text-cyan-600', 'text-indigo-600', 'text-teal-600'];
-                        $colorIndex = $index % count($colors);
-                    @endphp
-                    <div class="text-center p-2 {{ $colors[$colorIndex] }} rounded-lg">
-                        <p class="text-xs text-slate-600 truncate" title="{{ $category }}">{{ $category }}</p>
-                        <p class="text-lg font-bold {{ $textColors[$colorIndex] }}">{{ $graded }} <span class="text-xs font-normal text-slate-500">of {{ $total }}</span></p>
-                        <p class="text-[10px] font-semibold {{ $textColors[$colorIndex] }}/70">{{ $percent }}% Graded</p>
-                    </div>
-                @endforeach
+            <div class="flex-1 overflow-hidden flex flex-col">
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Completion by Category</h3>
+                
+                {{-- College Grades List --}}
+                <div id="list-grade-college" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                    @foreach($collegeCategories as $category)
+                        @php
+                            $total = $collegeSubjectCounts[$category] ?? 0;
+                            $graded = $collegeGradeCounts[$category] ?? 0;
+                            $safeTotal = $total > 0 ? $total : 1; 
+                            $percent = round(($graded / $safeTotal) * 100);
+                            $colors = ['bg-blue-500', 'bg-violet-500', 'bg-pink-500', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-indigo-500', 'bg-teal-500', 'bg-slate-500'];
+                            $colorIndex = $loop->index % count($colors);
+                            $barColor = $colors[$colorIndex];
+                            $opacityClass = $total > 0 ? 'opacity-100' : 'opacity-60';
+                        @endphp
+                        <div class="group {{ $opacityClass }}">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-sm font-medium text-slate-700 truncate max-w-[60%] group-hover:text-teal-600 transition-colors" title="{{ $category }}">{{ $category }}</span>
+                                <div class="text-right flex items-center gap-2">
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{{ $graded }}/{{ $total }}</span>
+                                    <span class="text-sm font-bold text-slate-800 w-9 text-right">{{ $percent }}%</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500" style="width:{{ ($total > 0) ? $percent : 0 }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- SHS Grades List (Hidden) --}}
+                <div id="list-grade-shs" class="hidden flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                    @foreach($shsCategories as $category)
+                        @php
+                            $total = $shsSubjectCounts[$category] ?? 0;
+                            $graded = $shsGradeCounts[$category] ?? 0;
+                            $safeTotal = $total > 0 ? $total : 1; 
+                            $percent = round(($graded / $safeTotal) * 100);
+                            $colors = ['bg-blue-500', 'bg-violet-500', 'bg-pink-500', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-indigo-500', 'bg-teal-500', 'bg-slate-500'];
+                            $colorIndex = $loop->index % count($colors);
+                            $barColor = $colors[$colorIndex];
+                            $opacityClass = $total > 0 ? 'opacity-100' : 'opacity-60';
+                        @endphp
+                        <div class="group {{ $opacityClass }}">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-sm font-medium text-slate-700 truncate max-w-[60%] group-hover:text-teal-600 transition-colors" title="{{ $category }}">{{ $category }}</span>
+                                <div class="text-right flex items-center gap-2">
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{{ $graded }}/{{ $total }}</span>
+                                    <span class="text-sm font-bold text-slate-800 w-9 text-right">{{ $percent }}%</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500" style="width:{{ ($total > 0) ? $percent : 0 }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
             </div>
         </div>
     </div>
@@ -967,127 +1077,162 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Subject Mapping Chart
-    // Subject Mapping Chart
-    const subjectMappingCtx = document.getElementById('subjectMappingChart').getContext('2d');
-    
-    const subjectLabels = {!! json_encode($subjectCategories ?? []) !!};
-    const subjectData = [];
-    @foreach($subjectCategories as $cat)
-        subjectData.push({{ $subjectCounts[$cat] ?? 0 }});
-    @endforeach
-    
-    // Defined colors for each category
+    // --- Dynamic Data for Charts & Toggles ---
+    const collegeData = {
+        labels: {!! json_encode($collegeCategories) !!},
+        subjectCounts: {!! json_encode($collegeSubjectCounts) !!}, // Object {Category: Count}
+        gradeCounts: {!! json_encode($collegeGradeCounts) !!},     // Object {Category: GradedCount}
+        total: {{ $totalCollegeSubjects ?? 0 }}
+    };
+
+    const shsData = {
+        labels: {!! json_encode($shsCategories) !!},
+        subjectCounts: {!! json_encode($shsSubjectCounts) !!},
+        gradeCounts: {!! json_encode($shsGradeCounts) !!},
+        total: {{ $totalSHSSubjects ?? 0 }}
+    };
+
     const categoryColors = [
-        '#3b82f6', // General Education - Blue
-        '#8b5cf6', // Professional Subject Non Laboratory - Violet
-        '#ec4899', // Professional Subject Laboratory - Pink
-        '#ef4444', // Professional Subject Board Courses - Red
-        '#f97316', // Professional Subject Non Board Courses - Orange
-        '#f59e0b', // Professional Subject OC - Amber
-        '#10b981', // NSTP 1 - Emerald
-        '#06b6d4', // NSTP 2 - Cyan
-        '#6366f1', // Research - Indigo
-        '#14b8a6'  // OJT/Practicum - Teal
+        '#3b82f6', '#8b5cf6', '#ec4899', '#ef4444', '#f97316', 
+        '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#14b8a6', '#64748b'
     ];
 
-    new Chart(subjectMappingCtx, {
-        type: 'bar', // OR 'doughnut' properly? The previous was 'bar'. But with 10 items, 'doughnut' might be messy. Horizontal bar?
-        // Let's stick to bar but maybe horizontal index axis if labels are long. 
-        // User didn't specify chart type change, but vertical bar with long labels will be bad.
-        // Let's try horizontal bar.
+    // Helper: Convert Count Object to Array matching Labels order
+    function getValuesByLabels(labels, dataObj) {
+        return labels.map(label => dataObj[label] || 0);
+    }
+
+    // Helper: Calculate Percentage Arrays for Grades Chart
+    function getGradePercentages(labels, subjectCounts, gradeCounts) {
+        return labels.map(label => {
+            const total = subjectCounts[label] || 0;
+            const graded = gradeCounts[label] || 0;
+            return total > 0 ? Math.round((graded / total) * 100) : 0;
+        });
+    }
+
+    // --- Subject Mapping Chart ---
+    const subjectMappingCtx = document.getElementById('subjectMappingChart').getContext('2d');
+    let subjectChart = new Chart(subjectMappingCtx, {
+        type: 'bar',
         data: {
-            labels: subjectLabels,
+            labels: collegeData.labels,
             datasets: [{
                 label: 'Number of Subjects',
-                data: subjectData,
+                data: getValuesByLabels(collegeData.labels, collegeData.subjectCounts),
                 backgroundColor: categoryColors,
                 borderRadius: 4,
                 barThickness: 20
             }]
         },
         options: {
-            indexAxis: 'y', // Horizontal bar chart
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                x: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 },
-                    grid: { color: '#f1f5f9' }
-                },
-                y: {
-                    grid: { display: false },
-                    ticks: {
-                        font: { size: 10 }
-                    }
-                }
+                x: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f1f5f9' } },
+                y: { grid: { display: false }, ticks: { font: { size: 10 } } }
             }
         }
     });
 
-    // Grades Chart - Percentages
-    // Grades Chart - Percentages
+    // --- Grades Setup Chart ---
     const gradesCtx = document.getElementById('gradesChart').getContext('2d');
-    
-    // Calculate percentages for each category
-    const gradesData = [];
-    @foreach($subjectCategories as $cat)
-        {
-            const total = {{ $subjectCounts[$cat] ?? 0 }};
-            const graded = {{ $gradeCounts[$cat] ?? 0 }};
-            const pct = total > 0 ? Math.round((graded / total) * 100) : 0;
-            gradesData.push(pct);
-        }
-    @endforeach
-
-    new Chart(gradesCtx, {
+    let gradesChart = new Chart(gradesCtx, {
         type: 'bar',
         data: {
-            labels: subjectLabels, // Same labels as Subject Classification
+            labels: collegeData.labels,
             datasets: [{
-                label: 'Graded Percentage',
-                data: gradesData,
-                backgroundColor: categoryColors, // Reuse same colors
+                label: '% Graded',
+                data: getGradePercentages(collegeData.labels, collegeData.subjectCounts, collegeData.gradeCounts),
+                backgroundColor: categoryColors, // Use same colors for consistency? Or teal? Let's use multi-color to match list
                 borderRadius: 4,
                 barThickness: 20
             }]
         },
         options: {
-            indexAxis: 'y', // Horizontal bars
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return context.parsed.x + '% Graded';
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                x: { // Percentage on X axis
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: { 
-                        stepSize: 20,
-                        callback: function(value) { return value + '%' }
-                    },
-                    grid: { color: '#f1f5f9' }
-                },
-                y: {
-                    grid: { display: false },
-                    ticks: {
-                        font: { size: 10 }
-                    }
-                }
+                x: { min: 0, max: 100, ticks: { stepSize: 20 }, grid: { color: '#f1f5f9' } },
+                y: { grid: { display: false }, ticks: { font: { size: 10 } } }
             }
         }
     });
+
+    // --- Toggle Logic ---
+    const btnCollege = document.getElementById('btn-toggle-college');
+    const btnSHS = document.getElementById('btn-toggle-shs');
+    
+    // Lists & Displays
+    const subjectListCollege = document.getElementById('list-subject-college');
+    const subjectListSHS = document.getElementById('list-subject-shs');
+    const gradeListCollege = document.getElementById('list-grade-college');
+    const gradeListSHS = document.getElementById('list-grade-shs');
+    const subjectTotalDisplay = document.getElementById('subject-total-display');
+
+    function setView(view) {
+        // Update Buttons
+        if (view === 'college') {
+            btnCollege.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+            btnCollege.classList.remove('text-slate-500');
+            
+            btnSHS.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+            btnSHS.classList.add('text-slate-500');
+            
+            // Show College Lists
+            subjectListCollege.classList.remove('hidden');
+            subjectListSHS.classList.add('hidden');
+            gradeListCollege.classList.remove('hidden');
+            gradeListSHS.classList.add('hidden');
+            
+            // Update Totals
+            if(subjectTotalDisplay) subjectTotalDisplay.textContent = collegeData.total;
+
+            // Update Charts
+            subjectChart.data.labels = collegeData.labels;
+            subjectChart.data.datasets[0].data = getValuesByLabels(collegeData.labels, collegeData.subjectCounts);
+            subjectChart.update();
+
+            gradesChart.data.labels = collegeData.labels;
+            gradesChart.data.datasets[0].data = getGradePercentages(collegeData.labels, collegeData.subjectCounts, collegeData.gradeCounts);
+            gradesChart.update();
+
+        } else {
+            // SHS View
+            btnSHS.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+            btnSHS.classList.remove('text-slate-500');
+            
+            btnCollege.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+            btnCollege.classList.add('text-slate-500');
+            
+            // Show SHS Lists
+            subjectListSHS.classList.remove('hidden');
+            subjectListCollege.classList.add('hidden');
+            gradeListSHS.classList.remove('hidden');
+            gradeListCollege.classList.add('hidden');
+            
+            // Update Totals
+            if(subjectTotalDisplay) subjectTotalDisplay.textContent = shsData.total;
+
+            // Update Charts
+            subjectChart.data.labels = shsData.labels;
+            subjectChart.data.datasets[0].data = getValuesByLabels(shsData.labels, shsData.subjectCounts);
+            subjectChart.update();
+
+            gradesChart.data.labels = shsData.labels;
+            gradesChart.data.datasets[0].data = getGradePercentages(shsData.labels, shsData.subjectCounts, shsData.gradeCounts);
+            gradesChart.update();
+        }
+    }
+
+    if(btnCollege) btnCollege.addEventListener('click', () => setView('college'));
+    if(btnSHS) btnSHS.addEventListener('click', () => setView('shs'));
+
+
 
     // Export Activity Chart with Week/Month/Year Toggle
     const exportCtx = document.getElementById('exportChart').getContext('2d');
@@ -1477,76 +1622,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial load will happen because we call loadActivities(dateInput.value) below and we initialized value correctly
 
 
-    // Subject/Grades View Toggle
-    const subjectGradesToggle = document.getElementById('subject-grades-toggle');
-    const viewSubjectLabel = document.getElementById('view-subject-label');
-    const viewGradesLabel = document.getElementById('view-grades-label');
-    const subjectView = document.getElementById('subject-classification-view');
-    const gradesView = document.getElementById('grades-setup-view');
-    const toggleCircleSubject = subjectGradesToggle.querySelector('span');
-    const sectionTitle = document.getElementById('subject-grades-title');
-    const sectionIcon = document.getElementById('subject-grades-icon');
-    const sectionIconBg = document.getElementById('subject-grades-icon-bg');
-    
-    let showingGrades = false;
+    // Subject/Grades Toggle Logic Removed - Views are now side-by-side
 
-    subjectGradesToggle.addEventListener('click', function() {
-        showingGrades = !showingGrades;
-        
-        if (showingGrades) {
-            // Switch to Grades View
-            subjectGradesToggle.classList.remove('bg-slate-200');
-            subjectGradesToggle.classList.add('bg-teal-500');
-            toggleCircleSubject.classList.remove('translate-x-1');
-            toggleCircleSubject.classList.add('translate-x-6');
-            
-            viewSubjectLabel.classList.remove('text-slate-600');
-            viewSubjectLabel.classList.add('text-slate-400');
-            viewGradesLabel.classList.remove('text-slate-400');
-            viewGradesLabel.classList.add('text-slate-600');
-            
-            // Content
-            subjectView.classList.add('hidden');
-            gradesView.classList.remove('hidden');
-            
-            // Title & Icon
-            sectionTitle.textContent = "Grades Setup Overview";
-            sectionIconBg.classList.remove('bg-purple-100');
-            sectionIconBg.classList.add('bg-teal-100');
-            sectionIcon.classList.remove('text-purple-600');
-            sectionIcon.classList.add('text-teal-600');
-            
-            // Icon Path Change (Subject -> Grades)
-            // Subject Path: M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2
-            // Grades Path: M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z
-            sectionIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>';
-            
-        } else {
-            // Switch to Subject View
-            subjectGradesToggle.classList.remove('bg-teal-500');
-            subjectGradesToggle.classList.add('bg-slate-200');
-            toggleCircleSubject.classList.remove('translate-x-6');
-            toggleCircleSubject.classList.add('translate-x-1');
-            
-            viewSubjectLabel.classList.remove('text-slate-400');
-            viewSubjectLabel.classList.add('text-slate-600');
-            viewGradesLabel.classList.remove('text-slate-600');
-            viewGradesLabel.classList.add('text-slate-400');
-            
-            // Content
-            gradesView.classList.add('hidden');
-            subjectView.classList.remove('hidden');
-            
-            // Title & Icon
-            sectionTitle.textContent = "Subject Classification";
-            sectionIconBg.classList.remove('bg-teal-100');
-            sectionIconBg.classList.add('bg-purple-100');
-            sectionIcon.classList.remove('text-teal-600');
-            sectionIcon.classList.add('text-purple-600');
-            
-            sectionIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>';
-        }
-    });
 
     // Dashboard Settings Sidebar
     const settingsBtn = document.getElementById('dashboard-settings-btn');

@@ -57,6 +57,9 @@ class DashboardController extends Controller
     /**
      * Get all dashboard data
      */
+    /**
+     * Get all dashboard data
+     */
     private function getAllDashboardData()
     {
         try {
@@ -86,12 +89,12 @@ class DashboardController extends Controller
                           ->orWhere('year_level', 'LIKE', '%College%');
                 })->count();
             
-            // Total Counts (keeping these for the top stats cards)
+            // Total Counts
             $totalCurriculums = Curriculum::count();
             $newCurriculumCount = Curriculum::where('version_status', 'new')->count();
             $oldCurriculumCount = Curriculum::where('version_status', 'old')->count();
 
-            // Course Builder Status Statistics (case-insensitive)
+            // Course Builder Status
             $approvedCount = Curriculum::whereRaw('LOWER(approval_status) = ?', ['approved'])->count();
             $rejectedCount = Curriculum::whereRaw('LOWER(approval_status) = ?', ['rejected'])->count();
             $processingCount = Curriculum::where(function($query) {
@@ -99,8 +102,8 @@ class DashboardController extends Controller
                       ->orWhereNull('approval_status');
             })->count();
 
-            // Subject Classification Statistics
-            $subjectCategories = [
+            // --- College (CHED) Breakdown ---
+            $collegeCategories = [
                 'General Education',
                 'Professional Subject Non Laboratory',
                 'Professional Subject Laboratory', 
@@ -113,34 +116,119 @@ class DashboardController extends Controller
                 'OJT/Practicum'
             ];
 
-            $subjectCounts = [];
-            $gradeCounts = [];
+            $totalCollegeSubjects = Subject::where(function($q) {
+                $q->where('syllabus_type', 'CHED')->orWhere('syllabus_type', 'College');
+            })->count();
 
-            foreach ($subjectCategories as $category) {
-                // Count subjects in this category
-                $subjectCounts[$category] = Subject::where(function($query) use ($category) {
-                    $query->where('subject_type', $category)
-                          ->orWhere('subject_type', 'LIKE', '%' . $category . '%');
-                })->count();
+            $collegeSubjectCounts = [];
+            $collegeGradeCounts = [];
+            $classifiedCollegeSum = 0;
 
-                // Count subjects with grades in this category
+            foreach ($collegeCategories as $category) {
+                // Count subjects
+                $count = Subject::where(function($q) {
+                        $q->where('syllabus_type', 'CHED')->orWhere('syllabus_type', 'College');
+                    })
+                    ->where(function($query) use ($category) {
+                        $query->where('subject_type', $category)
+                              ->orWhere('subject_type', 'LIKE', '%' . $category . '%')
+                              ->orWhere('course_classification', $category)
+                              ->orWhere('course_classification', 'LIKE', '%' . $category . '%');
+                    })->count();
+                
+                $collegeSubjectCounts[$category] = $count;
+                $classifiedCollegeSum += $count;
+
+                // Count grades
                 try {
-                    $gradeCounts[$category] = DB::table('grades')
+                    $collegeGradeCounts[$category] = DB::table('grades')
                         ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                        ->where(function($q) {
+                            $q->where('subjects.syllabus_type', 'CHED')->orWhere('subjects.syllabus_type', 'College');
+                        })
                         ->where(function($query) use ($category) {
                             $query->where('subjects.subject_type', $category)
-                                  ->orWhere('subjects.subject_type', 'LIKE', '%' . $category . '%');
+                                  ->orWhere('subjects.subject_type', 'LIKE', '%' . $category . '%')
+                                  ->orWhere('subjects.course_classification', $category)
+                                  ->orWhere('subjects.course_classification', 'LIKE', '%' . $category . '%');
                         })
                         ->distinct('grades.subject_id')
                         ->count('grades.subject_id');
                 } catch (\Exception $e) {
-                    $gradeCounts[$category] = 0;
+                    $collegeGradeCounts[$category] = 0;
                 }
+            }
+
+            // Uncategorized College
+            $uncategorizedCollege = max(0, $totalCollegeSubjects - $classifiedCollegeSum);
+            if ($uncategorizedCollege > 0) {
+                $collegeCategories[] = 'Uncategorized';
+                $collegeSubjectCounts['Uncategorized'] = $uncategorizedCollege;
+                $collegeGradeCounts['Uncategorized'] = 0; // Approximated
+            }
+
+
+            // --- Senior High (DepEd) Breakdown ---
+            $shsCategories = [
+                'Core', // Covers "Core Subject" via LIKE
+                'Applied',
+                'Specialized'
+            ];
+
+            $totalSHSSubjects = Subject::where(function($q) {
+                $q->where('syllabus_type', 'DepEd')->orWhere('syllabus_type', 'Senior High');
+            })->count();
+
+            $shsSubjectCounts = [];
+            $shsGradeCounts = [];
+            $classifiedSHSSum = 0;
+
+            foreach ($shsCategories as $category) {
+                // Count subjects
+                $count = Subject::where(function($q) {
+                        $q->where('syllabus_type', 'DepEd')->orWhere('syllabus_type', 'Senior High');
+                    })
+                    ->where(function($query) use ($category) {
+                        $query->where('subject_type', $category)
+                              ->orWhere('subject_type', 'LIKE', '%' . $category . '%')
+                              ->orWhere('course_classification', $category)
+                              ->orWhere('course_classification', 'LIKE', '%' . $category . '%');
+                    })->count();
+                
+                $shsSubjectCounts[$category] = $count;
+                $classifiedSHSSum += $count;
+
+                // Count grades
+                try {
+                    $shsGradeCounts[$category] = DB::table('grades')
+                        ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                        ->where(function($q) {
+                            $q->where('subjects.syllabus_type', 'DepEd')->orWhere('subjects.syllabus_type', 'Senior High');
+                        })
+                        ->where(function($query) use ($category) {
+                            $query->where('subjects.subject_type', $category)
+                                  ->orWhere('subjects.subject_type', 'LIKE', '%' . $category . '%')
+                                  ->orWhere('subjects.course_classification', $category)
+                                  ->orWhere('subjects.course_classification', 'LIKE', '%' . $category . '%');
+                        })
+                        ->distinct('grades.subject_id')
+                        ->count('grades.subject_id');
+                } catch (\Exception $e) {
+                    $shsGradeCounts[$category] = 0;
+                }
+            }
+
+            // Uncategorized SHS
+            $uncategorizedSHS = max(0, $totalSHSSubjects - $classifiedSHSSum);
+            if ($uncategorizedSHS > 0) {
+                $shsCategories[] = 'Uncategorized';
+                $shsSubjectCounts['Uncategorized'] = $uncategorizedSHS;
+                $shsGradeCounts['Uncategorized'] = 0;
             }
             
             $totalSubjects = Subject::count();
 
-            // Grades Setup Statistics - Global Counts
+            // Grades Setup Statistics - Global
             try {
                 $curriculumsWithGrades = DB::table('grades')
                     ->distinct()
@@ -155,19 +243,18 @@ class DashboardController extends Controller
                 $subjectsWithGrades = 0;
             }
 
-            // Equivalency Statistics (correct table name)
+            // Equivalency Statistics
             try {
                 $totalEquivalencies = DB::table('equivalencies')->count();
             } catch (\Exception $e) {
                 try {
                     $totalEquivalencies = DB::table('subject_equivalencies')->count();
                 } catch (\Exception $e2) {
-                    \Log::warning('Equivalencies table not found');
                     $totalEquivalencies = 0;
                 }
             }
 
-            // Export Statistics (Last 7 Days by default)
+            // Export Statistics
             $exportData = $this->getExportStatistics('week');
             
             // Module Usage Statistics
@@ -191,7 +278,7 @@ class DashboardController extends Controller
                 'oldHighSchoolCount' => $oldHighSchoolCount,
                 'oldCollegeCount' => $oldCollegeCount,
                 
-                // Official Curriculum (Totals)
+                // Official Curriculum
                 'newCurriculumCount' => $newCurriculumCount,
                 'oldCurriculumCount' => $oldCurriculumCount,
                 
@@ -200,10 +287,22 @@ class DashboardController extends Controller
                 'rejectedCount' => $rejectedCount,
                 'processingCount' => $processingCount,
                 
-                // Detailed Subject Counts
-                'subjectCategories' => $subjectCategories,
-                'subjectCounts' => $subjectCounts,
-                'gradeCounts' => $gradeCounts,
+                // College Subject Counts
+                'collegeCategories' => $collegeCategories,
+                'collegeSubjectCounts' => $collegeSubjectCounts,
+                'collegeGradeCounts' => $collegeGradeCounts,
+                'totalCollegeSubjects' => $totalCollegeSubjects,
+
+                // SHS Subject Counts
+                'shsCategories' => $shsCategories,
+                'shsSubjectCounts' => $shsSubjectCounts,
+                'shsGradeCounts' => $shsGradeCounts,
+                'totalSHSSubjects' => $totalSHSSubjects,
+                
+                // Deprecated (kept for safety if view not updated immediately)
+                'subjectCategories' => $collegeCategories,
+                'subjectCounts' => $collegeSubjectCounts,
+                'gradeCounts' => $collegeGradeCounts,
                 
                 // Grades Setup
                 'curriculumsWithGrades' => $curriculumsWithGrades,
@@ -413,7 +512,7 @@ class DashboardController extends Controller
                 'Curriculum Builder' => ['create_curriculum', 'edit_curriculum', 'revise_curriculum', 'approve_curriculum', 'reject_curriculum', 'restore_curriculum'],
                 'Course Builder' => ['course_builder_create', 'course_builder_update', 'course_builder_delete'],
                 'Subject Mapping' => ['subject_mapping'],
-                'Pre-requisite' => ['prerequisite'],
+                'Pre-requisite' => ['prerequisite', 'Pre-requisite'],
                 'Compliance Validator' => ['compliance_link_create', 'compliance_link_update', 'compliance_link_delete'],
                 'Grade Weighting Setup' => ['grade_setup'],
                 'Subject Equivalency Tool' => ['equivalency_create', 'equivalency_update', 'equivalency_delete'],

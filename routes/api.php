@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// AI Syllabus Generation - Moved here for isolation/stateless execution
+Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
+
 /*
 |--------------------------------------------------------------------------
 | Future External API Routes

@@ -1529,8 +1529,8 @@
                 // Action buttons based on status
                 let actionButtons = '';
                 
-                // Show if Processing AND has at least one subject
-                const showActionButtons = (approvalStatus === 'processing') && (curriculum.subjects_count > 0);
+                // Show if Processing AND has at least one mapped subject
+                const showActionButtons = (approvalStatus === 'processing') && (curriculum.mapped_subjects_count > 0);
 
                 if (showActionButtons) {
                     const isSeniorHigh = curriculum.year_level === 'Senior High';
@@ -1594,7 +1594,7 @@
                                 ` : ''}
                                 <p class="text-xs text-slate-400 mt-1">
                                     Created: ${formattedDate} at ${formattedTime} • 
-                                    <span class="font-medium">${curriculum.subjects_count} subject${curriculum.subjects_count !== 1 ? 's' : ''}</span>
+                                    <span class="font-medium">${curriculum.mapped_subjects_count} subject${curriculum.mapped_subjects_count !== 1 ? 's' : ''}</span>
                                 </p>
                             </div>
                             <div class="flex flex-col items-end sm:items-end gap-1 w-full sm:w-auto">

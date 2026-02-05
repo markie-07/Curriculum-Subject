@@ -203,9 +203,9 @@
                                 <span id="grand-total-units" class="text-2xl font-bold text-blue-700">0</span>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 ml-auto">
                             <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 border-2 border-blue-700 hover:bg-white hover:text-blue-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hidden">
-                                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
+                                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
                                 Mapped the Subject
                             </button>
                             <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-700 border-2 border-green-700 hover:bg-white hover:text-green-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hidden" disabled>
@@ -676,11 +676,11 @@
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 transition-all duration-500 ease-out">
                 <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-800">Enable Editing?</h3>
-                <p class="text-sm text-gray-500 mt-2">Are you sure you want to edit this curriculum? This will allow you to drag, drop, and remove subjects.</p>
+                <h3 class="text-lg font-semibold text-gray-800">Mapped the Subject</h3>
+                <p class="text-sm text-gray-500 mt-2">Are you sure you want to map subjects? This will enable you to drag and drop subjects into the curriculum.</p>
                 <div class="mt-6 flex justify-center gap-4">
                     <button id="cancelEditBtn" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
                     <button id="confirmEditBtn" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes</button>
@@ -1533,7 +1533,10 @@
             'NSTP 1': 'NSTP1',
             'NSTP 2': 'NSTP2',
             'Research': 'Research',
-            'OJT/Practicum': 'OJT'
+            'OJT/Practicum': 'OJT',
+            'Core Subjects': 'CS',
+            'Applied Track Subjects': 'APS',
+            'Specialized Subjects': 'SS'
         };
         
         if (map[fullCategory]) return map[fullCategory];
@@ -1562,7 +1565,7 @@
         
         // Determine Theme
         const category = getShortCategory(subject.course_classification || subject.subject_type);
-        const violetCategories = ['GE', 'NSTP1', 'NSTP2'];
+        const violetCategories = ['GE', 'NSTP1', 'NSTP2', 'CS'];
         const isViolet = violetCategories.includes(category);
         const colorTheme = isViolet ? 'purple' : 'blue';
 
@@ -1714,7 +1717,7 @@
             let deleteBtnClasses = 'text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50';
 
             const category = getShortCategory(subjectData.course_classification || subjectData.subject_type);
-            const violetCategories = ['GE', 'NSTP1', 'NSTP2'];
+            const violetCategories = ['GE', 'NSTP1', 'NSTP2', 'CS'];
             
             let colorTheme = 'blue';
             if (violetCategories.includes(category)) {
@@ -1752,7 +1755,7 @@
                         <p class="text-sm leading-tight truncate ${textClass}">${subjectData.subject_name}</p>
                         <div class="flex items-center gap-2 mt-0.5">
                             <p class="text-xs font-mono ${codeClass}">${subjectData.subject_code}</p>
-                            <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border text-right max-w-[120px] whitespace-pre-wrap ${typeBadgeClass}">${getShortCategory(subjectData.course_classification || subjectType)}</span>
+                            <span class="subject-type-badge text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border text-right max-w-[120px] whitespace-pre-wrap ${typeBadgeClass}">${getShortCategory(subjectData.course_classification || subjectData.subject_type)}</span>
                         </div>
                     </div>
                 </div>
@@ -1859,7 +1862,15 @@
     
     const grandTotalSpan = document.getElementById('grand-total-units');
     grandTotalSpan.textContent = grandTotal;
-    grandTotalContainer.classList.remove('hidden');
+
+    // Hide Total Units for Senior High
+    const selectedOption = curriculumSelector.options[curriculumSelector.selectedIndex];
+    if (selectedOption && selectedOption.dataset.yearLevel === 'Senior High') {
+        grandTotalContainer.classList.add('hidden');
+    } else {
+        grandTotalContainer.classList.remove('hidden');
+    }
+
     updateAllTotals(); 
 }; 
 
@@ -1896,7 +1907,10 @@ const updateAllTotals = () => {
             'PSNBC': 'bg-blue-100 text-blue-800',
             'PSOC': 'bg-blue-100 text-blue-800',
             'Research': 'bg-blue-100 text-blue-800',
-            'OJT': 'bg-blue-100 text-blue-800'
+            'OJT': 'bg-blue-100 text-blue-800',
+            'CS': 'bg-purple-100 text-purple-800',
+            'APS': 'bg-purple-100 text-purple-800',
+            'SS': 'bg-blue-100 text-blue-800'
         };
         
         // Render badges for each category found
@@ -1953,7 +1967,7 @@ const updateAllTotals = () => {
                 if (openMemorandumModalBtn) openMemorandumModalBtn.classList.add('hidden');
 
                 saveButton.setAttribute('disabled', 'disabled');
-                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg> Mapped the Subject`;
+                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg> Mapped the Subject`;
 
                 subjectTags.forEach(tag => tag.setAttribute('draggable', 'false'));
                 
@@ -2089,8 +2103,26 @@ const updateAllTotals = () => {
                 let dotColorClass = 'text-gray-400';
                 let typeBadgeClass = 'text-gray-500 bg-gray-50 border-gray-100';
 
-                switch (true) {
-                    case droppedSubjectData.subject_type === 'Major':
+                // Consolidated Styling Logic using Category
+                const category = getShortCategory(droppedSubjectData.course_classification || droppedSubjectData.subject_type);
+                const violetCategories = ['GE', 'NSTP1', 'NSTP2', 'CS'];
+                
+                // Determine theme color
+                let theme = 'blue'; // default
+                if (violetCategories.includes(category)) {
+                    theme = 'purple';
+                } else if (droppedSubjectData.subject_type === 'Elective') {
+                    theme = 'red';
+                } else if (['ge', 'general education', 'gen ed', 'general'].includes((droppedSubjectData.subject_type || '').toLowerCase())) {
+                    // Fallback for GE if classification missed
+                    theme = 'orange'; // Or purple if you want all GE purple, but keeping orange as legacy/fallback if strictly "General" type
+                    // Actually user requested GE -> Violet. So let's force purple if it's GE.
+                    theme = 'purple'; 
+                }
+
+                // Apply styles based on theme
+                switch (theme) {
+                    case 'blue':
                         assignedClass = 'border-blue-500';
                         iconBgClass = 'bg-blue-500';
                         iconSvgClass = 'text-white';
@@ -2100,7 +2132,7 @@ const updateAllTotals = () => {
                         dotColorClass = 'text-blue-400';
                         typeBadgeClass = 'text-white bg-blue-500 border-blue-500';
                         break;
-                    case droppedSubjectData.subject_type === 'Minor':
+                    case 'purple':
                         assignedClass = 'border-purple-500';
                         iconBgClass = 'bg-purple-500';
                         iconSvgClass = 'text-white';
@@ -2110,7 +2142,7 @@ const updateAllTotals = () => {
                         dotColorClass = 'text-purple-400';
                         typeBadgeClass = 'text-white bg-purple-500 border-purple-500';
                         break;
-                    case droppedSubjectData.subject_type === 'Elective':
+                    case 'red': // Elective
                         assignedClass = 'border-red-500';
                         iconBgClass = 'bg-red-50';
                         iconSvgClass = 'text-white';
@@ -2120,7 +2152,7 @@ const updateAllTotals = () => {
                         dotColorClass = 'text-red-400';
                         typeBadgeClass = 'text-white bg-red-500 border-red-500';
                         break;
-                    case geIdentifiers.map(id => id.toLowerCase()).includes(droppedSubjectData.subject_type.toLowerCase()):
+                    case 'orange': // Legacy GE fallback (if needed)
                         assignedClass = 'border-orange-500';
                         iconBgClass = 'bg-orange-500';
                         iconSvgClass = 'text-white';
@@ -2681,7 +2713,7 @@ const updateAllTotals = () => {
         ];
         
         const depEdCategories = [
-            'Core Subjects', 'Applied Track Subjects', 'Specialized Subjects', 'Work Immersion'
+            'Core Subjects', 'Applied Track Subjects', 'Specialized Subjects'
         ];
 
         function updateTypeOptions() {

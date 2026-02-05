@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalAcademicYearContainer.classList.remove('hidden');
             modalUnitsContainer.classList.remove('hidden');
             modalAcademicYear.textContent = curriculum.academic_year || 'N/A';
-            modalTotalUnits.textContent = curriculum.total_units ? `${parseFloat(curriculum.total_units)} Units` : 'N/A';
+            modalTotalUnits.textContent = (curriculum.mapped_units !== null && curriculum.mapped_units !== undefined) ? `${parseFloat(curriculum.mapped_units)} Units` : '0 Units';
         }
         modalCompliance.textContent = curriculum.compliance || 'N/A';
         

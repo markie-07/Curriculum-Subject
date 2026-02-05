@@ -123,16 +123,26 @@
                                 const missionText = document.getElementById('dept_mission_text');
                                 
                                 let type = '';
-                                if (classification === 'General Education') {
+                                
+                                // Minor Categories
+                                const minorCategories = ['General Education', 'NSTP 1', 'NSTP 2', 'Core Subjects'];
+                                
+                                // Major Categories (Explicit check, though 'else' could catch others if we are strict)
+                                // Includes: Professional Subjects (all), Research, OJT, Applied Track, Specialized
+                                
+                                if (minorCategories.includes(classification)) {
                                     type = 'Minor';
-                                    if(visionText) visionText.textContent = genEdDeptVision;
-                                    if(missionText) missionText.textContent = genEdDeptMission;
-                                } else if (classification && (classification.startsWith('Professional Subject') || ['Core Subjects', 'Applied Track Subjects', 'Specialized Subjects', 'Work Immersion'].includes(classification))) {
+                                    // Vision/Mission updates
+                                    if(classification === 'General Education') {
+                                         if(visionText) visionText.textContent = genEdDeptVision;
+                                         if(missionText) missionText.textContent = genEdDeptMission;
+                                    } else {
+                                         if(visionText) visionText.textContent = defaultDeptVision;
+                                         if(missionText) missionText.textContent = defaultDeptMission;
+                                    }
+                                } else if (classification) {
+                                    // Assume everything else selected is Major (Professional, Research, OJT, Applied, Specialized)
                                     type = 'Major';
-                                    if(visionText) visionText.textContent = defaultDeptVision;
-                                    if(missionText) missionText.textContent = defaultDeptMission;
-                                } else if (['NSTP 1', 'NSTP 2', 'Research', 'OJT/Practicum'].includes(classification)) {
-                                    type = classification;
                                     if(visionText) visionText.textContent = defaultDeptVision;
                                     if(missionText) missionText.textContent = defaultDeptMission;
                                 }
@@ -675,47 +685,67 @@
 </div>
 
 {{-- Curriculum Selection Modal --}}
-<div id="curriculumSelectionModal" class="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden flex items-center justify-center p-4">
-    <div class="relative bg-white w-full max-w-7xl h-[85vh] flex flex-col rounded-2xl shadow-2xl">
-        <div class="flex justify-between items-center p-6 border-b border-gray-200 shrink-0">
-            <h3 class="text-xl font-semibold text-gray-800">Select Applicable Curriculums</h3>
+<div id="curriculumSelectionModal" class="fixed inset-0 z-50 overflow-hidden bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 hidden flex items-center justify-center p-4">
+    <div class="relative bg-white w-full max-w-5xl h-[85vh] flex flex-col rounded-3xl shadow-2xl ring-1 ring-black/5 overflow-hidden">
+        {{-- Header --}}
+        <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Select Applicable Curriculums</h3>
+                <p class="text-sm text-gray-500 mt-1">Choose which curriculums this subject will belong to.</p>
+            </div>
+            <div class="relative w-72">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" id="curriculumSearchInput" class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 sm:text-sm" placeholder="Search curriculums...">
+            </div>
         </div>
         
-        <div class="p-6 flex-1 flex flex-col overflow-hidden">
-            <p class="text-sm text-gray-600 mb-4 shrink-0">Choose which curriculums this subject will be available for in subject mapping:</p>
-
-            <div class="mb-4 shrink-0">
-                <div class="relative">
-                    <input id="curriculumSearchInput" type="text" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search curriculum...">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 overflow-hidden min-h-0">
-                <div class="flex flex-col h-full min-h-0">
-                    <div class="flex items-center justify-between mb-2 shrink-0">
-                        <h4 id="seniorHighHeader" class="text-sm font-semibold text-gray-700">Senior High</h4>
-                        <label class="inline-flex items-center gap-2 text-sm text-gray-600"><input id="selectAllSeniorHigh" type="checkbox" class="w-4 h-4 text-blue-600 rounded"> <span>Select all</span></label>
+        {{-- Content Area --}}
+        <div class="p-8 flex-1 overflow-y-auto bg-gray-50/50 custom-scrollbar">
+            <div class="space-y-8">
+                {{-- Senior High Section --}}
+                <div id="seniorHighSection" class="hidden">
+                     <div class="flex items-center justify-between mb-4">
+                        <h4 id="seniorHighHeader" class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                            Senior High
+                        </h4>
+                        <label class="group inline-flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600 transition-colors bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm hover:border-blue-300">
+                            <input id="selectAllSeniorHigh" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition-all">
+                            <span class="font-medium group-hover:text-blue-700">Select All</span>
+                        </label>
                     </div>
-                    <div id="seniorHighContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 min-h-0"></div>
+                    <div id="seniorHighContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
-                <div class="flex flex-col h-full min-h-0">
-                    <div class="flex items-center justify-between mb-2 shrink-0">
-                        <h4 id="collegeHeader" class="text-sm font-semibold text-gray-700">College</h4>
-                        <label class="inline-flex items-center gap-2 text-sm text-gray-600"><input id="selectAllCollege" type="checkbox" class="w-4 h-4 text-blue-600 rounded"> <span>Select all</span></label>
-                    </div>
-                    <div id="collegeContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 min-h-0"></div>
-                </div>
-            </div>
 
-            <div class="flex justify-end gap-4 mt-6 pt-4 border-t border-gray-200 shrink-0">
-                <button id="cancelCurriculumSelection" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                    Cancel
-                </button>
-                <button id="confirmCurriculumSelection" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    Apply Selection
-                </button>
+                {{-- College Section (Default) --}}
+                <div id="collegeSection" class="">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 id="collegeHeader" class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2">
+                            <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                            College
+                        </h4>
+                        <label class="group inline-flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600 transition-colors bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm hover:border-blue-300">
+                            <input id="selectAllCollege" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition-all">
+                            <span class="font-medium group-hover:text-blue-700">Select All</span>
+                        </label>
+                    </div>
+                    <div id="collegeContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
             </div>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-8 py-5 bg-white border-t border-gray-100 flex justify-end gap-3 shrink-0">
+            <button id="cancelCurriculumSelection" class="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all duration-200">
+                Cancel
+            </button>
+            <button id="confirmCurriculumSelection" class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all duration-200 transform hover:-translate-y-0.5">
+                Apply Selection
+            </button>
         </div>
     </div>
 </div>
@@ -1200,8 +1230,17 @@
             });
 
             if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Failed to generate syllabus');
+                const errorText = await response.text();
+                console.error("Syllabus Generation API Error:", response.status, errorText);
+                let errorMessage = 'Failed to generate syllabus';
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    errorMessage = errorJson.error || errorJson.message || errorMessage;
+                } catch (e) {
+                    // Not JSON, usage raw text if short, or generic
+                    if (errorText.length < 200) errorMessage += ': ' + errorText;
+                }
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
@@ -1329,8 +1368,7 @@ function switchSyllabus(type) {
         const depedOptions = [
             "Core Subjects",
             "Applied Track Subjects",
-            "Specialized Subjects",
-            "Work Immersion"
+            "Specialized Subjects"
         ];
         
         const opts = (type === 'CHED') ? chedOptions : depedOptions;
@@ -2377,7 +2415,13 @@ Learning Management System`;
             container.innerHTML = '';
             
             if (groups.length === 0) {
-                 container.innerHTML = '<p class="text-sm text-gray-400 italic py-2 col-span-2 text-center">No curriculums found.</p>';
+                 container.innerHTML = `
+                    <div class="col-span-full py-8 text-center bg-white rounded-2xl border border-dashed border-gray-200">
+                        <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-sm text-gray-500 font-medium">No curriculums found.</p>
+                    </div>`;
                  return;
             }
 
@@ -2385,51 +2429,60 @@ Learning Management System`;
                 // Check if ALL IDs in this group are selected
                 const isSelected = group.ids.length > 0 && group.ids.every(id => selectedCurriculums.has(id));
                 
-                // Display text: Use Program Code if available for cleaner look, e.g. "Bachelor... (BLIS)"
+                // Display text
                 let displayName = group.name;
                 if (group.program_code && !displayName.includes(group.program_code)) {
                      displayName += ` (${group.program_code})`;
                 }
                 
-                // Determine status color (use 'Processing' if any are processing, else 'New')
+                // Status Logic
                 const statusStr = Array.from(group.statuses).join(', ').toLowerCase();
-                let statusLabel = 'New';
-                let statusColor = 'text-gray-500 bg-gray-100';
+                let statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">New</span>';
                 
                 if (statusStr.includes('rejected') || statusStr.includes('returned')) {
-                    statusLabel = 'Action Needed';
-                    statusColor = 'text-red-700 bg-red-100';
+                    statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Action Needed</span>';
                 } else if (statusStr.includes('processing')) {
-                    statusLabel = 'Processing';
-                    statusColor = 'text-yellow-700 bg-yellow-100';
+                    statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Processing</span>';
                 }
 
                 const card = document.createElement('div');
-                card.className = `border rounded-lg p-3 cursor-pointer transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`;
+                // New Card Styling
+                const baseClasses = "relative group flex flex-col p-4 rounded-xl border transition-all duration-200 cursor-pointer select-none h-full";
+                const selectedClasses = "bg-blue-50/50 border-blue-500 ring-1 ring-blue-500 shadow-sm";
+                const unselectedClasses = "bg-white border-gray-200 hover:border-blue-300 hover:shadow-md";
                 
-                // Store IDs as comma-separated string
+                card.className = `${baseClasses} ${isSelected ? selectedClasses : unselectedClasses}`;
+                
+                // Store IDs
                 const idsStr = group.ids.join(',');
 
                 card.innerHTML = `
-                    <div class="flex items-start space-x-3">
-                        <input type="checkbox" class="curriculum-checkbox mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0" data-curriculum-ids="${idsStr}" ${isSelected ? 'checked' : ''}>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900 text-sm truncate pr-2" title="${displayName}">${displayName}</h4>
-                                <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${statusColor} flex-shrink-0">
-                                    ${statusLabel}
-                                </span>
-                            </div>
-                            <p class="text-xs text-gray-600 mt-1">${group.program_code || ''} • ${group.ids.length} Version${group.ids.length > 1 ? 's' : ''}</p>
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex-1 pr-3">
+                            <h4 class="text-sm font-bold text-gray-900 leading-snug group-hover:text-blue-700 transition-colors line-clamp-2" title="${displayName}">${displayName}</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-mono">${group.program_code || ''}</p>
                         </div>
-                    </div>`;
+                        <div class="shrink-0 pt-0.5">
+                            <div class="w-5 h-5 rounded-md border ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-gray-300 bg-white group-hover:border-blue-400'} flex items-center justify-center transition-colors">
+                                ${isSelected ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto flex items-center justify-between pt-2 border-t border-gray-100/50">
+                        ${statusBadge}
+
+                        <span class="text-[10px] uppercase font-semibold text-gray-400 tracking-wider hidden">
+                            ${group.ids.length} Ver${group.ids.length > 1 ? 's' : ''}
+                        </span>
+                    </div>
+                    <input type="checkbox" class="hidden" data-curriculum-ids="${idsStr}" ${isSelected ? 'checked' : ''}>
+                `;
                 
                 card.addEventListener('click', (e) => {
-                    if (e.target.tagName !== 'INPUT') {
-                        const checkbox = card.querySelector('input[type="checkbox"]');
-                        checkbox.checked = !checkbox.checked;
-                        checkbox.dispatchEvent(new Event('change'));
-                    }
+                    // Toggle checkbox
+                    const checkbox = card.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
                 });
                 
                 const checkbox = card.querySelector('input[type="checkbox"]');
@@ -2446,11 +2499,9 @@ Learning Management System`;
             });
         };
 
-        // DOM Elements for Sections
-        const seniorHighContainer = document.getElementById('seniorHighContainer');
-        const collegeContainer = document.getElementById('collegeContainer');
-        const seniorHighSection = seniorHighContainer?.parentElement;
-        const collegeSection = collegeContainer?.parentElement;
+        // DOM Elements for Sections - Use new IDs
+        const seniorHighSection = document.getElementById('seniorHighSection');
+        const collegeSection = document.getElementById('collegeSection');
 
         if (seniorHighSection && collegeSection) {
             // Logic: CHED -> Show College Only. DepEd -> Show Senior High Only.
@@ -2464,20 +2515,28 @@ Learning Management System`;
                 collegeSection.classList.remove('hidden');
                 renderGroupList('collegeContainer', collegeGroups);
             }
-
         }
 
         // Update Header Counts
-        // Count GROUPS fully selected? Or total Curriculums?
-        // Let's count Total Curriculums for accuracy
         const shSelectedCount = seniorHighRaw.filter(c => selectedCurriculums.has(c.id)).length;
         const coSelectedCount = collegeRaw.filter(c => selectedCurriculums.has(c.id)).length;
         
         const shHeader = document.getElementById('seniorHighHeader');
-        if (shHeader) shHeader.textContent = `Senior High (${shSelectedCount} selected)`;
+        if (shHeader) {
+            // Updated header structure HTML
+            shHeader.innerHTML = `
+                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                Senior High <span class="ml-2 text-gray-400 font-normal normal-case">(${shSelectedCount} selected)</span>
+            `;
+        }
         
         const coHeader = document.getElementById('collegeHeader');
-        if (coHeader) coHeader.textContent = `College (${coSelectedCount} selected)`;
+        if (coHeader) {
+            coHeader.innerHTML = `
+                <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                College <span class="ml-2 text-gray-400 font-normal normal-case">(${coSelectedCount} selected)</span>
+            `;
+        }
 
         const shToggle = document.getElementById('selectAllSeniorHigh');
         const coToggle = document.getElementById('selectAllCollege');
@@ -2726,6 +2785,16 @@ function handleSyllabusUpload(input) {
                         }
                     }
                 }
+                
+                // Update all progress bars after populating data
+                if (typeof updateAllProgress === 'function') {
+                    updateAllProgress();
+                }
+                
+                // Trigger auto-resize for all textareas
+                if (typeof resizeAllTextareas === 'function') {
+                    setTimeout(resizeAllTextareas, 100);
+                }
 
                 document.getElementById('extractionSuccessModal').classList.remove('hidden');
             } else {
@@ -2958,59 +3027,4 @@ window.addEventListener('load', () => {
 
 
 </script>
-    {{-- Curriculum Selection Modal --}}
-    <div id="curriculumSelectionModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] flex flex-col overflow-hidden transform transition-all">
-            {{-- Header --}}
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <h3 class="text-xl font-bold text-gray-800">Select Curriculums</h3>
-                <div class="flex items-center space-x-2">
-                    <div class="relative">
-                        <input type="text" id="curriculumSearchInput" placeholder="Search curriculums..." class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
-                         <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Body --}}
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
-                <div class="space-y-8"> 
-                    {{-- College --}}
-                    <div>
-                        <div class="flex items-center justify-between mb-3 px-1">
-                            <h4 id="collegeHeader" class="text-md font-bold text-gray-800 uppercase tracking-wide">College</h4>
-                            <label class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
-                                <input type="checkbox" id="selectAllCollege" class="rounded text-blue-600 focus:ring-blue-500">
-                                <span>Select All</span>
-                            </label>
-                        </div>
-                        <div id="collegeContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
-                            {{-- JS Populates This --}}
-                        </div>
-                    </div>
-
-                     {{-- Senior High --}}
-                    <div>
-                        <div class="flex items-center justify-between mb-3 px-1 border-t pt-6 border-gray-200">
-                            <h4 id="seniorHighHeader" class="text-md font-bold text-gray-800 uppercase tracking-wide">Senior High</h4>
-                            <label class="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
-                                <input type="checkbox" id="selectAllSeniorHigh" class="rounded text-blue-600 focus:ring-blue-500">
-                                <span>Select All</span>
-                            </label>
-                        </div>
-                        <div id="seniorHighContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
-                            {{-- JS Populates This --}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Footer --}}
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
-                <button id="cancelCurriculumSelection" class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-white hover:shadow-sm transition-all text-sm">Cancel</button>
-                <button id="confirmCurriculumSelection" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition-all text-sm">Confirm Selection</button>
-            </div>
-        </div>
-    </div>
 @endsection
