@@ -28,9 +28,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('curriculum_subject', function (Blueprint $table) {
-            $table->integer('year')->nullable(false)->change();
-            $table->integer('semester')->nullable(false)->change();
-        });
+        if (Schema::hasTable('curriculum_subject')) {
+            Schema::table('curriculum_subject', function (Blueprint $table) {
+                if (Schema::hasColumn('curriculum_subject', 'year')) {
+                    $table->integer('year')->nullable(false)->change();
+                }
+                if (Schema::hasColumn('curriculum_subject', 'semester')) {
+                    $table->integer('semester')->nullable(false)->change();
+                }
+            });
+        }
     }
 };

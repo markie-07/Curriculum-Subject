@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->renameColumn('course_type', 'subject_category');
-        });
+        if (Schema::hasTable('grades') && Schema::hasColumn('grades', 'course_type') && !Schema::hasColumn('grades', 'subject_category')) {
+            Schema::table('grades', function (Blueprint $table) {
+                $table->renameColumn('course_type', 'subject_category');
+            });
+        }
 
-        Schema::table('grade_versions', function (Blueprint $table) {
-            $table->renameColumn('course_type', 'subject_category');
-        });
+        if (Schema::hasTable('grade_versions') && Schema::hasColumn('grade_versions', 'course_type') && !Schema::hasColumn('grade_versions', 'subject_category')) {
+            Schema::table('grade_versions', function (Blueprint $table) {
+                $table->renameColumn('course_type', 'subject_category');
+            });
+        }
     }
 
     /**
@@ -25,12 +29,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->renameColumn('subject_category', 'course_type');
-        });
+        if (Schema::hasTable('grades') && Schema::hasColumn('grades', 'subject_category')) {
+            Schema::table('grades', function (Blueprint $table) {
+                $table->renameColumn('subject_category', 'course_type');
+            });
+        }
 
-        Schema::table('grade_versions', function (Blueprint $table) {
-            $table->renameColumn('subject_category', 'course_type');
-        });
+        if (Schema::hasTable('grade_versions') && Schema::hasColumn('grade_versions', 'subject_category')) {
+            Schema::table('grade_versions', function (Blueprint $table) {
+                $table->renameColumn('subject_category', 'course_type');
+            });
+        }
     }
 };

@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('export_histories', function (Blueprint $table) {
-            if (!Schema::hasColumn('export_histories', 'export_type')) {
-                $table->string('export_type')->default('curriculum')->after('format');
-            }
-        });
+        if (Schema::hasTable('export_histories')) {
+            Schema::table('export_histories', function (Blueprint $table) {
+                if (!Schema::hasColumn('export_histories', 'export_type')) {
+                    $table->string('export_type')->default('curriculum')->after('format');
+                }
+            });
+        }
     }
 
     /**
@@ -23,10 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('export_histories', function (Blueprint $table) {
-            if (Schema::hasColumn('export_histories', 'export_type')) {
-                $table->dropColumn('export_type');
-            }
-        });
+        if (Schema::hasTable('export_histories')) {
+            Schema::table('export_histories', function (Blueprint $table) {
+                if (Schema::hasColumn('export_histories', 'export_type')) {
+                    $table->dropColumn('export_type');
+                }
+            });
+        }
     }
 };

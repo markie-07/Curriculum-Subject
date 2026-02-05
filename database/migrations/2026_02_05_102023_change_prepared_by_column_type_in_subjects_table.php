@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->text('prepared_by')->change();
-        });
+        if (Schema::hasTable('subjects') && Schema::hasColumn('subjects', 'prepared_by')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->text('prepared_by')->change();
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->string('prepared_by')->change();
-        });
+        if (Schema::hasTable('subjects') && Schema::hasColumn('subjects', 'prepared_by')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->string('prepared_by')->change();
+            });
+        }
     }
 };

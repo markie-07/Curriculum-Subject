@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('compliance_links')) {
+        if (Schema::hasTable('compliance_links') && Schema::hasColumn('compliance_links', 'title')) {
             Schema::table('compliance_links', function (Blueprint $table) {
                 $table->text('title')->change();
             });

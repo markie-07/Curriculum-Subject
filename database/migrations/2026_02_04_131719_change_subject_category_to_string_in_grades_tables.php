@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->string('subject_category')->nullable()->change();
-        });
+        if (Schema::hasTable('grades') && Schema::hasColumn('grades', 'subject_category')) {
+            Schema::table('grades', function (Blueprint $table) {
+                $table->string('subject_category')->nullable()->change();
+            });
+        }
 
-        Schema::table('grade_versions', function (Blueprint $table) {
-            $table->string('subject_category')->nullable()->change();
-        });
+        if (Schema::hasTable('grade_versions') && Schema::hasColumn('grade_versions', 'subject_category')) {
+            Schema::table('grade_versions', function (Blueprint $table) {
+                $table->string('subject_category')->nullable()->change();
+            });
+        }
     }
 
     /**

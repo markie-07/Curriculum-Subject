@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            if (!Schema::hasColumn('curriculums', 'expiration_date')) {
-                $table->date('expiration_date')->nullable()->after('total_units');
-            }
-        });
+        if (Schema::hasTable('curriculums')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                if (!Schema::hasColumn('curriculums', 'expiration_date')) {
+                    $table->date('expiration_date')->nullable()->after('total_units');
+                }
+            });
+        }
     }
 
     /**
@@ -23,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            $table->dropColumn('expiration_date');
-        });
+        if (Schema::hasTable('curriculums') && Schema::hasColumn('curriculums', 'expiration_date')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                $table->dropColumn('expiration_date');
+            });
+        }
     }
 };

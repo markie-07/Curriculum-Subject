@@ -11,26 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            if (!Schema::hasColumn('curriculums', 'compliance')) {
-                $table->string('compliance')->nullable()->after('year_level'); // CHED or DepEd
-            }
-            if (!Schema::hasColumn('curriculums', 'memorandum_year')) {
-                $table->string('memorandum_year')->nullable()->after('compliance'); // For CHED memorandums
-            }
-            if (!Schema::hasColumn('curriculums', 'memorandum_category')) {
-                $table->string('memorandum_category')->nullable()->after('memorandum_year'); // For DepEd memorandums
-            }
-            if (!Schema::hasColumn('curriculums', 'memorandum')) {
-                $table->text('memorandum')->nullable()->after('memorandum_category'); // Selected memorandum text
-            }
-            if (!Schema::hasColumn('curriculums', 'semester_units')) {
-                $table->json('semester_units')->nullable()->after('memorandum'); // Array of semester unit values
-            }
-            if (!Schema::hasColumn('curriculums', 'total_units')) {
-                $table->decimal('total_units', 8, 2)->nullable()->after('semester_units'); // Total calculated units
-            }
-        });
+        if (Schema::hasTable('curriculums')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                if (!Schema::hasColumn('curriculums', 'compliance')) {
+                    $table->string('compliance')->nullable()->after('year_level'); // CHED or DepEd
+                }
+                if (!Schema::hasColumn('curriculums', 'memorandum_year')) {
+                    $table->string('memorandum_year')->nullable()->after('compliance'); // For CHED memorandums
+                }
+                if (!Schema::hasColumn('curriculums', 'memorandum_category')) {
+                    $table->string('memorandum_category')->nullable()->after('memorandum_year'); // For DepEd memorandums
+                }
+                if (!Schema::hasColumn('curriculums', 'memorandum')) {
+                    $table->text('memorandum')->nullable()->after('memorandum_category'); // Selected memorandum text
+                }
+                if (!Schema::hasColumn('curriculums', 'semester_units')) {
+                    $table->json('semester_units')->nullable()->after('memorandum'); // Array of semester unit values
+                }
+                if (!Schema::hasColumn('curriculums', 'total_units')) {
+                    $table->decimal('total_units', 8, 2)->nullable()->after('semester_units'); // Total calculated units
+                }
+            });
+        }
     }
 
     /**
@@ -38,26 +40,28 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            $columnsToCheck = [
-                'compliance',
-                'memorandum_year',
-                'memorandum_category',
-                'memorandum',
-                'semester_units',
-                'total_units'
-            ];
-            
-            $columnsToDrop = [];
-            foreach ($columnsToCheck as $column) {
-                if (Schema::hasColumn('curriculums', $column)) {
-                    $columnsToDrop[] = $column;
+        if (Schema::hasTable('curriculums')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                $columnsToCheck = [
+                    'compliance',
+                    'memorandum_year',
+                    'memorandum_category',
+                    'memorandum',
+                    'semester_units',
+                    'total_units'
+                ];
+                
+                $columnsToDrop = [];
+                foreach ($columnsToCheck as $column) {
+                    if (Schema::hasColumn('curriculums', $column)) {
+                        $columnsToDrop[] = $column;
+                    }
                 }
-            }
-            
-            if (!empty($columnsToDrop)) {
-                $table->dropColumn($columnsToDrop);
-            }
-        });
+                
+                if (!empty($columnsToDrop)) {
+                    $table->dropColumn($columnsToDrop);
+                }
+            });
+        }
     }
 };

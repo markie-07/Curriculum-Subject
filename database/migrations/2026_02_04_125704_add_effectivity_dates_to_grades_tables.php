@@ -59,12 +59,34 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->dropColumn(['effectivity_start_date', 'effectivity_end_date']);
-        });
+        if (Schema::hasTable('grades')) {
+            Schema::table('grades', function (Blueprint $table) {
+                $columnsToDrop = [];
+                if (Schema::hasColumn('grades', 'effectivity_start_date')) {
+                    $columnsToDrop[] = 'effectivity_start_date';
+                }
+                if (Schema::hasColumn('grades', 'effectivity_end_date')) {
+                    $columnsToDrop[] = 'effectivity_end_date';
+                }
+                if (!empty($columnsToDrop)) {
+                    $table->dropColumn($columnsToDrop);
+                }
+            });
+        }
 
-        Schema::table('grade_versions', function (Blueprint $table) {
-            $table->dropColumn(['effectivity_start_date', 'effectivity_end_date']);
-        });
+        if (Schema::hasTable('grade_versions')) {
+            Schema::table('grade_versions', function (Blueprint $table) {
+                $columnsToDrop = [];
+                if (Schema::hasColumn('grade_versions', 'effectivity_start_date')) {
+                    $columnsToDrop[] = 'effectivity_start_date';
+                }
+                if (Schema::hasColumn('grade_versions', 'effectivity_end_date')) {
+                    $columnsToDrop[] = 'effectivity_end_date';
+                }
+                if (!empty($columnsToDrop)) {
+                    $table->dropColumn($columnsToDrop);
+                }
+            });
+        }
     }
 };

@@ -11,12 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->text('q_1_performance_standards')->nullable();
-            $table->text('q_1_performance_tasks')->nullable();
-            $table->text('q_2_performance_standards')->nullable();
-            $table->text('q_2_performance_tasks')->nullable();
-        });
+        if (Schema::hasTable('subjects')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                if (!Schema::hasColumn('subjects', 'q_1_performance_standards')) {
+                    $table->text('q_1_performance_standards')->nullable();
+                }
+                if (!Schema::hasColumn('subjects', 'q_1_performance_tasks')) {
+                    $table->text('q_1_performance_tasks')->nullable();
+                }
+                if (!Schema::hasColumn('subjects', 'q_2_performance_standards')) {
+                    $table->text('q_2_performance_standards')->nullable();
+                }
+                if (!Schema::hasColumn('subjects', 'q_2_performance_tasks')) {
+                    $table->text('q_2_performance_tasks')->nullable();
+                }
+            });
+        }
     }
 
     /**
@@ -24,13 +34,18 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropColumn([
-                'q_1_performance_standards',
-                'q_1_performance_tasks',
-                'q_2_performance_standards',
-                'q_2_performance_tasks'
-            ]);
-        });
+        if (Schema::hasTable('subjects')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $columnsToDrop = [];
+                foreach (['q_1_performance_standards', 'q_1_performance_tasks', 'q_2_performance_standards', 'q_2_performance_tasks'] as $column) {
+                    if (Schema::hasColumn('subjects', $column)) {
+                        $columnsToDrop[] = $column;
+                    }
+                }
+                if (!empty($columnsToDrop)) {
+                    $table->dropColumn($columnsToDrop);
+                }
+            });
+        }
     }
 };

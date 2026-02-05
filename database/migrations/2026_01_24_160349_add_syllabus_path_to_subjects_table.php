@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->string('syllabus_path')->nullable()->after('deped_data');
-        });
+        if (Schema::hasTable('subjects')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                if (!Schema::hasColumn('subjects', 'syllabus_path')) {
+                    $table->string('syllabus_path')->nullable()->after('deped_data');
+                }
+            });
+        }
     }
 
     /**
@@ -21,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropColumn('syllabus_path');
-        });
+        if (Schema::hasTable('subjects') && Schema::hasColumn('subjects', 'syllabus_path')) {
+            Schema::table('subjects', function (Blueprint $table) {
+                $table->dropColumn('syllabus_path');
+            });
+        }
     }
 };

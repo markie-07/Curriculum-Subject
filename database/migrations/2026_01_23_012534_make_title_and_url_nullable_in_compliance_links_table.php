@@ -12,11 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasColumn('compliance_links', 'title')) {
-            DB::statement('ALTER TABLE `compliance_links` MODIFY `title` VARCHAR(500) NULL');
-        }
-        if (Schema::hasColumn('compliance_links', 'url')) {
-            DB::statement('ALTER TABLE `compliance_links` MODIFY `url` TEXT NULL');
+        if (Schema::hasTable('compliance_links')) {
+            if (Schema::hasColumn('compliance_links', 'title')) {
+                DB::statement('ALTER TABLE `compliance_links` MODIFY `title` VARCHAR(500) NULL');
+            }
+            if (Schema::hasColumn('compliance_links', 'url')) {
+                DB::statement('ALTER TABLE `compliance_links` MODIFY `url` TEXT NULL');
+            }
         }
     }
 
@@ -25,7 +27,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE `compliance_links` MODIFY `title` VARCHAR(500) NOT NULL');
-        DB::statement('ALTER TABLE `compliance_links` MODIFY `url` TEXT NOT NULL');
+        if (Schema::hasTable('compliance_links')) {
+            if (Schema::hasColumn('compliance_links', 'title')) {
+                DB::statement('ALTER TABLE `compliance_links` MODIFY `title` VARCHAR(500) NOT NULL');
+            }
+            if (Schema::hasColumn('compliance_links', 'url')) {
+                DB::statement('ALTER TABLE `compliance_links` MODIFY `url` TEXT NOT NULL');
+            }
+        }
     }
 };

@@ -44,28 +44,30 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            // Check if foreign key exists before dropping
-            $databaseName = config('database.connections.mysql.database');
-            $foreignKeyExists = \DB::select("
-                SELECT COUNT(*) as count 
-                FROM information_schema.KEY_COLUMN_USAGE 
-                WHERE TABLE_SCHEMA = ? 
-                AND TABLE_NAME = 'grades' 
-                AND COLUMN_NAME = 'curriculum_id' 
-                AND REFERENCED_TABLE_NAME IS NOT NULL
-            ", [$databaseName]);
-            
-            if ($foreignKeyExists[0]->count > 0) {
-                $table->dropForeign(['curriculum_id']);
-            }
-            
-            if (Schema::hasColumn('grades', 'curriculum_id')) {
-                $table->dropColumn('curriculum_id');
-            }
-            if (Schema::hasColumn('grades', 'course_type')) {
-                $table->dropColumn('course_type');
-            }
-        });
+        if (Schema::hasTable('grades')) {
+            Schema::table('grades', function (Blueprint $table) {
+                // Check if foreign key exists before dropping
+                $databaseName = config('database.connections.mysql.database');
+                $foreignKeyExists = \DB::select("
+                    SELECT COUNT(*) as count 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_SCHEMA = ? 
+                    AND TABLE_NAME = 'grades' 
+                    AND COLUMN_NAME = 'curriculum_id' 
+                    AND REFERENCED_TABLE_NAME IS NOT NULL
+                ", [$databaseName]);
+                
+                if ($foreignKeyExists[0]->count > 0) {
+                    $table->dropForeign(['curriculum_id']);
+                }
+                
+                if (Schema::hasColumn('grades', 'curriculum_id')) {
+                    $table->dropColumn('curriculum_id');
+                }
+                if (Schema::hasColumn('grades', 'course_type')) {
+                    $table->dropColumn('course_type');
+                }
+            });
+        }
     }
 };

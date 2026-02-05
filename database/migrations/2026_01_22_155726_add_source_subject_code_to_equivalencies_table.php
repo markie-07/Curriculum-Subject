@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('equivalencies', function (Blueprint $table) {
-            $table->string('source_subject_code')->nullable()->after('source_subject_name');
-        });
+        if (Schema::hasTable('equivalencies')) {
+            Schema::table('equivalencies', function (Blueprint $table) {
+                if (!Schema::hasColumn('equivalencies', 'source_subject_code')) {
+                    $table->string('source_subject_code')->nullable()->after('source_subject_name');
+                }
+            });
+        }
     }
 
     /**
@@ -21,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('equivalencies', function (Blueprint $table) {
-            $table->dropColumn('source_subject_code');
-        });
+        if (Schema::hasTable('equivalencies') && Schema::hasColumn('equivalencies', 'source_subject_code')) {
+            Schema::table('equivalencies', function (Blueprint $table) {
+                $table->dropColumn('source_subject_code');
+            });
+        }
     }
 };

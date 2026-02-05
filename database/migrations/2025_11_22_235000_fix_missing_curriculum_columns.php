@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            if (!Schema::hasColumn('curriculums', 'version_status')) {
-                $table->string('version_status')->default('new')->after('total_units');
-            }
-            if (!Schema::hasColumn('curriculums', 'approval_status')) {
-                $table->string('approval_status')->default('processing')->after('version_status');
-            }
-        });
+        if (Schema::hasTable('curriculums')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                if (!Schema::hasColumn('curriculums', 'version_status')) {
+                    $table->string('version_status')->default('new')->after('total_units');
+                }
+                if (!Schema::hasColumn('curriculums', 'approval_status')) {
+                    $table->string('approval_status')->default('processing')->after('version_status');
+                }
+            });
+        }
     }
 
     /**
@@ -26,13 +28,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('curriculums', function (Blueprint $table) {
-            if (Schema::hasColumn('curriculums', 'version_status')) {
-                $table->dropColumn('version_status');
-            }
-            if (Schema::hasColumn('curriculums', 'approval_status')) {
-                $table->dropColumn('approval_status');
-            }
-        });
+        if (Schema::hasTable('curriculums')) {
+            Schema::table('curriculums', function (Blueprint $table) {
+                if (Schema::hasColumn('curriculums', 'version_status')) {
+                    $table->dropColumn('version_status');
+                }
+                if (Schema::hasColumn('curriculums', 'approval_status')) {
+                    $table->dropColumn('approval_status');
+                }
+            });
+        }
     }
 };
