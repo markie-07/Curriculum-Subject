@@ -205,7 +205,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     })->middleware('module:course_builder')->name('course_builder');
 
     // --- Admin Only Routes ---
-    Route::middleware('admin')->group(function () {
+    Route::middleware(['admin', 'module:employees'])->group(function () {
         // Employee Management Routes (Admin and Super Admin only)
         Route::resource('employees', EmployeeController::class)->except(['show']);
         

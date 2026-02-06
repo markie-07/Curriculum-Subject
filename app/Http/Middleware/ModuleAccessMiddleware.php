@@ -21,8 +21,8 @@ class ModuleAccessMiddleware
             abort(403, 'Unauthorized action.');
         }
 
-        // Super Admin and Admin bypass this check
-        if ($user->isAdminOrSuperAdmin()) {
+        // Super Admin bypass this check
+        if ($user->isSuperAdmin()) {
             return $next($request);
         }
 
@@ -41,6 +41,7 @@ class ModuleAccessMiddleware
     {
         $names = [
             'dashboard' => 'Dashboard',
+            'employees' => 'Employee Management',
             'official_curriculum' => 'Official Curriculum',
             'curriculum_builder' => 'Curriculum Builder',
             'subject_mapping' => 'Subject Mapping',
