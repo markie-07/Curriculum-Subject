@@ -137,27 +137,18 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     // --- Module Protected Routes ---
 
     Route::get('/curriculum_builder', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Course Builder');
-            auth()->user()->updateLastActivity();
-        }
+
         $programs = \App\Models\Program::all();
         return view('curriculum_builder', compact('programs'));
     })->middleware('module:curriculum_builder')->name('curriculum_builder');
 
     Route::get('/official_curriculum', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Official Curriculum');
-            auth()->user()->updateLastActivity();
-        }
+
         return view('official_curriculum');
     })->middleware('module:official_curriculum')->name('official_curriculum');
 
     Route::get('/subject_mapping', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Subject Mapping');
-            auth()->user()->updateLastActivity();
-        }
+
         return view('subject_mapping');
     })->middleware('module:subject_mapping')->name('subject_mapping');
 
@@ -170,10 +161,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         ->name('grade_setup');
 
     Route::get('/equivalency_tool', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Subject Equivalency Tool');
-            auth()->user()->updateLastActivity();
-        }
+
         $subjects = \App\Models\Subject::all();
         $equivalencies = \App\Models\Equivalency::with('equivalentSubject')->get();
         return view('equivalency_tool', compact('subjects', 'equivalencies'));
@@ -181,26 +169,17 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
 
     // CHED Compliance Validator
     Route::get('/compliance-validator', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Compliance Validator');
-            auth()->user()->updateLastActivity();
-        }
+
         return view('compliance_validator');
     })->middleware('module:compliance_validator')->name('compliance.validator');
 
     Route::get('/subject_mapping_history', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Subject Mapping History');
-            auth()->user()->updateLastActivity();
-        }
+
         return view('subject_mapping_history');
     })->middleware('module:mapping_history')->name('subject_mapping_history');
 
     Route::get('/course-builder', function () {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('CHED Course Builder');
-            auth()->user()->updateLastActivity();
-        }
+
         return view('course_builder');
     })->middleware('module:course_builder')->name('course_builder');
 

@@ -153,12 +153,12 @@ class ActivityLogService
             });
         }
 
-        $totalActivities = $query->count();
-        $todayActivities = $query->whereDate('created_at', today())->count();
-        $weekActivities = $query->where('created_at', '>=', now()->subWeek())->count();
-        $monthActivities = $query->where('created_at', '>=', now()->subMonth())->count();
+        $totalActivities = (clone $query)->count();
+        $todayActivities = (clone $query)->whereDate('created_at', today())->count();
+        $weekActivities = (clone $query)->where('created_at', '>=', now()->subWeek())->count();
+        $monthActivities = (clone $query)->where('created_at', '>=', now()->subMonth())->count();
 
-        $activityTypes = $query->select('activity_type')
+        $activityTypes = (clone $query)->select('activity_type')
                               ->selectRaw('count(*) as count')
                               ->groupBy('activity_type')
                               ->pluck('count', 'activity_type')
