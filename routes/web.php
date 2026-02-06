@@ -249,7 +249,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::post('/curriculums/{id}/add-subjects', [CurriculumController::class, 'addSubjectsToCurriculum']);
         Route::post('/curriculums/{id}/approve', [CurriculumController::class, 'approve']);
         Route::post('/curriculums/{id}/reject', [CurriculumController::class, 'reject']);
-        Route::post('/curriculums/{id}/restore', [CurriculumController::class, 'restore']);
+
         Route::get('/curriculum/{id}/subjects', [CurriculumExportToolController::class, 'getCurriculumSubjects']);
         Route::get('/curriculum/{id}/export-pdf', [CurriculumExportToolController::class, 'exportPdf']);
 

@@ -270,39 +270,6 @@
                 }
             },
             "response": []
-        },
-        {
-            "name": "Restore Curriculum",
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "X-Integration-Key",
-                        "value": "{{api_key}}",
-                        "type": "text",
-                        "description": "Integration API Key"
-                    },
-                    {
-                        "key": "Accept",
-                        "value": "application/json",
-                        "type": "text"
-                    }
-                ],
-                "url": {
-                    "raw": "{{base_url}}/api/integration/curriculums/{{curriculum_id}}/restore",
-                    "host": [
-                        "{{base_url}}"
-                    ],
-                    "path": [
-                        "api",
-                        "integration",
-                        "curriculums",
-                        "{{curriculum_id}}",
-                        "restore"
-                    ]
-                }
-            },
-            "response": []
         }
     ],
     "variable": [
