@@ -30,10 +30,10 @@ class DashboardController extends Controller
                 $user->save();
             }
             
-            // Redirect employees directly to curriculum export tool
-            if ($user->role === 'employee') {
-                return redirect()->route('curriculum_export_tool');
-            }
+            // Redirect employees directly to curriculum export tool - REMOVED to allow dashboard access
+            // if ($user->role === 'employee') {
+            //     return redirect()->route('curriculum_export_tool');
+            // }
             
             // Get all dashboard statistics
             $data = $this->getAllDashboardData();
