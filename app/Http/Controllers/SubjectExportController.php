@@ -248,7 +248,7 @@ class SubjectExportController extends Controller
                 'mode' => 'utf-8',
                 'format' => 'A4',
                 'orientation' => 'P',
-                'tempDir' => storage_path('app/tmp') // Ensure temp dir is writable and used
+                'tempDir' => storage_path('app/private/pdf_temp') // Ensure temp dir is writable and used
             ]);
             
             $mpdf->WriteHTML($html);
