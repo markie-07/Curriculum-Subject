@@ -414,7 +414,10 @@
         </div>
 
         {{-- Modal Footer --}}
-        <div class="flex justify-end p-5 bg-white border-t border-gray-200 rounded-b-2xl">
+        <div class="flex justify-end gap-3 p-5 bg-white border-t border-gray-200 rounded-b-2xl">
+            <button id="hide-grade-modal-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Hide
+            </button>
             <button id="edit-grade-setup-btn" class="text-white bg-blue-600 hover:bg-blue-700 font-semibold py-2 px-5 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Create new
             </button>
@@ -491,6 +494,14 @@
                     </div>
                 </div>
             </div>
+            </div>
+            
+            {{-- Modal Footer --}}
+            <div class="flex justify-end p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
+                <button id="hide-curriculum-grade-modal-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Hide
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -532,6 +543,13 @@
                     {{-- Curriculums will be populated here --}}
                     <p class="text-gray-500 text-center py-8">Loading curriculums...</p>
                 </div>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="flex justify-end p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
+                <button id="hide-select-memorandum-modal-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Hide
+                </button>
             </div>
         </div>
     </div>
@@ -579,6 +597,9 @@
 
             {{-- Modal Footer --}}
             <div class="flex justify-end gap-3 p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
+                <button id="close-select-subjects-modal-btn" class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                   Hide
+                </button>
                 <button id="confirm-select-subjects-btn" class="px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     Confirm
                 </button>
@@ -644,6 +665,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Hide Buttons Logic (Added for user request)
+    const hideButtons = [
+        { id: 'close-select-subjects-modal-btn', modal: 'select-subjects-modal' },
+        { id: 'hide-select-memorandum-modal-btn', modal: 'select-memorandum-modal' },
+        { id: 'hide-grade-modal-btn', modal: 'grade-modal' },
+        { id: 'hide-curriculum-grade-modal-btn', modal: 'curriculum-grade-modal' }
+    ];
+
+    hideButtons.forEach(btnConfig => {
+        const btn = document.getElementById(btnConfig.id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                hideModal(btnConfig.modal);
+            });
+        }
+    });
 
     // Templates Configuration
     const templates = {
