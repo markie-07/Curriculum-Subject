@@ -298,6 +298,24 @@ class SubjectController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * Get only College subjects (CHED).
+     */
+    public function getCollegeSubjects()
+    {
+        $subjects = Subject::where('syllabus_type', 'CHED')->get();
+        return response()->json(['subjects' => $subjects]);
+    }
+
+    /**
+     * Get only Senior High subjects (DepEd).
+     */
+    public function getSeniorHighSubjects()
+    {
+        $subjects = Subject::where('syllabus_type', 'DepEd')->get();
+        return response()->json(['subjects' => $subjects]);
+    }
+
     public function update(Request $request, $id)
     {
         $subject = Subject::findOrFail($id);

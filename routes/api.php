@@ -24,6 +24,8 @@ Route::middleware('integration.key')->group(function () {
 
     // --- Subject Management Routes ---
     Route::get('/integration/subjects/ids', [\App\Http\Controllers\SubjectController::class, 'getIds']); // Get just IDs
+    Route::get('/integration/subjects/college', [\App\Http\Controllers\SubjectController::class, 'getCollegeSubjects']); // College Only
+    Route::get('/integration/subjects/senior-high', [\App\Http\Controllers\SubjectController::class, 'getSeniorHighSubjects']); // Senior High Only
     Route::get('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'index']); // List all
     Route::post('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'store']); // Create
     Route::get('/integration/subjects/{id}', [\App\Http\Controllers\SubjectController::class, 'showIntegration']); // Get Single (No Relations)
