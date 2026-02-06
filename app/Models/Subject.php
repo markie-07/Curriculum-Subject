@@ -92,10 +92,77 @@ class Subject extends Model
     }
 
     /**
-     * Get the version history for the subject.
+     * Get the versions for the subject.
      */
     public function versions(): HasMany
     {
         return $this->hasMany(SubjectVersion::class);
     }
+
+    /**
+     * Accessor for Lessons to inject defaults if missing.
+     */
+    public function getLessonsAttribute($value)
+    {
+        // Decode if it's a string (though casting should handle this, sometimes raw access needs it)
+        $lessons = is_string($value) ? json_decode($value, true) : ($value ?? []);
+        
+        // Define Defaults
+        $defaults = [
+            'Week 0' => [
+                'content' => "Detailed Lesson Content:\nBCP Vision, Mission, Goals, Objectives, Philosophy and School Organizational Structure School Policies Orientation in Online and Modular Learning System",
+                'silo' => "Student Intended Learning Outcomes:\nInternalize the Vision, Mission, Goals, and Objectives of the institution.",
+                'at_onsite' => "Assessment: ONSITE: Recitation", 
+                'at_offsite' => "OFFSITE: Reflection Paper", // Note: Frontend often combines these into stored strings differently
+                // Actually, looking at collected data in frontend, it stores as a SINGLE string per week usually?
+                // Wait, collectWeeklyPlan in Blade:
+                // lessons[`Week ${i}`] = [ `Detailed Lesson Content:\n${content}`, ... ].join(',, ');
+                // So it stores a STRING per week key.
+            ],
+            // Exams
+            'Week 6' => "Detailed Lesson Content:\nPrelim Exam",
+            'Week 12' => "Detailed Lesson Content:\nMidterm Exam",
+            'Week 18' => "Detailed Lesson Content:\nFinal Exam",
+        ];
+
+        // Format for Week 0 matches the frontend join format
+        $week0String = implode(',, ', [
+            "Detailed Lesson Content:\nBCP Vision, Mission, Goals, Objectives, Philosophy and School Organizational Structure School Policies Orientation in Online and Modular Learning System",
+            "Student Intended Learning Outcomes:\nInternalize the Vision, Mission, Goals, and Objectives of the institution.",
+            "Assessment: ONSITE: Recitation OFFSITE: Reflection Paper",
+            "Activities: ON-SITE: Discussion\nLecture OFF-SITE: Student Handbook\nCourse Syllabus",
+            "Learning and Teaching Support Materials:\nLCD Projector\nWhiteboard and Marker",
+            "Output Materials:\nReflection Paper"
+        ]);
+
+        if (empty($lessons)) {
+            $lessons = [];
+        }
+
+        // Inject Week 0 if missing
+        if (!isset($lessons['Week 0'])) {
+            $lessons['Week 0'] = $week0String;
+        }
+
+        // Inject Exams if missing (using simple format)
+        foreach ([6 => 'Prelim Exam', 12 => 'Midterm Exam', 18 => 'Final Exam'] as $week => $exam) {
+            $key = "Week $week";
+            if (!isset($lessons[$key])) {
+                $lessons[$key] = "Detailed Lesson Content:\n$exam";
+            }
+        }
+
+        return $lessons;
+    }
+
+    public function getProgramMappingGridAttribute($value)
+    {
+         return is_string($value) ? json_decode($value, true) : ($value ?? []);
+    }
+
+    public function getCourseMappingGridAttribute($value)
+    {
+         return is_string($value) ? json_decode($value, true) : ($value ?? []);
+    }
 }
+
