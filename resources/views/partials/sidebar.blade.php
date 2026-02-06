@@ -16,9 +16,15 @@
     <!-- User Profile Section -->
     <div class="flex flex-col items-center p-5 my-4 profile-section">
         <div class="relative group">
-            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mb-3 profile-avatar transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 border-2 border-blue-400/30 hover:border-blue-300/50">
-                <span class="text-white font-bold text-lg">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</span>
-            </div>
+            @if(Auth::user()->profile_picture)
+                <div class="w-24 h-24 rounded-full mb-3 profile-avatar transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 border-2 border-blue-400/30 hover:border-blue-300/50 overflow-hidden bg-white">
+                    <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                </div>
+            @else
+                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mb-3 profile-avatar transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 border-2 border-blue-400/30 hover:border-blue-300/50">
+                    <span class="text-white font-bold text-lg">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</span>
+                </div>
+            @endif
             <div class="absolute -inset-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
         </div>
         <div class="text-center bg-blue-800/20 rounded-lg px-4 py-2 hover:bg-blue-800/30 transition-all duration-200">
