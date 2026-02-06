@@ -26,6 +26,7 @@ class User extends Authenticatable
         'status',
         'last_activity',
         'modules',
+        'profile_picture',
     ];
 
     /**

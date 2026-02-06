@@ -45,6 +45,7 @@ class EmployeeController extends Controller
                 'username' => 'required|string|max:255|unique:users',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -65,6 +66,9 @@ class EmployeeController extends Controller
                 'role' => 'employee',
                 'status' => 'active', // Set default status
                 'modules' => json_encode($request->input('modules', [])),
+                'profile_picture' => $request->hasFile('profile_picture') 
+                    ? $request->file('profile_picture')->store('profile_pictures', 'public') 
+                    : null,
             ]);
 
             // Log activity
@@ -128,6 +132,7 @@ class EmployeeController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -143,6 +148,10 @@ class EmployeeController extends Controller
 
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('profile_picture')) {
+            $updateData['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
         }
 
         $employee->update($updateData);

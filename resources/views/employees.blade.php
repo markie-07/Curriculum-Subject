@@ -53,11 +53,38 @@
 
             <form method="POST" 
                   action="{{ request()->routeIs('employees.create') ? route('employees.store') : route('employees.update', $employee->id ?? '') }}" 
-                  class="w-full max-w-full p-6 space-y-6">
+                  class="w-full max-w-full p-6 space-y-6"
+                  enctype="multipart/form-data">
                 @csrf
                 @if(request()->routeIs('employees.edit'))
                     @method('PUT')
                 @endif
+
+                <!-- Profile Picture -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+                    <div class="flex items-center space-x-6">
+                        <div class="relative w-20 h-20 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+                            @if(isset($employee) && $employee->profile_picture)
+                                <img src="{{ asset('storage/' . $employee->profile_picture) }}" alt="Current Profile" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                </div>
+                            @endif
+                        </div>
+                        <input type="file" name="profile_picture" accept="image/*" class="block w-full text-sm text-slate-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                        "/>
+                    </div>
+                     @error('profile_picture')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <!-- Name Field -->
                 <div>
@@ -199,8 +226,14 @@
             <!-- Employee Info Card for Edit -->
             <div class="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
                 <div class="flex items-start space-x-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                        <span class="text-white font-semibold text-lg">{{ strtoupper(substr($employee->name, 0, 2)) }}</span>
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                        @if($employee->profile_picture)
+                            <img src="{{ asset('storage/' . $employee->profile_picture) }}" alt="{{ $employee->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                <span class="text-white font-semibold text-lg">{{ strtoupper(substr($employee->name, 0, 2)) }}</span>
+                            </div>
+                        @endif
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $employee->name }}</h3>
@@ -374,8 +407,14 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                                            <span class="text-white font-semibold text-sm">{{ strtoupper(substr($employee->name, 0, 2)) }}</span>
+                                        <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                                            @if($employee->profile_picture)
+                                                <img src="{{ asset('storage/' . $employee->profile_picture) }}" alt="{{ $employee->name }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                                    <span class="text-white font-semibold text-sm">{{ strtoupper(substr($employee->name, 0, 2)) }}</span>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $employee->name }}</div>
@@ -506,8 +545,23 @@
                         <p class="text-sm text-slate-500 mt-1">Create a new employee account with access credentials.</p>
                     </div>
 
-                    <form id="employeeForm" class="w-full max-w-full space-y-6">
+                    <form id="employeeForm" class="w-full max-w-full space-y-6" enctype="multipart/form-data">
                         @csrf
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Profile Picture</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gray-100 rounded-full border border-gray-200 flex items-center justify-center overflow-hidden">
+                                    <svg class="w-8 h-8 text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                </div>
+                                <input type="file" name="profile_picture" accept="image/*" class="block w-full text-sm text-slate-500
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-blue-50 file:text-blue-700
+                                    hover:file:bg-blue-100
+                                "/>
+                            </div>
+                        </div>
                         <div>
                             <label for="modal-name" class="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
                             <input type="text" id="modal-name" name="name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
