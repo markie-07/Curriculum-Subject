@@ -26,6 +26,7 @@ Route::middleware('integration.key')->group(function () {
     Route::get('/integration/subjects/ids', [\App\Http\Controllers\SubjectController::class, 'getIds']); // Get just IDs
     Route::get('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'index']); // List all
     Route::post('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'store']); // Create
+    Route::get('/integration/subjects/{id}', [\App\Http\Controllers\SubjectController::class, 'show']); // Get Single
     Route::put('/integration/subjects/{id}', [\App\Http\Controllers\SubjectController::class, 'update']); // Update
 
     // --- Curriculum Routes ---
