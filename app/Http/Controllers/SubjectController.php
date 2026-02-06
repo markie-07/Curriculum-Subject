@@ -239,6 +239,8 @@ class SubjectController extends Controller
         ];
 
         $data = $subject->toArray();
+        // Ensure curriculums is included in show()
+        
         $descIndex = array_search('course_description', array_keys($data));
         
         if ($descIndex !== false) {
@@ -254,6 +256,46 @@ class SubjectController extends Controller
         $response['system_settings'] = $systemSettings;
 
         return response()->json($response);
+    }
+
+    /**
+     * Show method specifically for Integration API.
+     * Excludes curriculum relationship data.
+     */
+    public function showIntegration($id)
+    {
+        // Do NOT eager load curriculums
+        $subject = Subject::findOrFail($id);
+        
+        // Make sure relationship is hidden if it was somehow loaded
+        $subject->makeHidden('curriculums');
+
+        $defaults = $this->getCourseBuilderDefaults();
+        $staticInfo = [
+            'institutional_information' => $defaults['institutional_information'],
+            'department_information' => $defaults['department_information']
+        ];
+
+        $data = $subject->toArray();
+        
+        // Remove curriculums key if present matches
+        unset($data['curriculums']);
+
+        $descIndex = array_search('course_description', array_keys($data));
+        
+        if ($descIndex !== false) {
+            $offset = $descIndex + 1;
+            $data = array_slice($data, 0, $offset, true) + 
+                    $staticInfo + 
+                    array_slice($data, $offset, null, true);
+        } else {
+            $data = $data + $staticInfo;
+        }
+
+        // We do not include system_settings for integration to keep it clean, 
+        // unless requested, but based on "only see subjects", simplest is best.
+        
+        return response()->json($data);
     }
 
     public function update(Request $request, $id)
