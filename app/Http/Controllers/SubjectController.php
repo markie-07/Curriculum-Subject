@@ -72,6 +72,7 @@ class SubjectController extends Controller
         });
         
         return response()->json([
+            'static_data' => $this->getCourseBuilderDefaults(),
             'subjects' => $subjects,
             'system_settings' => $systemSettings
         ]);
@@ -205,9 +206,9 @@ class SubjectController extends Controller
             });
         });
 
-        // Convert subject to array and add system_settings
         $response = $subject->toArray();
         $response['system_settings'] = $systemSettings;
+        $response['static_data'] = $this->getCourseBuilderDefaults();
 
         return response()->json($response);
     }
@@ -449,5 +450,47 @@ class SubjectController extends Controller
             Log::error('Error fetching subject version history: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while fetching version history.'], 500);
         }
+    }
+
+    /**
+     * Get the hardcoded default values and text from the Course Builder UI.
+     * This allows the API to provide the full context of the form.
+     */
+    private function getCourseBuilderDefaults()
+    {
+        return [
+            'dropdown_options' => [
+                'ched_course_classifications' => [
+                    "General Education",
+                    "Professional Subject Non Laboratory",
+                    "Professional Subject Laboratory",
+                    "Professional Subject Board Courses",
+                    "Professional Subject Non Board Courses",
+                    "Professional Subject OC",
+                    "NSTP 1",
+                    "NSTP 2",
+                    "Research",
+                    "OJT/Practicum"
+                ],
+                'deped_course_classifications' => [
+                    "Core Subjects",
+                    "Applied Track Subjects",
+                    "Specialized Subjects"
+                ]
+            ],
+            'institutional_information' => [
+                'school_vision' => "BCP is committed to provide and promote quality education with a unique, modern and research-based curriculum with delivery systems geared towards excellence.",
+                'school_mission' => "To produce self-motivated and self-directed individual who aims for academic excellence, God-fearing, peaceful, healthy and productive successful citizens.",
+                'school_philosophy' => "BCP advocates threefold core values: \"Fides\", Faith; \"Ratio\", Reason; Pax. Peace. \"Fides\" represents BCPs, endeavors for expansion, development, and growth amidst the challenges of the new millennium. \"Ratio\" symbolizes BCP's efforts to provide an education which can be man's tool to be liberated from all forms of ignorance and poverty. \"Pax\". BCP is a forerunner in the promotion of a harmonious relationship between the different sectors of its academic community.",
+                'school_core_values' => "FAITH, KNOWLEDGE, CHARITY AND HUMILITY\n\nFAITH (Fides) represents BCP’s endeavor for expansion, development and for growth amidst the global challenges of the new millennium.\n\nKNOWLEDGE (Cognito) connotes the institution’s efforts to impart excellent lifelong education that can be used as human tool so that one can liberate himself/herself from ignorance and poverty\n\nCHARITY (Caritas) is the institution’s commitment towards its clienteles.\n\nHUMILITY (Humiliates) refers to the institution’s recognition of the human frailty, its imperfection."
+            ],
+            'department_information' => [
+                 'default_vision' => "To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.",
+                 'default_mission' => "The College of Computer Studies is committed to provide quality information and communication technology education through the use of modern and transformation learning teaching process.",
+                 'general_education_vision' => "BCP General Education Department innovates, investigates and discovers greatness and prosperity through oneness.",
+                 'general_education_mission' => "To awaken the curiosity and ignite passion of individuals to excel independency in academic endeavors towards their development into ethically and morally strong people."
+            ],
+            'course_policies' => "This course is committed in providing equal access and participation for all students including those with disabilities. If you have a disability that may require accommodations, please contact the OFFICE OF THE STUDENTS’ AFFAIRS and SERVICES to register in the LIST OF LEARNERS with Disabilities. Please be aware that it is your responsibility to communicate your needs and works with the instructor to ensure that appropriate accommodations can be arranged promptly. The faculty reserves the right to change or amend this syllabus as needed. Any changes to the syllabus will be communicated promptly to the VPAA through the Department Heads / Deans, if any, adjustments will be made to ensure that all students can continue to meet the course objectives. Your feedback and input are valued, and we encourage open communication to facilitate a positive and productive learning experience for all."
+        ];
     }
 }
