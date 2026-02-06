@@ -21,6 +21,11 @@ Route::middleware('integration.key')->group(function () {
     // --- ONLY Subject Export PDF is allowed ---
     Route::get('/integration/subjects/export-all-pdf', [SubjectExportController::class, 'exportAllPdf']);
     Route::get('/integration/subjects/{subjectId}/export-pdf', [SubjectExportController::class, 'exportPdf']);
+
+    // --- Subject Management Routes ---
+    Route::get('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'index']); // List all
+    Route::post('/integration/subjects', [\App\Http\Controllers\SubjectController::class, 'store']); // Create
+    Route::put('/integration/subjects/{id}', [\App\Http\Controllers\SubjectController::class, 'update']); // Update
     
 });
 
