@@ -2178,45 +2178,49 @@ Learning Management System`;
     const confirmSaveCourseBtn = document.getElementById('confirmSaveCourse');
     if (confirmSaveCourseBtn) {
         confirmSaveCourseBtn.addEventListener('click', async () => {
-        document.getElementById('saveCourseConfirmModal').classList.add('hidden');
-        
-        // TEMPORARILY DISABLED as per user request
-        // Check for description similarity before saving
-        // const description = document.getElementById('course_description').value;
-        
-        // if (description && description.trim() !== '') {
-        //     // Show loading modal with correct text
-        //     const loadingModal = document.getElementById('aiAnalysisLoadingModal');
-        //     if (loadingModal) {
-        //         loadingModal.querySelector('h3').textContent = 'Analyzing Course Description';
-        //         loadingModal.querySelector('p').textContent = 'AI is checking for similar courses...';
-        //         loadingModal.classList.remove('hidden');
-        //     }
+            document.getElementById('saveCourseConfirmModal').classList.add('hidden');
             
-        //     try {
-        //         const similarityCheck = await checkDescriptionSimilarity(description);
+            // AI Course Analyzer (Description Similarity Check) - DISABLED
+            /* 
+            const description = document.getElementById('course_description').value;
+            
+            if (description && description.trim() !== '') {
+                // Show loading modal with correct text
+                const loadingModal = document.getElementById('aiAnalysisLoadingModal');
+                if (loadingModal) {
+                    loadingModal.querySelector('h3').textContent = 'Analyzing Course Description';
+                    loadingModal.querySelector('p').textContent = 'AI is checking for similar courses...';
+                    loadingModal.classList.remove('hidden');
+                }
                 
-        //         // Hide loading modal
-        //         document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
-                
-        //         if (similarityCheck.has_similar) {
-        //             // Show warning modal with similar courses
-        //             showSimilarDescriptionModal(similarityCheck.similar_courses);
-        //         } else {
-        //             // No similar descriptions, proceed with save
-        //             handleCourseSave();
-        //         }
-        //     } catch (error) {
-        //         // Hide loading modal on error
-        //         document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
-        //         console.error('Similarity check failed:', error);
-        //         // Proceed with save on error
-        //         handleCourseSave();
-        //     }
-        // } else {
-            // No description provided, proceed with save
+                try {
+                    const similarityCheck = await checkDescriptionSimilarity(description);
+                    
+                    // Hide loading modal
+                    document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
+                    
+                    if (similarityCheck.has_similar) {
+                        // Show warning modal with similar courses
+                        showSimilarDescriptionModal(similarityCheck.similar_courses);
+                    } else {
+                        // No similar descriptions, proceed with save
+                        handleCourseSave();
+                    }
+                } catch (error) {
+                    // Hide loading modal on error
+                    document.getElementById('aiAnalysisLoadingModal').classList.add('hidden');
+                    console.error('Similarity check failed:', error);
+                    // Proceed with save on error
+                    handleCourseSave();
+                }
+            } else {
+                // No description provided, proceed with save
+                handleCourseSave();
+            }
+            */
+           
+            // Directly save the course, bypassing AI check
             handleCourseSave();
-        // }
         });
     }
     

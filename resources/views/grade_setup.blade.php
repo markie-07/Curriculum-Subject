@@ -225,26 +225,9 @@
         {{-- Grade History --}}
 
         <div id="grade-history-card-main" class="lg:col-span-1 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80 flex flex-col">
-            <h2 id="grade-history-title" class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Curriculum Grade History</h2>
+            <h2 id="grade-history-title" class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Subject Grade History</h2>
             
-            {{-- View Mode Toggle --}}
-            <div class="mb-4 flex gap-1 bg-gray-100 p-1 rounded-lg">
-                <button 
-                    id="view-curriculum-btn" 
-                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors bg-white text-indigo-600 shadow-sm"
-                    data-view="curriculum"
-                >
-                    Curriculums
-                </button>
-
-                <button 
-                    id="view-subject-btn" 
-                    class="view-mode-btn flex-1 px-2 py-2 text-xs font-semibold rounded-md transition-colors text-gray-600 hover:text-gray-800"
-                    data-view="subject"
-                >
-                    Subjects
-                </button>
-            </div>
+            {{-- View Mode Toggle Removed --}}
             
             {{-- Search Bar --}}
             <div class="mb-4">
@@ -262,32 +245,13 @@
             </div>
             
             {{-- Type Filter Buttons (for curriculum view) --}}
-            <div id="curriculum-type-filters" class="mb-4 flex gap-2">
-                <button 
-                    id="filter-all-btn" 
-                    class="curriculum-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-indigo-600 text-white"
-                    data-filter="all"
-                >
-                    All
-                </button>
-                <button 
-                    id="filter-college-btn" 
-                    class="curriculum-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    data-filter="college"
-                >
-                    College
-                </button>
-                <button 
-                    id="filter-seniorhigh-btn" 
-                    class="curriculum-filter-btn flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    data-filter="seniorhigh"
-                >
-                    Senior High
-                </button>
+            {{-- Type Filter Buttons (for curriculum view) Removed --}}
+            <div id="curriculum-type-filters" class="mb-4 hidden flex gap-2">
+                 {{-- Removed Buttons --}}
             </div>
             
             {{-- Subject Type Filter Buttons (Replaced with Level and Category Dropdowns) --}}
-            <div id="subject-type-filters" class="mb-4 hidden flex flex-col gap-2">
+            <div id="subject-type-filters" class="mb-4 flex flex-col gap-2">
                 <select id="grade-history-level-filter" class="w-full text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 py-2 px-3">
                     <option value="college">CHED (College)</option>
                     <option value="senior_high">DepEd (Senior High)</option>
@@ -2116,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Global Filter State
     let historyStats = { curriculums: [], memorandums: [], subjects: [] };
-    let currentHistoryView = 'curriculum'; // curriculum, memorandum, subject
+    let currentHistoryView = 'subject'; // curriculum, memorandum, subject
     let currentHistoryFilter = 'all'; // all, college/ched, seniorhigh/deped, major, minor
 
     const refreshHistory = async () => {
@@ -3818,7 +3782,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const subjectTypeFilters = document.getElementById('subject-type-filters');
     const curriculumFilterButtons = document.querySelectorAll('.curriculum-filter-btn');
     const subjectFilterButtons = document.querySelectorAll('.subject-filter-btn');
-    let currentViewMode = 'curriculum';
+    let currentViewMode = 'subject';
     let currentFilter = 'all';
     
     const filterAndSearchCurriculums = () => {
@@ -4224,7 +4188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize global subject-based workflow
     fetchAllSubjects(); // Fetch all subjects globally
-    fetchAndPopulateGradeHistory(); // Keep curriculum history on the right side
+    displayAllSubjects(); // Display subjects by default
     loadGradeDataToDOM({});
     toggleGradeComponents(true);
     
