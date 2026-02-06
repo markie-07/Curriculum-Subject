@@ -16,33 +16,47 @@ class SubjectController extends Controller
         // This significantly reduces database load and memory usage
         $subjects = Subject::select([
             'id',
-            'subject_name',
-            'subject_code',
+            'syllabus_type', // Toggle (Top)
+            
+            // Course Information
+            'subject_name', // Course Title
+            'subject_code', // Course Code
+            'subject_type', // Course Type
+            'course_classification', // Subject Category
+            'subject_unit', // Credit Units
+            'contact_hours', // Contact Hours
+            'syllabus_path', // DepEd Syllabus File
 
-            'subject_type', // Ensure this line exists
-            'course_classification',
-            'syllabus_type',
-            'subject_unit',
-            'contact_hours',
-            'course_description',
+            'course_description', // Course Description
 
-            'deped_data',
-            'syllabus_path',
-            'created_at',
+            // DepEd Curriculum Guide
+            'deped_data', 
+
+            // Mapping Grids
             'program_mapping_grid',
             'course_mapping_grid',
-            'lessons',
+
+            // Learning Outcomes
             'pilo_outcomes',
             'cilo_outcomes',
             'learning_outcomes',
+
+            // Weekly Plan
+            'lessons',
+
+            // Course Requirements and Policies
             'basic_readings',
             'extended_readings',
             'course_assessment',
             'committee_members',
             'consultation_schedule',
+
+            // Approval
             'prepared_by',
             'reviewed_by',
-            'approved_by'
+            'approved_by',
+
+            'created_at'
         ])
         ->orderBy('subject_name')
         ->get();

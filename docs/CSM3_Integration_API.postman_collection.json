@@ -33,26 +33,145 @@
                 }
             },
             "response": []
-        }
-    ],
-    "event": [
-        {
-            "listen": "prerequest",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
-            }
         },
         {
-            "listen": "test",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    ""
-                ]
-            }
+            "name": "Export All Subjects PDF",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/subjects/export-all-pdf",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "subjects",
+                        "export-all-pdf"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get All Subjects",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/subjects",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "subjects"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Subject",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"course_title\": \"Introduction to Integration API\",\n    \"subject_code\": \"INTEG-101\",\n    \"subject_type\": \"Major\",\n    \"subject_unit\": 3,\n    \"course_description\": \"This is a test subject created via API.\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/integration/subjects",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "subjects"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Subject",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"course_title\": \"Updated Subject Title\",\n    \"subject_code\": \"INTEG-101-UPDATED\",\n    \"subject_type\": \"Major\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/integration/subjects/{{subject_id}}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "subjects",
+                        "{{subject_id}}"
+                    ]
+                }
+            },
+            "response": []
         }
     ],
     "variable": [
