@@ -17,18 +17,9 @@
         <div id="grade-setup-card" class="lg:col-span-2 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
             <form id="grade-setup-form" onsubmit="return false;">
                 @csrf
-                <div class="mb-8 flex justify-between items-start">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Curriculum Grade Scheme Setup</h1>
-                        <p class="text-sm text-gray-600 mt-1">Design and manage grading schemes for entire curriculums with automatic minor course grading.</p>
-                    </div>
-                    <button type="button" onclick="document.getElementById('grading-templates-modal').classList.remove('hidden')" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-                        </svg>
-                        View Templates
-                    </button>
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold text-gray-800">Curriculum Grade Scheme Setup</h1>
+                    <p class="text-sm text-gray-600 mt-1">Design and manage grading schemes for entire curriculums with automatic minor course grading.</p>
                 </div>
 
                 {{-- Curriculum Level Selection --}}
@@ -144,6 +135,29 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
+                            {{-- Template Dropdown --}}
+                            <div class="relative group">
+                                <button id="template-dropdown-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors py-2 px-3 rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                    </svg>
+                                    Apply Template
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 hidden group-hover:block z-20">
+                                    <button type="button" onclick="applyTemplate('gen_ed')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors first:rounded-t-lg">
+                                        General Education
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('prof_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                        Professional (Laboratory)
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('prof_non_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors last:rounded-b-lg">
+                                        Professional (Non-Laboratory)
+                                    </button>
+                                </div>
+                            </div>
 
                             <button id="add-grade-component-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -554,251 +568,6 @@
     </div>
 </div>
 
-{{-- Grading Templates Modal --}}
-<div id="grading-templates-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl relative">
-             {{-- Close Button --}}
-            <button onclick="document.getElementById('grading-templates-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-
-            <div class="p-6 md:p-8">
-                <div class="mb-6">
-                     <h2 class="text-2xl font-bold text-gray-800">Grading System Templates</h2>
-                     <p class="text-sm text-gray-500">Standard grading schemes for different subject modalities.</p>
-                </div>
-
-                {{-- Tabs --}}
-                <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200" id="template-tabs">
-                    <button class="px-4 py-2 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50/50 rounded-t-lg transition-colors" onclick="switchTemplateTab(this, 'tab-gen-ed')">General Education</button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 transition-colors" onclick="switchTemplateTab(this, 'tab-prof-lab')">Prof. Subjects (Lab)</button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 transition-colors" onclick="switchTemplateTab(this, 'tab-prof-nonlab')">Prof. Subjects (Non-Lab)</button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 transition-colors" onclick="switchTemplateTab(this, 'tab-prof-board')">Prof. Subjects (Board)</button>
-                </div>
-
-                {{-- Tab Contents --}}
-                <div id="template-contents">
-                    {{-- General Education --}}
-                    <div id="tab-gen-ed" class="template-tab-content">
-                        <h3 class="font-bold text-lg text-gray-800 mb-4">General Education</h3>
-                        <div class="overflow-x-auto border rounded-lg mb-6">
-                            <table class="w-full text-sm text-center">
-                                <thead class="bg-gray-100 text-gray-700 font-bold uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3 border-r" rowspan="2">Subject Areas / Modality</th>
-                                        <th class="p-3 border-r" colspan="3">Class Standing (40%)</th>
-                                        <th class="p-3 border-r" colspan="3">Project (25%)</th>
-                                        <th class="p-3" colspan="3">Examination (35%)</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="p-2 border border-gray-200">Att (F2F/OL)</th>
-                                        <th class="p-2 border border-gray-200">WW (F2F/OL)</th>
-                                        <th class="p-2 border border-gray-200">PT (F2F/OL)</th>
-                                        <th class="p-2 border border-gray-200">CBO</th>
-                                        <th class="p-2 border border-gray-200">OCR</th>
-                                        <th class="p-2 border border-gray-200 bg-gray-200">AWG</th>
-                                        <th class="p-2 border border-gray-200">WE</th>
-                                        <th class="p-2 border border-gray-200">OE</th>
-                                        <th class="p-2 border border-gray-200 bg-gray-200">AWG</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-700">
-                                    <tr>
-                                        <td class="p-3 border-r font-medium text-left">General Education</td>
-                                        <td class="p-3 border">7% / 3%</td>
-                                        <td class="p-3 border">33% / 17%</td>
-                                        <td class="p-3 border">27% / 13%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">25%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">35%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {{-- Prof Lab --}}
-                    <div id="tab-prof-lab" class="template-tab-content hidden">
-                        <h3 class="font-bold text-lg text-gray-800 mb-4">Professional Subjects (*Laboratory)</h3>
-                        <div class="overflow-x-auto border rounded-lg mb-6">
-                            <table class="w-full text-sm text-center">
-                                <thead class="bg-gray-100 text-gray-700 font-bold uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3 border-r" rowspan="2">Subject Areas</th>
-                                        <th class="p-3 border-r" colspan="3">Class Standing (35%)</th>
-                                        <th class="p-3 border-r" colspan="3">Project (40%)</th>
-                                        <th class="p-3" colspan="3">Examination (25%)</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="p-2 border">Att (F2F/OL)</th>
-                                        <th class="p-2 border">WW (F2F/OL)</th>
-                                        <th class="p-2 border">PT (F2F/OL)</th>
-                                        <th class="p-2 border">CBO</th>
-                                        <th class="p-2 border">OCR</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                        <th class="p-2 border">WE</th>
-                                        <th class="p-2 border">OE</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-700">
-                                    <tr>
-                                        <td class="p-3 border-r font-medium text-left">Prof. Subjects (Lab)</td>
-                                        <td class="p-3 border">7% / 3%</td>
-                                        <td class="p-3 border">27% / 13%</td>
-                                        <td class="p-3 border">33% / 17%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">40%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">25%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {{-- Prof Non-Lab --}}
-                    <div id="tab-prof-nonlab" class="template-tab-content hidden">
-                        <h3 class="font-bold text-lg text-gray-800 mb-4">Professional Subjects (*Non-Laboratory) / (*Non-Board)</h3>
-                        <div class="overflow-x-auto border rounded-lg mb-6">
-                            <table class="w-full text-sm text-center">
-                                <thead class="bg-gray-100 text-gray-700 font-bold uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3 border-r" rowspan="2">Subject Areas</th>
-                                        <th class="p-3 border-r" colspan="3">Class Standing (40%)</th>
-                                        <th class="p-3 border-r" colspan="3">Project (35%)</th>
-                                        <th class="p-3" colspan="3">Examination (25%)</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="p-2 border">Att (F2F/OL)</th>
-                                        <th class="p-2 border">WW (F2F/OL)</th>
-                                        <th class="p-2 border">PT (F2F/OL)</th>
-                                        <th class="p-2 border">CBO</th>
-                                        <th class="p-2 border">OCR</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                        <th class="p-2 border">WE</th>
-                                        <th class="p-2 border">OE</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-700">
-                                    <tr>
-                                        <td class="p-3 border-r font-medium text-left">Prof. Subjects (Non-Lab)</td>
-                                        <td class="p-3 border">7% / 3%</td>
-                                        <td class="p-3 border">27% / 13%</td>
-                                        <td class="p-3 border">33% / 17%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">35%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">25%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {{-- Prof Board --}}
-                    <div id="tab-prof-board" class="template-tab-content hidden">
-                        <h3 class="font-bold text-lg text-gray-800 mb-4">Professional Subjects (*Board Courses)</h3>
-                        <div class="overflow-x-auto border rounded-lg mb-6">
-                            <table class="w-full text-sm text-center">
-                                <thead class="bg-gray-100 text-gray-700 font-bold uppercase text-xs">
-                                    <tr>
-                                        <th class="p-3 border-r" rowspan="2">Subject Areas</th>
-                                        <th class="p-3 border-r" colspan="3">Class Standing (40%)</th>
-                                        <th class="p-3 border-r" colspan="3">Project (30%)</th>
-                                        <th class="p-3" colspan="3">Examination (30%)</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="p-2 border">Att (F2F/OL)</th>
-                                        <th class="p-2 border">WW (F2F/OL)</th>
-                                        <th class="p-2 border">PT (F2F/OL)</th>
-                                        <th class="p-2 border">CBO</th>
-                                        <th class="p-2 border">OCR</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                        <th class="p-2 border">WE</th>
-                                        <th class="p-2 border">OE</th>
-                                        <th class="p-2 border bg-gray-200">AWG</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-700">
-                                    <tr>
-                                        <td class="p-3 border-r font-medium text-left">Prof. Subjects (Board)</td>
-                                        <td class="p-3 border">7% / 3%</td>
-                                        <td class="p-3 border">27% / 13%</td>
-                                        <td class="p-3 border">33% / 17%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">30%</td>
-                                        <td class="p-3 border">100%</td>
-                                        <td class="p-3 border">-</td>
-                                        <td class="p-3 border bg-gray-50 font-bold">30%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Semestral Table (Shared) --}}
-                <div class="mt-8">
-                     <h3 class="font-bold text-lg text-gray-800 mb-2">Semestral Grading</h3>
-                     <div class="w-full max-w-lg border rounded-lg overflow-hidden">
-                        <table class="w-full text-sm text-center">
-                            <thead class="bg-gray-100 text-gray-700 font-bold uppercase">
-                                <tr>
-                                    <th class="p-3 border-r">Prelim</th>
-                                    <th class="p-3 border-r">Midterm</th>
-                                    <th class="p-3 border-r">Finals</th>
-                                    <th class="p-3 bg-gray-200">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="p-3 border-r">30%</td>
-                                    <td class="p-3 border-r">30%</td>
-                                    <td class="p-3 border-r">40%</td>
-                                    <td class="p-3 font-bold bg-gray-50">100%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{{-- Script for Tab Switching --}}
-<script>
-    function switchTemplateTab(btn, tabId) {
-        // Reset classes for all buttons
-        const buttons = document.querySelector('#template-tabs').querySelectorAll('button');
-        buttons.forEach(b => {
-            b.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50/50', 'font-semibold');
-            b.classList.add('text-gray-500', 'border-transparent', 'font-medium');
-        });
-        
-        // Activate current button
-        btn.classList.remove('text-gray-500', 'border-transparent', 'font-medium');
-        btn.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50/50', 'font-semibold');
-        
-        // Hide all contents
-        const contents = document.querySelectorAll('.template-tab-content');
-        contents.forEach(c => c.classList.add('hidden'));
-        
-        // Show target content
-        document.getElementById(tabId).classList.remove('hidden');
-    }
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -837,6 +606,147 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSelectMemorandumModalBtn = document.getElementById('close-select-memorandum-modal-btn');
     const closeSelectSubjectsModalBtn = document.getElementById('close-select-subjects-modal-btn');
     const closeModalBtn = document.getElementById('close-modal-btn');
+    
+    // Template Toggle
+    const templateDropdownBtn = document.getElementById('template-dropdown-btn');
+
+    // Templates Configuration
+    const templates = {
+        'gen_ed': {
+            periods: {
+                'Prelim': 30,
+                'Midterm': 30,
+                'Finals': 40
+            },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 40,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 50 },
+                        { name: "Performance Task", weight: 40 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 25,
+                    sub_components: []
+                },
+                {
+                    name: "Major Examination",
+                    weight: 35,
+                    sub_components: []
+                }
+            ]
+        },
+        'prof_lab': {
+            periods: {
+                'Prelim': 30,
+                'Midterm': 30,
+                'Finals': 40
+            },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 35,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 40 },
+                        { name: "Performance Task", weight: 50 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 40,
+                    sub_components: []
+                },
+                {
+                    name: "Major Examination",
+                    weight: 25,
+                    sub_components: []
+                }
+            ]
+        },
+        'prof_non_lab': {
+            periods: {
+                'Prelim': 30,
+                'Midterm': 30,
+                'Finals': 40
+            },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 35, // Can differ, but keeping 35 as per image
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 40 },
+                        { name: "Performance Task", weight: 50 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 40,
+                    sub_components: []
+                },
+                {
+                    name: "Major Examination",
+                    weight: 25,
+                    sub_components: []
+                }
+            ]
+        }
+    };
+
+    window.applyTemplate = (templateKey) => {
+        const template = templates[templateKey];
+        if (!template) return;
+
+        // Check if subjects are selected
+        if (!selectedSubjects || selectedSubjects.length === 0) {
+            Swal.fire({
+                title: 'Select Subjects First',
+                text: 'Please select subjects before applying a template.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4f46e5'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Apply Grade Template?',
+            text: "This will overwrite any existing grade components you've added.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, apply it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                accordionContainer.innerHTML = ''; // Clear existing
+                
+                // Construct data object for loadGradeDataToDOM
+                const dataToLoad = {};
+                
+                // According to Period Breakdown
+                Object.keys(template.periods).forEach(periodName => {
+                    dataToLoad[periodName] = {
+                        weight: template.periods[periodName],
+                        components: JSON.parse(JSON.stringify(template.components)) // Deep copy
+                    };
+                });
+                
+                loadGradeDataToDOM(dataToLoad);
+                
+                Swal.fire(
+                    'Applied!',
+                    'The grade template has been applied.',
+                    'success'
+                );
+            }
+        });
+    };
 
     // Other Elements
     const memorandumSearchInput = document.getElementById('memorandum-search');
@@ -1520,11 +1430,13 @@ document.addEventListener('DOMContentLoaded', () => {
             seniorHighBtn.classList.remove('border-gray-300');
             collegeBtn.classList.remove('border-blue-500', 'bg-blue-50');
             collegeBtn.classList.add('border-gray-300');
+            if(templateDropdownBtn) templateDropdownBtn.style.display = 'none'; // Templates only for College for now unless requested
         } else {
             collegeBtn.classList.add('border-blue-500', 'bg-blue-50');
             collegeBtn.classList.remove('border-gray-300');
             seniorHighBtn.classList.remove('border-purple-500', 'bg-purple-50');
             seniorHighBtn.classList.add('border-gray-300');
+            if(templateDropdownBtn) templateDropdownBtn.style.display = 'inline-flex';
         }
 
         // Reset subsequent steps
