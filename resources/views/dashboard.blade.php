@@ -212,7 +212,7 @@
                 <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Detailed Breakdown</h3>
                 
                 {{-- College List --}}
-                <div id="list-subject-college" class="flex-1 pr-2 space-y-4">
+                <div id="list-subject-college" class="flex-1 pr-2 space-y-4 overflow-hidden max-h-60 transition-[max-height] duration-500 ease-in-out">
                     @foreach($collegeCategories as $category)
                         @php
                             $count = $collegeSubjectCounts[$category] ?? 0;
@@ -239,7 +239,7 @@
                 </div>
 
                 {{-- SHS List (Hidden) --}}
-                <div id="list-subject-shs" class="hidden flex-1 pr-2 space-y-4">
+                <div id="list-subject-shs" class="hidden flex-1 pr-2 space-y-4 overflow-hidden max-h-60 transition-[max-height] duration-500 ease-in-out">
                     @foreach($shsCategories as $category)
                         @php
                             $count = $shsSubjectCounts[$category] ?? 0;
@@ -265,6 +265,16 @@
                     @endforeach
                 </div>
 
+            </div>
+            
+            {{-- Toggle Button --}}
+            <div class="mt-4 pt-4 border-t border-slate-100 flex justify-center">
+                <button id="btn-toggle-subject-list" class="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors">
+                    <span>Show All Details</span>
+                    <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -299,7 +309,7 @@
                 <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Completion by Category</h3>
                 
                 {{-- College Grades List --}}
-                <div id="list-grade-college" class="flex-1 pr-2 space-y-4">
+                <div id="list-grade-college" class="flex-1 pr-2 space-y-4 overflow-hidden max-h-60 transition-[max-height] duration-500 ease-in-out">
                     @foreach($collegeCategories as $category)
                         @php
                             $total = $collegeSubjectCounts[$category] ?? 0;
@@ -327,7 +337,7 @@
                 </div>
 
                 {{-- SHS Grades List (Hidden) --}}
-                <div id="list-grade-shs" class="hidden flex-1 pr-2 space-y-4">
+                <div id="list-grade-shs" class="hidden flex-1 pr-2 space-y-4 overflow-hidden max-h-60 transition-[max-height] duration-500 ease-in-out">
                     @foreach($shsCategories as $category)
                         @php
                             $total = $shsSubjectCounts[$category] ?? 0;
@@ -354,6 +364,16 @@
                     @endforeach
                 </div>
 
+            </div>
+            
+            {{-- Toggle Button --}}
+            <div class="mt-4 pt-4 border-t border-slate-100 flex justify-center">
+                <button id="btn-toggle-grade-list" class="text-xs font-semibold text-teal-600 hover:text-teal-800 flex items-center gap-1 transition-colors">
+                    <span>Show All Details</span>
+                    <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -1621,6 +1641,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial load will happen because we call loadActivities(dateInput.value) below and we initialized value correctly
 
+
+    // --- Expand/Collapse List Logic ---
+    function setupListToggle(toggleBtnId, listIds) {
+        const btn = document.getElementById(toggleBtnId);
+        if (!btn) return;
+
+        btn.addEventListener('click', function() {
+            const isExpanded = btn.getAttribute('data-expanded') === 'true';
+            
+            listIds.forEach(id => {
+                const list = document.getElementById(id);
+                if (list) {
+                    if (isExpanded) {
+                        list.classList.add('max-h-60');
+                        list.classList.remove('max-h-[2000px]'); // Remove arbitrary large height
+                    } else {
+                        list.classList.remove('max-h-60');
+                        list.classList.add('max-h-[2000px]'); // Add arbitrary large height for transition
+                    }
+                }
+            });
+
+            // Update button state
+            if (isExpanded) {
+                btn.setAttribute('data-expanded', 'false');
+                btn.querySelector('span').textContent = 'Show All Details';
+                btn.querySelector('svg').classList.remove('rotate-180');
+            } else {
+                btn.setAttribute('data-expanded', 'true');
+                btn.querySelector('span').textContent = 'Show Less';
+                btn.querySelector('svg').classList.add('rotate-180');
+            }
+        });
+    }
+
+    // Initialize toggles
+    setupListToggle('btn-toggle-subject-list', ['list-subject-college', 'list-subject-shs']);
+    setupListToggle('btn-toggle-grade-list', ['list-grade-college', 'list-grade-shs']);
 
     // Subject/Grades Toggle Logic Removed - Views are now side-by-side
 
