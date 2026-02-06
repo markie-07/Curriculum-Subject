@@ -35,9 +35,6 @@
      {{-- ADD THESE TWO SCRIPT TAGS FOR PDF EXPORT --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    
-    {{-- Vite Assets - Loads compiled JavaScript and CSS --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
     <style>
         /* Use the Inter font family */
