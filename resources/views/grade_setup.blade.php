@@ -156,11 +156,27 @@
                                     <button type="button" onclick="applyTemplate('prof_non_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                         Professional (Non-Laboratory)
                                     </button>
-                                    <button type="button" onclick="applyTemplate('prof_board')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors last:rounded-b-lg">
+                                    <button type="button" onclick="applyTemplate('prof_board')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                         Professional (Board Courses)
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('prof_oc')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                        Professional (OC)
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('nstp1')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                        NSTP 1
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('nstp2')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                        NSTP 2
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('research')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                        Research
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('ojt')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors last:rounded-b-lg">
+                                        OJT / Practicum
                                     </button>
                                 </div>
                             </div>
+
 
                             <button id="add-grade-component-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -739,6 +755,132 @@ document.addEventListener('DOMContentLoaded', () => {
                 {
                     name: "Major Examination",
                     weight: 30,
+                    sub_components: []
+                }
+            ]
+        },
+        'prof_oc': {
+            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 40,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 40 },
+                        { name: "Performance Task", weight: 50 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 35,
+                    sub_components: [
+                        { name: "CBO", weight: 40 },
+                        { name: "OCR", weight: 60 }
+                    ]
+                },
+                {
+                    name: "Examination",
+                    weight: 25,
+                    sub_components: []
+                }
+            ]
+        },
+        'nstp1': {
+            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 40,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 50 },
+                        { name: "Performance Task", weight: 40 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 30,
+                    sub_components: []
+                },
+                {
+                    name: "Examination",
+                    weight: 30,
+                    sub_components: []
+                }
+            ]
+        },
+        'nstp2': {
+            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 30,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 35 },
+                        { name: "Performance Task", weight: 55 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 40,
+                    sub_components: [] // OCR 100% implicitly
+                },
+                {
+                    name: "Examination",
+                    weight: 30,
+                    sub_components: []
+                }
+            ]
+        },
+        'research': {
+            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 25,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 45 },
+                        { name: "Performance Task", weight: 45 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 40,
+                    sub_components: []
+                },
+                {
+                    name: "Examination",
+                    weight: 35,
+                    sub_components: [
+                         { name: "Written Exam", weight: 20 },
+                         { name: "Oral Exam", weight: 80 }
+                    ]
+                }
+            ]
+        },
+        'ojt': {
+            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 50,
+                    sub_components: [
+                        { name: "Attendance", weight: 30 },
+                        { name: "Written Works", weight: 40 },
+                        { name: "Performance Task", weight: 30 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 35,
+                    sub_components: []
+                },
+                {
+                    name: "Examination",
+                    weight: 15,
                     sub_components: []
                 }
             ]
