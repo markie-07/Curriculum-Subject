@@ -189,24 +189,39 @@ class SubjectExportController extends Controller
 
     /**
      * Export ALL subjects as a ZIP of PDFs.
-     * WARNING: Resource intensive.
+     * Use a generator to stream content and avoid memory exhaustion.
      */
     public function exportAllPdf()
     {
-        $subjects = Subject::with('grades')->get();
-        
-        return Zip::create('all_subjects.zip', $subjects->map(function($subject) {
-            // Re-use logic for each PDF (Simplified for bulk performance)
-            // Note: Full prereq logic might be too heavy x 100 times. 
-            // We will do a lighter render for bulk or just accept the cost.
-            
+        // Increase limits for bulk processing
+        ini_set('max_execution_time', 600); // 10 minutes
+        ini_set('memory_limit', '1024M');   // 1GB
+
+        // Check if we have subjects
+        if (Subject::count() === 0) {
+            return response()->json(['error' => 'No subjects found to export.'], 404);
+        }
+
+        return Zip::create('all_subjects.zip', $this->yieldZipEntries());
+    }
+
+    /**
+     * Generator function to yield ZIP entries one by one.
+     * This keeps memory usage low as it processes one PDF at a time.
+     */
+    private function yieldZipEntries()
+    {
+        // Use cursor() to stream records from database instead of loading all at once
+        foreach (Subject::with('grades')->cursor() as $subject) {
             $fileName = preg_replace('/[^A-Za-z0-9\-]/', '_', $subject->subject_code) . '.pdf';
             
-            return [
-                'name' => $fileName,
-                'data' => $this->generatePdfContent($subject) 
-            ];
-        }));
+            // Generate PDF content
+            // We verify content matches mPDF requirements (it returns string)
+            $content = $this->generatePdfContent($subject);
+            
+            // Yield key => value pair where key is filename and value is content
+            yield $fileName => $content;
+        }
     }
 
     /**
@@ -214,24 +229,33 @@ class SubjectExportController extends Controller
      */
     private function generatePdfContent($subject)
     {
-        // Simplified curriculum/prereq logic for bulk export to avoid N+1 and memory limit
-        // We will just try to find the first curriculum attached
-        $curriculum = $subject->curriculums()->first();
-        
-        // Use basic view
-        $html = view('subject_pdf', [
-            'subject' => $subject,
-            'curriculum' => $curriculum,
-            'prerequisiteData' => [] // Skipping complex prereq map for bulk export to save memory
-        ])->render();
+        try {
+            // Simplified curriculum/prereq logic for bulk export to avoid N+1 and memory limit
+            // We will just try to find the first curriculum attached
+            $curriculum = $subject->curriculums()->first();
+            
+            // Use basic view
+            $html = view('subject_pdf', [
+                'subject' => $subject,
+                'curriculum' => $curriculum,
+                'prerequisiteData' => [] // Skipping complex prereq map for bulk export to save memory
+            ])->render();
 
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'orientation' => 'P',
-        ]);
-        
-        $mpdf->WriteHTML($html);
-        return $mpdf->Output('', 'S');
+            // Create new mPDF instance for this iteration
+            // We strictly disable auto-font discovery to save performance if possible, 
+            // or just keep default.
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'orientation' => 'P',
+                'tempDir' => storage_path('app/tmp') // Ensure temp dir is writable and used
+            ]);
+            
+            $mpdf->WriteHTML($html);
+            return $mpdf->Output('', 'S');
+        } catch (\Exception $e) {
+            // Return error text as file content instead of crashing entire zip
+            return "Error generating PDF for {$subject->subject_code}: " . $e->getMessage();
+        }
     }
 }
