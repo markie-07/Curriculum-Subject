@@ -29,6 +29,9 @@ Route::middleware('integration.key')->group(function () {
 
     // --- Curriculum Routes ---
     Route::get('/integration/curriculums/approved', [\App\Http\Controllers\CurriculumController::class, 'getApproved']); // Get approved curriculums
+    Route::post('/integration/curriculums/{id}/approve', [\App\Http\Controllers\CurriculumController::class, 'approve']); // Approve curriculum
+    Route::post('/integration/curriculums/{id}/reject', [\App\Http\Controllers\CurriculumController::class, 'reject']); // Reject curriculum
+    Route::post('/integration/curriculums/{id}/restore', [\App\Http\Controllers\CurriculumController::class, 'restore']); // Restore rejected curriculum
     
 });
 

@@ -204,6 +204,105 @@
                 }
             },
             "response": []
+        },
+        {
+            "name": "Approve Curriculum",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/curriculums/{{curriculum_id}}/approve",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "curriculums",
+                        "{{curriculum_id}}",
+                        "approve"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Reject Curriculum",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/curriculums/{{curriculum_id}}/reject",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "curriculums",
+                        "{{curriculum_id}}",
+                        "reject"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Restore Curriculum",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/curriculums/{{curriculum_id}}/restore",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "curriculums",
+                        "{{curriculum_id}}",
+                        "restore"
+                    ]
+                }
+            },
+            "response": []
         }
     ],
     "variable": [
@@ -219,6 +318,11 @@
         },
         {
             "key": "subject_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "curriculum_id",
             "value": "1",
             "type": "string"
         }
