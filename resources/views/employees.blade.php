@@ -438,7 +438,7 @@
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
                                             </svg>
-                                            <span>Deactivate</span>
+                                            <span>Inactive</span>
                                         @else
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -447,16 +447,7 @@
                                         @endif
                                     </button>
                                     
-                                    <form method="POST" action="{{ route('employees.destroy', $employee->id) }}" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this employee?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 inline-flex items-center space-x-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                            <span>Delete</span>
-                                        </button>
-                                    </form>
+
                                 </td>
                             </tr>
                             @endforeach
@@ -709,10 +700,10 @@
                     statusIconContainer.className = 'w-16 h-16 rounded-full bg-orange-100 p-3 flex items-center justify-center mx-auto mb-4';
                     statusIcon.className = 'w-10 h-10 text-orange-600';
                     statusIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>';
-                    statusConfirmTitle.textContent = 'Deactivate Employee';
-                    statusConfirmMessage.textContent = `Are you sure you want to deactivate ${employeeName}? They will lose access to the system.`;
+                    statusConfirmTitle.textContent = 'Set Inactive';
+                    statusConfirmMessage.textContent = `Are you sure you want to set ${employeeName} to inactive? They will lose access to the system.`;
                     confirmStatusChange.className = 'flex-1 px-4 py-2.5 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-all';
-                    confirmButtonText.textContent = 'Deactivate';
+                    confirmButtonText.textContent = 'Inactive';
                 } else {
                     statusIconContainer.className = 'w-16 h-16 rounded-full bg-green-100 p-3 flex items-center justify-center mx-auto mb-4';
                     statusIcon.className = 'w-10 h-10 text-green-600';
@@ -779,7 +770,7 @@
                     if (response.ok) {
                         hideStatusConfirmModal();
                         
-                        const actionText = currentStatusAction.action === 'activate' ? 'activated' : 'deactivated';
+                        const actionText = currentStatusAction.action === 'activate' ? 'activated' : 'set to inactive';
                         showSuccessModal(
                             'Status Updated!', 
                             `${currentStatusAction.name} has been successfully ${actionText}.`
