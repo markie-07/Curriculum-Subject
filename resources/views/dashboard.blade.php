@@ -208,11 +208,11 @@
                 <canvas id="subjectMappingChart"></canvas>
             </div>
             
-            <div class="flex-1 overflow-hidden flex flex-col">
+            <div class="flex-1 flex flex-col">
                 <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Detailed Breakdown</h3>
                 
                 {{-- College List --}}
-                <div id="list-subject-college" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                <div id="list-subject-college" class="flex-1 pr-2 space-y-4">
                     @foreach($collegeCategories as $category)
                         @php
                             $count = $collegeSubjectCounts[$category] ?? 0;
@@ -239,7 +239,7 @@
                 </div>
 
                 {{-- SHS List (Hidden) --}}
-                <div id="list-subject-shs" class="hidden flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                <div id="list-subject-shs" class="hidden flex-1 pr-2 space-y-4">
                     @foreach($shsCategories as $category)
                         @php
                             $count = $shsSubjectCounts[$category] ?? 0;
@@ -295,11 +295,11 @@
                 <canvas id="gradesChart"></canvas>
             </div>
             
-            <div class="flex-1 overflow-hidden flex flex-col">
+            <div class="flex-1 flex flex-col">
                 <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-1">Completion by Category</h3>
                 
                 {{-- College Grades List --}}
-                <div id="list-grade-college" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                <div id="list-grade-college" class="flex-1 pr-2 space-y-4">
                     @foreach($collegeCategories as $category)
                         @php
                             $total = $collegeSubjectCounts[$category] ?? 0;
@@ -327,7 +327,7 @@
                 </div>
 
                 {{-- SHS Grades List (Hidden) --}}
-                <div id="list-grade-shs" class="hidden flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 max-h-72">
+                <div id="list-grade-shs" class="hidden flex-1 pr-2 space-y-4">
                     @foreach($shsCategories as $category)
                         @php
                             $total = $shsSubjectCounts[$category] ?? 0;
