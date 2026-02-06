@@ -2870,10 +2870,11 @@ window.addEventListener('load', function() {
         });
     });
     
-    // Periodically check and resize all textareas to catch any missed updates
-    setInterval(function() {
-        resizeAllTextareas();
-    }, 500);
+    // Periodically check removed to prevent forced reflow violations.
+    // MutationObserver and Input events handle resizing efficiently.
+    // setInterval(function() {
+    //    resizeAllTextareas();
+    // }, 500);
     
     // Watch for value changes (for programmatic updates like PDF extraction)
     const observer = new MutationObserver(function(mutations) {

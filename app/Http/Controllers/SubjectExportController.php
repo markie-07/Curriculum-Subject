@@ -89,11 +89,18 @@ class SubjectExportController extends Controller
             'prerequisiteData' => $prerequisiteData
         ])->render();
         
+        // Ensure temp directory exists
+        $tempDir = storage_path('app/private/pdf_temp');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
         // Create mPDF instance
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
             'orientation' => 'P',
+            'tempDir' => $tempDir
         ]);
         
         // Write HTML to PDF
@@ -241,6 +248,12 @@ class SubjectExportController extends Controller
                 'prerequisiteData' => [] // Skipping complex prereq map for bulk export to save memory
             ])->render();
 
+            // Ensure temp directory exists
+            $tempDir = storage_path('app/private/pdf_temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
             // Create new mPDF instance for this iteration
             // We strictly disable auto-font discovery to save performance if possible, 
             // or just keep default.
@@ -248,7 +261,7 @@ class SubjectExportController extends Controller
                 'mode' => 'utf-8',
                 'format' => 'A4',
                 'orientation' => 'P',
-                'tempDir' => storage_path('app/private/pdf_temp') // Ensure temp dir is writable and used
+                'tempDir' => $tempDir // Ensure temp dir is writable and used
             ]);
             
             $mpdf->WriteHTML($html);
