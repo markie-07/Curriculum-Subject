@@ -58,8 +58,26 @@ class SubjectController extends Controller
 
             'created_at'
         ])
-        ->orderBy('subject_name')
         ->get();
+
+        $defaults = $this->getCourseBuilderDefaults();
+        $staticInfo = [
+            'institutional_information' => $defaults['institutional_information'],
+            'department_information' => $defaults['department_information']
+        ];
+
+        $subjects = $subjects->map(function ($subject) use ($staticInfo) {
+            $data = $subject->toArray();
+            $descIndex = array_search('course_description', array_keys($data));
+            
+            if ($descIndex !== false) {
+                $offset = $descIndex + 1;
+                return array_slice($data, 0, $offset, true) + 
+                       $staticInfo + 
+                       array_slice($data, $offset, null, true);
+            }
+            return $data + $staticInfo;
+        });
 
         // Fetch all system settings
         $settings = \App\Models\SystemSetting::all();
@@ -72,7 +90,6 @@ class SubjectController extends Controller
         });
         
         return response()->json([
-            'static_data' => $this->getCourseBuilderDefaults(),
             'subjects' => $subjects,
             'system_settings' => $systemSettings
         ]);
@@ -206,9 +223,26 @@ class SubjectController extends Controller
             });
         });
 
-        $response = $subject->toArray();
+        $defaults = $this->getCourseBuilderDefaults();
+        $staticInfo = [
+            'institutional_information' => $defaults['institutional_information'],
+            'department_information' => $defaults['department_information']
+        ];
+
+        $data = $subject->toArray();
+        $descIndex = array_search('course_description', array_keys($data));
+        
+        if ($descIndex !== false) {
+            $offset = $descIndex + 1;
+            $data = array_slice($data, 0, $offset, true) + 
+                    $staticInfo + 
+                    array_slice($data, $offset, null, true);
+        } else {
+            $data = $data + $staticInfo;
+        }
+
+        $response = $data;
         $response['system_settings'] = $systemSettings;
-        $response['static_data'] = $this->getCourseBuilderDefaults();
 
         return response()->json($response);
     }
@@ -459,25 +493,7 @@ class SubjectController extends Controller
     private function getCourseBuilderDefaults()
     {
         return [
-            'dropdown_options' => [
-                'ched_course_classifications' => [
-                    "General Education",
-                    "Professional Subject Non Laboratory",
-                    "Professional Subject Laboratory",
-                    "Professional Subject Board Courses",
-                    "Professional Subject Non Board Courses",
-                    "Professional Subject OC",
-                    "NSTP 1",
-                    "NSTP 2",
-                    "Research",
-                    "OJT/Practicum"
-                ],
-                'deped_course_classifications' => [
-                    "Core Subjects",
-                    "Applied Track Subjects",
-                    "Specialized Subjects"
-                ]
-            ],
+
             'institutional_information' => [
                 'school_vision' => "BCP is committed to provide and promote quality education with a unique, modern and research-based curriculum with delivery systems geared towards excellence.",
                 'school_mission' => "To produce self-motivated and self-directed individual who aims for academic excellence, God-fearing, peaceful, healthy and productive successful citizens.",
