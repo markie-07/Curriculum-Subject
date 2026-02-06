@@ -55,4 +55,15 @@
       0 => 'Pest\\Laravel\\PestServiceProvider',
     ),
   ),
+  'stechstudio/laravel-zipstream' => 
+  array (
+    'aliases' => 
+    array (
+      'Zip' => 'STS\\ZipStream\\Facades\\Zip',
+    ),
+    'providers' => 
+    array (
+      0 => 'STS\\ZipStream\\ZipStreamServiceProvider',
+    ),
+  ),
 );

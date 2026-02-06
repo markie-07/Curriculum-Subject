@@ -19,6 +19,7 @@ use App\Http\Controllers\SubjectExportController;
 Route::middleware('integration.key')->group(function () {
     
     // --- ONLY Subject Export PDF is allowed ---
+    Route::get('/integration/subjects/export-all-pdf', [SubjectExportController::class, 'exportAllPdf']);
     Route::get('/integration/subjects/{subjectId}/export-pdf', [SubjectExportController::class, 'exportPdf']);
     
 });

@@ -7,6 +7,7 @@ use Mpdf\Mpdf;
 use Illuminate\Http\Request;
 use App\Models\ExportHistory;
 use App\Services\ActivityLogService;
+use STS\ZipStream\Facades\Zip;
 
 class SubjectExportController extends Controller
 {
@@ -50,16 +51,6 @@ class SubjectExportController extends Controller
             
             // Create a complete prerequisites map that includes ALL dependencies (recursive)
             $subjectToParentsMap = []; // Ancestors
-            // We need to build the map for ALL subjects in the curriculum to ensure deep recursion works
-            // But for this specific export, we only strictly need the current subject's ancestors.
-            // However, getAllPrerequisites logic relies on the map being fully populated or recursively accessible.
-            // My implementation passes $directParentsMap passed in.
-            
-            // Optimization: Just calculate for the current subject? 
-            // The view might need it for others? No, just $subject.
-            // But to be safe and consistent with previous logic, let's keep it or just do it for $subject.
-            // Actually, let's just do it for the current subject to save time, OR do it for all if fast enough.
-            // The previous code did it for ALL. Let's keep it safe.
             foreach ($directParentsMap as $sCode => $directPrereqs) {
                  $subjectToParentsMap[$sCode] = $this->getAllPrerequisites($sCode, $directParentsMap, []);
             }
@@ -194,5 +185,53 @@ class SubjectExportController extends Controller
         
         // Remove duplicates and return
         return array_unique($allPrereqs);
+    }
+
+    /**
+     * Export ALL subjects as a ZIP of PDFs.
+     * WARNING: Resource intensive.
+     */
+    public function exportAllPdf()
+    {
+        $subjects = Subject::with('grades')->get();
+        
+        return Zip::create('all_subjects.zip', $subjects->map(function($subject) {
+            // Re-use logic for each PDF (Simplified for bulk performance)
+            // Note: Full prereq logic might be too heavy x 100 times. 
+            // We will do a lighter render for bulk or just accept the cost.
+            
+            $fileName = preg_replace('/[^A-Za-z0-9\-]/', '_', $subject->subject_code) . '.pdf';
+            
+            return [
+                'name' => $fileName,
+                'data' => $this->generatePdfContent($subject) 
+            ];
+        }));
+    }
+
+    /**
+     * Helper to generate PDF content string for a subject
+     */
+    private function generatePdfContent($subject)
+    {
+        // Simplified curriculum/prereq logic for bulk export to avoid N+1 and memory limit
+        // We will just try to find the first curriculum attached
+        $curriculum = $subject->curriculums()->first();
+        
+        // Use basic view
+        $html = view('subject_pdf', [
+            'subject' => $subject,
+            'curriculum' => $curriculum,
+            'prerequisiteData' => [] // Skipping complex prereq map for bulk export to save memory
+        ])->render();
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'orientation' => 'P',
+        ]);
+        
+        $mpdf->WriteHTML($html);
+        return $mpdf->Output('', 'S');
     }
 }
