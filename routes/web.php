@@ -314,6 +314,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         // --- Syllabus Extraction Routes ---
         Route::post('/extract-syllabus', [ExtractSyllabusController::class, 'extract']);
         Route::post('/extract-ched-syllabus', [\App\Http\Controllers\ExtractChedSyllabusController::class, 'extract']);
+        Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
 
         // --- Description Similarity Check ---
         Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);
