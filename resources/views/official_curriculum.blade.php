@@ -216,16 +216,14 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                      <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="chedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    
                                     <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
 
-                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
                                     <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
                                 </div>
                             </div>
@@ -416,6 +414,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let pendingExternalUrl = '';
     let pendingLinkTitle = '';
+    let activeCurriculumId = null;
+    let currentCurriculumSubjects = [];
 
     // Modal functions
     const showCurriculumModal = () => {
@@ -473,6 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open curriculum modal and display subjects
     const openCurriculumModal = async (curriculum) => {
+        activeCurriculumId = curriculum.id;
         // Populate Header
         modalCurriculumTitle.textContent = curriculum.curriculum_name;
         modalCurriculumSubtitle.textContent = `${curriculum.program_code} • ${curriculum.year_level}`;
@@ -655,6 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (data.curriculum && data.curriculum.subjects) {
+                currentCurriculumSubjects = data.curriculum.subjects;
                 renderCurriculumSubjects(data.curriculum);
             } else {
                 modalCurriculumContent.innerHTML = '<p class="text-gray-500 text-center">No subjects found for this curriculum.</p>';
@@ -1171,18 +1173,187 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 10);
     };
 
+    const fetchAndDisplayPrerequisites = async (subjectData) => {
+        const chedPrerequisitesEl = document.getElementById('chedPrerequisites');
+        const chedPrereqToEl = document.getElementById('chedPrereqTo');
+
+        // Loading state
+        if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '<span class="text-gray-400 italic">Checking...</span>';
+        if (chedPrereqToEl) chedPrereqToEl.innerHTML = '<span class="text-gray-400 italic">Checking...</span>';
+
+        try {
+            if (!activeCurriculumId) {
+                console.warn('No active curriculum ID found.');
+                 if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '<span class="text-gray-500">N/A</span>';
+                 if (chedPrereqToEl) chedPrereqToEl.innerHTML = '<span class="text-gray-500">N/A</span>';
+                return;
+            }
+
+            const endpoint = `/api/prerequisites/${activeCurriculumId}`;
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error('API Error');
+            
+            const data = await response.json();
+            const prerequisites = data.prerequisites || {}; // Keys are Children. Values are Parents.
+            
+            const normalize = (str) => String(str).trim();
+            const targetCode = normalize(subjectData.subject_code);
+
+            // --- helpers ---
+            
+            // 1. Find Ancestors (Parents) -> "Credit Prerequisites"
+            const getAllAncestors = (childCode, visited = new Set()) => {
+                if (visited.has(childCode)) return [];
+                visited.add(childCode);
+
+                const key = Object.keys(prerequisites).find(k => normalize(k) === childCode);
+                if (!key) return [];
+
+                const directParents = (prerequisites[key] || []).map(p => normalize(p.prerequisite_subject_code));
+                
+                let ancestors = [...directParents];
+                directParents.forEach(parent => {
+                    ancestors = [...ancestors, ...getAllAncestors(parent, visited)];
+                });
+                return ancestors;
+            };
+
+            // 2. Build Children Map for Descendants
+            const childrenMap = {};
+            Object.keys(prerequisites).forEach(childKey => {
+                const child = normalize(childKey);
+                (prerequisites[childKey] || []).forEach(p => {
+                    const parent = normalize(p.prerequisite_subject_code);
+                    if (!childrenMap[parent]) childrenMap[parent] = [];
+                    if (!childrenMap[parent].includes(child)) {
+                        childrenMap[parent].push(child);
+                    }
+                });
+            });
+
+            // 3. Find Descendants (Children) -> "Pre-requisite to"
+            const getAllDescendants = (parentCode, visited = new Set()) => {
+                if (visited.has(parentCode)) return [];
+                visited.add(parentCode);
+
+                const directChildren = childrenMap[parentCode] || [];
+                let descendants = [...directChildren];
+
+                directChildren.forEach(child => {
+                    descendants = [...descendants, ...getAllDescendants(child, visited)];
+                });
+                return descendants;
+            };
+
+            // Calculate Relations
+            const ancestorCodes = [...new Set(getAllAncestors(targetCode))];
+            const descendantCodes = [...new Set(getAllDescendants(targetCode))];
+
+            // Filter by Subjects in Current Curriculum (Official View)
+            const validSubjectCodes = new Set(currentCurriculumSubjects.map(s => normalize(s.subject_code)));
+            
+            const validAncestors = ancestorCodes.filter(code => validSubjectCodes.has(code));
+            const validDescendants = descendantCodes.filter(code => validSubjectCodes.has(code));
+            
+            const renderBadges = (codes, container) => {
+                if (codes.length === 0) {
+                    container.innerHTML = '<span class="text-gray-500">N/A</span>';
+                } else {
+                    container.innerHTML = `<div class="flex flex-wrap gap-2">
+                        ${codes.map(code => 
+                            `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                ${code}
+                            </span>`
+                        ).join('')}
+                    </div>`;
+                }
+            };
+            
+            // Display Credit Prerequisites (use Descendants/Children logic from Subject Mapping - INVERTED)
+            // Wait, subject_mapping says: "Display Credit Prerequisites (use validDescendants)"
+            // And "Display Pre-requisite to (use validAncestors)"
+            // So we strictly follow variable naming conventions from subject_mapping to be safe.
+            // In subject_mapping:
+            // validAncestors = mapToObjects(ancestorCodes);
+            // validDescendants = mapToObjects(descendantCodes);
+            // chedPrerequisitesEl -> validDescendants
+            // chedPrereqToEl -> validAncestors
+            
+            // BUT, my Helper functions above:
+            // getAllAncestors returns PARENTS (Credit Prerequisites).
+            // getAllDescendants returns CHILDREN (Prereq To).
+            
+            // So if `subject_mapping` puts `validDescendants` into `chedPrerequisitesEl`, 
+            // it effectively puts CHILDREN into Credit Prerequisites? THAT IS INVERTED LOGIC compared to English.
+            // Credit Prerequisite for Math 2 is Math 1. (Math 1 is Parent/Ancestor).
+            // Pre-requisite to Math 1 is Math 2. (Math 2 is Child/Descendant).
+            
+            // IF subject_mapping logic is indeed "inverted" (using Descendants for Credit Prereqs), then:
+            // Credit Prereqs = Children? No, that would mean "Required For".
+            // Let's re-read subject_mapping comment:
+            // "Display Credit Prerequisites (use Descendants/Children from DB structure because data is inverted)"
+            // This suggests the DB structure or API data labels are inverted.
+            // If the API `prerequisites` keys are CHILDREN, and values are PARENTS.
+            // My `getAllAncestors` parses PARENTS.
+            // My `getAllDescendants` parses CHILDREN.
+            
+            // If subject_mapping uses `validDescendants` for `chedPrerequisitesEl`, then:
+            // It is showing CHILDREN as Credit Prereqs. 
+            // e.g. Subject = Math 2. validDescendants = [Math 3]. 
+            // "Credit Prereqs: Math 3". -> This implies Math 3 <= Math 2. This is weird if 'Descendant' means Child.
+            // Unless 'Descendant' in subject_mapping logic means 'Ancestor' in reality?
+            
+            // Let's look at `subject_mapping.blade.php` definitions again.
+            // getAllAncestors (Line 1180): Iterates directParents. Uses prerequisites[key].
+            // So getAllAncestors finds PARENTS.
+            // getAllDescendants (Line 1214): Iterates childrenMap. Finds CHILDREN.
+            
+            // So:
+            // ancestorCodes = [Parents]. (Prerequisites).
+            // descendantCodes = [Children]. (Required For).
+            
+            // Now render mapping (Line 1249):
+            // if (chedPrerequisitesEl) { if (validDescendants...) }
+            // So it renders CHILDREN (validDescendants) into "Credit Prerequisites" label.
+            // And it renders PARENTS (validAncestors) into "Pre-requisite to" label.
+            
+            // This suggests the LABELS on the UI are:
+            // "Credit Prerequisites" -> Shows things that REQUIRE this subject? (i.e. this is a credit prereq FOR them).
+            // "Pre-requisite to" -> Shows things that THIS subject requires? (i.e. this is a prereq TO them).
+            
+            // Wait, "Pre-requisite to" literally means "This subject is a prerequisite to X". X is a Child.
+            // "Credit Prerequisites" usually means "The prerequisites OF this subject".
+            
+            // If subject_mapping puts `Descendants` (Children) into `Credit Prerequisites`, it is saying "Math 3 is a Credit Prereq of Math 2". (Assuming Math 2 -> Math 3).
+            // That means Math 3 < Math 2? No.
+            
+            // Let's trust the USER REQUEST "analye the subject mapping ... to fetch the data".
+            // I will EXACTLY copy the mapping.
+            // `chedPrerequisitesEl` gets `validDescendants`.
+            // `chedPrereqToEl` gets `validAncestors`.
+            
+            if (chedPrerequisitesEl) renderBadges(validDescendants, chedPrerequisitesEl);
+            if (chedPrereqToEl) renderBadges(validAncestors, chedPrereqToEl);
+
+        } catch (error) {
+            console.error('Error fetching prerequisites:', error);
+            if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '<span class="text-red-500">Error loading data</span>';
+            if (chedPrereqToEl) chedPrereqToEl.innerHTML = '<span class="text-red-500">Error loading data</span>';
+        }
+    };
+
     // Populate CHED Modal
-    const populateChedModal = (data) => {
+    const populateChedModal = async (data) => {
         setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
         setText('chedCourseTitle', data.subject_name);
         setText('chedSubjectCode', data.subject_code);
-        setText('chedSubjectType', data.subject_type);
+        setText('chedCourseClassification', data.course_classification);
         setText('chedSubjectUnit', data.subject_unit);
         setText('chedContactHours', data.contact_hours);
-        setText('chedMemorandumYear', data.memorandum_year);
-        setText('chedPrerequisites', data.prerequisites);
-        setText('chedPrereqTo', data.pre_requisite_to);
-        setText('chedMemorandum', data.memorandum);
+        
+        // Dynamic Prerequisites
+        await fetchAndDisplayPrerequisites(data);
+
         setText('chedCourseDescription', data.course_description);
         
         // Learning Outcomes

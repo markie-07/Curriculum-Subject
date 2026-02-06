@@ -189,16 +189,13 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="chedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="chedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="chedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Classification</label><div id="chedCourseClassification" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Units</label><div id="chedSubjectUnit" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Contact Hours</label><div id="chedContactHours" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Memorandum Year</label><div id="chedMemorandumYear" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Credit Prerequisites</label><div id="chedPrerequisites" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Pre-requisite to</label><div id="chedPrereqTo" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-
-                                    <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Official Memorandum</label><div id="chedMemorandum" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium break-words"></div></div>
                                     <div class="md:col-span-3"><label class="block text-sm font-medium text-gray-700 mb-2">Course Description</label><div id="chedCourseDescription" class="p-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 text-sm whitespace-pre-wrap leading-relaxed"></div></div>
                                 </div>
                             </div>
@@ -321,7 +318,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Title</label><div id="depedCourseTitle" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Code</label><div id="depedSubjectCode" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
-                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Course Type</label><div id="depedSubjectType" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
+                                    <!-- DepEd Course Type removed -->
                                     
                                     <div><label class="block text-sm font-medium text-gray-700 mb-2">Document Category</label><div id="depedMemorandumCategory" class="py-3 px-4 bg-gray-50 rounded-md border border-gray-200 text-gray-800 font-medium"></div></div>
                                     
@@ -503,6 +500,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let pendingExternalUrl = '';
     let pendingLinkTitle = '';
+    let activeCurriculumId = null;
+
+    // Default Vision & Mission (Copied from subject_mapping.blade.php)
+    const defaultDeptVision = "To improve the quality of student’s input and by promoting IT enabled, market driven and internationally comparable programs through quality assurance systems, upgrading faculty qualifications and establishing international linkages.";
+    const defaultDeptMission = "To provide high quality education, to conduct relevant research that would contribute to the economic development of the region and to produce quality graduates who are globally competitive, innovative, service-oriented and value-laden.";
+    
+    const genEdDeptVision = "To provide all students with a broad and coherent learning experience in general education to become independent, life-long learners, critical and creative thinkers, and socially responsible citizens.";
+    const genEdDeptMission = "To offer general education courses that will develop the students’ intellectual, personal, and social capabilities through an interdisciplinary and multidimensional approach to learning.";
 
     // --- Modal 1 Functions ---
     const showSubjectsModal = () => {
@@ -564,6 +569,32 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if (closeChedModalBtn) closeChedModalBtn.addEventListener('click', hideChedModal);
     chedModal.addEventListener('click', (e) => { if (e.target === chedModal) hideChedModal(); });
+
+    // Export PDF Logic
+    const exportChedPdfButton = document.getElementById('exportChedPdfButton');
+    if (exportChedPdfButton) {
+        exportChedPdfButton.addEventListener('click', () => {
+            if (!exportChedPdfButton.dataset.subjectData) return;
+            const subjectToExport = JSON.parse(exportChedPdfButton.dataset.subjectData);
+            
+            // Determine which texts to use
+            const classification = subjectToExport.course_classification || '';
+            const type = subjectToExport.subject_type || '';
+            const isGenEd = classification === 'General Education' || type.includes('Gen');
+            
+            const vision = isGenEd ? genEdDeptVision : defaultDeptVision;
+            const mission = isGenEd ? genEdDeptMission : defaultDeptMission;
+            
+            // Encode for URL
+            const params = new URLSearchParams({
+                vision: vision,
+                mission: mission
+            });
+
+            // Redirect to the export route
+            window.location.href = `/api/subjects/${subjectToExport.id}/export-pdf?${params.toString()}`;
+        });
+    }
 
     // Close Logic for DepEd Modal
     const hideDepEdModal = () => {
@@ -778,12 +809,16 @@ document.addEventListener('DOMContentLoaded', () => {
         versionButton.className = 'hidden'; // Keeping it hidden as per design, or remove if not needed
         
         card.addEventListener('click', async () => {
+            // Set active curriculum ID for prerequisite fetching
+            activeCurriculumId = curriculum.id;
+
             // Populate Modal Header Details
             modalCurriculumTitle.textContent = curriculum.curriculum_name;
             if (modalCurriculumSubtitle) modalCurriculumSubtitle.textContent = `${curriculum.program_code} • ${curriculum.year_level}`;
             
             if (modalAcademicYear) modalAcademicYear.textContent = curriculum.academic_year || 'N/A';
-            if (modalTotalUnits) modalTotalUnits.textContent = curriculum.total_units ? `${parseFloat(curriculum.total_units)} Units` : 'N/A';
+            // Total units will be calculated from subject mappings after fetching version history
+            if (modalTotalUnits) modalTotalUnits.textContent = 'Calculating...';
             if (modalCompliance) modalCompliance.textContent = curriculum.compliance || 'N/A';
             
             
@@ -976,11 +1011,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         renderVersionHistoryInModal([currentVersion], curriculum.year_level);
                     } else {
                         modalSubjectsContent.innerHTML = '<p class="text-gray-500 text-center">No subjects mapped to this curriculum yet.</p>';
+                        if (modalTotalUnits) modalTotalUnits.textContent = 'N/A';
                     }
                 }
             } catch (error) {
                 console.error('Failed to fetch version history:', error);
                 modalSubjectsContent.innerHTML = '<p class="text-red-500 text-center">Could not load version history. Error: ' + error.message + '</p>';
+                if (modalTotalUnits) modalTotalUnits.textContent = 'N/A';
             }
         });
         return card;
@@ -1135,7 +1172,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Course Info
         setText('depedCourseTitle', data.subject_name);
         setText('depedSubjectCode', data.subject_code);
-        setText('depedSubjectType', data.subject_type);
+        // Course Type removed
+        // setText('depedSubjectType', data.subject_type);
         setText('depedMemorandumCategory', data.memorandum_category);
         setText('depedTitle', data.title || data.subject_name); 
         setText('depedMemorandum', data.memorandum);
@@ -1229,19 +1267,168 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    const populateChedModal = (data, isHistorical = false) => {
+    // Fetches and displays prerequisites dynamically
+    const fetchAndDisplayPrerequisites = async (subjectData) => {
+        const subjectCode = subjectData.subject_code;
+        const chedPrerequisitesEl = document.getElementById('chedPrerequisites');
+        const chedPrereqToEl = document.getElementById('chedPrereqTo');
+        
+        // Set loading state
+        if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '<span class="text-gray-400 italic">Loading...</span>';
+        if (chedPrereqToEl) chedPrereqToEl.innerHTML = '<span class="text-gray-400 italic">Loading...</span>';
+        
+        try {
+            // Get the current curriculum ID from global variable
+            let curriculumId = activeCurriculumId;
+            
+            // Auto-detect context for Gen Ed subjects or Global Major context if no curriculum selected
+            if (!curriculumId) {
+                const type = (subjectData.subject_type || '').toLowerCase();
+                const classification = (subjectData.course_classification || '').toLowerCase();
+                const isGenEd = type.includes('general') || classification.includes('general') || classification.includes('nstp') || type.includes('nstp');
+                
+                if (isGenEd) {
+                    curriculumId = 'gen-ed-college';
+                } else if (subjectData.syllabus_type === 'DepEd') {
+                     curriculumId = 'gen-ed-shs'; 
+                } else {
+                     curriculumId = 'major-college';
+                }
+            }
+            
+            // Handle General Education and Major Global special IDs
+            let apiUrl = `/api/prerequisites/${curriculumId}?t=${new Date().getTime()}`;
+            if (['gen-ed-college', 'gen-ed-shs', 'major-college', 'major-shs'].includes(curriculumId)) {
+                apiUrl = `/api/gen-ed-prerequisites/${curriculumId}?t=${new Date().getTime()}`;
+            }
+            
+            console.log(`🔍 Fetching prerequisites from: ${apiUrl} for subject: ${subjectCode}`);
+
+            // Fetch prerequisite data for the curriculum
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Failed to fetch prerequisites');
+            
+            const data = await response.json();
+            const prerequisites = data.prerequisites || {}; // Keys are Children. Values are Parents.
+            const subjects = data.subjects || [];
+
+            // Use local subjects for lookup
+            const lookupSubjects = subjects;
+            const normalize = (str) => String(str).trim();
+            const targetCode = normalize(subjectCode);
+
+            // --- Helper Recursive Functions ---
+
+            // 1. Find Ancestors (Parents...) 
+            const getAllAncestors = (childCode, visited = new Set()) => {
+                if (visited.has(childCode)) return [];
+                visited.add(childCode);
+
+                const key = Object.keys(prerequisites).find(k => normalize(k) === childCode);
+                if (!key) return [];
+
+                const directParents = (prerequisites[key] || []).map(p => normalize(p.prerequisite_subject_code));
+                
+                let ancestors = [...directParents];
+                directParents.forEach(parent => {
+                    ancestors = [...ancestors, ...getAllAncestors(parent, visited)];
+                });
+                return ancestors;
+            };
+
+            // 2. Build Children Map for Descendants traversal
+            const childrenMap = {};
+            Object.keys(prerequisites).forEach(childKey => {
+                const child = normalize(childKey);
+                (prerequisites[childKey] || []).forEach(p => {
+                    const parent = normalize(p.prerequisite_subject_code);
+                    if (!childrenMap[parent]) childrenMap[parent] = [];
+                    if (!childrenMap[parent].includes(child)) {
+                        childrenMap[parent].push(child);
+                    }
+                });
+            });
+
+            // 3. Find Descendants (Children...)
+            const getAllDescendants = (parentCode, visited = new Set()) => {
+                if (visited.has(parentCode)) return [];
+                visited.add(parentCode);
+
+                const directChildren = childrenMap[parentCode] || [];
+                let descendants = [...directChildren];
+
+                directChildren.forEach(child => {
+                    descendants = [...descendants, ...getAllDescendants(child, visited)];
+                });
+                return descendants;
+            };
+
+            // --- Execute Lookup ---
+            
+            const ancestorCodes = [...new Set(getAllAncestors(targetCode))];
+            const descendantCodes = [...new Set(getAllDescendants(targetCode))];
+
+            // --- Map to Subject Objects ---
+            
+            const mapToObjects = (codes) => {
+                 return codes.map(code => {
+                    const found = lookupSubjects.find(s => normalize(s.subject_code) === code);
+                    return found || { subject_code: code, subject_name: 'Unlisted Subject', subject_type: 'N/A' };
+                });
+            };
+
+            const validAncestors = mapToObjects(ancestorCodes); 
+            const validDescendants = mapToObjects(descendantCodes); 
+            
+            // --- Render ---
+
+            // Display Credit Prerequisites (use Descendants/Children from DB structure because data is inverted)
+            if (chedPrerequisitesEl) {
+                if (validDescendants.length > 0) {
+                    const html = validDescendants.map(s => 
+                        `<span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-blue-200">
+                            ${s.subject_code} - ${s.subject_name}
+                        </span>`
+                    ).join('');
+                     chedPrerequisitesEl.innerHTML = `<div class="flex flex-wrap gap-1">${html}</div>`;
+                } else {
+                    chedPrerequisitesEl.innerHTML = '<span class="text-gray-500">N/A</span>';
+                }
+            }
+            
+            // Display Pre-requisite to (use Ancestors/Parents from DB structure because data is inverted)
+            if (chedPrereqToEl) {
+                if (validAncestors.length > 0) {
+                    const html = validAncestors.map(s => 
+                        `<span class="inline-block bg-purple-50 text-purple-700 px-3 py-1 rounded-md mr-2 mb-2 text-sm font-medium border border-purple-200">
+                            ${s.subject_code} - ${s.subject_name}
+                        </span>`
+                    ).join('');
+                    chedPrereqToEl.innerHTML = `<div class="flex flex-wrap gap-1">${html}</div>`;
+                } else {
+                     chedPrereqToEl.innerHTML = '<span class="text-gray-500">N/A</span>';
+                }
+            }
+
+        } catch (error) {
+            console.error('Error fetching prerequisites:', error);
+            if (chedPrerequisitesEl) chedPrerequisitesEl.innerHTML = '<span class="text-red-500">Error loading data</span>';
+            if (chedPrereqToEl) chedPrereqToEl.innerHTML = '<span class="text-red-500">Error loading data</span>';
+        }
+    };
+
+    const populateChedModal = async (data, isHistorical = false) => {
         console.log('Populating CHED Modal', data);
         
         setText('chedSubjectName', `${data.subject_name} (${data.subject_code})`);
         setText('chedCourseTitle', data.subject_name);
         setText('chedSubjectCode', data.subject_code);
-        setText('chedSubjectType', data.subject_type);
+        setText('chedCourseClassification', data.course_classification);
         setText('chedSubjectUnit', data.subject_unit);
         setText('chedContactHours', data.contact_hours);
-        setText('chedMemorandumYear', data.memorandum_year);
-        setText('chedPrerequisites', data.prerequisites);
-        setText('chedPrereqTo', data.pre_requisite_to);
-        setText('chedMemorandum', data.memorandum);
+        
+        // Fetch and display prerequisites dynamically
+        await fetchAndDisplayPrerequisites(data);
         const descEl = document.getElementById('chedCourseDescription');
         if(descEl) descEl.innerHTML = data.course_description || 'N/A';
 
@@ -1279,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lessonsContainer) {
             lessonsContainer.innerHTML = '';
             if (data.lessons && typeof data.lessons === 'object' && Object.keys(data.lessons).length > 0) {
-                 Object.keys(data.lessons).sort((a, b) => {
+                Object.keys(data.lessons).sort((a, b) => {
                     const wa = parseInt(a.replace(/\D/g, '')) || 0;
                     const wb = parseInt(b.replace(/\D/g, '')) || 0;
                     return wa - wb;
@@ -1287,32 +1474,89 @@ document.addEventListener('DOMContentLoaded', () => {
                     const lessonString = data.lessons[week];
                     const lessonData = {};
                     const parts = (typeof lessonString === 'string') ? lessonString.split(',, ') : [];
+                    
                     parts.forEach(part => {
-                            if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\\n', '').replace('Detailed Lesson Content:', '');
-                            if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\\n', '').replace('Student Intended Learning Outcomes:', '');
-                            if (part.startsWith('Assessment:')) { const match = part.match(/ONSITE: (.*) OFFSITE: (.*)/s); if(match){ lessonData.at_onsite = match[1]; lessonData.at_offsite = match[2]; } else { lessonData.at_onsite = part.replace('Assessment:', ''); } }
-                            if (part.startsWith('Activities:')) { const match = part.match(/ON-SITE: (.*) OFF-SITE: (.*)/s); if(match){ lessonData.tla_onsite = match[1]; lessonData.tla_offsite = match[2]; } else { lessonData.tla_onsite = part.replace('Activities:', ''); } }
-                            if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\\n', '').replace('Learning and Teaching Support Materials:', '');
-                            if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\\n', '').replace('Output Materials:', '');
+                            if (part.startsWith('Detailed Lesson Content:')) lessonData.content = part.replace('Detailed Lesson Content:\n', '').replace('Detailed Lesson Content:', '');
+                            if (part.startsWith('Student Intended Learning Outcomes:')) lessonData.silo = part.replace('Student Intended Learning Outcomes:\n', '').replace('Student Intended Learning Outcomes:', '');
+                            
+                            if (part.startsWith('Assessment:')) { 
+                                const match = part.match(/Assessment: ONSITE:\s*([\s\S]*?)OFFSITE:\s*([\s\S]*)/); 
+                                if (match) { 
+                                    lessonData.at_onsite = match[1].trim(); 
+                                    lessonData.at_offsite = match[2].trim(); 
+                                } else { 
+                                    // Fallback
+                                    lessonData.at_onsite = part.replace('Assessment:', ''); 
+                                } 
+                            }
+                            if (part.startsWith('Activities:')) { 
+                                const match = part.match(/Activities: ON-SITE:\s*([\s\S]*?)OFF-SITE:\s*([\s\S]*)/); 
+                                if (match) { 
+                                    lessonData.tla_onsite = match[1].trim(); 
+                                    lessonData.tla_offsite = match[2].trim(); 
+                                } else { 
+                                    lessonData.tla_onsite = part.replace('Activities:', ''); 
+                                } 
+                            }
+                            if (part.startsWith('Learning and Teaching Support Materials:')) lessonData.ltsm = part.replace('Learning and Teaching Support Materials:\n', '').replace('Learning and Teaching Support Materials:', '');
+                            if (part.startsWith('Output Materials:')) lessonData.output = part.replace('Output Materials:\n', '').replace('Output Materials:', '');
                     });
                      
-                    const weekHTML = `<div class="border border-gray-200 rounded-lg overflow-hidden mb-2">
-                        <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
-                            <span class="font-semibold text-gray-700">${week}</span>
-                            <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-4">
-                             <div class="grid grid-cols-1 gap-4">
-                                <div><label class="font-bold text-xs text-gray-500">Content</label><div class="text-sm p-2 bg-gray-50 rounded">${lessonData.lesson_content || lessonData.content || 'N/A'}</div></div>
-                                <div><label class="font-bold text-xs text-gray-500">SILO</label><div class="text-sm p-2 bg-gray-50 rounded">${lessonData.silo || 'N/A'}</div></div>
-                             </div>
-                        </div>
-                    </div>`; 
+                    const weekNum = parseInt(week.replace(/\D/g, '')) || 0;
+                    const isExamWeek = [6, 12, 18].includes(weekNum);
+                    let weekHTML = '';
+
+                    if (isExamWeek) {
+                         weekHTML = `
+                            <div class="border border-gray-200 rounded-lg overflow-hidden mb-2">
+                                <button type="button" class="w-full flex justify-between items-center p-4 bg-purple-50 hover:bg-purple-100 transition-colors week-toggle">
+                                    <span class="font-bold text-purple-700">${week} - ${lessonData.content || 'Exam'}</span>
+                                    <svg class="w-5 h-5 text-purple-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="p-5 border-t border-gray-200 bg-white hidden week-content">
+                                    <div class="text-center py-4">
+                                        <p class="text-xl font-bold text-gray-600">${lessonData.content || 'Exam'}</p>
+                                    </div>
+                                </div>
+                            </div>`;
+                    } else {
+                        weekHTML = `<div class="border border-gray-200 rounded-lg overflow-hidden mb-2">
+                            <button type="button" class="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors week-toggle">
+                                <span class="font-semibold text-gray-700">${week}</span>
+                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="p-5 border-t border-gray-200 bg-white hidden week-content space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Content</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.content || 'N/A'}</div></div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Student Intended Learning Outcomes</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.silo || 'N/A'}</div></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Assessment Tasks (ATs)</label>
+                                        <div class="space-y-2">
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.at_onsite || 'N/A'}</div>
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.at_offsite || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Teaching/Learning Activities (TLAs)</label>
+                                        <div class="space-y-2">
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">ONSITE</span>${lessonData.tla_onsite || 'N/A'}</div>
+                                            <div class="p-2 bg-gray-50 border rounded-md text-sm"><span class="font-bold text-xs text-gray-500 block mb-1">OFFSITE</span>${lessonData.tla_offsite || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">LTSM</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.ltsm || 'N/A'}</div></div>
+                                    <div><label class="block text-sm font-semibold text-gray-600 mb-2">Output Materials</label><div class="p-3 bg-gray-50 border rounded-md min-h-[60px] text-sm whitespace-pre-wrap">${lessonData.output || 'N/A'}</div></div>
+                                </div>
+                            </div>
+                        </div>`; 
+                    }
                     lessonsContainer.innerHTML += weekHTML;
                 });
                  lessonsContainer.querySelectorAll('.week-toggle').forEach(btn => {
                      btn.addEventListener('click', () => {
-                         btn.nextElementSibling.classList.toggle('hidden');
+                         const content = btn.nextElementSibling;
+                         content.classList.toggle('hidden');
                          btn.querySelector('svg').classList.toggle('rotate-180');
                      });
                  });
@@ -1356,6 +1600,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderVersionHistoryInModal = (versions, yearLevel) => {
         modalSubjectsContent.innerHTML = '';
+
+        // Calculate total curriculum units from the most recent version (first in array)
+        if (versions.length > 0 && modalTotalUnits) {
+            const currentVersion = versions[0];
+            const snapshotData = currentVersion.snapshot_data;
+            const subjects = snapshotData.subjects || [];
+            
+            // Sum up all subject units, excluding removed subjects
+            let totalCurriculumUnits = 0;
+            subjects.forEach(subject => {
+                if (!subject._isRemoved) {
+                    const units = parseInt(subject.subject_unit || subject.units || 0, 10);
+                    totalCurriculumUnits += units;
+                }
+            });
+            
+            // Update the modal header with calculated total
+            modalTotalUnits.textContent = totalCurriculumUnits > 0 ? `${totalCurriculumUnits} Units` : 'N/A';
+        }
 
         versions.forEach((version, index) => {
             const historyEntry = document.createElement('div');
