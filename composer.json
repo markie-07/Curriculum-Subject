@@ -14,6 +14,7 @@
         "google-gemini-php/client": "^2.7",
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.1",
         "mpdf/mpdf": "*",
         "openai-php/client": "^0.16.0",

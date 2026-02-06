@@ -2,48 +2,27 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubjectExportController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes (Stateless/Token-Based)
+| API Routes
 |--------------------------------------------------------------------------
 |
-| This file is reserved for stateless API routes that use token-based
-| authentication (e.g., Sanctum tokens for mobile apps or external APIs).
-|
-| ⚠️ IMPORTANT: All application API routes are defined in web.php
-| This provides better security with CSRF protection, session management,
-| and cookie encryption for the Blade-based SPA architecture.
-|
-| Routes here are automatically prefixed with /api and use the 'api'
-| middleware group (stateless, rate-limited, no CSRF protection).
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
 |
 */
 
-// Sanctum user endpoint for token-based authentication
+// Integration Routes (Protected by API Key) - LIMITED ACCESS
+Route::middleware('integration.key')->group(function () {
+    
+    // --- ONLY Subject Export PDF is allowed ---
+    Route::get('/integration/subjects/{subjectId}/export-pdf', [SubjectExportController::class, 'exportPdf']);
+    
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-// AI Syllabus Generation - Moved here for isolation/stateless execution
-Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
-
-/*
-|--------------------------------------------------------------------------
-| Future External API Routes
-|--------------------------------------------------------------------------
-|
-| If you need to expose stateless API endpoints for:
-| - Mobile applications
-| - Third-party integrations
-| - Webhook receivers
-| - Public APIs
-|
-| Define them here with appropriate authentication and rate limiting.
-|
-| Example:
-| Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
-|     Route::get('/external/curriculums', [ExternalApiController::class, 'index']);
-| });
-|
-*/

@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'prevent.back' => \App\Http\Middleware\PreventBackHistory::class,
             'check.user.status' => \App\Http\Middleware\CheckUserStatus::class,
             'update.activity' => \App\Http\Middleware\UpdateUserActivity::class,
+            'integration.key' => \App\Http\Middleware\CheckIntegrationApiKey::class,
         ]);
         
         // Add CheckUserStatus and UpdateUserActivity middleware to web group for authenticated users

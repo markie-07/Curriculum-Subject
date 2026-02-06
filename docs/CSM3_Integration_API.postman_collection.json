@@ -1,0 +1,75 @@
+{
+    "info": {
+        "_postman_id": "csm3-integration-api",
+        "name": "CSM3 Integration API",
+        "description": "Postman collection for testing CSM3 Integration API endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Export Subject PDF",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "X-Integration-Key",
+                        "value": "{{api_key}}",
+                        "type": "text",
+                        "description": "Integration API Key"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/integration/subjects/{{subject_id}}/export-pdf",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "integration",
+                        "subjects",
+                        "{{subject_id}}",
+                        "export-pdf"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "api_key",
+            "value": "csm3_api",
+            "type": "string"
+        },
+        {
+            "key": "subject_id",
+            "value": "1",
+            "type": "string"
+        }
+    ]
+}
