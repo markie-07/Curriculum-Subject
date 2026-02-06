@@ -136,7 +136,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             {{-- Template Dropdown --}}
-                            <div class="relative group">
+                            <div class="relative">
                                 <button id="template-dropdown-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors py-2 px-3 rounded-lg hover:bg-gray-100 border border-transparent hover:border-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
@@ -146,15 +146,18 @@
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 hidden group-hover:block z-20">
+                                <div id="template-dropdown-menu" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 hidden z-20">
                                     <button type="button" onclick="applyTemplate('gen_ed')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors first:rounded-t-lg">
                                         General Education
                                     </button>
                                     <button type="button" onclick="applyTemplate('prof_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                         Professional (Laboratory)
                                     </button>
-                                    <button type="button" onclick="applyTemplate('prof_non_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors last:rounded-b-lg">
+                                    <button type="button" onclick="applyTemplate('prof_non_lab')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
                                         Professional (Non-Laboratory)
+                                    </button>
+                                    <button type="button" onclick="applyTemplate('prof_board')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors last:rounded-b-lg">
+                                        Professional (Board Courses)
                                     </button>
                                 </div>
                             </div>
@@ -609,6 +612,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Template Toggle
     const templateDropdownBtn = document.getElementById('template-dropdown-btn');
+    const templateDropdownMenu = document.getElementById('template-dropdown-menu'); // Added ID in HTML
+
+    // Fix for dropdown visibility toggle
+    if (templateDropdownBtn && templateDropdownMenu) {
+        templateDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            templateDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!templateDropdownBtn.contains(e.target) && !templateDropdownMenu.contains(e.target)) {
+                templateDropdownMenu.classList.add('hidden');
+            }
+        });
+    }
 
     // Templates Configuration
     const templates = {
@@ -677,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
             components: [
                 {
                     name: "Class Standing",
-                    weight: 35, // Can differ, but keeping 35 as per image
+                    weight: 35,
                     sub_components: [
                         { name: "Attendance", weight: 10 },
                         { name: "Written Works", weight: 40 },
@@ -695,12 +714,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     sub_components: []
                 }
             ]
+        },
+        'prof_board': {
+            periods: {
+                'Prelim': 30,
+                'Midterm': 30,
+                'Finals': 40
+            },
+            components: [
+                {
+                    name: "Class Standing",
+                    weight: 40,
+                    sub_components: [
+                        { name: "Attendance", weight: 10 },
+                        { name: "Written Works", weight: 40 },
+                        { name: "Performance Task", weight: 50 }
+                    ]
+                },
+                {
+                    name: "Project",
+                    weight: 30,
+                    sub_components: []
+                },
+                {
+                    name: "Major Examination",
+                    weight: 30,
+                    sub_components: []
+                }
+            ]
         }
     };
 
     window.applyTemplate = (templateKey) => {
         const template = templates[templateKey];
         if (!template) return;
+        
+        // Hide dropdown after selection
+        if (templateDropdownMenu) templateDropdownMenu.classList.add('hidden');
 
         // Check if subjects are selected
         if (!selectedSubjects || selectedSubjects.length === 0) {
