@@ -95,6 +95,15 @@ class SubjectController extends Controller
         ]);
     }
 
+    /**
+     * Get a list of all subject IDs only.
+     */
+    public function getIds()
+    {
+        $ids = Subject::pluck('id');
+        return response()->json($ids);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

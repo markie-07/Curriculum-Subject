@@ -257,6 +257,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::post('/programs', [CurriculumController::class, 'storeProgram']);
 
         // --- Subject Routes ---
+        Route::get('/subjects/ids', [SubjectController::class, 'getIds']);
         Route::get('/subjects', [SubjectController::class, 'index']);
         Route::post('/subjects', [SubjectController::class, 'store']);
         Route::get('/subjects/{id}', [SubjectController::class, 'show']);
