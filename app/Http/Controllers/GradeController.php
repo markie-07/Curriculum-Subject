@@ -18,10 +18,7 @@ class GradeController extends Controller
     public function setup()
     {
         // Log page view activity
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Grade Weighting Setup');
-            auth()->user()->updateLastActivity();
-        }
+
         
         // Get subjects that already have a grade setup to display in the Grade History
         $subjectsWithGrades = Grade::with('subject')->get()->pluck('subject')->filter();

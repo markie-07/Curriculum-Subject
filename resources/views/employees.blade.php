@@ -340,9 +340,9 @@
                     <a href="{{ route('employees.all-activities') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
                         View All Activities
                     </a>
-                    <a href="{{ route('employees.export-activities') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+                    <button id="exportReportButton" type="button" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
                         Export Report
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -608,6 +608,41 @@
             </div>
         </div>
 
+        {{-- Export Report Modal --}}
+        <div id="exportReportModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 ease-out hidden">
+            <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="export-report-modal-panel">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-green-100 p-3 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Export Activity Report</h3>
+                    <p class="text-sm text-slate-600">Select a date range for the report.</p>
+                </div>
+                
+                <form id="exportReportForm" action="{{ route('employees.export-activities') }}" method="GET" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="start_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" value="{{ now()->subMonth()->format('Y-m-d') }}" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <input type="date" name="end_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" value="{{ now()->format('Y-m-d') }}" required>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" id="cancelExportReport" class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-all">
+                            Download Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <script>
         // Password visibility toggle function
         function togglePasswordVisibility(inputId, button) {
@@ -845,6 +880,45 @@
             successModal.addEventListener('click', function(e) {
                 if (e.target === this) hideSuccessModal();
             });
+            // Export Modal Logic
+            const exportReportButton = document.getElementById('exportReportButton');
+            const exportReportModal = document.getElementById('exportReportModal');
+            const cancelExportReport = document.getElementById('cancelExportReport');
+            const exportReportPanel = document.getElementById('export-report-modal-panel');
+            const exportReportForm = document.getElementById('exportReportForm');
+
+            if (exportReportButton) {
+                exportReportButton.addEventListener('click', function() {
+                    exportReportModal.classList.remove('hidden');
+                    // Small delay to allow transition
+                    setTimeout(() => {
+                        exportReportModal.classList.remove('opacity-0');
+                        exportReportPanel.classList.remove('scale-95', 'opacity-0');
+                        exportReportPanel.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+
+                const closeExportModal = () => {
+                   exportReportPanel.classList.remove('scale-100', 'opacity-100');
+                   exportReportPanel.classList.add('scale-95', 'opacity-0');
+                   setTimeout(() => {
+                       exportReportModal.classList.add('hidden');
+                   }, 300);
+                };
+
+                cancelExportReport.addEventListener('click', closeExportModal);
+                
+                // Allow closing by clicking outside
+                exportReportModal.addEventListener('click', function(e) {
+                   if (e.target === exportReportModal) closeExportModal();
+                });
+                
+                // Close modal after submit (assuming download starts immediately)
+                exportReportForm.addEventListener('submit', function() {
+                    setTimeout(closeExportModal, 500); 
+                });
+            }
+
         });
         </script>
     @endif

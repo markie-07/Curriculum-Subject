@@ -14,10 +14,7 @@ class PrerequisiteController extends Controller
      */
     public function index()
     {
-        if (auth()->user()) {
-            \App\Services\ActivityLogService::logPageView('Pre-requisite');
-            auth()->user()->updateLastActivity();
-        }
+
 
         // Filter out Senior High curriculums explicitly
         $shsCodes = [

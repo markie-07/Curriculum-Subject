@@ -19,10 +19,7 @@ class CurriculumExportToolController extends Controller
         $exportHistories = ExportHistory::with(['curriculum', 'user'])->latest()->get();
 
         // Log page view activity for all authenticated users
-        if (auth()->user()) {
-            ActivityLogService::logPageView('Curriculum Export Tool');
-            auth()->user()->updateLastActivity();
-        }
+
 
         return view('curriculum_export_tool', compact('curriculums', 'exportHistories'));
     }
