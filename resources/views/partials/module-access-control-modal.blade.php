@@ -3,8 +3,8 @@
     <label class="block text-sm font-medium text-slate-700 mb-2">Module Access Permissions</label>
     <div class="bg-slate-50 border border-slate-300 rounded-lg p-3 max-h-48 overflow-y-auto">
         <div class="grid grid-cols-2 gap-2">
-            <label class="modal-module-label flex items-center space-x-2 p-2 bg-white border border-slate-200 rounded hover:bg-blue-50 cursor-pointer">
-                <input type="checkbox" name="modules[]" value="dashboard" class="modal-module-checkbox w-4 h-4 text-blue-600 rounded" onchange="updateModalModuleStyle(this)">
+            <label class="modal-module-label flex items-center space-x-2 p-2 bg-blue-100 border border-blue-400 rounded cursor-pointer">
+                <input type="checkbox" name="modules[]" value="dashboard" class="modal-module-checkbox w-4 h-4 text-blue-600 rounded" onchange="updateModalModuleStyle(this)" checked>
                 <span class="text-xs text-gray-700">Dashboard</span>
             </label>
             <label class="modal-module-label flex items-center space-x-2 p-2 bg-white border border-slate-200 rounded hover:bg-blue-50 cursor-pointer">

@@ -97,15 +97,22 @@
             ];
             
             // Get selected modules and ensure it's an array
-            $selectedModules = old('modules', []);
-            if (isset($employee) && $employee->modules) {
-                $modules = $employee->modules;
-                if (is_string($modules)) {
-                    $selectedModules = json_decode($modules, true) ?? [];
+            $selectedModules = old('modules');
+
+            if ($selectedModules === null) {
+                if (isset($employee) && $employee->modules) {
+                    $modules = $employee->modules;
+                    if (is_string($modules)) {
+                        $selectedModules = json_decode($modules, true) ?? [];
+                    } else {
+                        $selectedModules = $modules;
+                    }
                 } else {
-                    $selectedModules = $modules;
+                    // Default for new employees: Dashboard access
+                    $selectedModules = isset($employee) ? [] : ['dashboard'];
                 }
             }
+            
             $selectedModules = is_array($selectedModules) ? $selectedModules : [];
         @endphp
 
