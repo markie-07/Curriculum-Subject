@@ -46,7 +46,8 @@ class EmployeeActivityLog extends Model
      */
     public function scopeDateRange($query, $startDate, $endDate)
     {
-        return $query->whereBetween('created_at', [$startDate, $endDate]);
+        return $query->whereDate('created_at', '>=', $startDate)
+                     ->whereDate('created_at', '<=', $endDate);
     }
 
     /**
