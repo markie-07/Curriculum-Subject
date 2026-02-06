@@ -134,72 +134,78 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     Route::get('/curriculum_export_tool', [CurriculumExportToolController::class, 'index'])->name('curriculum_export_tool');
     Route::post('/curriculum_export_tool', [CurriculumExportToolController::class, 'store'])->name('curriculum_export_tool.store');
 
-    // Admin-only routes
+    // --- Module Protected Routes ---
+
+    Route::get('/curriculum_builder', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Course Builder');
+            auth()->user()->updateLastActivity();
+        }
+        $programs = \App\Models\Program::all();
+        return view('curriculum_builder', compact('programs'));
+    })->middleware('module:curriculum_builder')->name('curriculum_builder');
+
+    Route::get('/official_curriculum', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Official Curriculum');
+            auth()->user()->updateLastActivity();
+        }
+        return view('official_curriculum');
+    })->middleware('module:official_curriculum')->name('official_curriculum');
+
+    Route::get('/subject_mapping', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Subject Mapping');
+            auth()->user()->updateLastActivity();
+        }
+        return view('subject_mapping');
+    })->middleware('module:subject_mapping')->name('subject_mapping');
+
+    Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])
+        ->middleware('module:pre_requisite')
+        ->name('pre_requisite');
+
+    Route::get('/grade-setup', [GradeController::class, 'setup'])
+        ->middleware('module:grade_setup')
+        ->name('grade_setup');
+
+    Route::get('/equivalency_tool', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Subject Equivalency Tool');
+            auth()->user()->updateLastActivity();
+        }
+        $subjects = \App\Models\Subject::all();
+        $equivalencies = \App\Models\Equivalency::with('equivalentSubject')->get();
+        return view('equivalency_tool', compact('subjects', 'equivalencies'));
+    })->middleware('module:equivalency_tool')->name('equivalency_tool');
+
+    // CHED Compliance Validator
+    Route::get('/compliance-validator', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Compliance Validator');
+            auth()->user()->updateLastActivity();
+        }
+        return view('compliance_validator');
+    })->middleware('module:compliance_validator')->name('compliance.validator');
+
+    Route::get('/subject_mapping_history', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('Subject Mapping History');
+            auth()->user()->updateLastActivity();
+        }
+        return view('subject_mapping_history');
+    })->middleware('module:mapping_history')->name('subject_mapping_history');
+
+    Route::get('/course-builder', function () {
+        if (auth()->user()) {
+            \App\Services\ActivityLogService::logPageView('CHED Course Builder');
+            auth()->user()->updateLastActivity();
+        }
+        return view('course_builder');
+    })->middleware('module:course_builder')->name('course_builder');
+
+    // --- Admin Only Routes ---
     Route::middleware('admin')->group(function () {
-        Route::get('/curriculum_builder', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Course Builder');
-                auth()->user()->updateLastActivity();
-            }
-            $programs = \App\Models\Program::all();
-            return view('curriculum_builder', compact('programs'));
-        })->name('curriculum_builder');
-
-        Route::get('/official_curriculum', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Official Curriculum');
-                auth()->user()->updateLastActivity();
-            }
-            return view('official_curriculum');
-        })->name('official_curriculum');
-
-        Route::get('/subject_mapping', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Subject Mapping');
-                auth()->user()->updateLastActivity();
-            }
-            return view('subject_mapping');
-        })->name('subject_mapping');
-
-        Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])->name('pre_requisite');
-
-        Route::get('/grade-setup', [GradeController::class, 'setup'])->name('grade_setup');
-
-        Route::get('/equivalency_tool', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Subject Equivalency Tool');
-                auth()->user()->updateLastActivity();
-            }
-            $subjects = \App\Models\Subject::all();
-            $equivalencies = \App\Models\Equivalency::with('equivalentSubject')->get();
-            return view('equivalency_tool', compact('subjects', 'equivalencies'));
-        })->name('equivalency_tool');
-
-        // CHED Compliance Validator
-        Route::get('/compliance-validator', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Compliance Validator');
-                auth()->user()->updateLastActivity();
-            }
-            return view('compliance_validator');
-        })->name('compliance.validator');
-
-        Route::get('/subject_mapping_history', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('Subject Mapping History');
-                auth()->user()->updateLastActivity();
-            }
-            return view('subject_mapping_history');
-        })->name('subject_mapping_history');
-
-        Route::get('/course-builder', function () {
-            if (auth()->user()) {
-                \App\Services\ActivityLogService::logPageView('CHED Course Builder');
-                auth()->user()->updateLastActivity();
-            }
-            return view('course_builder');
-        })->name('course_builder');
-
         // Employee Management Routes (Admin and Super Admin only)
         Route::resource('employees', EmployeeController::class)->except(['show']);
         
