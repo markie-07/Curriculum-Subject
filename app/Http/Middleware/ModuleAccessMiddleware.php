@@ -21,8 +21,8 @@ class ModuleAccessMiddleware
             abort(403, 'Unauthorized action.');
         }
 
-        // Super Admin bypass this check
-        if ($user->isSuperAdmin()) {
+        // Super Admin and Admin bypass this check
+        if ($user->isAdminOrSuperAdmin()) {
             return $next($request);
         }
 

@@ -175,8 +175,8 @@ class User extends Authenticatable
      */
     public function hasModuleAccess(string $module): bool
     {
-        // Super admins have access to everything
-        if ($this->isSuperAdmin()) {
+        // Admins and super admins have access to everything
+        if ($this->isAdminOrSuperAdmin()) {
             return true;
         }
 
