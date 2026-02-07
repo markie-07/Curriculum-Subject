@@ -36,6 +36,9 @@ Route::middleware('integration.key')->group(function () {
     Route::post('/integration/curriculums/{id}/approve', [\App\Http\Controllers\CurriculumController::class, 'approve']); // Approve curriculum
     Route::post('/integration/curriculums/{id}/reject', [\App\Http\Controllers\CurriculumController::class, 'reject']); // Reject curriculum
     
+    // --- New Integration Route for Curriculum Subjects ---
+    Route::get('/integration/curriculums/subjects', [\App\Http\Controllers\IntegrationController::class, 'getCurriculumSubjects']);
+    
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
