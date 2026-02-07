@@ -1213,7 +1213,7 @@
             const cmoYear = (memorandumYearEl && !memorandumYearEl.disabled) ? memorandumYearEl.value : null;
             const cmoTitle = (memorandumEl && !memorandumEl.disabled) ? memorandumEl.value : null;
 
-            const response = await fetch('/api/generate-syllabus-weeks', {
+            const response = await fetch('/ajax/generate-syllabus-weeks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -182,6 +182,9 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
 
         return view('course_builder');
     })->middleware('module:course_builder')->name('course_builder');
+    
+    // --- AJAX Routes ---
+    Route::post('/ajax/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks'])->name('ajax.generate-syllabus-weeks');
 
     // --- Admin Only Routes ---
     Route::middleware('admin')->group(function () {
@@ -294,7 +297,7 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         // --- Syllabus Extraction Routes ---
         Route::post('/extract-syllabus', [ExtractSyllabusController::class, 'extract']);
         Route::post('/extract-ched-syllabus', [\App\Http\Controllers\ExtractChedSyllabusController::class, 'extract']);
-        Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
+        // Route::post('/generate-syllabus-weeks', [\App\Http\Controllers\Api\SyllabusGeneratorController::class, 'generateWeeks']);
 
         // --- Description Similarity Check ---
         Route::post('/check-description-similarity', [\App\Http\Controllers\Api\DescriptionSimilarityController::class, 'check']);
