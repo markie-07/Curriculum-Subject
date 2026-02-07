@@ -2139,37 +2139,39 @@
                 dateTimeSpan.textContent = dateTimeString;
             }
             updateDateTime();
-            setInterval(updateDateTime, 1000);
+            // Use requestAnimationFrame for smoother updates
+            let lastUpdate = 0;
+            function animateDateTime() {
+                const now = Date.now();
+                if (now - lastUpdate >= 1000) {
+                    updateDateTime();
+                    lastUpdate = now;
+                }
+                requestAnimationFrame(animateDateTime);
+            }
+            requestAnimationFrame(animateDateTime);
             const settingsButton = document.getElementById('settings-button');
             const dropdownMenu = document.getElementById('dropdown-menu');
             
             settingsButton.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('Settings button clicked');
                 if (dropdownMenu.style.display === 'block') {
-                    console.log('Closing dropdown');
                     closeDropdown();
                 } else {
-                    console.log('Opening dropdown');
                     openDropdown();
                 }
             });
             
             function openDropdown() {
-                console.log('Opening dropdown');
                 dropdownMenu.style.display = 'block';
-                // Force reflow for animation
-                dropdownMenu.offsetHeight;
-                dropdownMenu.classList.add('show');
-                console.log('Dropdown opened, display:', dropdownMenu.style.display, 'classes:', dropdownMenu.className);
+                // Use setTimeout instead of offsetHeight to avoid forced reflow
+                setTimeout(() => dropdownMenu.classList.add('show'), 10);
             }
             
             function closeDropdown() {
-                console.log('Closing dropdown');
                 dropdownMenu.classList.remove('show');
                 setTimeout(() => {
                     dropdownMenu.style.display = 'none';
-                    console.log('Dropdown closed');
                 }, 200); // Match transition duration
             }
             
