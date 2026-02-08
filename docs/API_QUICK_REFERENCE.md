@@ -4,7 +4,8 @@
 
 ### For Integration (External Systems)
 ```
-GET /api/integration/curriculums/{id}/subjects-by-year-semester
+GET /api/integration/curriculums/{id}/subjects-by-year-semester  (Hierarchical)
+GET /api/integration/curriculums/{id}/subjects-flat              (Flat List)
 ```
 **Authentication:** API Key Header
 ```

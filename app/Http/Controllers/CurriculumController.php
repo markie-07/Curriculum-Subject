@@ -1092,4 +1092,60 @@ public function saveSubjects(Request $request)
         // For College: Regular semesters
         return $semester == 1 ? '1st Semester' : '2nd Semester';
     }
+
+    /**
+     * Get curriculum subjects as a flat list with explicit integer identifiers for year and semester
+     * Ideal for integration syncing to avoid hierarchy confusion
+     */
+    public function getCurriculumSubjectsFlat($id)
+    {
+        try {
+            $curriculum = Curriculum::findOrFail($id);
+            
+            // Get all subjects with their pivot data (year, semester)
+            $subjects = $curriculum->subjects()
+                ->wherePivot('year', '!=', null)
+                ->wherePivot('semester', '!=', null)
+                ->get();
+
+            // Sort in PHP: Year ASC, Semester ASC, Subject Name ASC
+            $subjects = $subjects->sortBy([
+                [function ($subject) { return $subject->pivot->year; }, 'asc'],
+                [function ($subject) { return $subject->pivot->semester; }, 'asc'],
+                ['subject_name', 'asc'],
+            ]);
+
+            $formattedSubjects = $subjects->map(function ($subject) {
+                return [
+                    'id' => $subject->id, // Internal ID
+                    'code' => $subject->subject_code,
+                    'name' => $subject->subject_name,
+                    'year_level' => (int) $subject->pivot->year,      // Integer: 1 = 1st Year
+                    'semester' => (int) $subject->pivot->semester,    // Integer: 1 = 1st Semester/Quarter
+                    'units' => is_numeric($subject->subject_unit) ? (float) $subject->subject_unit : 0,
+                    // Extra fields useful for verification
+                    'subject_type' => $subject->subject_type,
+                ];
+            })->values(); // Reset keys to ensure JSON array
+
+            return response()->json([
+                'data' => [
+                    'curriculum_id' => $curriculum->id,
+                    'course_name' => $curriculum->curriculum,
+                    'program_code' => $curriculum->program_code,
+                    'academic_year' => $curriculum->academic_year, // e.g. "2024-2025"
+                    'year_level_type' => $curriculum->year_level,  // "College" or "Senior High"
+                    'total_subjects' => $formattedSubjects->count(),
+                    'subjects' => $formattedSubjects
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error("Error in getCurriculumSubjectsFlat: " . $e->getMessage());
+            return response()->json([
+                'message' => 'An error occurred while fetching curriculum subjects flat list.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

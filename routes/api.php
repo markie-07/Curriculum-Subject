@@ -34,6 +34,7 @@ Route::middleware('integration.key')->group(function () {
     // --- Curriculum Routes ---
     Route::get('/integration/curriculums/approved', [\App\Http\Controllers\CurriculumController::class, 'getApproved']); // Get approved curriculums
     Route::get('/integration/curriculums/{id}/subjects-by-year-semester', [\App\Http\Controllers\CurriculumController::class, 'getCurriculumSubjectsByYearSemester']); // Get subjects grouped by year/semester
+    Route::get('/integration/curriculums/{id}/subjects-flat', [\App\Http\Controllers\CurriculumController::class, 'getCurriculumSubjectsFlat']); // Get subjects as a flat list
     Route::post('/integration/curriculums/{id}/approve', [\App\Http\Controllers\CurriculumController::class, 'approve']); // Approve curriculum
     Route::post('/integration/curriculums/{id}/reject', [\App\Http\Controllers\CurriculumController::class, 'reject']); // Reject curriculum
     
