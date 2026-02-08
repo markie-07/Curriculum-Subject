@@ -1,0 +1,241 @@
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Test Curriculum API&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            color: #388e3c;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        input {
+            padding: 8px;
+            width: 100px;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            font-weight: bold;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;🧪 Curriculum API Tester&lt;/h1&gt;
+        
+        &lt;div class="test-section"&gt;
+            &lt;h2&gt;Test Integration API&lt;/h2&gt;
+            &lt;p&gt;&lt;strong&gt;Endpoint:&lt;/strong&gt; &lt;code&gt;/api/integration/curriculums/{id}/subjects-by-year-semester&lt;/code&gt;&lt;/p&gt;
+            
+            &lt;label&gt;Curriculum ID:&lt;/label&gt;
+            &lt;input type="number" id="curriculumId" value="1" min="1"&gt;
+            
+            &lt;br&gt;&lt;br&gt;
+            
+            &lt;button onclick="testIntegrationAPI()"&gt;🔑 Test Integration API (with API Key)&lt;/button&gt;
+            &lt;button onclick="testInternalAPI()"&gt;🔒 Test Internal API (session-based)&lt;/button&gt;
+            
+            &lt;div id="result" class="result" style="display:none;"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        async function testIntegrationAPI() {
+            const curriculumId = document.getElementById('curriculumId').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '&lt;p&gt;⏳ Testing Integration API...&lt;/p&gt;';
+
+            try {
+                const url = `/api/integration/curriculums/${curriculumId}/subjects-by-year-semester`;
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-API-Key': 'csm3_api',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    &lt;div class="success"&gt;
+                        &lt;h3&gt;✅ Success!&lt;/h3&gt;
+                        &lt;p&gt;&lt;strong&gt;Curriculum:&lt;/strong&gt; ${data.curriculum_name}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Year Level:&lt;/strong&gt; ${data.year_level}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Academic Year:&lt;/strong&gt; ${data.academic_year}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Total Units:&lt;/strong&gt; ${data.total_units}&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;h4&gt;Structure:&lt;/h4&gt;
+                    ${generateStructureHTML(data.structure)}
+                    &lt;h4&gt;Full JSON Response:&lt;/h4&gt;
+                    &lt;pre&gt;${JSON.stringify(data, null, 2)}&lt;/pre&gt;
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    &lt;div class="error"&gt;
+                        &lt;h3&gt;❌ Error&lt;/h3&gt;
+                        &lt;p&gt;${error.message}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;URL Tested:&lt;/strong&gt; ${window.location.origin}/api/integration/curriculums/${curriculumId}/subjects-by-year-semester&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Troubleshooting:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                            &lt;li&gt;Make sure curriculum ID ${curriculumId} exists in the database&lt;/li&gt;
+                            &lt;li&gt;Check that the API key 'csm3_api' is correct&lt;/li&gt;
+                            &lt;li&gt;Verify the route cache is cleared (php artisan route:clear)&lt;/li&gt;
+                            &lt;li&gt;Check browser console for more details&lt;/li&gt;
+                        &lt;/ul&gt;
+                    &lt;/div&gt;
+                `;
+            }
+        }
+
+        async function testInternalAPI() {
+            const curriculumId = document.getElementById('curriculumId').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '&lt;p&gt;⏳ Testing Internal API...&lt;/p&gt;';
+
+            try {
+                const url = `/api/curriculums/${curriculumId}/subjects-by-year-semester`;
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    &lt;div class="success"&gt;
+                        &lt;h3&gt;✅ Success!&lt;/h3&gt;
+                        &lt;p&gt;&lt;strong&gt;Curriculum:&lt;/strong&gt; ${data.curriculum_name}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Year Level:&lt;/strong&gt; ${data.year_level}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Academic Year:&lt;/strong&gt; ${data.academic_year}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Total Units:&lt;/strong&gt; ${data.total_units}&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;h4&gt;Structure:&lt;/h4&gt;
+                    ${generateStructureHTML(data.structure)}
+                    &lt;h4&gt;Full JSON Response:&lt;/h4&gt;
+                    &lt;pre&gt;${JSON.stringify(data, null, 2)}&lt;/pre&gt;
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    &lt;div class="error"&gt;
+                        &lt;h3&gt;❌ Error&lt;/h3&gt;
+                        &lt;p&gt;${error.message}&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;URL Tested:&lt;/strong&gt; ${window.location.origin}/api/curriculums/${curriculumId}/subjects-by-year-semester&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; You must be logged in to use the internal API.&lt;/p&gt;
+                    &lt;/div&gt;
+                `;
+            }
+        }
+
+        function generateStructureHTML(structure) {
+            let html = '&lt;div style="background: #f5f5f5; padding: 15px; border-radius: 4px;"&gt;';
+            
+            structure.forEach(year => {
+                html += `
+                    &lt;div style="margin-bottom: 20px; background: white; padding: 15px; border-radius: 4px;"&gt;
+                        &lt;h4 style="margin: 0 0 10px 0; color: #1976d2;"&gt;${year.year_label}&lt;/h4&gt;
+                        &lt;div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"&gt;
+                            &lt;div&gt;
+                                &lt;strong&gt;${year.semester_1.semester_label}&lt;/strong&gt;
+                                &lt;p&gt;Subjects: ${year.semester_1.subjects.length}&lt;/p&gt;
+                                &lt;p&gt;Total Units: ${year.semester_1.total_units}&lt;/p&gt;
+                            &lt;/div&gt;
+                            &lt;div&gt;
+                                &lt;strong&gt;${year.semester_2.semester_label}&lt;/strong&gt;
+                                &lt;p&gt;Subjects: ${year.semester_2.subjects.length}&lt;/p&gt;
+                                &lt;p&gt;Total Units: ${year.semester_2.total_units}&lt;/p&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                `;
+            });
+            
+            html += '&lt;/div&gt;';
+            return html;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;

@@ -974,4 +974,122 @@ public function saveSubjects(Request $request)
             ], 500);
         }
     }
+
+    /**
+     * Get curriculum subjects grouped by year and semester
+     * Returns a structured format with subjects organized by year level and semester
+     */
+    public function getCurriculumSubjectsByYearSemester($id)
+    {
+        try {
+            $curriculum = Curriculum::findOrFail($id);
+            
+            // Get all subjects with their pivot data (year, semester)
+            $subjects = $curriculum->subjects()
+                ->wherePivot('year', '!=', null)
+                ->wherePivot('semester', '!=', null)
+                ->orderBy('subject_name')
+                ->get();
+
+            // Determine max year based on year_level
+            $maxYear = $curriculum->year_level === 'Senior High' ? 2 : 4;
+
+            // Initialize structure for all years and semesters
+            $structure = [];
+            for ($year = 1; $year <= $maxYear; $year++) {
+                $structure["year_{$year}"] = [
+                    'year' => $year,
+                    'year_label' => $this->getYearLabel($year),
+                    'semester_1' => [
+                        'semester' => 1,
+                        'semester_label' => $this->getSemesterLabel($curriculum->year_level, $year, 1),
+                        'subjects' => [],
+                        'total_units' => 0
+                    ],
+                    'semester_2' => [
+                        'semester' => 2,
+                        'semester_label' => $this->getSemesterLabel($curriculum->year_level, $year, 2),
+                        'subjects' => [],
+                        'total_units' => 0
+                    ]
+                ];
+            }
+
+            // Group subjects by year and semester
+            foreach ($subjects as $subject) {
+                $year = $subject->pivot->year;
+                $semester = $subject->pivot->semester;
+                
+                if ($year >= 1 && $year <= $maxYear && ($semester == 1 || $semester == 2)) {
+                    $subjectData = [
+                        'id' => $subject->id,
+                        'subject_name' => $subject->subject_name,
+                        'subject_code' => $subject->subject_code,
+                        'subject_type' => $subject->subject_type,
+                        'course_classification' => $subject->course_classification,
+                        'subject_unit' => $subject->subject_unit,
+                        'contact_hours' => $subject->contact_hours,
+                        'course_description' => $subject->course_description,
+                    ];
+                    
+                    $structure["year_{$year}"]["semester_{$semester}"]['subjects'][] = $subjectData;
+                    $structure["year_{$year}"]["semester_{$semester}"]['total_units'] += floatval($subject->subject_unit ?? 0);
+                }
+            }
+
+            // Calculate total units for the entire curriculum
+            $totalUnits = 0;
+            foreach ($structure as $yearData) {
+                $totalUnits += $yearData['semester_1']['total_units'];
+                $totalUnits += $yearData['semester_2']['total_units'];
+            }
+
+            return response()->json([
+                'curriculum_id' => $curriculum->id,
+                'curriculum_name' => $curriculum->curriculum,
+                'year_level' => $curriculum->year_level,
+                'academic_year' => $curriculum->academic_year,
+                'total_units' => $totalUnits,
+                'structure' => array_values($structure) // Convert to indexed array
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error("Error in getCurriculumSubjectsByYearSemester: " . $e->getMessage());
+            return response()->json([
+                'message' => 'An error occurred while fetching curriculum structure.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper function to get year label with suffix
+     */
+    private function getYearLabel($year)
+    {
+        $suffix = 'th';
+        if ($year == 1) $suffix = 'st';
+        elseif ($year == 2) $suffix = 'nd';
+        elseif ($year == 3) $suffix = 'rd';
+        
+        return "{$year}{$suffix} Year";
+    }
+
+    /**
+     * Helper function to get semester label
+     */
+    private function getSemesterLabel($yearLevel, $year, $semester)
+    {
+        if ($yearLevel === 'Senior High') {
+            // For Senior High: Year 1 = Q1/Q2, Year 2 = Q3/Q4
+            $quarterMap = [
+                1 => ['1st Quarter', '2nd Quarter'],
+                2 => ['3rd Quarter', '4th Quarter']
+            ];
+            return $quarterMap[$year][$semester - 1] ?? "{$semester} Semester";
+        }
+        
+        // For College: Regular semesters
+        return $semester == 1 ? '1st Semester' : '2nd Semester';
+    }
 }
