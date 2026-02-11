@@ -18,21 +18,32 @@ class IntegrationController extends Controller
      * - Description (Subject Course Description)
      * - Subject (Subject Name)
      */
-    public function getCurriculumSubjects()
+    public function getCurriculumSubjects(Request $request)
     {
         // Use a direct DB query for performance to avoid hydrating thousands of Eloquent models.
         // This is significantly faster for large datasets.
         
-        $results = DB::table('curriculums as c')
+        $query = DB::table('curriculums as c')
             ->join('curriculum_subject as cs', 'c.id', '=', 'cs.curriculum_id')
             ->join('subjects as s', 'cs.subject_id', '=', 's.id')
-            ->leftJoin('programs as p', 'c.program_code', '=', 'p.code')
-            ->select(
+            ->leftJoin('programs as p', 'c.program_code', '=', 'p.code');
+
+        // Apply filters if provided
+        if ($request->has('semester')) {
+            $query->where('cs.semester', $request->semester);
+        }
+
+        if ($request->has('year')) {
+            $query->where('cs.year', $request->year);
+        }
+            
+        $results = $query->select(
                 'c.curriculum as course',
                 'c.academic_year',
                 'c.year_level as curriculum_year_level',
                 'p.department as program_department',
                 'cs.year as pivot_year',
+                'cs.semester as pivot_semester',
                 's.course_description as description',
                 's.subject_name as subject'
             )
@@ -47,17 +58,33 @@ class IntegrationController extends Controller
             // Format Year Level
             $formattedYear = $this->formatYearLevel($row->pivot_year);
 
+            // Format Semester
+            $formattedSemester = $this->formatSemester($row->curriculum_year_level, $row->pivot_semester);
+
             return [
                 'Category' => $category,
                 'Course' => $row->course,
                 'Academic Year' => $row->academic_year,
                 'Year Level' => $formattedYear,
+                'Semester' => $formattedSemester,
                 'Description' => $row->description,
                 'Subjects' => $row->subject,
             ];
         });
 
         return response()->json($data);
+    }
+
+    private function formatSemester($yearLevel, $semester)
+    {
+        if (empty($semester)) return '';
+
+        if ($yearLevel === 'Senior High') {
+            $quarterMap = [1 => '1st Quarter', 2 => '2nd Quarter', 3 => '3rd Quarter', 4 => '4th Quarter'];
+            return $quarterMap[$semester] ?? "{$semester} Quarter";
+        }
+
+        return $semester == 1 ? '1st Semester' : '2nd Semester';
     }
 
     private function formatYearLevel($year)
