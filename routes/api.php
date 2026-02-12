@@ -41,6 +41,9 @@ Route::middleware('integration.key')->group(function () {
     // --- New Integration Route for Curriculum Subjects ---
     Route::get('/integration/curriculums/subjects', [\App\Http\Controllers\IntegrationController::class, 'getCurriculumSubjects']);
     
+    // --- Grading Templates Route ---
+    Route::get('/integration/grades/templates', [\App\Http\Controllers\GradeController::class, 'getGradingTemplates']); // Get all grading templates
+    
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

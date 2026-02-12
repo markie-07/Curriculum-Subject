@@ -420,4 +420,300 @@ class GradeController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all available grading templates for API integration
+     * Returns the predefined grading templates used in the system
+     */
+    public function getGradingTemplates()
+    {
+        $templates = [
+            'gen_ed' => [
+                'name' => 'General Education',
+                'description' => 'Standard grading template for general education courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 40,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 50],
+                            ['name' => 'Performance Task', 'weight' => 40]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 25,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Major Examination',
+                        'weight' => 35,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'prof_lab' => [
+                'name' => 'Professional (Laboratory)',
+                'description' => 'Grading template for professional courses with laboratory component',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 35,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 40,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Major Examination',
+                        'weight' => 25,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'prof_non_lab' => [
+                'name' => 'Professional (Non-Laboratory)',
+                'description' => 'Grading template for professional courses without laboratory component',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 35,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 40,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Major Examination',
+                        'weight' => 25,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'prof_board' => [
+                'name' => 'Professional (Board Courses)',
+                'description' => 'Grading template for board examination courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 40,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 30,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Major Examination',
+                        'weight' => 30,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'prof_oc' => [
+                'name' => 'Professional (OC)',
+                'description' => 'Grading template for professional courses with OC component',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 40,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 35,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 40],
+                            ['name' => 'OCR', 'weight' => 60]
+                        ]
+                    ],
+                    [
+                        'name' => 'Examination',
+                        'weight' => 25,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'nstp1' => [
+                'name' => 'NSTP 1',
+                'description' => 'Grading template for NSTP 1 courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 40,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 50],
+                            ['name' => 'Performance Task', 'weight' => 40]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 30,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Examination',
+                        'weight' => 30,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'nstp2' => [
+                'name' => 'NSTP 2',
+                'description' => 'Grading template for NSTP 2 courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 30,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 35],
+                            ['name' => 'Performance Task', 'weight' => 55]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 40,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Examination',
+                        'weight' => 30,
+                        'sub_components' => []
+                    ]
+                ]
+            ],
+            'research' => [
+                'name' => 'Research',
+                'description' => 'Grading template for research courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 25,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 45],
+                            ['name' => 'Performance Task', 'weight' => 45]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 40,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Examination',
+                        'weight' => 35,
+                        'sub_components' => [
+                            ['name' => 'Written Exam', 'weight' => 20],
+                            ['name' => 'Oral Exam', 'weight' => 80]
+                        ]
+                    ]
+                ]
+            ],
+            'ojt' => [
+                'name' => 'OJT / Practicum',
+                'description' => 'Grading template for OJT and practicum courses',
+                'periods' => [
+                    'Prelim' => 30,
+                    'Midterm' => 30,
+                    'Finals' => 40
+                ],
+                'components' => [
+                    [
+                        'name' => 'Class Standing',
+                        'weight' => 50,
+                        'sub_components' => [
+                            ['name' => 'Attendance', 'weight' => 30],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 30]
+                        ]
+                    ],
+                    [
+                        'name' => 'Project',
+                        'weight' => 35,
+                        'sub_components' => []
+                    ],
+                    [
+                        'name' => 'Examination',
+                        'weight' => 15,
+                        'sub_components' => []
+                    ]
+                ]
+            ]
+        ];
+
+        return response()->json([
+            'success' => true,
+            'templates' => $templates,
+            'metadata' => [
+                'total_templates' => count($templates),
+                'template_keys' => array_keys($templates),
+                'note' => 'All weights are in percentages and must sum to 100%'
+            ]
+        ]);
+    }
 }
