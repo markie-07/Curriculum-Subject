@@ -441,9 +441,16 @@
                         <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         Weekly Plan (Weeks 0-18)
                     </h2>
-                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="flex items-center px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition-all shadow-sm hover:shadow-lg text-sm font-bold tracking-wide group">
-                        <svg class="w-5 h-5 mr-2 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Generate Full Syllabus (Weeks 1-17)
+                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="group relative inline-flex items-center justify-center px-6 py-3 font-bold text-blue-600 transition-all duration-300 bg-blue-50/40 backdrop-blur-md rounded-xl border-2 border-blue-500/20 hover:border-blue-600 hover:bg-blue-600 hover:text-white shadow-sm hover:shadow-blue-500/40 overflow-hidden">
+                        <!-- hover shine effect -->
+                        <div class="absolute top-0 left-0 w-full h-full transition-all duration-500 transform -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+                        
+                        <span class="relative flex items-center">
+                            <svg class="w-5 h-5 mr-2.5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            <span class="tracking-tight">Generate Full Syllabus (Weeks 1-17)</span>
+                        </span>
                     </button>
                 </div>
                 <div class="space-y-4">
