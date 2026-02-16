@@ -12,3 +12,8 @@
     -   Change the checklist to a 2-column grid.
     -   Use card-like styling for each week item with dynamic states (Pending, Generating, Completed).
     -   Add progress bar and smooth transitions.
+- [x] Expand Weekly Plan Layout.
+    -   Make "Content" and "Student Intended Learning Outcomes" textareas full width (`w-full`) and increase height (`rows="6"`).
+    -   Make "Assessment Tasks" and "Teaching/Learning Activities" sections stack vertically for better readability.
+    -   Increase heights of internal textareas (`rows="4"`).
+    -   Make "Learning and Teaching Support Materials" and "Output Materials" full width and taller (`rows="5"`).
