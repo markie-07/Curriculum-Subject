@@ -7,3 +7,8 @@
     -   Iterate through weeks sequentially instead of a batch request.
     -   Update the UI (Checklist and Loading Text) for each week as it processes.
     -   Skip weeks 0, 6, 12, and 18 as requested.
+- [x] Improve the UI aesthetics of the "AI Analysis Loading Modal".
+    -   Widen the modal (`max-w-3xl`).
+    -   Change the checklist to a 2-column grid.
+    -   Use card-like styling for each week item with dynamic states (Pending, Generating, Completed).
+    -   Add progress bar and smooth transitions.

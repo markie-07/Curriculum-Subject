@@ -835,28 +835,43 @@
 </div>
 
 {{-- AI Analysis Loading Modal --}}
-<div id="aiAnalysisLoadingModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-500 hidden">
+<div id="aiAnalysisLoadingModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-md transition-opacity duration-500 hidden z-[100]">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="relative bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 text-center">
-            <div class="mb-4">
-                <svg class="animate-spin h-16 w-16 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Analyzing Course Description</h3>
-            <p class="text-sm text-gray-600">AI is checking for similar courses...</p>
-            <div class="mt-4 flex justify-center space-x-1">
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+        <div class="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden ring-1 ring-black/5">
+            <!-- decorative background pattern -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+            
+            <div class="p-10">
+                <div class="flex flex-col items-center justify-center mb-8">
+                    <div class="relative mb-6">
+                        <div class="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-75"></div>
+                        <div class="relative bg-white p-4 rounded-full shadow-lg border border-blue-100">
+                            <svg class="animate-spin h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 tracking-tight" id="aiLoadingTitle">Generating Syllabus Content</h3>
+                    <p class="text-gray-500 mt-2 text-lg" id="aiLoadingMessage">AI is crafting your course content...</p>
+                </div>
+                
+                <div id="generationChecklist" class="hidden mt-8">
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Generation Queue</h4>
+                        <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full" id="progressCounter">Initializing...</span>
+                    </div>
+                    <div id="generationChecklistItems" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Items injected here -->
+                    </div>
+                </div>
             </div>
             
-            <div id="generationChecklist" class="hidden mt-6 text-left w-full bg-gray-50 rounded-lg p-4 max-h-60 overflow-y-auto border border-gray-100">
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 sticky top-0 bg-gray-50 pb-2 border-b">Generation Progress</h4>
-                <div id="generationChecklistItems" class="space-y-1">
-                    <!-- Items injected here -->
-                </div>
+            <div class="bg-gray-50 px-10 py-6 border-t border-gray-100 flex justify-center text-sm text-gray-500">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                    Average generation time: 5-10 seconds per week
+                </span>
             </div>
         </div>
     </div>
@@ -1181,8 +1196,10 @@
     const updateAiLoadingText = (title, message) => {
         const modal = document.getElementById('aiAnalysisLoadingModal');
         if (!modal) return;
-        modal.querySelector('h3').textContent = title;
-        modal.querySelector('p').textContent = message;
+        const titleEl = document.getElementById('aiLoadingTitle');
+        const msgEl = document.getElementById('aiLoadingMessage');
+        if(titleEl) titleEl.textContent = title;
+        if(msgEl) msgEl.textContent = message;
     };
 
     // Generate Syllabus Range
@@ -1221,16 +1238,28 @@
             }
 
             // Initialize Checklist UI
-            weeks.forEach(week => {
+            const totalWeeks = weeks.length;
+            const counterEl = document.getElementById('progressCounter');
+            if(counterEl) counterEl.textContent = `0 / ${totalWeeks} Completed`;
+
+            weeks.forEach((week, index) => {
                 const item = document.createElement('div');
                 item.id = `checklist-week-${week}`;
-                item.className = 'flex items-center justify-between py-2 border-b last:border-0 border-gray-100';
+                // Card Style
+                item.className = 'flex items-center p-3 rounded-xl border border-gray-100 bg-gray-50 shadow-sm transition-all duration-300 transform';
                 item.innerHTML = `
-                    <span class="text-sm font-medium text-gray-700">Week ${week}</span>
-                    <span class="status-icon text-gray-400">
-                        <!-- Pending Icon (Circle) -->
-                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"></circle></svg>
-                    </span>
+                     <div class="status-icon-container flex-shrink-0 w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center mr-3 shadow-sm transition-colors duration-300">
+                        <span class="text-xs font-bold text-gray-400 font-mono">${index + 1}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="font-bold text-gray-700 text-sm">Week ${week}</span>
+                             <span class="status-text text-[10px] font-bold uppercase tracking-wider text-gray-400">Pending</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1 mt-1 overflow-hidden">
+                             <div class="progress-bar bg-blue-500 h-1 rounded-full w-0 transition-all duration-500"></div>
+                        </div>
+                    </div>
                 `;
                 checklistItems.appendChild(item);
             });
@@ -1245,16 +1274,34 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             // Process each week sequentially
+            let completedCount = 0;
             for (const week of weeks) {
-                // Update UI to Loading
                 const row = document.getElementById(`checklist-week-${week}`);
+                const progressBar = row ? row.querySelector('.progress-bar') : null;
+                const statusText = row ? row.querySelector('.status-text') : null;
+                const iconContainer = row ? row.querySelector('.status-icon-container') : null;
+
+                // Update UI to Loading
                 if (row) {
-                    const icon = row.querySelector('.status-icon');
-                    // Loading Spinner
-                    icon.className = 'status-icon text-blue-600';
-                    icon.innerHTML = `<svg class="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    // Activate Card style
+                    row.className = 'flex items-center p-3 rounded-xl border border-blue-200 bg-blue-50/50 shadow-md ring-1 ring-blue-100 transition-all duration-300 transform scale-[1.02]';
                     
-                    // Auto-scroll logic to keep active item in view
+                    if(iconContainer) {
+                        iconContainer.className = 'status-icon-container flex-shrink-0 w-8 h-8 rounded-full bg-white border border-blue-200 flex items-center justify-center mr-3 shadow-md';
+                        iconContainer.innerHTML = `<svg class="animate-spin w-4 h-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    }
+                    
+                    if(statusText) {
+                        statusText.textContent = 'Generating...';
+                        statusText.className = 'status-text text-[10px] font-bold uppercase tracking-wider text-blue-600';
+                    }
+                    
+                    if(progressBar) {
+                        progressBar.style.width = '60%'; // Fake progress start
+                        progressBar.className = 'progress-bar bg-blue-500 h-1 rounded-full w-full animate-pulse transition-all duration-500';
+                    }
+
+                    // Auto-scroll
                     if (checklistContainer) {
                          const containerRect = checklistContainer.getBoundingClientRect();
                          const rowRect = row.getBoundingClientRect();
@@ -1264,7 +1311,7 @@
                     }
                 }
 
-                updateAiLoadingText('Generating Syllabus Content', `Generating Week ${week}...`);
+                updateAiLoadingText('Generating Syllabus Content', `Crafting content for Week ${week}...`);
 
                 // Call API for single week
                 const response = await fetch('/ajax/generate-syllabus-weeks', {
@@ -1277,32 +1324,32 @@
                         course_title: courseTitle,
                         course_code: courseCode,
                         course_description: courseDescription,
-                        weeks: [week], // One week at a time
+                        weeks: [week], 
                         cmo_year: cmoYear,
                         cmo_title: cmoTitle
                     })
                 });
 
                 if (!response.ok) {
-                    // Try to extract error
                     let errorMsg = `Failed to generate Week ${week}`;
-                     try {
+                    try {
                         const errorJson = await response.json();
                         if(errorJson.message || errorJson.error) errorMsg += `: ${errorJson.message || errorJson.error}`;
                     } catch(e) {}
-                    
-                    // Mark as error in UI
-                    if(row) {
-                        const icon = row.querySelector('.status-icon');
-                        icon.className = 'status-icon text-red-500';
-                         icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+                    // Error UI
+                    if (row) {
+                        row.className = 'flex items-center p-3 rounded-xl border border-red-200 bg-red-50 shadow-sm transition-all duration-300';
+                        if(iconContainer) {
+                            iconContainer.className = 'status-icon-container flex-shrink-0 w-8 h-8 rounded-full bg-red-100 border border-red-200 flex items-center justify-center mr-3';
+                            iconContainer.innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                        }
+                        if(statusText) {
+                            statusText.textContent = 'Failed';
+                            statusText.className = 'status-text text-[10px] font-bold uppercase tracking-wider text-red-600';
+                        }
                     }
                     console.error(errorMsg);
-                    // Decide: Continue or Break? 
-                    // Let's continue but maybe show alert at end? 
-                    // Or throw to stop? Usually better to stop if one fails to avoid partial mess, but user might want partial.
-                    // For now, let's just log and continue, but UI shows error.
-                    // Actually, let's stop to be safe.
                     throw new Error(errorMsg);
                 }
 
@@ -1315,7 +1362,6 @@
                          const el = document.getElementById(id);
                          if (el) el.value = val || '';
                      };
-
                      setVal(`week_${week}_content`, weekData.content);
                      setVal(`week_${week}_silo`, weekData.silo);
                      setVal(`week_${week}_at_onsite`, weekData.at_onsite);
@@ -1325,11 +1371,9 @@
                      setVal(`week_${week}_ltsm`, weekData.ltsm);
                      setVal(`week_${week}_output`, weekData.output);
 
-                     // Update progress bar
                      if (typeof updateWeekProgress === 'function') {
                          updateWeekProgress(week);
                      }
-                      // Trigger Auto Resize
                      if (typeof resizeAllTextareas === 'function') {
                         resizeAllTextareas();
                      }
@@ -1337,11 +1381,26 @@
 
                  // Update UI to Done
                 if (row) {
-                    const icon = row.querySelector('.status-icon');
-                     // Check Icon
-                    icon.className = 'status-icon text-green-600';
-                    icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    row.className = 'flex items-center p-3 rounded-xl border border-green-200 bg-green-50 shadow-sm transition-all duration-300';
+                    
+                    if(iconContainer) {
+                         iconContainer.className = 'status-icon-container flex-shrink-0 w-8 h-8 rounded-full bg-green-100 border border-green-200 flex items-center justify-center mr-3';
+                         iconContainer.innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    }
+                    
+                    if(statusText) {
+                        statusText.textContent = 'Completed';
+                        statusText.className = 'status-text text-[10px] font-bold uppercase tracking-wider text-green-600';
+                    }
+                    
+                    if(progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.className = 'progress-bar bg-green-500 h-1 rounded-full transition-all duration-300';
+                    }
                 }
+                
+                completedCount++;
+                if(counterEl) counterEl.textContent = `${completedCount} / ${totalWeeks} Completed`;
             }
             
             updateAiLoadingText('Generation Complete', 'All selected weeks generated successfully!');
