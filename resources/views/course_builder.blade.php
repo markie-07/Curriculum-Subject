@@ -441,9 +441,19 @@
                         <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         Weekly Plan (Weeks 0-18)
                     </h2>
-                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="flex items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg text-sm font-medium">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Generate Full Syllabus (Weeks 1-17)
+                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="group relative inline-flex items-center justify-center px-6 py-3 font-bold text-white transition-all duration-300 bg-indigo-600 rounded-xl hover:bg-indigo-700 active:bg-indigo-800 shadow-lg hover:shadow-indigo-500/30 overflow-hidden">
+                        <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700"></div>
+                        <!-- animated glow overlay -->
+                        <div class="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from),_transparent_70%)] from-white"></div>
+                        <!-- hover shine effect -->
+                        <div class="absolute top-0 left-0 w-full h-full transition-all duration-500 transform -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                        
+                        <span class="relative flex items-center">
+                            <svg class="w-5 h-5 mr-2.5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            <span class="tracking-tight">Generate Full Syllabus (Weeks 1-17)</span>
+                        </span>
                     </button>
                 </div>
                 <div class="space-y-4">
