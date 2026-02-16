@@ -851,6 +851,13 @@
                 <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
                 <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
             </div>
+            
+            <div id="generationChecklist" class="hidden mt-6 text-left w-full bg-gray-50 rounded-lg p-4 max-h-60 overflow-y-auto border border-gray-100">
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 sticky top-0 bg-gray-50 pb-2 border-b">Generation Progress</h4>
+                <div id="generationChecklistItems" class="space-y-1">
+                    <!-- Items injected here -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1190,14 +1197,21 @@
         }
 
         const modal = document.getElementById('aiAnalysisLoadingModal');
-        updateAiLoadingText('Generating Syllabus Content', `Generating content for Weeks ${startWeek}-${endWeek}...`);
+        const checklistContainer = document.getElementById('generationChecklist');
+        const checklistItems = document.getElementById('generationChecklistItems');
+        
+        // Reset and Show Modal
+        updateAiLoadingText('Generating Syllabus Content', `Initializing generation...`);
+        if (checklistContainer) checklistContainer.classList.remove('hidden');
+        if (checklistItems) checklistItems.innerHTML = '';
+        
         modal.classList.remove('hidden');
 
         try {
             // Create range array
             const weeks = [];
             for (let i = startWeek; i <= endWeek; i++) {
-                if ([6, 12, 18].includes(i)) continue; // Skip exams
+                if ([0, 6, 12, 18].includes(i)) continue; // Skip exams and week 0
                 weeks.push(i);
             }
 
@@ -1206,72 +1220,132 @@
                  return;
             }
 
+            // Initialize Checklist UI
+            weeks.forEach(week => {
+                const item = document.createElement('div');
+                item.id = `checklist-week-${week}`;
+                item.className = 'flex items-center justify-between py-2 border-b last:border-0 border-gray-100';
+                item.innerHTML = `
+                    <span class="text-sm font-medium text-gray-700">Week ${week}</span>
+                    <span class="status-icon text-gray-400">
+                        <!-- Pending Icon (Circle) -->
+                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"></circle></svg>
+                    </span>
+                `;
+                checklistItems.appendChild(item);
+            });
+
             // Collect Memo Data (if any)
             const memorandumYearEl = document.getElementById('memorandumYear');
             const memorandumEl = document.getElementById('memorandum');
 
             const cmoYear = (memorandumYearEl && !memorandumYearEl.disabled) ? memorandumYearEl.value : null;
             const cmoTitle = (memorandumEl && !memorandumEl.disabled) ? memorandumEl.value : null;
-
-            const response = await fetch('/ajax/generate-syllabus-weeks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    course_title: courseTitle,
-                    course_code: courseCode,
-                    course_description: courseDescription,
-                    weeks: weeks,
-                    cmo_year: cmoYear,
-                    cmo_title: cmoTitle
-                })
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Syllabus Generation API Error:", response.status, errorText);
-                let errorMessage = 'Failed to generate syllabus';
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    errorMessage = errorJson.error || errorJson.message || errorMessage;
-                } catch (e) {
-                    // Not JSON, usage raw text if short, or generic
-                    if (errorText.length < 200) errorMessage += ': ' + errorText;
-                }
-                throw new Error(errorMessage);
-            }
-
-            const data = await response.json();
             
-            // Populate fields
-            if (data && data.weeks) {
-                Object.keys(data.weeks).forEach(weekNum => {
-                    const weekData = data.weeks[weekNum];
-                    if (weekData) {
-                         // content, silo, at_onsite, at_offsite, tla_onsite, tla_offsite, ltsm, output
-                         const setVal = (id, val) => {
-                             const el = document.getElementById(id);
-                             if (el) el.value = val || '';
-                         };
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                         setVal(`week_${weekNum}_content`, weekData.content);
-                         setVal(`week_${weekNum}_silo`, weekData.silo);
-                         setVal(`week_${weekNum}_at_onsite`, weekData.at_onsite);
-                         setVal(`week_${weekNum}_at_offsite`, weekData.at_offsite);
-                         setVal(`week_${weekNum}_tla_onsite`, weekData.tla_onsite);
-                         setVal(`week_${weekNum}_tla_offsite`, weekData.tla_offsite);
-                         setVal(`week_${weekNum}_ltsm`, weekData.ltsm);
-                         setVal(`week_${weekNum}_output`, weekData.output);
-
-                         // Update progress bar
-                         if (typeof updateWeekProgress === 'function') {
-                             updateWeekProgress(weekNum);
+            // Process each week sequentially
+            for (const week of weeks) {
+                // Update UI to Loading
+                const row = document.getElementById(`checklist-week-${week}`);
+                if (row) {
+                    const icon = row.querySelector('.status-icon');
+                    // Loading Spinner
+                    icon.className = 'status-icon text-blue-600';
+                    icon.innerHTML = `<svg class="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    
+                    // Auto-scroll logic to keep active item in view
+                    if (checklistContainer) {
+                         const containerRect = checklistContainer.getBoundingClientRect();
+                         const rowRect = row.getBoundingClientRect();
+                         if (rowRect.bottom > containerRect.bottom || rowRect.top < containerRect.top) {
+                             row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                          }
                     }
+                }
+
+                updateAiLoadingText('Generating Syllabus Content', `Generating Week ${week}...`);
+
+                // Call API for single week
+                const response = await fetch('/ajax/generate-syllabus-weeks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        course_title: courseTitle,
+                        course_code: courseCode,
+                        course_description: courseDescription,
+                        weeks: [week], // One week at a time
+                        cmo_year: cmoYear,
+                        cmo_title: cmoTitle
+                    })
                 });
+
+                if (!response.ok) {
+                    // Try to extract error
+                    let errorMsg = `Failed to generate Week ${week}`;
+                     try {
+                        const errorJson = await response.json();
+                        if(errorJson.message || errorJson.error) errorMsg += `: ${errorJson.message || errorJson.error}`;
+                    } catch(e) {}
+                    
+                    // Mark as error in UI
+                    if(row) {
+                        const icon = row.querySelector('.status-icon');
+                        icon.className = 'status-icon text-red-500';
+                         icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                    }
+                    console.error(errorMsg);
+                    // Decide: Continue or Break? 
+                    // Let's continue but maybe show alert at end? 
+                    // Or throw to stop? Usually better to stop if one fails to avoid partial mess, but user might want partial.
+                    // For now, let's just log and continue, but UI shows error.
+                    // Actually, let's stop to be safe.
+                    throw new Error(errorMsg);
+                }
+
+                const data = await response.json();
+                
+                // Populate fields
+                if (data && data.weeks && data.weeks[week]) {
+                     const weekData = data.weeks[week];
+                     const setVal = (id, val) => {
+                         const el = document.getElementById(id);
+                         if (el) el.value = val || '';
+                     };
+
+                     setVal(`week_${week}_content`, weekData.content);
+                     setVal(`week_${week}_silo`, weekData.silo);
+                     setVal(`week_${week}_at_onsite`, weekData.at_onsite);
+                     setVal(`week_${week}_at_offsite`, weekData.at_offsite);
+                     setVal(`week_${week}_tla_onsite`, weekData.tla_onsite);
+                     setVal(`week_${week}_tla_offsite`, weekData.tla_offsite);
+                     setVal(`week_${week}_ltsm`, weekData.ltsm);
+                     setVal(`week_${week}_output`, weekData.output);
+
+                     // Update progress bar
+                     if (typeof updateWeekProgress === 'function') {
+                         updateWeekProgress(week);
+                     }
+                      // Trigger Auto Resize
+                     if (typeof resizeAllTextareas === 'function') {
+                        resizeAllTextareas();
+                     }
+                }
+
+                 // Update UI to Done
+                if (row) {
+                    const icon = row.querySelector('.status-icon');
+                     // Check Icon
+                    icon.className = 'status-icon text-green-600';
+                    icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                }
             }
+            
+            updateAiLoadingText('Generation Complete', 'All selected weeks generated successfully!');
+            await new Promise(r => setTimeout(r, 1000));
 
         } catch (error) {
             console.error(error);
