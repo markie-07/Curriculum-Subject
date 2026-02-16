@@ -441,7 +441,7 @@
                         <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         Weekly Plan (Weeks 0-18)
                     </h2>
-                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="flex items-center px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-sm hover:shadow-md text-sm font-bold tracking-wide group">
+                    <button type="button" onclick="generateSyllabusRange(1, 17)" class="flex items-center px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition-all shadow-sm hover:shadow-lg text-sm font-bold tracking-wide group">
                         <svg class="w-5 h-5 mr-2 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         Generate Full Syllabus (Weeks 1-17)
                     </button>
