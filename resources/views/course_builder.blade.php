@@ -4,10 +4,9 @@
 <style>
     /* Allow textareas to auto-resize */
     textarea {
-        resize: none !important;
-        overflow: hidden !important;
-        min-height: 60px !important;
-        box-sizing: border-box !important;
+        resize: none;
+        min-height: 60px;
+        box-sizing: border-box;
     }
     
     
@@ -496,11 +495,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_content" class="block text-sm font-medium text-gray-700">Content{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_content" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_content" rows="4" oninput="autoResize(this)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_silo" class="block text-sm font-medium text-gray-700">Student Intended Learning Outcomes{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_silo" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_silo" rows="4" oninput="autoResize(this)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                     <div>
@@ -508,11 +507,11 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 border rounded-md {{ $i == 0 ? 'bg-gray-50' : 'bg-white' }}">
                                             <div>
                                                 <label for="week_{{ $i }}_at_onsite" class="block text-xs font-semibold text-gray-600 mb-1">ONSITE</label>
-                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_onsite" rows="3" oninput="autoResize(this)" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                             <div>
                                                 <label for="week_{{ $i }}_at_offsite" class="block text-xs font-semibold text-gray-600 mb-1">OFFSITE</label>
-                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                <textarea id="week_{{ $i }}_at_offsite" rows="3" oninput="autoResize(this)" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -523,11 +522,11 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_onsite" class="block text-xs font-semibold text-gray-600 mb-1">Face to Face (On-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_onsite" rows="3" oninput="autoResize(this)" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                                 <div>
                                                     <label for="week_{{ $i }}_tla_offsite" class="block text-xs font-semibold text-gray-600 mb-1">Online (Off-Site)</label>
-                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                                    <textarea id="week_{{ $i }}_tla_offsite" rows="3" oninput="autoResize(this)" class="w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -535,11 +534,11 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label for="week_{{ $i }}_ltsm" class="block text-sm font-medium text-gray-700">Learning and Teaching Support Materials (LTSM){{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_ltsm" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_ltsm" rows="4" oninput="autoResize(this)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                         <div>
                                             <label for="week_{{ $i }}_output" class="block text-sm font-medium text-gray-700">Output Materials{{ $i == 0 ? ' (Read-only)' : '' }}</label>
-                                            <textarea id="week_{{ $i }}_output" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }}" {{ $i == 0 ? 'readonly' : '' }}></textarea>
+                                            <textarea id="week_{{ $i }}_output" rows="4" oninput="autoResize(this)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm{{ $i == 0 ? ' bg-gray-100' : '' }} overflow-hidden" {{ $i == 0 ? 'readonly' : '' }}></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1420,6 +1419,11 @@
     if (content.style.display === "none" || content.style.display === "") {
         content.style.display = "block";
         icon.style.transform = "rotate(180deg)";
+        
+        // Trigger auto-resize when section expands
+        if (typeof resizeAllTextareas === 'function') {
+            setTimeout(resizeAllTextareas, 50);
+        }
     } else {
         content.style.display = "none";
         icon.style.transform = "rotate(0deg)";
