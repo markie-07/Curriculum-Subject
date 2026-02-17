@@ -260,6 +260,11 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         Route::get('/grades/{subjectId}', [GradeController::class, 'show']);
         Route::get('/grades/{subjectId}/version-history', [GradeController::class, 'getGradeVersionHistory']);
 
+        // --- Grading Template Routes ---
+        Route::post('/grading-templates', [GradeController::class, 'storeTemplate']);
+        Route::put('/grading-templates/{id}', [GradeController::class, 'updateTemplate']);
+        Route::delete('/grading-templates/{id}', [GradeController::class, 'deleteTemplate']);
+
         // --- Curriculum Grade Routes ---
         Route::get('/curriculum-grades', [GradeController::class, 'getAllCurriculumGrades']);
         Route::post('/curriculum-grades', [GradeController::class, 'storeCurriculumGrades']);

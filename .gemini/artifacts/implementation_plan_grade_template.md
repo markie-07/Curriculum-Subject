@@ -17,6 +17,10 @@ This plan details the changes made to the grading template configuration to supp
     - `prof_non_lab` (Professional Subject Non-Laboratory)
     - `prof_board` (Professional Subject Board Courses)
     - `prof_oc` (Professional Subject OC)
+    - `nstp1` (NSTP 1)
+    - `nstp2` (NSTP 2)
+    - `research` (Research)
+    - `ojt` (OJT / Practicum)
 
 ### Component Breakdown Strategy
 Instead of implementing a complex 3-level hierarchy (Main -> Sub -> Sub-Sub), which would require extensive rewrites of the rendering and calculation logic, the components were flattened into distinct sub-components under "Class Standing".
@@ -34,6 +38,24 @@ Instead of implementing a complex 3-level hierarchy (Main -> Sub -> Sub-Sub), wh
   - Written Works (Online) (17%)
   - Performance Task (F2F) (27%)
   - Performance Task (Online) (13%)
+
+**Example (NSTP 2):**
+- **New Structure**:
+  - Attendance (F2F) (7%)
+  - Attendance (Online) (3%)
+  - Written Works (F2F) (23%)
+  - Written Works (Online) (12%)
+  - Performance Task (F2F) (37%)
+  - Performance Task (Online) (18%)
+
+**Example (OJT / Practicum):**
+- **New Structure**:
+  - Attendance (F2F) (20%)
+  - Attendance (Online) (10%)
+  - Written Works (F2F) (27%)
+  - Written Works (Online) (13%)
+  - Performance Task (F2F) (20%)
+  - Performance Task (Online) (10%)
 
 *Total Weight: 100% (unchanged)*
 

@@ -147,6 +147,15 @@
                                     </svg>
                                 </button>
                                 <div id="template-dropdown-menu" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 hidden z-20">
+                                    <div class="p-2 border-b border-gray-100">
+                                        <button type="button" onclick="openManageTemplatesModal()" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors font-medium">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                                            </svg>
+                                            Manage Templates
+                                        </button>
+                                    </div>
+                                    <div class="py-1">
                                     <button type="button" onclick="applyTemplate('gen_ed')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors first:rounded-t-lg">
                                         General Education
                                     </button>
@@ -647,274 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Templates Configuration
-    const templates = {
-        'gen_ed': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 33 },
-                        { name: "Written Works (Online)", weight: 17 },
-                        { name: "Performance Task (F2F)", weight: 27 },
-                        { name: "Performance Task (Online)", weight: 13 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 25,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 35,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_lab': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 35,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_non_lab': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 35,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_board': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 30,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_oc': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 35,
-                    sub_components: [
-                        { name: "CBO", weight: 40 },
-                        { name: "OCR", weight: 60 }
-                    ]
-                },
-                {
-                    name: "Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'nstp1': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 33 },
-                        { name: "Written Works (Online)", weight: 17 },
-                        { name: "Performance Task (F2F)", weight: 27 },
-                        { name: "Performance Task (Online)", weight: 13 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 30,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'nstp2': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 30,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 23 },
-                        { name: "Written Works (Online)", weight: 12 },
-                        { name: "Performance Task (F2F)", weight: 37 },
-                        { name: "Performance Task (Online)", weight: 18 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: [] // OCR 100% implicitly
-                },
-                {
-                    name: "Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'research': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 25,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 30 },
-                        { name: "Written Works (Online)", weight: 15 },
-                        { name: "Performance Task (F2F)", weight: 30 },
-                        { name: "Performance Task (Online)", weight: 15 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 35,
-                    sub_components: [
-                         { name: "Written Exam", weight: 20 },
-                         { name: "Oral Exam", weight: 80 }
-                    ]
-                }
-            ]
-        },
-        'ojt': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 50,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 20 },
-                        { name: "Attendance (Online)", weight: 10 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 20 },
-                        { name: "Performance Task (Online)", weight: 10 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 35,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 15,
-                    sub_components: []
-                }
-            ]
-        }
-    };
+    // Grading templates provided by the backend (config/grading_templates.php)
+    const templates = @json($grading_templates ?? []);
 
     window.applyTemplate = (templateKey) => {
         const template = templates[templateKey];
@@ -4315,5 +4058,422 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+
+
+{{-- Manage Templates Modal --}}
+<div id="manage-templates-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center backdrop-blur-sm">
+    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl m-4 flex flex-col max-h-[90vh]">
+        {{-- Modal Header --}}
+        <div class="flex justify-between items-center p-6 border-b border-gray-100">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">Manage Grading Templates</h3>
+                <p class="text-sm text-gray-500 mt-1">Create, edit, or delete grading schemes.</p>
+            </div>
+            <button onclick="closeManageTemplatesModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        {{-- Modal Body --}}
+        <div class="flex-1 overflow-hidden flex flex-col md:flex-row">
+            {{-- Template List (Left Side) --}}
+            <div class="w-full md:w-1/3 border-r border-gray-100 overflow-y-auto bg-gray-50 p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-gray-700">Templates</h4>
+                    <button onclick="createNewTemplateUI()" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-md hover:bg-indigo-700 transition-colors flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        New
+                    </button>
+                </div>
+                <div id="template-list-container" class="space-y-2">
+                    {{-- Templates will be loaded here via JS --}}
+                </div>
+            </div>
+
+            {{-- Template Editor (Right Side) --}}
+            <div class="w-full md:w-2/3 p-6 overflow-y-auto">
+                <form id="template-editor-form" class="hidden space-y-6">
+                    <input type="hidden" id="edit-template-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Template Key (Unique)</label>
+                            <input type="text" id="edit-template-key" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="e.g., gen_ed_v2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Template Name</label>
+                            <input type="text" id="edit-template-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="e.g., General Education V2">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="edit-template-desc" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Optional description..."></textarea>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-4">
+                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">1</span> 
+                            Period Weights
+                        </h4>
+                        <div id="edit-periods-container" class="grid grid-cols-3 gap-3">
+                            {{-- Period inputs generated here --}}
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-semibold text-gray-800 flex items-center gap-2">
+                                <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full">2</span> 
+                                Components Structure
+                            </h4>
+                            <button type="button" onclick="addEditorComponent()" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                + Add Component
+                            </button>
+                        </div>
+                        <div id="edit-components-container" class="space-y-4">
+                            {{-- Component inputs generated here --}}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6 border-t border-gray-100 mt-6 md:col-span-2">
+                        <button type="button" onclick="deleteTemplate()" id="delete-template-btn" class="text-red-500 hover:text-red-700 text-sm font-medium focus:outline-none hidden">
+                            Delete Template
+                        </button>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="cancelEditTemplate()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Cancel
+                            </button>
+                            <button type="button" onclick="saveTemplate()" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Save Template
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="template-editor-placeholder" class="h-full flex flex-col items-center justify-center text-gray-400">
+                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    <p>Select a template to edit or create a new one.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // -- Manage Templates Logic --
+
+    let currentTemplates = @json($grading_templates ?? []);
+    let editingTemplateKey = null;
+
+    function openManageTemplatesModal() {
+        document.getElementById('manage-templates-modal').classList.remove('hidden');
+        renderTemplateList();
+        // Close dropdown
+        const dropdown = document.getElementById('template-dropdown-menu');
+        if(dropdown) dropdown.classList.add('hidden');
+    }
+
+    function closeManageTemplatesModal() {
+        document.getElementById('manage-templates-modal').classList.add('hidden');
+        cancelEditTemplate();
+    }
+
+    function renderTemplateList() {
+        const container = document.getElementById('template-list-container');
+        container.innerHTML = '';
+
+        if (Array.isArray(currentTemplates)) {
+             // Handle if it's an array (rare case with how seeded, usually keyed object)
+             // Convert to object if needed or iterate
+        }
+
+        // Iterate object keys
+        Object.entries(currentTemplates).forEach(([key, template]) => {
+            const el = document.createElement('div');
+            el.className = `p-3 rounded-lg border cursor-pointer hover:border-indigo-300 hover:shadow-sm transition-all ${key === editingTemplateKey ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-white'}`;
+            el.onclick = () => loadTemplateForEdit(key);
+            el.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-medium text-gray-800 text-sm">${template.name}</div>
+                        <div class="text-xs text-gray-500 font-mono mt-0.5">${key}</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(el);
+        });
+    }
+
+    function createNewTemplateUI() {
+        editingTemplateKey = null; // New
+        renderTemplateList(); // clear selection style
+        
+        document.getElementById('template-editor-placeholder').classList.add('hidden');
+        document.getElementById('template-editor-form').classList.remove('hidden');
+        document.getElementById('delete-template-btn').classList.add('hidden');
+        
+        // Reset form
+        document.getElementById('edit-template-id').value = '';
+        document.getElementById('edit-template-key').value = '';
+        document.getElementById('edit-template-key').disabled = false;
+        document.getElementById('edit-template-name').value = '';
+        document.getElementById('edit-template-desc').value = '';
+        
+        // Default Periods
+        renderEditPeriods({ 'Prelim': 30, 'Midterm': 30, 'Finals': 40 });
+        
+        // Default Components (Empty)
+        renderEditComponents([]);
+    }
+
+    function loadTemplateForEdit(key) {
+        editingTemplateKey = key;
+        const template = currentTemplates[key];
+        renderTemplateList(); // update selection style
+
+        document.getElementById('template-editor-placeholder').classList.add('hidden');
+        document.getElementById('template-editor-form').classList.remove('hidden');
+        
+        // Populate Form
+        document.getElementById('edit-template-id').value = key; 
+        document.getElementById('edit-template-key').value = key;
+        document.getElementById('edit-template-key').disabled = true; // Key cannot be changed
+        document.getElementById('edit-template-name').value = template.name;
+        document.getElementById('edit-template-desc').value = template.description || '';
+        
+        // Show delete button only if it's likely a database record (has ID)
+        const deleteBtn = document.getElementById('delete-template-btn');
+        if (template && template.id) {
+            deleteBtn.classList.remove('hidden');
+        } else {
+             deleteBtn.classList.add('hidden');
+        }
+
+        renderEditPeriods(template.periods);
+        renderEditComponents(template.components);
+    }
+    
+    async function deleteTemplate() {
+        if (!editingTemplateKey) return;
+        const template = currentTemplates[editingTemplateKey];
+        if (!template || !template.id) {
+             Swal.fire('Error', 'Cannot delete this template (ID missing).', 'error');
+             return;
+        }
+
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                Swal.fire({ title: 'Deleting...', didOpen: () => Swal.showLoading() });
+                
+                const response = await fetch(`/grading-templates/${template.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                const res = await response.json();
+
+                if (res.success) {
+                    Swal.fire('Deleted!', res.message, 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (error) {
+                Swal.fire('Error', error.message || 'Failed to delete template', 'error');
+            }
+        }
+    }
+
+    function renderEditPeriods(periods) {
+        const container = document.getElementById('edit-periods-container');
+        container.innerHTML = '';
+        Object.entries(periods).forEach(([pName, pWeight]) => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label class="block text-xs font-medium text-gray-500 mb-1">${pName} (%)</label>
+                <input type="number" class="period-weight-input w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-indigo-500 focus:border-indigo-500" data-period="${pName}" value="${pWeight}">
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function renderEditComponents(components) {
+        const container = document.getElementById('edit-components-container');
+        container.innerHTML = '';
+        
+        components.forEach((comp, index) => {
+            const compEl = document.createElement('div');
+            compEl.className = 'border border-gray-200 rounded-lg p-3 bg-gray-50';
+            compEl.innerHTML = `
+                <div class="flex gap-2 items-start mb-2">
+                    <input type="text" class="comp-name w-2/3 px-2 py-1.5 border border-gray-300 rounded text-sm bg-white" placeholder="Component Name" value="${comp.name}">
+                    <input type="number" class="comp-weight w-1/4 px-2 py-1.5 border border-gray-300 rounded text-sm bg-white" placeholder="Weight %" value="${comp.weight}">
+                    <button type="button" onclick="removeEditorComponent(this)" class="text-red-400 hover:text-red-600 p-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+                <div class="ml-4 pl-4 border-l-2 border-gray-200">
+                    <div class="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Sub-components</div>
+                    <div class="sub-components-container space-y-2">
+                        ${(comp.sub_components || []).map(sub => `
+                            <div class="flex gap-2 items-center">
+                                <input type="text" class="sub-name w-2/3 px-2 py-1 border border-gray-300 rounded text-xs" placeholder="Sub Name" value="${sub.name}">
+                                <input type="number" class="sub-weight w-1/4 px-2 py-1 border border-gray-300 rounded text-xs" placeholder="%" value="${sub.weight}">
+                                <button type="button" onclick="removeSubComponent(this)" class="text-gray-400 hover:text-red-500"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button type="button" onclick="addSubComponent(this)" class="mt-2 text-xs text-indigo-500 hover:text-indigo-700 font-medium flex items-center gap-1">
+                        + Add Sub-item
+                    </button>
+                </div>
+            `;
+            container.appendChild(compEl);
+        });
+    }
+
+    function addEditorComponent() {
+        const container = document.getElementById('edit-components-container');
+        // Add a default blank component
+        renderEditComponents([...getComponentsFromEditor(), { name: 'New Component', weight: 0, sub_components: [] }]);
+    }
+    
+    function removeEditorComponent(btn) {
+        btn.closest('.border.border-gray-200').remove();
+    }
+
+    function addSubComponent(btn) {
+        const container = btn.previousElementSibling;
+        const div = document.createElement('div');
+        div.className = 'flex gap-2 items-center';
+        div.innerHTML = `
+            <input type="text" class="sub-name w-2/3 px-2 py-1 border border-gray-300 rounded text-xs" placeholder="Sub Name">
+            <input type="number" class="sub-weight w-1/4 px-2 py-1 border border-gray-300 rounded text-xs" placeholder="%">
+            <button type="button" onclick="removeSubComponent(this)" class="text-gray-400 hover:text-red-500"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+        `;
+        container.appendChild(div);
+    }
+    
+    function removeSubComponent(btn) {
+        btn.closest('.flex').remove();
+    }
+
+    function getComponentsFromEditor() {
+         const components = [];
+         document.querySelectorAll('#edit-components-container > div').forEach(el => {
+             const name = el.querySelector('.comp-name').value;
+             const weight = parseFloat(el.querySelector('.comp-weight').value) || 0;
+             const sub_components = [];
+             
+             el.querySelectorAll('.sub-components-container > div').forEach(subEl => {
+                 sub_components.push({
+                     name: subEl.querySelector('.sub-name').value,
+                     weight: parseFloat(subEl.querySelector('.sub-weight').value) || 0
+                 });
+             });
+             
+             components.push({ name, weight, sub_components });
+         });
+         return components;
+    }
+
+    function cancelEditTemplate() {
+        editingTemplateKey = null;
+        renderTemplateList();
+        document.getElementById('template-editor-placeholder').classList.remove('hidden');
+        document.getElementById('template-editor-form').classList.add('hidden');
+    }
+
+    async function saveTemplate() {
+        const key = document.getElementById('edit-template-key').value;
+        const name = document.getElementById('edit-template-name').value;
+        const desc = document.getElementById('edit-template-desc').value;
+        
+        // Gather Periods
+        const periods = {};
+        document.querySelectorAll('.period-weight-input').forEach(input => {
+            periods[input.dataset.period] = parseFloat(input.value) || 0;
+        });
+        
+        // Gather Components
+        const components = getComponentsFromEditor();
+
+        // Validation
+        if (!key || !name) {
+            Swal.fire('Error', 'Template Key and Name are required.', 'error');
+            return;
+        }
+
+        const payload = {
+            template_key: key,
+            name: name,
+            description: desc,
+            periods: periods,
+            components: components
+        };
+
+        const isNew = !document.getElementById('edit-template-key').disabled;
+        // Determine ID for updates (using key lookup since seeded data now includes ID)
+        // If it's seeded data without ID in JS context (e.g. from cache), we rely on key or fetch ID? 
+        // With recent backend update, 'currentTemplates' SHOULD have 'id' property.
+        
+        let url = '/grading-templates';
+        let method = 'POST';
+
+        if (!isNew) {
+            const template = currentTemplates[key];
+            if (!template || !template.id) {
+                // Should not happen if page reloaded, but safe to handle
+                 Swal.fire('Error', 'Template ID missing. Please reload the page.', 'error');
+                 return;
+            }
+            url = `/grading-templates/${template.id}`;
+            method = 'PUT';
+        }
+
+        try {
+            Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading() });
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire('Success', result.message, 'success').then(() => {
+                    // Refresh page or update local state
+                    location.reload(); 
+                });
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            Swal.fire('Error', error.message || 'Failed to save template', 'error');
+        }
+    }
+    }
+</script>
 
 @endsection
