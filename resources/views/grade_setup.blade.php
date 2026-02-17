@@ -684,8 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 13 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -695,14 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 25,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -712,14 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 35,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -758,8 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 17 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -769,14 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 40,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -786,14 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 25,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -832,8 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 17 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -843,14 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 35,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -860,14 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 25,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -906,8 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 17 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -917,14 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 30,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -934,14 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 30,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -976,8 +916,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 17 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -991,14 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "OCR",
                             weight: 60
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 35,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -1008,14 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 25,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -1050,8 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 13 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -1061,14 +985,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 30,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -1078,14 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 30,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -1120,8 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 18 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -1131,14 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "OCR",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 40,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -1148,14 +1050,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 30,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         },
@@ -1205,31 +1100,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     has_awg: false
                 },
                 {
-                    name: "AWG",
-                    weight: 40,
-                    sub_components: [],
-                    is_awg: true
-                },
-                {
                     name: "Examination",
                     weight: 35,
                     sub_components: [
-                         { 
-                            name: "WE", 
+                         {
+                            name: "WE",
                             weight: 20
                         },
-                         { 
-                            name: "OE", 
+                         {
+                            name: "OE",
                             weight: 80
                         }
                     ],
                     has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 35,
-                    sub_components: [],
-                    is_awg: true
                 }
             ]
         },
@@ -1264,8 +1147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { name: "Online", weight: 10 }
                             ]
                         }
-                    ],
-                    has_awg: true
+                    ]
                 },
                 {
                     name: "Project",
@@ -1275,14 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "CBO",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 35,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 },
                 {
                     name: "Examination",
@@ -1292,14 +1167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: "WE",
                             weight: 100
                         }
-                    ],
-                    has_awg: false
-                },
-                {
-                    name: "AWG",
-                    weight: 15,
-                    sub_components: [],
-                    is_awg: true
+                    ]
                 }
             ]
         }

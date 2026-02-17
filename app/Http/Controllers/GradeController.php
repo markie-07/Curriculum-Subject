@@ -440,7 +440,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -471,30 +470,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 25,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 25,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 35,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 35,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -510,7 +495,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 35,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -541,30 +525,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 40,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 25,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 25,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -580,7 +550,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -611,30 +580,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 35,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 35,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 25,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 25,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -650,7 +605,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -681,30 +635,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 30,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 30,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 30,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 30,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -720,7 +660,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -751,31 +690,17 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 35,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 40],
                             ['name' => 'OCR', 'weight' => 60]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 35,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 25,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 25,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -791,7 +716,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -822,30 +746,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 30,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 30,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 30,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 30,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -861,7 +771,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 30,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -892,30 +801,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'OCR', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 40,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 30,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 30,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -931,7 +826,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 25,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -962,31 +856,17 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 40,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 35,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 20],
                             ['name' => 'OE', 'weight' => 80]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 35,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ],
@@ -1002,7 +882,6 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 50,
-                        'has_awg' => true,
                         'sub_components' => [
                             [
                                 'name' => 'Attendance',
@@ -1033,30 +912,16 @@ class GradeController extends Controller
                     [
                         'name' => 'Project',
                         'weight' => 35,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 100]
                         ]
                     ],
                     [
-                        'name' => 'AWG',
-                        'weight' => 35,
-                        'is_awg' => true,
-                        'sub_components' => []
-                    ],
-                    [
                         'name' => 'Examination',
                         'weight' => 15,
-                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'WE', 'weight' => 100]
                         ]
-                    ],
-                    [
-                        'name' => 'AWG',
-                        'weight' => 15,
-                        'is_awg' => true,
-                        'sub_components' => []
                     ]
                 ]
             ]
@@ -1068,8 +933,8 @@ class GradeController extends Controller
             'metadata' => [
                 'total_templates' => count($templates),
                 'template_keys' => array_keys($templates),
-                'note' => 'All weights are in percentages. Modalities represent F2F and Online distribution within each component.',
-                'awg_info' => 'AWG (Average Weighted Grade) columns are included after major component sections.'
+                'note' => 'All weights are in percentages. Each template has 3 main components totaling 100%. Modalities represent F2F and Online distribution within Class Standing sub-components.',
+                'calculation_info' => 'Period Grade = (Class Standing × weight) + (Project × weight) + (Examination × weight). Final Grade = (Prelim × 0.30) + (Midterm × 0.30) + (Finals × 0.40)'
             ]
         ]);
     }
