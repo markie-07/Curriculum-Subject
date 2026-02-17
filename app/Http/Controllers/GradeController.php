@@ -441,45 +441,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 40,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 50],
+                            ['name' => 'Performance Task', 'weight' => 40]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 25,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
-                        'name' => 'Examination',
+                        'name' => 'Major Examination',
                         'weight' => 35,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -496,45 +471,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 35,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
-                        'name' => 'Examination',
+                        'name' => 'Major Examination',
                         'weight' => 25,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -549,47 +499,22 @@ class GradeController extends Controller
                 'components' => [
                     [
                         'name' => 'Class Standing',
-                        'weight' => 40,
+                        'weight' => 35,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
                         ]
                     ],
                     [
                         'name' => 'Project',
-                        'weight' => 35,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'weight' => 40,
+                        'sub_components' => []
                     ],
                     [
-                        'name' => 'Examination',
+                        'name' => 'Major Examination',
                         'weight' => 25,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -606,45 +531,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 40,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 30,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
-                        'name' => 'Examination',
+                        'name' => 'Major Examination',
                         'weight' => 30,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -661,30 +561,9 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 40,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 50]
                         ]
                     ],
                     [
@@ -698,9 +577,7 @@ class GradeController extends Controller
                     [
                         'name' => 'Examination',
                         'weight' => 25,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -717,45 +594,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 40,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 50,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 33],
-                                    ['name' => 'Online', 'weight' => 17]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 50],
+                            ['name' => 'Performance Task', 'weight' => 40]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 30,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 30,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -772,45 +624,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 30,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 35,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 23],
-                                    ['name' => 'Online', 'weight' => 12]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 55,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 37],
-                                    ['name' => 'Online', 'weight' => 18]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 35],
+                            ['name' => 'Performance Task', 'weight' => 55]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'sub_components' => [
-                            ['name' => 'OCR', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 30,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -827,45 +654,22 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 25,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 10,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 7],
-                                    ['name' => 'Online', 'weight' => 3]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 45,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 30],
-                                    ['name' => 'Online', 'weight' => 15]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 45,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 30],
-                                    ['name' => 'Online', 'weight' => 15]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 10],
+                            ['name' => 'Written Works', 'weight' => 45],
+                            ['name' => 'Performance Task', 'weight' => 45]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 35,
                         'sub_components' => [
-                            ['name' => 'WE', 'weight' => 20],
-                            ['name' => 'OE', 'weight' => 80]
+                            ['name' => 'Written Exam', 'weight' => 20],
+                            ['name' => 'Oral Exam', 'weight' => 80]
                         ]
                     ]
                 ]
@@ -883,45 +687,20 @@ class GradeController extends Controller
                         'name' => 'Class Standing',
                         'weight' => 50,
                         'sub_components' => [
-                            [
-                                'name' => 'Attendance',
-                                'weight' => 30,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 20],
-                                    ['name' => 'Online', 'weight' => 10]
-                                ]
-                            ],
-                            [
-                                'name' => 'Written Works',
-                                'weight' => 40,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 27],
-                                    ['name' => 'Online', 'weight' => 13]
-                                ]
-                            ],
-                            [
-                                'name' => 'Performance Task',
-                                'weight' => 30,
-                                'modalities' => [
-                                    ['name' => 'F2F', 'weight' => 20],
-                                    ['name' => 'Online', 'weight' => 10]
-                                ]
-                            ]
+                            ['name' => 'Attendance', 'weight' => 30],
+                            ['name' => 'Written Works', 'weight' => 40],
+                            ['name' => 'Performance Task', 'weight' => 30]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 35,
-                        'sub_components' => [
-                            ['name' => 'CBO', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 15,
-                        'sub_components' => [
-                            ['name' => 'WE', 'weight' => 100]
-                        ]
+                        'sub_components' => []
                     ]
                 ]
             ]
@@ -933,8 +712,7 @@ class GradeController extends Controller
             'metadata' => [
                 'total_templates' => count($templates),
                 'template_keys' => array_keys($templates),
-                'note' => 'All weights are in percentages. Each template has 3 main components totaling 100%. Modalities represent F2F and Online distribution within Class Standing sub-components.',
-                'calculation_info' => 'Period Grade = (Class Standing × weight) + (Project × weight) + (Examination × weight). Final Grade = (Prelim × 0.30) + (Midterm × 0.30) + (Finals × 0.40)'
+                'note' => 'All weights are in percentages and must sum to 100%'
             ]
         ]);
     }
