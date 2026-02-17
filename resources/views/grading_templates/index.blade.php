@@ -54,8 +54,6 @@
 <!-- Edit Modal -->
 <!-- Edit Modal -->
 <div id="editModal" class="relative hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Background backdrop (Z-40) -->
-    <div class="fixed inset-0 bg-gray-900/75 transition-opacity z-40" aria-hidden="true"></div>
 
     <!-- Scroll Wrapper (Z-50) - Covers the backdrop -->
     <div class="fixed inset-0 z-50 w-screen overflow-y-auto">
