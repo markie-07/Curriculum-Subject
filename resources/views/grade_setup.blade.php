@@ -663,7 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/grading-templates/list');
             const data = await response.json();
             if (data.success) {
-                templates = data.templates;
+                // Convert list back to object key by code for easy lookup
+                templates = {};
+                data.templates.forEach(t => {
+                    templates[t.code] = t;
+                });
                 console.log('Grading templates loaded:', templates);
             }
         } catch (error) {

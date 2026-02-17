@@ -432,12 +432,14 @@ class GradeController extends Controller
             
             $formattedTemplates = [];
             foreach ($templatesFromDb as $template) {
-                $formattedTemplates[$template->code] = [
+                $formattedTemplates[] = [ // Changed from keyed array to indexed array
                     'id' => $template->id,
+                    'code' => $template->code, // Ensure code is included in the object
                     'name' => $template->name,
                     'description' => $template->description,
                     'periods' => $template->periods,
                     'components' => $template->components,
+                    'is_active' => $template->is_active,
                 ];
             }
 
@@ -446,9 +448,13 @@ class GradeController extends Controller
                 'templates' => $formattedTemplates,
                 'metadata' => [
                     'total_templates' => count($formattedTemplates),
-                    'template_keys' => array_keys($formattedTemplates),
+                    'timestamp' => now()->toIso8601String(),
                     'note' => 'All weights are in percentages and must sum to 100%. Fetched from database.'
                 ]
+            ])->withHeaders([
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
             ]);
         } catch (\Exception $e) {
             return response()->json([

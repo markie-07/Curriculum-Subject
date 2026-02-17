@@ -24,9 +24,11 @@ class GradingTemplateController extends Controller
         $templatesFromDb = GradingTemplate::where('is_active', true)->get();
         
         $formattedTemplates = [];
+        $formattedTemplates = [];
         foreach ($templatesFromDb as $template) {
-            $formattedTemplates[$template->code] = [
+            $formattedTemplates[] = [ // Indexed array
                 'id' => $template->id,
+                'code' => $template->code, // Explicitly include code
                 'name' => $template->name,
                 'description' => $template->description,
                 'periods' => $template->periods,
