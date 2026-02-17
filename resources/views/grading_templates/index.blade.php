@@ -6,7 +6,7 @@
     <header class="bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg flex-shrink-0 z-10">
         <div class="container mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <a href="{{ route('grade.setup') }}" class="text-white/80 hover:text-white transition-colors">
+                <a href="{{ route('grade_setup') }}" class="text-white/80 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -205,12 +205,17 @@
             // Ideally we'd add "Add Sub component" buttons, but for now strict edit is safer
             const originalComp = currentTemplate.components[i];
             const subComponents = [];
-            
-            if (originalComp.sub_components) {
+            if (originalComp && originalComp.sub_components && Array.isArray(originalComp.sub_components)) {
                 for (let j = 0; j < originalComp.sub_components.length; j++) {
-                    const subName = document.querySelector(`.sub-comp-name-${i}-${j}`).value;
-                    const subWeight = parseFloat(document.querySelector(`.sub-comp-weight-${i}-${j}`).value) || 0;
-                    subComponents.push({ name: subName, weight: subWeight });
+                    const subNameInput = document.querySelector(`.sub-comp-name-${i}-${j}`);
+                    const subWeightInput = document.querySelector(`.sub-comp-weight-${i}-${j}`);
+                    
+                    if (subNameInput && subWeightInput) {
+                        subComponents.push({ 
+                            name: subNameInput.value, 
+                            weight: parseFloat(subWeightInput.value) || 0 
+                        });
+                    }
                 }
             }
 
