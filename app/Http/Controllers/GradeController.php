@@ -19,7 +19,8 @@ class GradeController extends Controller
     {
         // Log page view activity
 
-        
+        // Get subjects that already have a grade setup to display in the Grade History
+        $subjectsWithGrades = Grade::with('subject')->get()->pluck('subject')->filter();
         // Fetch active templates
         $templates = \App\Models\GradingTemplate::getActiveTemplates();
         if (empty($templates)) {
