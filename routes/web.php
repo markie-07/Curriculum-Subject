@@ -160,6 +160,15 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
         ->middleware('module:grade_setup')
         ->name('grade_setup');
 
+    // Grading Templates Manager
+    Route::get('/grading-templates/list', [\App\Http\Controllers\GradingTemplateController::class, 'list'])->name('grading_templates.list'); // Before generic index to avoid conflict if index catches all
+    Route::get('/grading-templates', [\App\Http\Controllers\GradingTemplateController::class, 'index'])
+        ->middleware('module:grade_setup') // Re-use the same permission
+        ->name('grading_templates.index');
+    Route::get('/grading-templates/{id}', [\App\Http\Controllers\GradingTemplateController::class, 'show']);
+    Route::put('/grading-templates/{id}', [\App\Http\Controllers\GradingTemplateController::class, 'update']);
+
+
     Route::get('/equivalency_tool', function () {
 
         $subjects = \App\Models\Subject::all();

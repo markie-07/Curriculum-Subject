@@ -177,6 +177,13 @@
                                 </div>
                             </div>
 
+                            <a href="{{ route('grading_templates.index') }}" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors py-2 px-3 rounded-lg hover:bg-blue-50 border border-transparent hover:border-blue-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                                </svg>
+                                Manage Templates
+                            </a>
+
 
                             <button id="add-grade-component-btn" type="button" style="display: none;" class="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors py-2 px-3 rounded-lg hover:bg-indigo-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -648,273 +655,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Templates Configuration
-    const templates = {
-        'gen_ed': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 33 },
-                        { name: "Written Works (Online)", weight: 17 },
-                        { name: "Performance Task (F2F)", weight: 27 },
-                        { name: "Performance Task (Online)", weight: 13 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 25,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 35,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_lab': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 35,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_non_lab': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 35,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_board': {
-            periods: {
-                'Prelim': 30,
-                'Midterm': 30,
-                'Finals': 40
-            },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 30,
-                    sub_components: []
-                },
-                {
-                    name: "Major Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'prof_oc': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 33 },
-                        { name: "Performance Task (Online)", weight: 17 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 35,
-                    sub_components: [
-                        { name: "CBO", weight: 40 },
-                        { name: "OCR", weight: 60 }
-                    ]
-                },
-                {
-                    name: "Examination",
-                    weight: 25,
-                    sub_components: []
-                }
-            ]
-        },
-        'nstp1': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 40,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 33 },
-                        { name: "Written Works (Online)", weight: 17 },
-                        { name: "Performance Task (F2F)", weight: 27 },
-                        { name: "Performance Task (Online)", weight: 13 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 30,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'nstp2': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 30,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 23 },
-                        { name: "Written Works (Online)", weight: 12 },
-                        { name: "Performance Task (F2F)", weight: 37 },
-                        { name: "Performance Task (Online)", weight: 18 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: [] // OCR 100% implicitly
-                },
-                {
-                    name: "Examination",
-                    weight: 30,
-                    sub_components: []
-                }
-            ]
-        },
-        'research': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 25,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 7 },
-                        { name: "Attendance (Online)", weight: 3 },
-                        { name: "Written Works (F2F)", weight: 30 },
-                        { name: "Written Works (Online)", weight: 15 },
-                        { name: "Performance Task (F2F)", weight: 30 },
-                        { name: "Performance Task (Online)", weight: 15 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 40,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 35,
-                    sub_components: [
-                         { name: "Written Exam", weight: 20 },
-                         { name: "Oral Exam", weight: 80 }
-                    ]
-                }
-            ]
-        },
-        'ojt': {
-            periods: { 'Prelim': 30, 'Midterm': 30, 'Finals': 40 },
-            components: [
-                {
-                    name: "Class Standing",
-                    weight: 50,
-                    sub_components: [
-                        { name: "Attendance (F2F)", weight: 20 },
-                        { name: "Attendance (Online)", weight: 10 },
-                        { name: "Written Works (F2F)", weight: 27 },
-                        { name: "Written Works (Online)", weight: 13 },
-                        { name: "Performance Task (F2F)", weight: 20 },
-                        { name: "Performance Task (Online)", weight: 10 }
-                    ]
-                },
-                {
-                    name: "Project",
-                    weight: 35,
-                    sub_components: []
-                },
-                {
-                    name: "Examination",
-                    weight: 15,
-                    sub_components: []
-                }
-            ]
+    let templates = {};
+
+    // Fetch templates from API
+    async function loadGradingTemplates() {
+        try {
+            const response = await fetch('/grading-templates/list');
+            const data = await response.json();
+            if (data.success) {
+                templates = data.templates;
+                console.log('Grading templates loaded:', templates);
+            }
+        } catch (error) {
+            console.error('Failed to load grading templates:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load grading templates. Please refresh the page.'
+            });
         }
-    };
+    }
+
+    // Load templates on page load
+    loadGradingTemplates();
 
     window.applyTemplate = (templateKey) => {
         const template = templates[templateKey];
