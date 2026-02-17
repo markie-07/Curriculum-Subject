@@ -630,6 +630,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Fix: Handle Level Selection Logic ---
+    const handleLevelSelection = (level) => {
+        selectedLevel = level;
+        
+        // Update UI state
+        const isCollege = level === 'College';
+        
+        if (seniorHighBtn) {
+            if (!isCollege) {
+                seniorHighBtn.classList.add('border-purple-500', 'bg-purple-50');
+                seniorHighBtn.classList.remove('border-gray-300');
+            } else {
+                seniorHighBtn.classList.remove('border-purple-500', 'bg-purple-50');
+                seniorHighBtn.classList.add('border-gray-300');
+            }
+        }
+        
+        if (collegeBtn) {
+            if (isCollege) {
+                collegeBtn.classList.add('border-blue-500', 'bg-blue-50');
+                collegeBtn.classList.remove('border-gray-300');
+            } else {
+                collegeBtn.classList.remove('border-blue-500', 'bg-blue-50');
+                collegeBtn.classList.add('border-gray-300');
+            }
+        }
+        
+        if(templateDropdownBtn) {
+             templateDropdownBtn.style.display = isCollege ? 'inline-flex' : 'none';
+        }
+
+        // Reset subsequent steps
+        selectedMemorandum = null;
+        selectedSubjects = [];
+        if(memorandumBtnText) memorandumBtnText.textContent = 'Select Subject Category';
+        if(selectedSubjectsSection) selectedSubjectsSection.classList.add('hidden');
+        if(selectedSubjectsList) selectedSubjectsList.innerHTML = '';
+        
+        // Unlock Memorandum Section
+        if(memorandumSection) memorandumSection.classList.remove('hidden');
+    };
+
+    if (seniorHighBtn) {
+        seniorHighBtn.addEventListener('click', () => handleLevelSelection('Senior High'));
+    }
+
+    if (collegeBtn) {
+        collegeBtn.addEventListener('click', () => handleLevelSelection('College'));
+    }
+    
+    // Fix: Select Memorandum Button
+    if (selectMemorandumBtn) {
+        selectMemorandumBtn.addEventListener('click', () => {
+            if(selectMemorandumModal) selectMemorandumModal.classList.remove('hidden');
+            if(typeof populateSubjectCategories === 'function') populateSubjectCategories();
+        });
+    }
+
     // Hide Buttons Logic (Added for user request)
     const hideButtons = [
         { id: 'close-select-subjects-modal-btn', modal: 'select-subjects-modal' },
