@@ -1173,6 +1173,150 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Load Grade Data to DOM - Renders grade components from template data
+    const loadGradeDataToDOM = (data) => {
+        if (!data || Object.keys(data).length === 0) return;
+        
+        // Clear existing accordion content
+        accordionContainer.innerHTML = '';
+        
+        // Create components for each period
+        Object.keys(data).forEach(periodName => {
+            const periodData = data[periodName];
+            const periodComponent = createGradeComponent(periodName, periodData.weight);
+            accordionContainer.appendChild(periodComponent);
+            
+            // Get the tbody to add components
+            const periodContainer = periodComponent;
+            const tbody = periodContainer.querySelector('.component-tbody');
+            
+            if (periodData.components && Array.isArray(periodData.components)) {
+                periodData.components.forEach(component => {
+                    // Add main component row
+                    const mainRow = createRow(false, periodName, component);
+                    tbody.appendChild(mainRow);
+                    
+                    // Add sub-components
+                    if (component.sub_components && Array.isArray(component.sub_components)) {
+                        component.sub_components.forEach(subComp => {
+                            // Check if this sub-component has modalities
+                            if (subComp.modalities && Array.isArray(subComp.modalities)) {
+                                // Create a label-only row for the sub-component (e.g., "Attendance")
+                                const labelRow = createModalityLabelRow(periodName, subComp);
+                                mainRow.insertAdjacentElement('afterend', labelRow);
+                                
+                                // Create modality rows (F2F, Online)
+                                let lastRow = labelRow;
+                                subComp.modalities.forEach(modality => {
+                                    const modalityRow = createModalityRow(periodName, modality);
+                                    lastRow.insertAdjacentElement('afterend', modalityRow);
+                                    lastRow = modalityRow;
+                                });
+                            } else {
+                                // Regular sub-component without modalities
+                                const subRow = createRow(true, periodName, subComp);
+                                mainRow.insertAdjacentElement('afterend', subRow);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Recalculate totals
+        calculateAndUpdateTotals();
+    };
+
+    // Create a label-only row for components with modalities (e.g., "Attendance")
+    const createModalityLabelRow = (period, component) => {
+        const tr = document.createElement('tr');
+        tr.className = 'sub-component-row border-l-4 border-indigo-300 bg-indigo-50/30';
+        tr.innerHTML = `
+            <td class="p-2 pl-6 align-middle">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-indigo-700">${component.name}</span>
+                    <span class="text-xs text-gray-500 italic">(breakdown below)</span>
+                </div>
+            </td>
+            <td class="p-2 w-28 align-middle text-center">
+                <span class="text-xs text-gray-400">—</span>
+            </td>
+            <td class="p-2 w-28 text-center align-middle">
+                <span class="w-8 h-8"></span>
+            </td>
+        `;
+        return tr;
+    };
+
+    // Create a modality row (F2F or Online)
+    const createModalityRow = (period, modality) => {
+        const tr = document.createElement('tr');
+        tr.className = 'modality-row border-l-4 border-l-gray-200 bg-gray-50 hover:bg-gray-100';
+        tr.innerHTML = `
+            <td class="p-2 pl-12 align-middle">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 11 7.293 7.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm text-gray-700">${modality.name}</span>
+                </div>
+            </td>
+            <td class="p-2 w-28 align-middle">
+                <input type="number" value="${modality.weight}" class="modality-input w-full text-center font-semibold border-gray-300 rounded-lg p-2 shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            </td>
+            <td class="p-2 w-28 text-center align-middle">
+                <div class="flex items-center justify-center gap-1">
+                    <span class="w-8 h-8"></span>
+                    <button type="button" class="remove-row-btn flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded-full transition-colors" title="Remove Row"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg></button>
+                </div>
+            </td>
+        `;
+        return tr;
+    };
+
+    // Calculate and update totals - includes modality inputs in calculation
+    const calculateAndUpdateTotals = () => {
+        // This function calculates the total percentages for grade components
+        // It sums up main-input, sub-input, and modality-input values
+        
+        const allPeriods = document.querySelectorAll('.period-container');
+        allPeriods.forEach(period => {
+            const inputs = period.querySelectorAll('.main-input, .sub-input, .modality-input');
+            let total = 0;
+            inputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                total += value;
+            });
+            
+            // Update progress display if it exists
+            const progressText = period.querySelector('.progress-text');
+            if (progressText) {
+                progressText.textContent = `${total}%`;
+            }
+        });
+        
+        // Update the main progress circle
+        const progressCircle = document.getElementById('progress-circle');
+        const progressText = document.getElementById('progress-text');
+        
+        if (progressCircle && progressText) {
+            const allInputs = document.querySelectorAll('.main-input, .sub-input, .modality-input');
+            let grandTotal = 0;
+            allInputs.forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            
+            progressText.textContent = `${grandTotal}%`;
+            
+            // Update circle stroke
+            const radius = 45;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (grandTotal / 100) * circumference;
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+    };
+
     window.applyTemplate = (templateKey) => {
         const template = templates[templateKey];
         if (!template) return;
