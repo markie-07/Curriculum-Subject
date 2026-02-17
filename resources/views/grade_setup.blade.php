@@ -630,47 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Fix: Handle Level Selection Logic ---
-    const handleLevelSelection = (level) => {
-        selectedLevel = level;
-        
-        // Update UI state
-        const isCollege = level === 'College';
-        
-        if (seniorHighBtn) {
-            if (!isCollege) {
-                seniorHighBtn.classList.add('border-purple-500', 'bg-purple-50');
-                seniorHighBtn.classList.remove('border-gray-300');
-            } else {
-                seniorHighBtn.classList.remove('border-purple-500', 'bg-purple-50');
-                seniorHighBtn.classList.add('border-gray-300');
-            }
-        }
-        
-        if (collegeBtn) {
-            if (isCollege) {
-                collegeBtn.classList.add('border-blue-500', 'bg-blue-50');
-                collegeBtn.classList.remove('border-gray-300');
-            } else {
-                collegeBtn.classList.remove('border-blue-500', 'bg-blue-50');
-                collegeBtn.classList.add('border-gray-300');
-            }
-        }
-        
-        if(templateDropdownBtn) {
-             templateDropdownBtn.style.display = isCollege ? 'inline-flex' : 'none';
-        }
 
-        // Reset subsequent steps
-        selectedMemorandum = null;
-        selectedSubjects = [];
-        if(memorandumBtnText) memorandumBtnText.textContent = 'Select Subject Category';
-        if(selectedSubjectsSection) selectedSubjectsSection.classList.add('hidden');
-        if(selectedSubjectsList) selectedSubjectsList.innerHTML = '';
-        
-        // Unlock Memorandum Section
-        if(memorandumSection) memorandumSection.classList.remove('hidden');
-    };
 
     if (seniorHighBtn) {
         seniorHighBtn.addEventListener('click', () => handleLevelSelection('Senior High'));
@@ -1332,48 +1292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return tr;
     };
 
-    // Calculate and update totals - includes modality inputs in calculation
-    const calculateAndUpdateTotals = () => {
-        // This function calculates the total percentages for grade components
-        // It sums up main-input, sub-input, and modality-input values
-        
-        const allPeriods = document.querySelectorAll('.period-container');
-        allPeriods.forEach(period => {
-            const inputs = period.querySelectorAll('.main-input, .sub-input, .modality-input');
-            let total = 0;
-            inputs.forEach(input => {
-                const value = parseFloat(input.value) || 0;
-                total += value;
-            });
-            
-            // Update progress display if it exists
-            const progressText = period.querySelector('.progress-text');
-            if (progressText) {
-                progressText.textContent = `${total}%`;
-            }
-        });
-        
-        // Update the main progress circle
-        const progressCircle = document.getElementById('progress-circle');
-        const progressText = document.getElementById('progress-text');
-        
-        if (progressCircle && progressText) {
-            const allInputs = document.querySelectorAll('.main-input, .sub-input, .modality-input');
-            let grandTotal = 0;
-            allInputs.forEach(input => {
-                grandTotal += parseFloat(input.value) || 0;
-            });
-            
-            progressText.textContent = `${grandTotal}%`;
-            
-            // Update circle stroke
-            const radius = 45;
-            const circumference = 2 * Math.PI * radius;
-            const offset = circumference - (grandTotal / 100) * circumference;
-            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-            progressCircle.style.strokeDashoffset = offset;
-        }
-    };
+
 
     window.applyTemplate = (templateKey) => {
         const template = templates[templateKey];
@@ -1851,9 +1770,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 let subComponentTotal = 0;
                 let nextRow = mainRow.nextElementSibling;
                 let hasSubComponents = false;
-                while (nextRow && nextRow.classList.contains('sub-component-row')) {
+                
+                // Iterate through siblings (sub-components AND modalities)
+                while (nextRow && (nextRow.classList.contains('sub-component-row') || nextRow.classList.contains('modality-row'))) {
                     hasSubComponents = true;
-                    subComponentTotal += Number(nextRow.querySelector('.sub-input').value) || 0;
+                    
+                    const subInput = nextRow.querySelector('.sub-input');
+                    if (subInput) {
+                        subComponentTotal += Number(subInput.value) || 0;
+                    }
+                    
+                    const modalityInput = nextRow.querySelector('.modality-input');
+                    if (modalityInput) {
+                        subComponentTotal += Number(modalityInput.value) || 0;
+                    }
+                    
                     nextRow = nextRow.nextElementSibling;
                 }
                 
@@ -1942,17 +1873,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     };
 
-    const loadGradeDataToDOM = (componentsData) => {
-        accordionContainer.innerHTML = ''; // Clear existing components
-        const dataToLoad = componentsData && Object.keys(componentsData).length > 0 ? componentsData : {};
-        
-        Object.keys(dataToLoad).forEach(period => {
-            const periodData = dataToLoad[period];
-            const newComponent = createGradeComponent(period, periodData.weight, periodData.components);
-            accordionContainer.appendChild(newComponent);
-        });
-        calculateAndUpdateTotals();
-    };
+
 
     const toggleGradeComponents = (disabled) => {
         // Disable input fields and action buttons
