@@ -810,9 +810,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 50 },
-                        { name: "Performance Task", weight: 40 }
+                        { name: "Attendance (F2F)", weight: 7 },
+                        { name: "Attendance (Online)", weight: 3 },
+                        { name: "Written Works (F2F)", weight: 33 },
+                        { name: "Written Works (Online)", weight: 17 },
+                        { name: "Performance Task (F2F)", weight: 27 },
+                        { name: "Performance Task (Online)", weight: 13 }
                     ]
                 },
                 {
@@ -834,9 +837,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 30,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 35 },
-                        { name: "Performance Task", weight: 55 }
+                        { name: "Attendance (F2F)", weight: 7 },
+                        { name: "Attendance (Online)", weight: 3 },
+                        { name: "Written Works (F2F)", weight: 23 },
+                        { name: "Written Works (Online)", weight: 12 },
+                        { name: "Performance Task (F2F)", weight: 37 },
+                        { name: "Performance Task (Online)", weight: 18 }
                     ]
                 },
                 {
@@ -858,9 +864,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 25,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 45 },
-                        { name: "Performance Task", weight: 45 }
+                        { name: "Attendance (F2F)", weight: 7 },
+                        { name: "Attendance (Online)", weight: 3 },
+                        { name: "Written Works (F2F)", weight: 30 },
+                        { name: "Written Works (Online)", weight: 15 },
+                        { name: "Performance Task (F2F)", weight: 30 },
+                        { name: "Performance Task (Online)", weight: 15 }
                     ]
                 },
                 {
@@ -885,9 +894,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 50,
                     sub_components: [
-                        { name: "Attendance", weight: 30 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 30 }
+                        { name: "Attendance (F2F)", weight: 20 },
+                        { name: "Attendance (Online)", weight: 10 },
+                        { name: "Written Works (F2F)", weight: 27 },
+                        { name: "Written Works (Online)", weight: 13 },
+                        { name: "Performance Task (F2F)", weight: 20 },
+                        { name: "Performance Task (Online)", weight: 10 }
                     ]
                 },
                 {
