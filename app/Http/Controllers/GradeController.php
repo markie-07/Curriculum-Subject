@@ -440,20 +440,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 50],
-                            ['name' => 'Performance Task', 'weight' => 40]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 25,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 25,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
-                        'name' => 'Major Examination',
+                        'name' => 'Examination',
                         'weight' => 35,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 35,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -470,20 +510,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 35,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 40],
-                            ['name' => 'Performance Task', 'weight' => 50]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 40,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
-                        'name' => 'Major Examination',
+                        'name' => 'Examination',
                         'weight' => 25,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 25,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -499,21 +579,61 @@ class GradeController extends Controller
                 'components' => [
                     [
                         'name' => 'Class Standing',
-                        'weight' => 35,
+                        'weight' => 40,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 40],
-                            ['name' => 'Performance Task', 'weight' => 50]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
-                        'weight' => 40,
+                        'weight' => 35,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 35,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
-                        'name' => 'Major Examination',
+                        'name' => 'Examination',
                         'weight' => 25,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 25,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -530,20 +650,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 40],
-                            ['name' => 'Performance Task', 'weight' => 50]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 30,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 30,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
-                        'name' => 'Major Examination',
+                        'name' => 'Examination',
                         'weight' => 30,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 30,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -560,23 +720,61 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 40],
-                            ['name' => 'Performance Task', 'weight' => 50]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 35,
+                        'has_awg' => false,
                         'sub_components' => [
                             ['name' => 'CBO', 'weight' => 40],
                             ['name' => 'OCR', 'weight' => 60]
                         ]
                     ],
                     [
+                        'name' => 'AWG',
+                        'weight' => 35,
+                        'is_awg' => true,
+                        'sub_components' => []
+                    ],
+                    [
                         'name' => 'Examination',
                         'weight' => 25,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 25,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -593,20 +791,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 40,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 50],
-                            ['name' => 'Performance Task', 'weight' => 40]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 50,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 33],
+                                    ['name' => 'Online', 'weight' => 17]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 30,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 30,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 30,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 30,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -623,20 +861,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 30,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 35],
-                            ['name' => 'Performance Task', 'weight' => 55]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 35,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 23],
+                                    ['name' => 'Online', 'weight' => 12]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 55,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 37],
+                                    ['name' => 'Online', 'weight' => 18]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'OCR', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 40,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 30,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 30,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -653,24 +931,62 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 25,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 10],
-                            ['name' => 'Written Works', 'weight' => 45],
-                            ['name' => 'Performance Task', 'weight' => 45]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 10,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 7],
+                                    ['name' => 'Online', 'weight' => 3]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 45,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 30],
+                                    ['name' => 'Online', 'weight' => 15]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 45,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 30],
+                                    ['name' => 'Online', 'weight' => 15]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 40,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 40,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 35,
+                        'has_awg' => false,
                         'sub_components' => [
-                            ['name' => 'Written Exam', 'weight' => 20],
-                            ['name' => 'Oral Exam', 'weight' => 80]
+                            ['name' => 'WE', 'weight' => 20],
+                            ['name' => 'OE', 'weight' => 80]
                         ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 35,
+                        'is_awg' => true,
+                        'sub_components' => []
                     ]
                 ]
             ],
@@ -686,20 +1002,60 @@ class GradeController extends Controller
                     [
                         'name' => 'Class Standing',
                         'weight' => 50,
+                        'has_awg' => true,
                         'sub_components' => [
-                            ['name' => 'Attendance', 'weight' => 30],
-                            ['name' => 'Written Works', 'weight' => 40],
-                            ['name' => 'Performance Task', 'weight' => 30]
+                            [
+                                'name' => 'Attendance',
+                                'weight' => 30,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 20],
+                                    ['name' => 'Online', 'weight' => 10]
+                                ]
+                            ],
+                            [
+                                'name' => 'Written Works',
+                                'weight' => 40,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 27],
+                                    ['name' => 'Online', 'weight' => 13]
+                                ]
+                            ],
+                            [
+                                'name' => 'Performance Task',
+                                'weight' => 30,
+                                'modalities' => [
+                                    ['name' => 'F2F', 'weight' => 20],
+                                    ['name' => 'Online', 'weight' => 10]
+                                ]
+                            ]
                         ]
                     ],
                     [
                         'name' => 'Project',
                         'weight' => 35,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'CBO', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 35,
+                        'is_awg' => true,
                         'sub_components' => []
                     ],
                     [
                         'name' => 'Examination',
                         'weight' => 15,
+                        'has_awg' => false,
+                        'sub_components' => [
+                            ['name' => 'WE', 'weight' => 100]
+                        ]
+                    ],
+                    [
+                        'name' => 'AWG',
+                        'weight' => 15,
+                        'is_awg' => true,
                         'sub_components' => []
                     ]
                 ]
@@ -712,7 +1068,8 @@ class GradeController extends Controller
             'metadata' => [
                 'total_templates' => count($templates),
                 'template_keys' => array_keys($templates),
-                'note' => 'All weights are in percentages and must sum to 100%'
+                'note' => 'All weights are in percentages. Modalities represent F2F and Online distribution within each component.',
+                'awg_info' => 'AWG (Average Weighted Grade) columns are included after major component sections.'
             ]
         ]);
     }

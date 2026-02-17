@@ -660,20 +660,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 50 },
-                        { name: "Performance Task", weight: 40 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 25,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
                 },
                 {
-                    name: "Major Examination",
+                    name: "AWG",
+                    weight: 25,
+                    sub_components: [],
+                    is_awg: true
+                },
+                {
+                    name: "Examination",
                     weight: 35,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 35,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -688,20 +734,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 35,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 50 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 40,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
                 },
                 {
-                    name: "Major Examination",
+                    name: "AWG",
+                    weight: 40,
+                    sub_components: [],
+                    is_awg: true
+                },
+                {
+                    name: "Examination",
                     weight: 25,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 25,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -714,22 +806,68 @@ document.addEventListener('DOMContentLoaded', () => {
             components: [
                 {
                     name: "Class Standing",
-                    weight: 35,
+                    weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 50 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
-                    weight: 40,
-                    sub_components: []
+                    weight: 35,
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
                 },
                 {
-                    name: "Major Examination",
+                    name: "AWG",
+                    weight: 35,
+                    sub_components: [],
+                    is_awg: true
+                },
+                {
+                    name: "Examination",
                     weight: 25,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 25,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -744,20 +882,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 50 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 30,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
                 },
                 {
-                    name: "Major Examination",
+                    name: "AWG",
                     weight: 30,
-                    sub_components: []
+                    sub_components: [],
+                    is_awg: true
+                },
+                {
+                    name: "Examination",
+                    weight: 30,
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 30,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -768,23 +952,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 50 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 35,
                     sub_components: [
-                        { name: "CBO", weight: 40 },
-                        { name: "OCR", weight: 60 }
-                    ]
+                        {
+                            name: "CBO",
+                            weight: 40
+                        },
+                        {
+                            name: "OCR",
+                            weight: 60
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 35,
+                    sub_components: [],
+                    is_awg: true
                 },
                 {
                     name: "Examination",
                     weight: 25,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 25,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -795,20 +1026,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 40,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 50 },
-                        { name: "Performance Task", weight: 40 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 50,
+                            modalities: [
+                                { name: "F2F", weight: 33 },
+                                { name: "Online", weight: 17 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 30,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 30,
+                    sub_components: [],
+                    is_awg: true
                 },
                 {
                     name: "Examination",
                     weight: 30,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 30,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -819,20 +1096,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 30,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 35 },
-                        { name: "Performance Task", weight: 55 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 35,
+                            modalities: [
+                                { name: "F2F", weight: 23 },
+                                { name: "Online", weight: 12 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 55,
+                            modalities: [
+                                { name: "F2F", weight: 37 },
+                                { name: "Online", weight: 18 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 40,
-                    sub_components: [] // OCR 100% implicitly
+                    sub_components: [
+                        {
+                            name: "OCR",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 40,
+                    sub_components: [],
+                    is_awg: true
                 },
                 {
                     name: "Examination",
                     weight: 30,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 30,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -843,23 +1166,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 25,
                     sub_components: [
-                        { name: "Attendance", weight: 10 },
-                        { name: "Written Works", weight: 45 },
-                        { name: "Performance Task", weight: 45 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 10,
+                            modalities: [
+                                { name: "F2F", weight: 7 },
+                                { name: "Online", weight: 3 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 45,
+                            modalities: [
+                                { name: "F2F", weight: 30 },
+                                { name: "Online", weight: 15 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 45,
+                            modalities: [
+                                { name: "F2F", weight: 30 },
+                                { name: "Online", weight: 15 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 40,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 40,
+                    sub_components: [],
+                    is_awg: true
                 },
                 {
                     name: "Examination",
                     weight: 35,
                     sub_components: [
-                         { name: "Written Exam", weight: 20 },
-                         { name: "Oral Exam", weight: 80 }
-                    ]
+                         { 
+                            name: "WE", 
+                            weight: 20
+                        },
+                         { 
+                            name: "OE", 
+                            weight: 80
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 35,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         },
@@ -870,20 +1240,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: "Class Standing",
                     weight: 50,
                     sub_components: [
-                        { name: "Attendance", weight: 30 },
-                        { name: "Written Works", weight: 40 },
-                        { name: "Performance Task", weight: 30 }
-                    ]
+                        { 
+                            name: "Attendance", 
+                            weight: 30,
+                            modalities: [
+                                { name: "F2F", weight: 20 },
+                                { name: "Online", weight: 10 }
+                            ]
+                        },
+                        { 
+                            name: "Written Works", 
+                            weight: 40,
+                            modalities: [
+                                { name: "F2F", weight: 27 },
+                                { name: "Online", weight: 13 }
+                            ]
+                        },
+                        { 
+                            name: "Performance Task", 
+                            weight: 30,
+                            modalities: [
+                                { name: "F2F", weight: 20 },
+                                { name: "Online", weight: 10 }
+                            ]
+                        }
+                    ],
+                    has_awg: true
                 },
                 {
                     name: "Project",
                     weight: 35,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "CBO",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 35,
+                    sub_components: [],
+                    is_awg: true
                 },
                 {
                     name: "Examination",
                     weight: 15,
-                    sub_components: []
+                    sub_components: [
+                        {
+                            name: "WE",
+                            weight: 100
+                        }
+                    ],
+                    has_awg: false
+                },
+                {
+                    name: "AWG",
+                    weight: 15,
+                    sub_components: [],
+                    is_awg: true
                 }
             ]
         }
