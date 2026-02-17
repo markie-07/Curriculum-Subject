@@ -53,20 +53,16 @@
 
 <!-- Edit Modal -->
 <!-- Edit Modal -->
-<div id="editModal" class="relative z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Background backdrop, show/hide based on modal state. -->
-    <div class="fixed inset-0 bg-gray-900/75 transition-opacity" aria-hidden="true"></div>
+<div id="editModal" class="relative hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Background backdrop (Z-40) -->
+    <div class="fixed inset-0 bg-gray-900/75 transition-opacity z-40" aria-hidden="true"></div>
 
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+    <!-- Scroll Wrapper (Z-50) - Covers the backdrop -->
+    <div class="fixed inset-0 z-50 w-screen overflow-y-auto">
+        <!-- Centering Container - Handles click-outside to close -->
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0" onclick="if(event.target === this) closeModal()">
             <!-- 
-              Modal panel, show/hide based on modal state.
-              Entering: "ease-out duration-300"
-                From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                To: "opacity-100 translate-y-0 sm:scale-100"
-              Leaving: "ease-in duration-200"
-                From: "opacity-100 translate-y-0 sm:scale-100"
-                To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              Modal panel
             -->
             <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-200" onclick="event.stopPropagation()">
                 <!-- Header -->
