@@ -53,71 +53,82 @@
 
 <!-- Edit Modal -->
 <!-- Edit Modal -->
-<div id="editModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Overlay/Backdrop -->
-    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+<div id="editModal" class="relative z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Background backdrop, show/hide based on modal state. -->
+    <div class="fixed inset-0 bg-gray-900/75 transition-opacity" aria-hidden="true"></div>
 
-    <!-- Modal Layout -->
-    <div class="flex items-center justify-center min-h-screen p-4 text-center">
-        <!-- Modal Panel -->
-        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden transform transition-all text-left relative z-10 border border-gray-100" onclick="event.stopPropagation()">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <h3 class="text-xl font-bold text-gray-800" id="modal-title">Edit Grading Template</h3>
-                <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="p-6 max-h-[75vh] overflow-y-auto">
-                <form id="editTemplateForm" class="space-y-8">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" id="template_id" name="id">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Template Name</label>
-                            <input type="text" id="template_name" name="name" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
-                            <input type="text" id="template_description" name="description" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
-                        </div>
-                    </div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <!-- 
+              Modal panel, show/hide based on modal state.
+              Entering: "ease-out duration-300"
+                From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                To: "opacity-100 translate-y-0 sm:scale-100"
+              Leaving: "ease-in duration-200"
+                From: "opacity-100 translate-y-0 sm:scale-100"
+                To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            -->
+            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-200" onclick="event.stopPropagation()">
+                <!-- Header -->
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100">
+                    <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Edit Grading Template</h3>
+                    <button type="button" onclick="closeModal()" class="rounded-md bg-gray-50 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
 
-                    <div class="border-t border-gray-100 pt-6">
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <!-- Body -->
+                <div class="px-4 py-5 sm:p-6 max-h-[75vh] overflow-y-auto">
+                     <form id="editTemplateForm" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="template_id" name="id">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Template Name</label>
+                                <input type="text" id="template_name" name="name" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
                             </div>
-                            <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100" id="periodsContainer">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-100 pt-6">
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+                                <input type="text" id="template_description" name="description" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
                             </div>
-                            <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
                         </div>
-                        <div id="componentsContainer" class="space-y-4">
-                            <!-- Populated by JS -->
+
+                        <div class="border-t border-gray-100 pt-6">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100" id="periodsContainer">
+                                <!-- Populated by JS -->
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-row-reverse gap-3">
-                <button type="button" onclick="saveTemplate()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-lg border border-transparent shadow-sm px-5 py-2.5 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    Save Changes
-                </button>
-                <button type="button" onclick="closeModal()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    Cancel
-                </button>
+
+                        <div class="border-t border-gray-100 pt-6">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                </div>
+                                <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
+                            </div>
+                            <div id="componentsContainer" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-gray-100">
+                    <button type="button" onclick="saveTemplate()" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:w-auto transition-colors">Save Changes</button>
+                    <button type="button" onclick="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
