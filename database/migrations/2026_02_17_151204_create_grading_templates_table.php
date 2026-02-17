@@ -13,12 +13,6 @@ return new class extends Migration
     {
         Schema::create('grading_templates', function (Blueprint $table) {
             $table->id();
-            $table->string('template_key')->unique();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->json('periods');
-            $table->json('components');
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
