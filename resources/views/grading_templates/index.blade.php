@@ -1,103 +1,118 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg flex-shrink-0 z-10">
-        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('grade_setup') }}" class="text-white/80 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </a>
-                <h1 class="text-2xl font-bold tracking-tight">Grading Templates Manager</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <!-- Add new template button (Could be implemented later) -->
+<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8">
+            <a href="{{ route('grade_setup') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4 transition-colors">
+                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Grade Setup
+            </a>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Grading Templates Manager</h1>
+                    <p class="text-sm text-gray-600 mt-1">Manage and customize your grading templates.</p>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-6 container mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($templates as $template)
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 border border-gray-100 dark:border-gray-700">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $template->name }}</h3>
-                            <code class="text-xs font-mono text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded inline-block mt-1">{{ $template->code }}</code>
+                            <h3 class="text-lg font-bold text-gray-800">{{ $template->name }}</h3>
+                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-mono text-gray-600 bg-gray-100 rounded border border-gray-200">{{ $template->code }}</span>
                         </div>
-                        <span class="px-2 py-1 text-xs font-medium rounded-full {{ $template->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        <span class="px-2.5 py-0.5 text-xs font-medium rounded-full {{ $template->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                             {{ $template->is_active ? 'Active' : 'Inactive' }}
                         </span>
                     </div>
                     
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 line-clamp-2 h-10">{{ $template->description }}</p>
+                    <p class="text-sm text-gray-600 mb-6 line-clamp-2 h-10">{{ $template->description }}</p>
                     
-                    <div class="flex justify-between items-center text-sm text-gray-500 border-t pt-4 dark:border-gray-700">
-                        <span>{{ count($template->components) }} Component Groups</span>
-                        <button onclick="editTemplate({{ $template->id }})" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors">
+                    <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-4">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            {{ count($template->components) }} Groups
+                        </span>
+                        <button onclick="editTemplate({{ $template->id }})" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            Edit Configuration
+                            Edit
                         </button>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
-    </main>
-</div>
+    </div>
+</main>
 
 <!-- Edit Modal -->
-<div id="editModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[80vh] overflow-y-auto">
-                <div class="sm:flex sm:items-start w-full">
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <h3 class="text-2xl leading-6 font-bold text-gray-900 dark:text-white mb-6" id="modal-title">Edit Grading Template</h3>
-                        
-                        <form id="editTemplateForm" class="space-y-6">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" id="template_id" name="id">
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Template Name</label>
-                                    <input type="text" id="template_name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-3 py-2 border">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                                    <input type="text" id="template_description" name="description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-3 py-2 border">
-                                </div>
-                            </div>
-
-                            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Grading Periods & Weights</h4>
-                                <div class="grid grid-cols-3 gap-4" id="periodsContainer">
-                                    <!-- Populated by JS -->
-                                </div>
-                            </div>
-
-                            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Components Configuration</h4>
-                                <div id="componentsContainer" class="space-y-4">
-                                    <!-- Populated by JS -->
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden transform transition-all" onclick="event.stopPropagation()">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-xl font-bold text-gray-800" id="modal-title">Edit Grading Template</h3>
+                <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <div class="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200 dark:border-gray-700">
-                <button type="button" onclick="saveTemplate()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">Save Changes</button>
-                <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">Cancel</button>
+            
+            <div class="p-6 max-h-[75vh] overflow-y-auto">
+                <form id="editTemplateForm" class="space-y-8">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="template_id" name="id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Template Name</label>
+                            <input type="text" id="template_name" name="name" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+                            <input type="text" id="template_description" name="description" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100" id="periodsContainer">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
+                        </div>
+                        <div id="componentsContainer" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-row-reverse gap-3">
+                <button type="button" onclick="saveTemplate()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-lg border border-transparent shadow-sm px-5 py-2.5 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    Save Changes
+                </button>
+                <button type="button" onclick="closeModal()" class="w-full sm:w-auto inline-flex justify-center items-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
@@ -137,11 +152,11 @@
         for (const [key, value] of Object.entries(periods)) {
             container.innerHTML += `
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">${key}</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">${key}</label>
                     <div class="relative mt-1 rounded-md shadow-sm">
-                        <input type="number" step="0.01" data-period="${key}" value="${value}" class="period-input block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-3 py-2 border pr-8">
+                        <input type="number" step="0.01" data-period="${key}" value="${value}" class="period-input block w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border pr-8 shadow-sm">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 sm:text-sm">%</span>
+                            <span class="text-gray-500 sm:text-sm font-medium">%</span>
                         </div>
                     </div>
                 </div>
@@ -155,23 +170,23 @@
         
         components.forEach((comp, index) => {
             const subsHtml = comp.sub_components && comp.sub_components.length ? comp.sub_components.map((sub, subIndex) => `
-                <div class="flex items-center gap-4 ml-8 mt-2">
-                    <input type="text" value="${sub.name}" class="sub-comp-name-${index}-${subIndex} flex-1 rounded-md border-gray-300 py-1 px-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white border" placeholder="Sub-component Name">
-                    <div class="w-24 relative rounded-md shadow-sm">
-                        <input type="number" step="0.01" value="${sub.weight}" class="sub-comp-weight-${index}-${subIndex} block w-full rounded-md border-gray-300 py-1 px-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white border pr-6">
-                        <div class="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none">
-                            <span class="text-gray-500 text-xs">%</span>
+                <div class="flex items-center gap-4 ml-6 mt-3 pl-4 border-l-2 border-gray-200">
+                    <input type="text" value="${sub.name}" class="sub-comp-name-${index}-${subIndex} flex-1 rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Sub-component Name">
+                    <div class="w-28 relative rounded-md shadow-sm">
+                        <input type="number" step="0.01" value="${sub.weight}" class="sub-comp-weight-${index}-${subIndex} block w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
+                        <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-xs font-bold">%</span>
                         </div>
                     </div>
                 </div>
-            `).join('') : '<div class="ml-8 text-sm text-gray-500 italic mt-1">No sub-components</div>';
+            `).join('') : '<div class="ml-10 text-sm text-gray-400 italic mt-2">No sub-components</div>';
 
             container.innerHTML += `
-                <div class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700/30 dark:border-gray-600">
-                    <div class="flex items-center gap-4 mb-2">
-                        <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-semibold rounded-md border-gray-300 py-2 px-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white border" placeholder="Component Name">
-                        <div class="def-number-input number-input w-32 relative rounded-md shadow-sm">
-                            <input type="number" step="0.01" value="${comp.weight}" class="comp-weight-${index} block w-full rounded-md border-gray-300 py-2 px-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white border pr-8">
+                <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm hover:border-indigo-200 transition-colors">
+                    <div class="flex items-center gap-4 mb-1">
+                        <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-bold text-gray-800 rounded-lg border-gray-300 py-2 px-3 focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Component Name">
+                        <div class="w-32 relative rounded-md shadow-sm">
+                            <input type="number" step="0.01" value="${comp.weight}" class="comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
                              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 font-bold">%</span>
                             </div>
