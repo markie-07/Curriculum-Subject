@@ -182,7 +182,7 @@
 
     function renderComponents(components) {
         const container = document.getElementById('componentsContainer');
-        container.innerHTML = '';
+        let html = '';
         
         components.forEach((comp, index) => {
             const subsHtml = comp.sub_components && comp.sub_components.length ? comp.sub_components.map((sub, subIndex) => `
@@ -197,12 +197,12 @@
                 </div>
             `).join('') : '<div class="ml-10 text-sm text-gray-400 italic mt-2">No sub-components</div>';
 
-            container.innerHTML += `
+            html += `
                 <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm hover:border-indigo-200 transition-colors">
                     <div class="flex items-center gap-4 mb-1">
                         <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-bold text-gray-800 rounded-lg border-gray-300 py-2 px-3 focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Component Name">
                         <div class="w-32 relative rounded-md shadow-sm">
-                            <input type="number" step="0.01" value="${comp.weight}" class="component-percentage-input comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
+                            <input type="number" step="0.01" value="${comp.weight}" oninput="calculateComponentTotal()" class="component-percentage-input comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
                              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 font-bold">%</span>
                             </div>
@@ -212,19 +212,12 @@
                 </div>
             `;
         });
+        
+        container.innerHTML = html;
+        calculateComponentTotal(); // Recalculate immediately after render
     }
 
-    // Add this to initialize listener
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('componentsContainer');
-        if (container) {
-            container.addEventListener('input', function(e) {
-                if (e.target.classList.contains('component-percentage-input')) {
-                    calculateComponentTotal();
-                }
-            });
-        }
-    });
+    // Removed DOMContentLoaded listener in favor of inline oninput for robustness
 
     function calculateComponentTotal() {
         const inputs = document.querySelectorAll('.component-percentage-input');
@@ -243,15 +236,25 @@
         const display = document.getElementById('totalPercentageDisplay');
         const diff = Math.round((100 - total) * 100) / 100;
         
+        // Using inline styles as fallback to ensure colors show even if Tailwind JIT hasn't picked them up
         if (total === 100) {
             display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200 shadow-sm transition-all duration-300';
+            display.style.backgroundColor = '#dcfce7'; // green-100
+            display.style.color = '#15803d'; // green-700
+            display.style.borderColor = '#bbf7d0'; // green-200
             display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Total: 100%</span>`;
         } else if (total > 100) {
             display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-red-100 text-red-700 border border-red-200 shadow-sm transition-all duration-300';
+            display.style.backgroundColor = '#fee2e2'; // red-100
+            display.style.color = '#b91c1c'; // red-700
+            display.style.borderColor = '#fecaca'; // red-200
             display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Exceeds by ${Math.abs(diff)}% (Total: ${total}%)</span>`;
         } else {
             // Less than 100
-             display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 shadow-sm transition-all duration-300';
+            display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 shadow-sm transition-all duration-300';
+            display.style.backgroundColor = '#fef3c7'; // amber-100
+            display.style.color = '#b45309'; // amber-700
+            display.style.borderColor = '#fde68a'; // amber-200
             display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Missing ${diff}% (Total: ${total}%)</span>`;
         }
     }
