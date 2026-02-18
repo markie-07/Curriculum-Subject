@@ -51,14 +51,15 @@
     </div>
 </main>
 
-<div id="editModal" class="relative z-[60] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Backdrop -->
-    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Backdrop with explicit z-index -->
+    <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
 
-    <!-- Scroll Wrapper -->
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0" onclick="if(event.target === this) closeModal()">
-            <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-100" onclick="event.stopPropagation()">
+    <!-- Centering Container -->
+    <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+        <!-- Modal panel -->
+        <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-100 z-50" onclick="event.stopPropagation()">
                 <!-- Header -->
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100">
                     <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Edit Grading Template</h3>
@@ -138,22 +139,37 @@
     let currentTemplate = null;
 
     async function editTemplate(id) {
+        console.log('Editing template ID:', id);
         try {
             const response = await fetch(`/grading-templates/${id}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
             const template = await response.json();
+            console.log('Loaded template data:', template);
             currentTemplate = template;
             
-            document.getElementById('template_id').value = template.id;
-            document.getElementById('template_name').value = template.name;
-            document.getElementById('template_description').value = template.description || '';
+            // Set basic info
+            const idInput = document.getElementById('template_id');
+            const nameInput = document.getElementById('template_name');
+            const descInput = document.getElementById('template_description');
+            const modal = document.getElementById('editModal');
+
+            if (idInput) idInput.value = template.id;
+            if (nameInput) nameInput.value = template.name;
+            if (descInput) descInput.value = template.description || '';
             
-            renderPeriods(template.periods);
-            renderComponents(template.components);
+            renderPeriods(template.periods || {});
+            renderComponents(template.components || []);
             
-            document.getElementById('editModal').classList.remove('hidden');
+            if (modal) {
+                modal.classList.remove('hidden');
+                console.log('Modal shown');
+            } else {
+                console.error('Modal element not found!');
+            }
         } catch (error) {
             console.error('Error fetching template:', error);
-            alert('Failed to load template data');
+            alert('Failed to load template data: ' + error.message);
         }
     }
 
