@@ -51,18 +51,14 @@
     </div>
 </main>
 
-<!-- Edit Modal -->
-<!-- Edit Modal -->
-<div id="editModal" class="relative hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="editModal" class="relative z-[60] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
 
-    <!-- Scroll Wrapper (Z-50) - Covers the backdrop -->
-    <div class="fixed inset-0 z-50 w-screen overflow-y-auto">
-        <!-- Centering Container - Handles click-outside to close -->
+    <!-- Scroll Wrapper -->
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0" onclick="if(event.target === this) closeModal()">
-            <!-- 
-              Modal panel
-            -->
-            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-200" onclick="event.stopPropagation()">
+            <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-gray-100" onclick="event.stopPropagation()">
                 <!-- Header -->
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100">
                     <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Edit Grading Template</h3>
@@ -247,12 +243,15 @@
         });
         
         const periodDisplay = document.getElementById('periodsTotalDisplay');
-        document.getElementById('periodsTotal').innerText = displayNum(periodTotal);
+        const periodTotalElem = document.getElementById('periodsTotal');
+        if (periodTotalElem) periodTotalElem.innerText = displayNum(periodTotal);
         
-        if (Math.round(periodTotal * 100) / 100 === 100) {
-            periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
-        } else {
-            periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+        if (periodDisplay) {
+            if (Math.round(periodTotal * 100) / 100 === 100) {
+                periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
+            } else {
+                periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+            }
         }
 
         // Components
@@ -263,12 +262,15 @@
         });
 
         const compDisplay = document.getElementById('componentsTotalDisplay');
-        document.getElementById('componentsTotal').innerText = displayNum(compTotal);
+        const compTotalElem = document.getElementById('componentsTotal');
+        if (compTotalElem) compTotalElem.innerText = displayNum(compTotal);
 
-        if (Math.round(compTotal * 100) / 100 === 100) {
-            compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
-        } else {
-            compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+        if (compDisplay) {
+            if (Math.round(compTotal * 100) / 100 === 100) {
+                compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
+            } else {
+                compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+            }
         }
 
         // Sub-components validation
