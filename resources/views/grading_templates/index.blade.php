@@ -3,50 +3,52 @@
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
     <div class="max-w-7xl mx-auto">
-        <div class="mb-8">
-            <a href="{{ route('grade_setup') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4 transition-colors">
-                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Grade Setup
-            </a>
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">Grading Templates Manager</h1>
-                    <p class="text-sm text-gray-600 mt-1">Manage and customize your grading templates.</p>
+        <div class="bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
+            <div class="mb-8">
+                <a href="{{ route('grade_setup') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4 transition-colors">
+                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to Grade Setup
+                </a>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Grading Templates Manager</h1>
+                        <p class="text-sm text-gray-600 mt-1">Manage and customize your grading templates.</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($templates as $template)
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800">{{ $template->name }}</h3>
-                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-mono text-gray-600 bg-gray-100 rounded border border-gray-200">{{ $template->code }}</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($templates as $template)
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">{{ $template->name }}</h3>
+                                <span class="inline-block mt-1 px-2 py-0.5 text-xs font-mono text-gray-600 bg-gray-100 rounded border border-gray-200">{{ $template->code }}</span>
+                            </div>
+                            <span class="px-2.5 py-0.5 text-xs font-medium rounded-full {{ $template->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                {{ $template->is_active ? 'Active' : 'Inactive' }}
+                            </span>
                         </div>
-                        <span class="px-2.5 py-0.5 text-xs font-medium rounded-full {{ $template->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                            {{ $template->is_active ? 'Active' : 'Inactive' }}
-                        </span>
-                    </div>
-                    
-                    <p class="text-sm text-gray-600 mb-6 line-clamp-2 h-10">{{ $template->description }}</p>
-                    
-                    <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-4">
-                        <span class="flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            {{ count($template->components) }} Groups
-                        </span>
-                        <button onclick="editTemplate({{ $template->id }})" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            Edit
-                        </button>
+                        
+                        <p class="text-sm text-gray-600 mb-6 line-clamp-2 h-10">{{ $template->description }}</p>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-4">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                {{ count($template->components) }} Groups
+                            </span>
+                            <button onclick="editTemplate({{ $template->id }})" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                Edit
+                            </button>
+                        </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
     </div>
 </main>
