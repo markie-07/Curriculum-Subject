@@ -2,7 +2,7 @@
 
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
-    <div class="max-w-7xl mx-auto">
+    <div class="w-full">
         <div class="bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
             <div class="mb-8">
                 <a href="{{ route('grade_setup') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4 transition-colors">
