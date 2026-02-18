@@ -39,7 +39,7 @@
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             {{ count($template->components) }} Groups
                         </span>
-                        <button onclick="editTemplate({{ $template->id }})" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors text-sm">
+                        <button type="button" data-template-id="{{ $template->id }}" class="edit-template-btn text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             Edit
                         </button>
@@ -133,7 +133,43 @@
 <script>
     let currentTemplate = null;
 
-    async function editTemplate(id) {
+    // Generic initialization function
+    function initGradingTemplatesManager() {
+        console.log('Grading Templates Manager: Initializing...');
+        // alert('System Ready: Grading Manager Loaded'); // Proof of life
+        
+        // Attach click handlers to all edit buttons
+        const editButtons = document.querySelectorAll('.edit-template-btn');
+        console.log('Found ' + editButtons.length + ' edit buttons.');
+        
+        if (editButtons.length === 0) {
+            console.warn('No edit buttons found! Check class names.');
+            // alert('Error: No edit buttons found on page.');
+        }
+
+        editButtons.forEach(button => {
+            // Remove old listeners to prevent duplicates if re-initialized
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const id = this.getAttribute('data-template-id');
+                console.log('Click event fired for ID: ' + id);
+                alert('Success: Button Clicked! ID: ' + id); 
+                openEditModal(id);
+            });
+        });
+    }
+
+    // Run initialization immediately if DOM is ready, otherwise wait
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGradingTemplatesManager);
+    } else {
+        initGradingTemplatesManager();
+    }
+
+    async function openEditModal(id) {
         console.log('Edit starting for ID:', id);
         try {
             // Use route-aware URL if possible, otherwise relative
