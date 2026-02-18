@@ -105,11 +105,16 @@
                         </div>
 
                         <div class="border-t border-gray-100 pt-6">
-                            <div class="flex items-center gap-2 mb-4">
-                                <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
                                 </div>
-                                <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
+                                <div id="totalPercentageDisplay" class="text-sm font-bold px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 shadow-sm transition-all duration-300">
+                                    Total: 0%
+                                </div>
                             </div>
                             <div id="componentsContainer" class="space-y-4">
                                 <!-- Populated by JS -->
@@ -143,6 +148,7 @@
             
             renderPeriods(template.periods);
             renderComponents(template.components);
+            calculateComponentTotal(); // Initial calculation
             
             document.getElementById('editModal').classList.remove('hidden');
         } catch (error) {
@@ -196,7 +202,7 @@
                     <div class="flex items-center gap-4 mb-1">
                         <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-bold text-gray-800 rounded-lg border-gray-300 py-2 px-3 focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Component Name">
                         <div class="w-32 relative rounded-md shadow-sm">
-                            <input type="number" step="0.01" value="${comp.weight}" class="comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
+                            <input type="number" step="0.01" value="${comp.weight}" class="component-percentage-input comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
                              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 font-bold">%</span>
                             </div>
@@ -206,6 +212,48 @@
                 </div>
             `;
         });
+    }
+
+    // Add this to initialize listener
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('componentsContainer');
+        if (container) {
+            container.addEventListener('input', function(e) {
+                if (e.target.classList.contains('component-percentage-input')) {
+                    calculateComponentTotal();
+                }
+            });
+        }
+    });
+
+    function calculateComponentTotal() {
+        const inputs = document.querySelectorAll('.component-percentage-input');
+        let total = 0;
+        
+        inputs.forEach(input => {
+            const val = parseFloat(input.value);
+            if (!isNaN(val)) {
+                total += val;
+            }
+        });
+
+        // Fix floating point issues
+        total = Math.round(total * 100) / 100;
+
+        const display = document.getElementById('totalPercentageDisplay');
+        const diff = Math.round((100 - total) * 100) / 100;
+        
+        if (total === 100) {
+            display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200 shadow-sm transition-all duration-300';
+            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Total: 100%</span>`;
+        } else if (total > 100) {
+            display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-red-100 text-red-700 border border-red-200 shadow-sm transition-all duration-300';
+            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Exceeds by ${Math.abs(diff)}% (Total: ${total}%)</span>`;
+        } else {
+            // Less than 100
+             display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 shadow-sm transition-all duration-300';
+            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Missing ${diff}% (Total: ${total}%)</span>`;
+        }
     }
 
     async function saveTemplate() {
