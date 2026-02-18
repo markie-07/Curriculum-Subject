@@ -93,16 +93,11 @@
                         </div>
 
                         <div class="border-t border-gray-100 pt-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    </div>
-                                    <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
-                                <div id="periodsTotalDisplay" class="text-sm font-bold px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 shadow-sm transition-all duration-300">
-                                    Total: 0%
-                                </div>
+                                <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100" id="periodsContainer">
                                 <!-- Populated by JS -->
@@ -153,8 +148,7 @@
             
             renderPeriods(template.periods);
             renderComponents(template.components);
-            calculatePeriodTotal(); // Initial calculation for periods
-            calculateComponentTotal(); // Initial calculation for components
+            calculateComponentTotal(); // Initial calculation
             
             document.getElementById('editModal').classList.remove('hidden');
         } catch (error) {
@@ -170,60 +164,19 @@
 
     function renderPeriods(periods) {
         const container = document.getElementById('periodsContainer');
-        let html = '';
+        container.innerHTML = '';
         for (const [key, value] of Object.entries(periods)) {
-            html += `
+            container.innerHTML += `
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">${key}</label>
                     <div class="relative mt-1 rounded-md shadow-sm">
-                        <input type="number" step="0.01" data-period="${key}" value="${value}" oninput="calculatePeriodTotal()" class="period-input block w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border pr-8 shadow-sm">
+                        <input type="number" step="0.01" data-period="${key}" value="${value}" class="period-input block w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border pr-8 shadow-sm">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span class="text-gray-500 sm:text-sm font-medium">%</span>
                         </div>
                     </div>
                 </div>
             `;
-        }
-        container.innerHTML = html;
-        calculatePeriodTotal(); // Recalculate immediately after render
-    }
-
-    function calculatePeriodTotal() {
-        const inputs = document.querySelectorAll('.period-input');
-        let total = 0;
-        
-        inputs.forEach(input => {
-            const val = parseFloat(input.value);
-            if (!isNaN(val)) {
-                total += val;
-            }
-        });
-
-        // Fix floating point issues
-        total = Math.round(total * 100) / 100;
-
-        const display = document.getElementById('periodsTotalDisplay');
-        const diff = Math.round((100 - total) * 100) / 100;
-        
-        if (total === 100) {
-            display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200 shadow-sm transition-all duration-300';
-            display.style.backgroundColor = '#dcfce7'; 
-            display.style.color = '#15803d'; 
-            display.style.borderColor = '#bbf7d0'; 
-            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Total: 100%</span>`;
-        } else if (total > 100) {
-            display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-red-100 text-red-700 border border-red-200 shadow-sm transition-all duration-300';
-            display.style.backgroundColor = '#fee2e2'; 
-            display.style.color = '#b91c1c'; 
-            display.style.borderColor = '#fecaca'; 
-            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Exceeds by ${Math.abs(diff)}% (Total: ${total}%)</span>`;
-        } else {
-            // Less than 100
-             display.className = 'text-sm font-bold px-4 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 shadow-sm transition-all duration-300';
-            display.style.backgroundColor = '#fef3c7'; 
-            display.style.color = '#b45309'; 
-            display.style.borderColor = '#fde68a'; 
-            display.innerHTML = `<span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Missing ${diff}% (Total: ${total}%)</span>`;
         }
     }
 
