@@ -97,7 +97,12 @@
                                 <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
-                                <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
+                                <div class="flex items-center justify-between w-full">
+                                    <h4 class="text-lg font-bold text-gray-800">Grading Periods & Weights</h4>
+                                    <div id="periodsTotalDisplay" class="text-sm font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600 transition-colors duration-200">
+                                        Total: <span id="periodsTotal">0</span>%
+                                    </div>
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100" id="periodsContainer">
                                 <!-- Populated by JS -->
@@ -109,7 +114,12 @@
                                 <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                                 </div>
-                                <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
+                                <div class="flex items-center justify-between w-full">
+                                    <h4 class="text-lg font-bold text-gray-800">Components Configuration</h4>
+                                    <div id="componentsTotalDisplay" class="text-sm font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600 transition-colors duration-200">
+                                        Total: <span id="componentsTotal">0</span>%
+                                    </div>
+                                </div>
                             </div>
                             <div id="componentsContainer" class="space-y-4">
                                 <!-- Populated by JS -->
@@ -164,7 +174,9 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">${key}</label>
                     <div class="relative mt-1 rounded-md shadow-sm">
-                        <input type="number" step="0.01" data-period="${key}" value="${value}" class="period-input block w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border pr-8 shadow-sm">
+                        <input type="number" step="0.01" data-period="${key}" value="${value}" 
+                            oninput="updateTotals()"
+                            class="period-input block w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2.5 border pr-8 shadow-sm">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span class="text-gray-500 sm:text-sm font-medium">%</span>
                         </div>
@@ -172,6 +184,7 @@
                 </div>
             `;
         }
+        updateTotals();
     }
 
     function renderComponents(components) {
@@ -183,7 +196,9 @@
                 <div class="flex items-center gap-4 ml-6 mt-3 pl-4 border-l-2 border-gray-200">
                     <input type="text" value="${sub.name}" class="sub-comp-name-${index}-${subIndex} flex-1 rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Sub-component Name">
                     <div class="w-28 relative rounded-md shadow-sm">
-                        <input type="number" step="0.01" value="${sub.weight}" class="sub-comp-weight-${index}-${subIndex} block w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
+                        <input type="number" step="0.01" value="${sub.weight}" 
+                            oninput="updateTotals()"
+                            class="sub-comp-weight-${index}-${subIndex} sub-comp-input-${index} block w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
                         <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
                             <span class="text-gray-500 text-xs font-bold">%</span>
                         </div>
@@ -193,23 +208,131 @@
 
             container.innerHTML += `
                 <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm hover:border-indigo-200 transition-colors">
-                    <div class="flex items-center gap-4 mb-1">
-                        <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-bold text-gray-800 rounded-lg border-gray-300 py-2 px-3 focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Component Name">
-                        <div class="w-32 relative rounded-md shadow-sm">
-                            <input type="number" step="0.01" value="${comp.weight}" class="comp-weight-${index} block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
-                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 font-bold">%</span>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex-1 flex items-center gap-4">
+                            <input type="text" value="${comp.name}" class="comp-name-${index} flex-1 font-bold text-gray-800 rounded-lg border-gray-300 py-2 px-3 focus:border-indigo-500 focus:ring-indigo-500 border shadow-sm" placeholder="Component Name">
+                            <div class="w-32 relative rounded-md shadow-sm">
+                                <input type="number" step="0.01" value="${comp.weight}" 
+                                    oninput="updateTotals()"
+                                    class="comp-weight-${index} comp-weight-input block w-full rounded-lg border-gray-300 py-2 px-3 font-semibold text-gray-800 focus:border-indigo-500 focus:ring-indigo-500 border pr-8 shadow-sm">
+                                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 font-bold">%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    ${subsHtml}
+                    ${comp.sub_components && comp.sub_components.length ? `
+                        <div class="bg-gray-50/50 rounded-lg p-3 border border-gray-100 mt-2">
+                            <div class="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-6 pl-4">
+                                <span>Sub-components</span>
+                                <span class="comp-subtotal-${index}">Subtotal: 0%</span>
+                            </div>
+                            ${subsHtml}
+                        </div>
+                    ` : subsHtml}
                 </div>
             `;
+        });
+        updateTotals();
+    }
+
+    function updateTotals() {
+        const formatNum = (num) => Number(num.toFixed(2));
+        const displayNum = (num) => num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
+
+        // Grading Periods
+        let periodTotal = 0;
+        document.querySelectorAll('.period-input').forEach(input => {
+            periodTotal += parseFloat(input.value) || 0;
+        });
+        
+        const periodDisplay = document.getElementById('periodsTotalDisplay');
+        document.getElementById('periodsTotal').innerText = displayNum(periodTotal);
+        
+        if (Math.round(periodTotal * 100) / 100 === 100) {
+            periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
+        } else {
+            periodDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+        }
+
+        // Components
+        let compTotal = 0;
+        const compInputs = document.querySelectorAll('.comp-weight-input');
+        compInputs.forEach(input => {
+            compTotal += parseFloat(input.value) || 0;
+        });
+
+        const compDisplay = document.getElementById('componentsTotalDisplay');
+        document.getElementById('componentsTotal').innerText = displayNum(compTotal);
+
+        if (Math.round(compTotal * 100) / 100 === 100) {
+            compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-green-100 text-green-700';
+        } else {
+            compDisplay.className = 'text-sm font-bold px-3 py-1 rounded-full bg-red-100 text-red-700 animate-pulse';
+        }
+
+        // Sub-components validation
+        compInputs.forEach((input, index) => {
+            const subInputs = document.querySelectorAll(`.sub-comp-input-${index}`);
+            if (subInputs.length > 0) {
+                let subTotal = 0;
+                subInputs.forEach(subInput => {
+                    subTotal += parseFloat(subInput.value) || 0;
+                });
+                
+                const subDisplay = document.querySelector(`.comp-subtotal-${index}`);
+                if (subDisplay) {
+                    subDisplay.innerText = `Subtotal: ${displayNum(subTotal)}%`;
+                    if (Math.round(subTotal * 100) / 100 === 100) {
+                        subDisplay.className = `comp-subtotal-${index} text-green-600 font-bold`;
+                    } else {
+                        subDisplay.className = `comp-subtotal-${index} text-red-600 font-bold`;
+                    }
+                }
+            }
         });
     }
 
     async function saveTemplate() {
         if (!currentTemplate) return;
+
+        // Perform final validation
+        let periodTotal = 0;
+        document.querySelectorAll('.period-input').forEach(input => {
+            periodTotal += parseFloat(input.value) || 0;
+        });
+
+        let compTotal = 0;
+        document.querySelectorAll('.comp-weight-input').forEach(input => {
+            compTotal += parseFloat(input.value) || 0;
+        });
+
+        const displayNum = (num) => num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
+
+        if (Math.round(periodTotal * 100) / 100 !== 100) {
+            alert('Error: Grading Periods must sum to exactly 100%. Current total: ' + displayNum(periodTotal) + '%');
+            return;
+        }
+
+        if (Math.round(compTotal * 100) / 100 !== 100) {
+            alert('Error: Component Configuration must sum to exactly 100%. Current total: ' + displayNum(compTotal) + '%');
+            return;
+        }
+
+        // Sub-component validation
+        const compDivs = document.getElementById('componentsContainer').children;
+        for (let i = 0; i < compDivs.length; i++) {
+            const subInputs = document.querySelectorAll(`.sub-comp-input-${i}`);
+            if (subInputs.length > 0) {
+                let subTotal = 0;
+                subInputs.forEach(si => subTotal += parseFloat(si.value) || 0);
+                if (Math.round(subTotal * 100) / 100 !== 100) {
+                    const compName = document.querySelector(`.comp-name-${i}`).value;
+                    alert(`Error: Sub-components for "${compName}" must sum to exactly 100%. Current total: ${displayNum(subTotal)}%`);
+                    return;
+                }
+            }
+        }
 
         // Collect periods
         const periods = {};
