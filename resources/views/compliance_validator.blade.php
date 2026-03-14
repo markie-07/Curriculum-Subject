@@ -520,11 +520,29 @@
     };
 
     const createLinkItem = (link) => {
-
         const linkDiv = document.createElement('div');
-        linkDiv.className = 'custom-link-item flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 transition-colors duration-200';
+        linkDiv.className = 'custom-link-item flex items-center justify-between p-2 rounded-md hover:bg-blue-50 transition-colors duration-200';
+        
+        const isUsed = link.is_used;
+        
         linkDiv.innerHTML = `
-            <a href="${link.url}" target="_blank" class="flex-grow text-blue-600 hover:underline text-sm md:text-base pl-2 border-l-2 border-transparent hover:border-blue-400 h-full flex items-center">${link.title}</a>
+            <div class="flex items-center gap-2 flex-grow">
+                ${isUsed ? `
+                <div class="flex-shrink-0 text-green-600" title="Used in a curriculum">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                ` : ''}
+                <a href="${link.url}" target="_blank" class="flex-grow text-blue-600 hover:underline text-sm md:text-base pl-2 border-l-2 border-transparent hover:border-blue-400 h-full flex items-center">
+                    ${link.title}
+                </a>
+            </div>
+            ${isUsed ? `
+            <span class="ml-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-700 bg-green-100 rounded-full border border-green-200">
+                In Use
+            </span>
+            ` : ''}
         `;
         return linkDiv;
     };

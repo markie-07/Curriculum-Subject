@@ -32,6 +32,25 @@ class ComplianceLinkController extends Controller
 
         $links = $query->orderBy('id', 'asc')->get();
 
+        // Check which links are used in curricula or subjects
+        $normalize = function($str) {
+            if (!$str) return $str;
+            // Normalize all dash variations to a standard hyphen and clean whitespace
+            $str = str_replace(['–', '—'], '-', $str);
+            return trim(preg_replace('/\s+/u', ' ', $str));
+        };
+
+        $usedInCurriculums = \App\Models\Curriculum::whereNotNull('memorandum')->pluck('memorandum')->unique()->toArray();
+        $usedInSubjects = \App\Models\Subject::whereNotNull('memorandum')->pluck('memorandum')->unique()->toArray();
+        $usedMemorandums = array_map($normalize, array_unique(array_merge($usedInCurriculums, $usedInSubjects)));
+        
+        $links->transform(function ($link) use ($usedMemorandums, $normalize) {
+            $isUsed = in_array($normalize($link->title), $usedMemorandums);
+            // Use setAttribute to ensure it's included in toArray() and JSON serialization
+            $link->setAttribute('is_used', $isUsed);
+            return $link;
+        });
+
         return response()->json($links);
     }
 
