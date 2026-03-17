@@ -17,6 +17,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CurriculumHistoryController;
 use App\Http\Controllers\ExtractSyllabusController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\BiometricController;
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -35,6 +36,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/csrf-token', function () {
         return response()->json(['csrf_token' => csrf_token()]);
     });
+    // Biometric Login Verification
+    Route::get('/biometric/check', [BiometricController::class, 'check'])->name('biometric.check');
+    Route::get('/biometric/reference', [BiometricController::class, 'reference'])->name('biometric.reference');
+    Route::post('/biometric/verify', [BiometricController::class, 'verify'])->name('biometric.verify');
 });
 // Debug routes (temporary)
 Route::get('/debug', function () {
@@ -95,6 +100,10 @@ Route::middleware(['auth', 'prevent.back'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/validate-email', [ProfileController::class, 'validateEmail'])->name('profile.validate-email');
+    
+    // Biometric Routes
+    Route::post('/biometric/store', [BiometricController::class, 'store'])->name('biometric.store');
+    Route::delete('/biometric/remove', [BiometricController::class, 'destroy'])->name('biometric.destroy');
 
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

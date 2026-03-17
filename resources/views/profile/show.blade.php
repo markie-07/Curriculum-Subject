@@ -211,6 +211,57 @@
                     </div>
                 </div>
                 @endunless
+
+                <!-- Biometric Security Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
+                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900">Biometric Security</h2>
+                            <p class="text-sm text-gray-600">Use facial recognition to skip OTP during login</p>
+                        </div>
+                        <div class="flex items-center">
+                            @if($user->face_descriptor)
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    Configured
+                                </span>
+                            @else
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Not Set Up</span>
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-blue-50 rounded-lg text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-semibold text-gray-900">Facial Recognition</h4>
+                                <p class="text-sm text-gray-600 mt-1">Enhance your account security with biometric authentication. Once set up, you can log in by simply looking at your camera, bypassing the need for an email OTP.</p>
+                                
+                                <div class="mt-4 flex gap-3">
+                                    <button type="button" id="setupFaceButton"
+                                            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        {{ $user->face_descriptor ? 'Update Face Data' : 'Set Up Facial Recognition' }}
+                                    </button>
+
+                                    @if($user->face_descriptor)
+                                        <form method="POST" action="{{ route('biometric.destroy') }}" id="removeFaceForm">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    onclick="return confirm('Are you sure you want to remove your facial recognition data? You will need to use email OTP for future logins.')"
+                                                    class="inline-flex items-center px-4 py-2 bg-white border border-red-300 rounded-lg font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                                                Remove Face Data
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Profile Summary Sidebar -->
@@ -343,6 +394,7 @@
     </div>
 </div>
 
+<x-face-auth mode="register" />
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Modal elements
@@ -660,7 +712,14 @@ document.addEventListener('DOMContentLoaded', function () {
     successModal.addEventListener('click', function(e) {
         if (e.target === this) hideSuccessModal();
     });
+
+    // Face Auth Integration
+    const setupFaceButton = document.getElementById('setupFaceButton');
+    const faceAuth = new FaceAuth('register');
+
+    setupFaceButton.addEventListener('click', () => {
+        faceAuth.start();
+    });
 });
 </script>
-
 @endsection

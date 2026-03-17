@@ -27,6 +27,7 @@ class User extends Authenticatable
         'last_activity',
         'modules',
         'profile_picture',
+        'face_descriptor',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'last_activity' => 'datetime',
             'modules' => 'array',
+            'face_descriptor' => 'array',
         ];
     }
 
