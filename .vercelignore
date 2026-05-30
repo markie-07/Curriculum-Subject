@@ -1,0 +1,21 @@
+# Exclude local package dependencies from being uploaded to Vercel
+/node_modules
+/vendor
+
+# Exclude local environment files and logs
+.env
+.env.backup
+.phpunit.cache
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*.php
+
+# Exclude git directories and development configurations
+.git
+.github
+.editorconfig
+.gitattributes
+phpunit.xml
+tests/
+deploy.yml
