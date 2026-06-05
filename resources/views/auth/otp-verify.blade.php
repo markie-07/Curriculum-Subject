@@ -176,6 +176,7 @@
 
                 <form method="POST" action="{{ route('otp.verify.submit') }}" class="space-y-6" id="otpForm">
                     @csrf
+                    <input type="hidden" name="otp_token" value="{{ session('otp_token', request('token')) }}">
                     
                     <!-- OTP Input Fields -->
                     <div>
@@ -267,6 +268,7 @@
                         Didn't receive the code? 
                         <form method="POST" action="{{ route('otp.resend') }}" class="inline">
                             @csrf
+                            <input type="hidden" name="otp_token" value="{{ session('otp_token', request('token')) }}">
                             <button type="submit" class="text-blue-600 hover:text-blue-500 font-medium underline bg-transparent border-none cursor-pointer">
                                 Resend OTP
                             </button>

@@ -32,6 +32,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/biometric/reference', [BiometricController::class, 'reference'])->name('biometric.reference');
     Route::post('/biometric/verify', [BiometricController::class, 'verify'])->name('biometric.verify');
 });
+
+// CSRF token refresh route (outside middleware groups - accessible to all)
+Route::get('/csrf-token', function () {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 // Debug routes (temporary)
 Route::get('/debug', function () {
     return response()->json([

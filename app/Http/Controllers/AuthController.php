@@ -85,17 +85,20 @@ class AuthController extends Controller
             // Logout user temporarily until OTP is verified
             Auth::logout();
             
-            // Regenerate session FIRST to prevent fixation attacks
-            $request->session()->regenerate();
+            // Create encrypted token with user info (survives serverless redirects)
+            $token = encrypt([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'expires' => now()->addMinutes(10)->timestamp,
+            ]);
             
-            // THEN store user ID and email in the new session for OTP verification
+            // Also store in session as fallback
+            $request->session()->regenerate();
             $request->session()->put('pending_user_id', $user->id);
             $request->session()->put('pending_user_email', $user->email);
-            
-            // Force session to save immediately (important for serverless/Vercel)
             $request->session()->save();
             
-            return redirect()->route('otp.verify')->with('success', 'OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
+            return redirect()->route('otp.verify', ['token' => $token])->with('success', 'OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
         }
 
         // Increment failed attempts
@@ -137,8 +140,29 @@ class AuthController extends Controller
     /**
      * Show OTP verification form
      */
-    public function showOtpForm()
+    public function showOtpForm(Request $request)
     {
+        // Try encrypted token from URL first (reliable on serverless/Vercel)
+        if ($request->has('token')) {
+            try {
+                $data = decrypt($request->token);
+                
+                // Check expiration
+                if (isset($data['expires']) && $data['expires'] > now()->timestamp) {
+                    // Store in session for subsequent requests (OTP submit, resend)
+                    $request->session()->put('pending_user_id', $data['user_id']);
+                    $request->session()->put('pending_user_email', $data['email']);
+                    $request->session()->put('otp_token', $request->token);
+                    $request->session()->save();
+                    
+                    return view('auth.otp-verify');
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Invalid OTP token: ' . $e->getMessage());
+            }
+        }
+        
+        // Fall back to session (works on traditional hosting)
         if (!session('pending_user_id')) {
             return redirect()->route('login')->withErrors(['error' => 'Please login first.']);
         }
@@ -157,6 +181,22 @@ class AuthController extends Controller
 
         $userId = session('pending_user_id');
         $userEmail = session('pending_user_email');
+        
+        // If session is empty, try to recover from encrypted token (Vercel serverless fallback)
+        if (!$userId || !$userEmail) {
+            $token = $request->input('otp_token') ?? session('otp_token');
+            if ($token) {
+                try {
+                    $data = decrypt($token);
+                    if (isset($data['expires']) && $data['expires'] > now()->timestamp) {
+                        $userId = $data['user_id'];
+                        $userEmail = $data['email'];
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('OTP token decrypt failed: ' . $e->getMessage());
+                }
+            }
+        }
         
         if (!$userId || !$userEmail) {
             return redirect()->route('login')->withErrors(['error' => 'Session expired. Please login again.']);
@@ -215,6 +255,22 @@ class AuthController extends Controller
     {
         $userId = session('pending_user_id');
         $userEmail = session('pending_user_email');
+        
+        // If session is empty, try to recover from encrypted token (Vercel serverless fallback)
+        if (!$userId || !$userEmail) {
+            $token = $request->input('otp_token') ?? session('otp_token');
+            if ($token) {
+                try {
+                    $data = decrypt($token);
+                    if (isset($data['expires']) && $data['expires'] > now()->timestamp) {
+                        $userId = $data['user_id'];
+                        $userEmail = $data['email'];
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('OTP resend token decrypt failed: ' . $e->getMessage());
+                }
+            }
+        }
         
         if (!$userId || !$userEmail) {
             return redirect()->route('login')->withErrors(['error' => 'Session expired. Please login again.']);

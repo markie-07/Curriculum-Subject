@@ -20,7 +20,7 @@
     },
     {
       "src": "/(css|images|js)/(.*)",
-      "dest": "/public/$2"
+      "dest": "/public/$1/$2"
     },
     {
       "src": "/(.*)",
