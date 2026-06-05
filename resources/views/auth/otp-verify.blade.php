@@ -468,39 +468,11 @@
                 });
             });
 
-            // Handle form submission with CSRF token refresh
+            // Ensure OTP code is combined before form submission (no CSRF fetch needed - @csrf token is already valid)
             const otpForm = document.getElementById('otpForm');
-            otpForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                try {
-                    // Get fresh CSRF token
-                    const response = await fetch('/csrf-token', {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        // Update CSRF token in form
-                        const csrfInput = otpForm.querySelector('input[name="_token"]');
-                        if (csrfInput) {
-                            csrfInput.value = data.csrf_token;
-                        }
-                        // Update meta tag
-                        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-                        if (csrfMeta) {
-                            csrfMeta.setAttribute('content', data.csrf_token);
-                        }
-                    }
-                } catch (error) {
-                    console.log('Could not refresh CSRF token, proceeding with existing token');
-                }
-                
-                // Submit the form
-                otpForm.submit();
+            otpForm.addEventListener('submit', function(e) {
+                combineOtp();
+                // Let the form submit naturally - no preventDefault, no fetch('/csrf-token')
             });
 
             // Biometric Login Check

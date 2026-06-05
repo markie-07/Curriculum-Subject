@@ -36,11 +36,45 @@ Route::middleware('guest')->group(function () {
 // CSRF token refresh route (outside middleware groups - accessible to all)
 // Only responds to AJAX/fetch requests; redirects if accessed directly in browser
 Route::get('/csrf-token', function (\Illuminate\Http\Request $request) {
-    if ($request->expectsJson() || $request->ajax()) {
-        return response()->json(['csrf_token' => csrf_token()]);
+    $accept = $request->header('Accept');
+    $isAjax = $request->ajax();
+    $authCheck = auth()->check();
+    
+    // Explicitly check if the request wants JSON (via wantsJson, AJAX, or Accept header containing application/json or text/javascript).
+    // Do NOT check $request->accepts() as Chrome's default Accept header has */* which matches any accepts() check.
+    $isJsonExpected = $request->wantsJson() || 
+                      $isAjax || 
+                      ($accept && (
+                          str_contains($accept, 'application/json') || 
+                          str_contains($accept, 'text/javascript')
+                      ));
+    
+    if ($isJsonExpected) {
+        \Log::info('CSRF Token requested via AJAX', [
+            'accept' => $accept,
+            'is_ajax' => $isAjax,
+            'auth' => $authCheck
+        ]);
+        
+        return response()->json(['csrf_token' => csrf_token()])
+            ->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
     }
-    // Direct browser navigation — redirect to appropriate page
-    return redirect(auth()->check() ? '/' : '/login');
+    
+    \Log::warning('CSRF Token route accessed directly via browser, redirecting...', [
+        'accept' => $accept,
+        'is_ajax' => $isAjax,
+        'auth' => $authCheck,
+        'url' => $request->fullUrl()
+    ]);
+    
+    // Direct browser navigation — force redirect with no-cache headers to prevent cached JSON pages
+    $redirectUrl = $authCheck ? '/' : '/login';
+    return redirect($redirectUrl)
+        ->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
 });
 // Debug routes (temporary)
 Route::get('/debug', function () {
