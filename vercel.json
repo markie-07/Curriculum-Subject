@@ -2,7 +2,10 @@
   "version": 2,
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.8.0"
+      "runtime": "vercel-php@0.8.0",
+      "includeFiles": [
+        "bootstrap/cache/**"
+      ]
     }
   },
   "routes": [
@@ -42,6 +45,8 @@
     "DB_PORT": "3306",
     "DB_DATABASE": "u514031374_csm3",
     "DB_USERNAME": "u514031374_csm3",
+    "LARAVEL_BYPASS_LIGHTHOUSE": "true",
+    "CACHE_DRIVER": "array",
     "DB_PASSWORD": "csm3P@55w0rd"
   }
 }
