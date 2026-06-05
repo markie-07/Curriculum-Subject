@@ -259,7 +259,7 @@ class AuthController extends Controller
             }
             
             // For admin and super_admin users, redirect to dashboard
-            return redirect()->intended(route('dashboard'));
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
