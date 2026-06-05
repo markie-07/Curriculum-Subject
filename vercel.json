@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "outputDirectory": "public",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.8.0"
@@ -9,7 +8,9 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
       "dest": "/public/build/$1"
     },
     {
@@ -18,7 +19,7 @@
     },
     {
       "src": "/(css|images|js)/(.*)",
-      "dest": "/public/$1/$2"
+      "dest": "/public/$2"
     },
     {
       "src": "/(.*)",
