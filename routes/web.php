@@ -26,16 +26,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/otp-verify', [AuthController::class, 'showOtpForm'])->name('otp.verify');
     Route::post('/otp-verify', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
     
-    // Helper route to get CSRF token for Postman
-    Route::get('/csrf-token', function () {
-        return response()->json(['csrf_token' => csrf_token()]);
-    });
     Route::post('/otp-resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
-    
-    // CSRF token refresh route
-    Route::get('/csrf-token', function () {
-        return response()->json(['csrf_token' => csrf_token()]);
-    });
     // Biometric Login Verification
     Route::get('/biometric/check', [BiometricController::class, 'check'])->name('biometric.check');
     Route::get('/biometric/reference', [BiometricController::class, 'reference'])->name('biometric.reference');

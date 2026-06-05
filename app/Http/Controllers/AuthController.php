@@ -82,15 +82,18 @@ class AuthController extends Controller
             // Send OTP email using dynamic mail service
             DynamicMailService::sendOtpEmail($user->email, $otp->otp_code);
             
-            // Store user ID and email in session for OTP verification
-            $request->session()->put('pending_user_id', $user->id);
-            $request->session()->put('pending_user_email', $user->email);
-            
             // Logout user temporarily until OTP is verified
             Auth::logout();
             
-            // Regenerate session to prevent CSRF token issues
+            // Regenerate session FIRST to prevent fixation attacks
             $request->session()->regenerate();
+            
+            // THEN store user ID and email in the new session for OTP verification
+            $request->session()->put('pending_user_id', $user->id);
+            $request->session()->put('pending_user_email', $user->email);
+            
+            // Force session to save immediately (important for serverless/Vercel)
+            $request->session()->save();
             
             return redirect()->route('otp.verify')->with('success', 'OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
         }
