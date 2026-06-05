@@ -34,8 +34,13 @@ Route::middleware('guest')->group(function () {
 });
 
 // CSRF token refresh route (outside middleware groups - accessible to all)
-Route::get('/csrf-token', function () {
-    return response()->json(['csrf_token' => csrf_token()]);
+// Only responds to AJAX/fetch requests; redirects if accessed directly in browser
+Route::get('/csrf-token', function (\Illuminate\Http\Request $request) {
+    if ($request->expectsJson() || $request->ajax()) {
+        return response()->json(['csrf_token' => csrf_token()]);
+    }
+    // Direct browser navigation — redirect to appropriate page
+    return redirect(auth()->check() ? '/' : '/login');
 });
 // Debug routes (temporary)
 Route::get('/debug', function () {

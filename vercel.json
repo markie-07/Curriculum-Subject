@@ -33,7 +33,7 @@
     "LOG_CHANNEL": "stderr",
     "APP_CONFIG_CACHE": "/tmp/config.php",
     "VIEW_COMPILED_PATH": "/tmp",
-    "SESSION_DRIVER": "database",
+    "SESSION_DRIVER": "cookie",
     "SESSION_SECURE_COOKIE": "true",
     "SESSION_SAME_SITE": "lax",
     "CACHE_STORE": "array",
@@ -50,4 +50,3 @@
     "DB_PASSWORD": "csm3P@55w0rd"
   }
 }
-// ndkad

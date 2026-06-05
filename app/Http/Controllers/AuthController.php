@@ -92,13 +92,19 @@ class AuthController extends Controller
                 'expires' => now()->addMinutes(10)->timestamp,
             ]);
             
-            // Also store in session as fallback
-            $request->session()->regenerate();
-            $request->session()->put('pending_user_id', $user->id);
-            $request->session()->put('pending_user_email', $user->email);
-            $request->session()->save();
+            // Also store in session as fallback (wrapped in try-catch for Vercel)
+            try {
+                $request->session()->regenerate();
+                $request->session()->put('pending_user_id', $user->id);
+                $request->session()->put('pending_user_email', $user->email);
+                $request->session()->put('otp_success_msg', 'OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
+                $request->session()->save();
+            } catch (\Exception $e) {
+                \Log::warning('Session save failed during login: ' . $e->getMessage());
+            }
             
-            return redirect()->route('otp.verify', ['token' => $token])->with('success', 'OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
+            // Redirect using direct URL (avoid ->with() which needs sessions)
+            return redirect('/otp-verify?token=' . urlencode($token));
         }
 
         // Increment failed attempts
@@ -150,12 +156,21 @@ class AuthController extends Controller
                 // Check expiration
                 if (isset($data['expires']) && $data['expires'] > now()->timestamp) {
                     // Store in session for subsequent requests (OTP submit, resend)
-                    $request->session()->put('pending_user_id', $data['user_id']);
-                    $request->session()->put('pending_user_email', $data['email']);
-                    $request->session()->put('otp_token', $request->token);
-                    $request->session()->save();
+                    try {
+                        $request->session()->put('pending_user_id', $data['user_id']);
+                        $request->session()->put('pending_user_email', $data['email']);
+                        $request->session()->put('otp_token', $request->token);
+                        $request->session()->save();
+                    } catch (\Exception $e) {
+                        \Log::warning('Session save failed in showOtpForm: ' . $e->getMessage());
+                    }
                     
-                    return view('auth.otp-verify');
+                    // Pass data directly to view (no session dependency)
+                    return view('auth.otp-verify', [
+                        'userEmail' => $data['email'],
+                        'otpToken' => $request->token,
+                        'successMsg' => 'OTP has been sent to your email (' . $data['email'] . '). Please check your inbox.',
+                    ]);
                 }
             } catch (\Exception $e) {
                 \Log::warning('Invalid OTP token: ' . $e->getMessage());
@@ -167,7 +182,11 @@ class AuthController extends Controller
             return redirect()->route('login')->withErrors(['error' => 'Please login first.']);
         }
         
-        return view('auth.otp-verify');
+        return view('auth.otp-verify', [
+            'userEmail' => session('pending_user_email', 'your email'),
+            'otpToken' => session('otp_token', ''),
+            'successMsg' => session('otp_success_msg', ''),
+        ]);
     }
 
     /**

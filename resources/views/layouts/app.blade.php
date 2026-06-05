@@ -2536,7 +2536,8 @@
                         // Check if user is still authenticated
                         fetch('/csrf-token', {
                             method: 'GET',
-                            credentials: 'same-origin'
+                            credentials: 'same-origin',
+                            headers: { 'Accept': 'application/json' }
                         })
                         .then(response => {
                             if (!response.ok) {
@@ -2557,7 +2558,8 @@
                     if (event.persisted) {
                         fetch('/csrf-token', {
                             method: 'GET',
-                            credentials: 'same-origin'
+                            credentials: 'same-origin',
+                            headers: { 'Accept': 'application/json' }
                         })
                         .then(response => {
                             if (!response.ok) {

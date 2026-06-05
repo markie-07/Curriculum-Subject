@@ -154,13 +154,13 @@
                 <div class="text-center logo-container">
                     <img src="{{ asset('images/SMSIII LOGO.png') }}" alt="SMSIII Logo" class="mx-auto h-28 w-auto mb-6">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Enter OTP Code</h2>
-                    <p class="text-gray-600 mb-6">We've sent a 6-digit code to {{ session('pending_user_email', 'your email') }}</p>
+                    <p class="text-gray-600 mb-6">We've sent a 6-digit code to {{ $userEmail ?? session('pending_user_email', 'your email') }}</p>
                 </div>
 
                 <!-- Success/Error Messages -->
-                @if (session('success'))
+                @if (!empty($successMsg) || session('success'))
                     <div class="mb-4 bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg">
-                        {{ session('success') }}
+                        {{ $successMsg ?? session('success') }}
                     </div>
                 @endif
 
@@ -176,7 +176,7 @@
 
                 <form method="POST" action="{{ route('otp.verify.submit') }}" class="space-y-6" id="otpForm">
                     @csrf
-                    <input type="hidden" name="otp_token" value="{{ session('otp_token', request('token')) }}">
+                    <input type="hidden" name="otp_token" value="{{ $otpToken ?? session('otp_token', request('token')) }}">
                     
                     <!-- OTP Input Fields -->
                     <div>
@@ -268,7 +268,7 @@
                         Didn't receive the code? 
                         <form method="POST" action="{{ route('otp.resend') }}" class="inline">
                             @csrf
-                            <input type="hidden" name="otp_token" value="{{ session('otp_token', request('token')) }}">
+                            <input type="hidden" name="otp_token" value="{{ $otpToken ?? session('otp_token', request('token')) }}">
                             <button type="submit" class="text-blue-600 hover:text-blue-500 font-medium underline bg-transparent border-none cursor-pointer">
                                 Resend OTP
                             </button>
