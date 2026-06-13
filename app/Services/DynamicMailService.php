@@ -31,7 +31,7 @@ class DynamicMailService
             'host' => 'smtp.gmail.com',
             'port' => 587,
             'username' => 'markjamesp11770@gmail.com',
-            'password' => 'eyafpyveggzylpge', // App password for Mark James superadmin (spaces removed)
+            'password' => 'zytnfxicwnlelyck', // App password for Mark James superadmin (spaces removed)
             'encryption' => 'tls',
             'from_name' => 'Student Management System'
         ],
